@@ -48,9 +48,12 @@ abstract class BaseActivity : AppCompatActivity() {
      * A developer's lament, in code and view.
      * https://developer.android.com/develop/ui/views/layout/edge-to-edge#kts
      */
+    private var isDynamicColorsEnabled: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        isDynamicColorsEnabled = SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS)
     }
 
 
@@ -65,9 +68,11 @@ abstract class BaseActivity : AppCompatActivity() {
             0 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+
             1 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
+
             -1 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
@@ -220,7 +225,7 @@ abstract class BaseActivity : AppCompatActivity() {
     private var appBarLayout: AppBarLayout? = null
     private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            nestedScrollView?.post { nestedScrollView?.smoothScrollTo(0,0) }
+            nestedScrollView?.post { nestedScrollView?.smoothScrollTo(0, 0) }
             appBarLayout?.setExpanded(true, true)
         }
     }
@@ -236,6 +241,11 @@ abstract class BaseActivity : AppCompatActivity() {
             registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"), RECEIVER_EXPORTED)
         } else {
             registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
+        }
+
+        val currentDynamicColors = SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS)
+        if (isDynamicColorsEnabled != currentDynamicColors) {
+            recreate()
         }
     }
 
@@ -267,7 +277,7 @@ abstract class BaseActivity : AppCompatActivity() {
                                         icon = R.drawable.ic_fingerprint,
                                         neutralButtonText = this@BaseActivity.resources.getString(R.string.try_again),
                                         neutralButtonAction = {
-                                             isAuthenticated(shouldFinishOnError, callback)
+                                            isAuthenticated(shouldFinishOnError, callback)
                                         },
                                         positiveButtonText = this@BaseActivity.resources.getString(R.string.reset_app),
                                         positiveButtonAction = {
@@ -275,16 +285,19 @@ abstract class BaseActivity : AppCompatActivity() {
                                         }
                                     ).setCancelable(false).show()
                                 }
+
                                 BiometricPrompt.ERROR_USER_CANCELED -> {
                                     if (shouldFinishOnError) {
                                         finish()
                                     }
                                 }
+
                                 BiometricPrompt.ERROR_CANCELED -> {
                                     if (shouldFinishOnError) {
                                         finish()
                                     }
                                 }
+
                                 else -> {
                                     Toast.makeText(
                                         this@BaseActivity, resources.getString(

@@ -43,17 +43,22 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
     private var oneTimeRecyclerViewActions: Boolean = true
 
     private val addDomainFragment: AddDomainBottomDialogFragment = AddDomainBottomDialogFragment.newInstance()
+    private var _binding: FragmentDomainSettingsBinding? = null
+    private val binding get() = _binding!!
 
-
-    companion object {
-        fun newInstance() = DomainSettingsFragment()
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            if (data?.getBooleanExtra("shouldRefresh", false) == true) {
+                getDataFromWeb(null)
+            }
+        }
     }
 
-    private var _binding: FragmentDomainSettingsBinding? = null
+    private lateinit var domainsAdapter: DomainAdapter
+    private lateinit var deleteDomainSnackbar: Snackbar
 
-    // This property is only valid between onCreateView and
-// onDestroyView.
-    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -77,23 +82,12 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
         return root
     }
 
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-            if (data?.getBooleanExtra("shouldRefresh", false) == true) {
-                getDataFromWeb(null)
-            }
-        }
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val gson = Gson()
         val json = gson.toJson(domains)
         outState.putString("domains", json)
     }
-
 
     private fun setOnClickListener() {
         binding.fragmentDomainSettingsAddDomain.setOnClickListener {
@@ -103,6 +97,68 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                     "addDomainFragment"
                 )
             }
+        }
+    }
+
+    private fun setDomainsRecyclerView() {
+        binding.fragmentDomainSettingsAllDomainsRecyclerview.apply {
+            if (oneTimeRecyclerViewActions) {
+                oneTimeRecyclerViewActions = false
+                shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, 2) ?: 2
+                shimmerLayoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
+                layoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
+
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                layoutAnimation = animation
+
+                showShimmer()
+            }
+        }
+    }
+
+    private fun setDomainsAdapter(list: java.util.ArrayList<Domains>) {
+        binding.domainSettingsCount.apply {
+            val total = list.size
+            if (total > 0) {
+                text = total.toString()
+                visibility = View.VISIBLE
+            } else {
+                visibility = View.GONE
+            }
+        }
+
+        binding.fragmentDomainSettingsAllDomainsRecyclerview.apply {
+            domains = list
+            if (list.isNotEmpty()) {
+                binding.fragmentDomainSettingsNoDomains.visibility = View.GONE
+            } else {
+                binding.fragmentDomainSettingsNoDomains.visibility = View.VISIBLE
+            }
+
+            // Set the count of aliases so that the shimmerview looks better next time
+            encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, list.size)
+
+            domainsAdapter = DomainAdapter(list)
+            domainsAdapter.setClickListener(object : DomainAdapter.ClickListener {
+
+                override fun onClickSettings(pos: Int, aView: View) {
+                    val intent = Intent(context, ManageDomainsActivity::class.java)
+                    intent.putExtra("domain_id", list[pos].id)
+                    resultLauncher.launch(intent)
+                }
+
+                override fun onClickDelete(pos: Int, aView: View) {
+                    deleteDomain(list[pos].id, context)
+                }
+
+            })
+            adapter = domainsAdapter
+
+            //binding.animationFragment.stopAnimation()
+            //binding.fragmentDomainSettingsNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
         }
     }
 
@@ -177,7 +233,6 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
         }
     }
 
-    private lateinit var domainsAdapter: DomainAdapter
     private suspend fun getAllDomainsAndSetView() {
         binding.fragmentDomainSettingsAllDomainsRecyclerview.apply {
             networkHelper?.getAllDomains { list, error ->
@@ -210,73 +265,15 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                         ).show()
                     }
 
-
                     // Show error animations
                     binding.fragmentDomainSettingsLL1.visibility = View.GONE
                     //binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
                 }
                 hideShimmer()
             }
-
-        }
-
-    }
-
-    private fun setDomainsAdapter(list: java.util.ArrayList<Domains>) {
-        binding.fragmentDomainSettingsAllDomainsRecyclerview.apply {
-            domains = list
-            if (list.isNotEmpty()) {
-                binding.fragmentDomainSettingsNoDomains.visibility = View.GONE
-            } else {
-                binding.fragmentDomainSettingsNoDomains.visibility = View.VISIBLE
-            }
-
-            // Set the count of aliases so that the shimmerview looks better next time
-            encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, list.size)
-
-            domainsAdapter = DomainAdapter(list)
-            domainsAdapter.setClickListener(object : DomainAdapter.ClickListener {
-
-                override fun onClickSettings(pos: Int, aView: View) {
-                    val intent = Intent(context, ManageDomainsActivity::class.java)
-                    intent.putExtra("domain_id", list[pos].id)
-                    resultLauncher.launch(intent)
-                }
-
-
-                override fun onClickDelete(pos: Int, aView: View) {
-                    deleteDomain(list[pos].id, context)
-                }
-
-            })
-            adapter = domainsAdapter
-
-            //binding.animationFragment.stopAnimation()
-            //binding.fragmentDomainSettingsNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
         }
     }
 
-    private fun setDomainsRecyclerView() {
-        binding.fragmentDomainSettingsAllDomainsRecyclerview.apply {
-            if (oneTimeRecyclerViewActions) {
-                oneTimeRecyclerViewActions = false
-                shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, 2) ?: 2
-                shimmerLayoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
-                layoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
-
-                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                layoutAnimation = animation
-
-                showShimmer()
-            }
-        }
-    }
-
-
-    private lateinit var deleteDomainSnackbar: Snackbar
     private fun deleteDomain(id: String, context: Context) {
         MaterialDialogHelper.showMaterialDialog(
             context = requireContext(),
@@ -286,7 +283,6 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
             neutralButtonText = resources.getString(R.string.cancel),
             positiveButtonText = resources.getString(R.string.delete),
             positiveButtonAction = {
-
 
                 deleteDomainSnackbar = if (context.resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
@@ -304,7 +300,6 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                     )
                 }
 
-
                 deleteDomainSnackbar.show()
                 lifecycleScope.launch {
                     deleteDomainHttpRequest(id, context)
@@ -319,7 +314,6 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                 deleteDomainSnackbar.dismiss()
                 getDataFromWeb(null)
             } else {
-
                 if (context.resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
@@ -364,8 +358,16 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
             }
         } catch (e: IllegalStateException) {
             // Log the error if the lifecycle state was somehow invalid despite the check.
-            LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, "Failed to refresh data, view lifecycle not available. $e", "DomainSettingsFragment", null)
+            LoggingHelper(requireContext()).addLog(
+                LOGIMPORTANCE.CRITICAL.int,
+                "Failed to refresh data, view lifecycle not available. $e",
+                "DomainSettingsFragment",
+                null
+            )
         }
     }
 
+    companion object {
+        fun newInstance() = DomainSettingsFragment()
+    }
 }

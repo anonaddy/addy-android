@@ -18,11 +18,11 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/activity_domain_settings_fcv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:nestedScrollingEnabled="true" />
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/activity_domain_settings_fcv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:nestedScrollingEnabled="true" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 

@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 class AliasWidget2BottomSheetAddActivity : BaseActivity(), AddAliasBottomDialogFragment.AddAliasBottomDialogListener {
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

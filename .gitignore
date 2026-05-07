@@ -16,3 +16,6 @@
 /.idea/misc.xml
 /app/gplay/release
 /.kotlin
+*.py
+*.b64
+ui_files.txt

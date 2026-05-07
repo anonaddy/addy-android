@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
@@ -23,7 +24,6 @@ import host.stjin.anonaddy_shared.models.Domains
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
-import androidx.core.net.toUri
 
 
 class ManageDomainsActivity : BaseActivity(),
@@ -31,13 +31,16 @@ class ManageDomainsActivity : BaseActivity(),
     EditDomainFromNameBottomDialogFragment.AddEditDomainFromNameBottomDialogListener,
     EditDomainRecipientBottomDialogFragment.AddEditDomainRecipientBottomDialogListener,
     EditDomainAutoCreateRegexBottomDialogFragment.AddEditDomainAutoCreateRegexBottomDialogListener {
-
     lateinit var networkHelper: NetworkHelper
+
     private var shouldRefreshOnFinish = false
 
     private lateinit var editDomainDescriptionBottomDialogFragment: EditDomainDescriptionBottomDialogFragment
+
     private lateinit var editDomainRecipientBottomDialogFragment: EditDomainRecipientBottomDialogFragment
+
     private lateinit var editDomainFromNameBottomDialogFragment: EditDomainFromNameBottomDialogFragment
+
     private lateinit var editDomainAutoCreateRegexBottomDialogFragment: EditDomainAutoCreateRegexBottomDialogFragment
 
     private var domain: Domains? = null
@@ -45,7 +48,6 @@ class ManageDomainsActivity : BaseActivity(),
             field = value
             value?.let { updateUi(it) }
         }
-
 
     private var aliasList: AliasesArray? = null
         set(value) {
@@ -55,10 +57,11 @@ class ManageDomainsActivity : BaseActivity(),
 
     private var workingAliasList: AliasesArray? = null
 
-
     private var forceSwitch = false
 
     private lateinit var binding: ActivityManageDomainsBinding
+
+    private lateinit var deleteDomainSnackbar: Snackbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,14 +88,83 @@ class ManageDomainsActivity : BaseActivity(),
         setPage(domainId)
     }
 
-    private fun setRefreshLayout() {
-        binding.activityManageDomainSwiperefresh.setOnRefreshListener {
-            binding.activityManageDomainSwiperefresh.isRefreshing = true
+    private fun setOnClickListeners() {
+        binding.activityManageDomainActiveSwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(!binding.activityManageDomainActiveSwitchLayout.getSwitchChecked())
+            }
+        })
 
-            domain?.let { setPage(it.id) }
-        }
+        binding.activityManageDomainCatchAllSwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(!binding.activityManageDomainCatchAllSwitchLayout.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageDomainDescEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editDomainDescriptionBottomDialogFragment.isAdded) {
+                    editDomainDescriptionBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editDomainDescriptionBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+
+        binding.activityManageDomainRecipientsEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editDomainRecipientBottomDialogFragment.isAdded) {
+                    editDomainRecipientBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editDomainRecipientsBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        binding.activityManageDomainFromNameEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editDomainFromNameBottomDialogFragment.isAdded) {
+                    editDomainFromNameBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editDomainFromNameBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        binding.activityManageDomainAutoCreateRegexEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editDomainAutoCreateRegexBottomDialogFragment.isAdded) {
+                    editDomainAutoCreateRegexBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editDomainAutoCreateRegexBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+
+        binding.activityManageDomainDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                deleteDomain(this@ManageDomainsActivity.domain!!.id)
+            }
+        })
+
+        binding.activityManageDomainCheckDns.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val url = "${AddyIo.API_BASE_URL}/domains"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = url.toUri()
+                startActivity(i)
+            }
+        })
+
     }
-
 
     override fun finish() {
         val resultIntent = Intent()
@@ -101,6 +173,37 @@ class ManageDomainsActivity : BaseActivity(),
         super.finish()
     }
 
+    override fun descriptionEdited(domain: Domains) {
+        editDomainDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+        // Do this last, will trigger updateUI as well as re-init editDomainDescriptionBottomDialogFragment
+        this.domain = domain
+    }
+
+    override fun recipientEdited(domain: Domains) {
+        editDomainRecipientBottomDialogFragment.dismissAllowingStateLoss()
+        // Do this last, will trigger updateUI as well as re-init editDomainRecipientBottomDialogFragment
+        this.domain = domain
+    }
+
+    override fun fromNameEdited(domain: Domains) {
+        editDomainFromNameBottomDialogFragment.dismissAllowingStateLoss()
+        // Do this last, will trigger updateUI as well as re-init editDomainFromNameBottomDialogFragment
+        this.domain = domain
+    }
+
+    override fun autoCreateRegexEdited(domain: Domains) {
+        editDomainAutoCreateRegexBottomDialogFragment.dismissAllowingStateLoss()
+        // Do this last, will trigger updateUI as well as re-init editDomainAutoCreateRegexBottomDialogFragment
+        this.domain = domain
+    }
+
+    private fun setRefreshLayout() {
+        binding.activityManageDomainSwiperefresh.setOnRefreshListener {
+            binding.activityManageDomainSwiperefresh.isRefreshing = true
+
+            domain?.let { setPage(it.id) }
+        }
+    }
 
     private fun setPage(domainId: String) {
         // Get the domain
@@ -223,85 +326,6 @@ class ManageDomainsActivity : BaseActivity(),
         }, this.domain!!.id)
     }
 
-    private fun setOnClickListeners() {
-        binding.activityManageDomainActiveSwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(!binding.activityManageDomainActiveSwitchLayout.getSwitchChecked())
-            }
-        })
-
-        binding.activityManageDomainCatchAllSwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(!binding.activityManageDomainCatchAllSwitchLayout.getSwitchChecked())
-            }
-        })
-
-        binding.activityManageDomainDescEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!editDomainDescriptionBottomDialogFragment.isAdded) {
-                    editDomainDescriptionBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "editDomainDescriptionBottomDialogFragment"
-                    )
-                }
-            }
-        })
-
-
-        binding.activityManageDomainRecipientsEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!editDomainRecipientBottomDialogFragment.isAdded) {
-                    editDomainRecipientBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "editDomainRecipientsBottomDialogFragment"
-                    )
-                }
-            }
-        })
-
-        binding.activityManageDomainFromNameEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!editDomainFromNameBottomDialogFragment.isAdded) {
-                    editDomainFromNameBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "editDomainFromNameBottomDialogFragment"
-                    )
-                }
-            }
-        })
-
-        binding.activityManageDomainAutoCreateRegexEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!editDomainAutoCreateRegexBottomDialogFragment.isAdded) {
-                    editDomainAutoCreateRegexBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "editDomainAutoCreateRegexBottomDialogFragment"
-                    )
-                }
-            }
-        })
-
-
-        binding.activityManageDomainDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                deleteDomain(this@ManageDomainsActivity.domain!!.id)
-            }
-        })
-
-        binding.activityManageDomainCheckDns.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val url = "${AddyIo.API_BASE_URL}/domains"
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = url.toUri()
-                startActivity(i)
-            }
-        })
-
-    }
-
-    private lateinit var deleteDomainSnackbar: Snackbar
     private fun deleteDomain(id: String) {
         MaterialDialogHelper.showMaterialDialog(
             context = this,
@@ -325,7 +349,6 @@ class ManageDomainsActivity : BaseActivity(),
         ).show()
     }
 
-
     private suspend fun deleteDomainHttpRequest(id: String, context: Context) {
         networkHelper.deleteDomain({ result ->
             if (result == "204") {
@@ -342,7 +365,6 @@ class ManageDomainsActivity : BaseActivity(),
             }
         }, id)
     }
-
 
     private suspend fun getDomainInfo(id: String) {
         networkHelper.getSpecificDomain({ domain, error ->
@@ -401,6 +423,16 @@ class ManageDomainsActivity : BaseActivity(),
         val buf = StringBuilder()
 
         if (aliasesArray != null) {
+            binding.activityManageDomainAliasesCountTextview.apply {
+                val total = aliasesArray.meta?.total ?: aliasesArray.data.size
+                if (total > 0) {
+                    text = total.toString()
+                    visibility = View.VISIBLE
+                } else {
+                    visibility = View.GONE
+                }
+            }
+
             aliasesArray.data = ArrayList(aliasesArray.data.sortedBy { it.email })
             for (alias in aliasesArray.data) {
                 totalForwarded += alias.emails_forwarded
@@ -430,7 +462,6 @@ class ManageDomainsActivity : BaseActivity(),
             DateTimeUtils.convertStringToLocalTimeZoneString(domain.domain_sending_verified_at),
             totalForwarded, totalBlocked, totalReplies, totalSent
         )
-        binding.activityManageDomainAliasesTitleTextview.text = resources.getString(R.string.domain_aliases_d, totalAliases)
 
 
         /**
@@ -536,7 +567,6 @@ class ManageDomainsActivity : BaseActivity(),
         }
 
 
-
         // Please note that the "Catch-all" feature is also only available for paid subcriptions. However, you cannot add your own domains
         // on the free plan, making a check useless
 
@@ -561,32 +591,6 @@ class ManageDomainsActivity : BaseActivity(),
         setOnSwitchChangeListeners()
         setOnClickListeners()
     }
-
-    override fun descriptionEdited(domain: Domains) {
-        editDomainDescriptionBottomDialogFragment.dismissAllowingStateLoss()
-        // Do this last, will trigger updateUI as well as re-init editDomainDescriptionBottomDialogFragment
-        this.domain = domain
-    }
-
-    override fun recipientEdited(domain: Domains) {
-        editDomainRecipientBottomDialogFragment.dismissAllowingStateLoss()
-        // Do this last, will trigger updateUI as well as re-init editDomainRecipientBottomDialogFragment
-        this.domain = domain
-    }
-
-    override fun fromNameEdited(domain: Domains) {
-        editDomainFromNameBottomDialogFragment.dismissAllowingStateLoss()
-        // Do this last, will trigger updateUI as well as re-init editDomainFromNameBottomDialogFragment
-        this.domain = domain
-    }
-
-
-    override fun autoCreateRegexEdited(domain: Domains) {
-        editDomainAutoCreateRegexBottomDialogFragment.dismissAllowingStateLoss()
-        // Do this last, will trigger updateUI as well as re-init editDomainAutoCreateRegexBottomDialogFragment
-        this.domain = domain
-    }
-
 
     private suspend fun getAliasesAndAddThemToList(domain: Domains) {
         binding.activityManageDomainAliasesShimmerframelayout.startShimmer()

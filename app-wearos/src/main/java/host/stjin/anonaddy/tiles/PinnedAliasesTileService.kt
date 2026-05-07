@@ -200,6 +200,7 @@ class PinnedAliasesTileService : TileService() {
                                     .build()
                             )
                         }
+
                         else -> {
                             addNoPinnedLayout()
                         }
@@ -217,6 +218,7 @@ class PinnedAliasesTileService : TileService() {
                                     .build()
                             )
                         }
+
                         else -> {
                             addNoPinnedLayout()
                         }
@@ -234,6 +236,7 @@ class PinnedAliasesTileService : TileService() {
                                     .build()
                             )
                         }
+
                         else -> {
                             addNoPinnedLayout()
                         }

@@ -8,8 +8,6 @@ import host.stjin.anonaddy.databinding.ActivityDomainSettingsBinding
 import kotlinx.coroutines.launch
 
 class DomainSettingsActivity : BaseActivity() {
-
-
     private lateinit var binding: ActivityDomainSettingsBinding
 
     private val domainSettingsFragment = DomainSettingsFragment()
@@ -42,7 +40,6 @@ class DomainSettingsActivity : BaseActivity() {
         }
     }
 
-
     private fun setPage() {
         /**
          * This activity can be called by an URI or Widget/Notification Intent.
@@ -60,5 +57,4 @@ class DomainSettingsActivity : BaseActivity() {
         }
 
     }
-
 }

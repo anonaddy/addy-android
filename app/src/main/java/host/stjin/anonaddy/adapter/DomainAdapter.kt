@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.models.Domains
-import androidx.core.view.isVisible
 
 class DomainAdapter(
     private val listWithDomains: ArrayList<Domains>
@@ -39,6 +39,7 @@ class DomainAdapter(
                 )
                 holder.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_alert_circle)
             }
+
             else -> {
                 holder.mDescription.text = holder.mDescription.context.resources.getString(
                     R.string.domains_list_description,
@@ -98,12 +99,15 @@ class DomainAdapter(
                 R.id.domains_recyclerview_list_CV -> {
                     expandOptions()
                 }
+
                 R.id.domains_recyclerview_list_expand_options -> {
                     expandOptions()
                 }
+
                 R.id.domains_recyclerview_list_settings_button -> {
                     onDomainClicker.onClickSettings(adapterPosition, p0)
                 }
+
                 R.id.domains_recyclerview_list_delete_button -> {
                     onDomainClicker.onClickDelete(adapterPosition, p0)
                 }

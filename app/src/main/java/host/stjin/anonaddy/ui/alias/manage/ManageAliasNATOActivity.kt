@@ -15,8 +15,8 @@ import host.stjin.anonaddy.databinding.ActivityManageAliasNatoBinding
 import host.stjin.anonaddy.utils.NatoAlphabet
 
 class ManageAliasNATOActivity : BaseActivity() {
-
     private lateinit var binding: ActivityManageAliasNatoBinding
+
     private var alias: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,9 +29,11 @@ class ManageAliasNATOActivity : BaseActivity() {
 
         // Only setup toolbar in portrait mode
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setupToolbar(R.string.phonetic_alphabet, null,
+            setupToolbar(
+                R.string.phonetic_alphabet, null,
                 binding.activityManageAliasNatoToolbar,
-                R.drawable.ic_letters_case)
+                R.drawable.ic_letters_case
+            )
         } else {
             // Hide toolbar in landscape mode
             binding.activityManageAliasNatoToolbar?.root?.visibility = View.GONE

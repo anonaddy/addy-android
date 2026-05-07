@@ -14,7 +14,7 @@
         android:layout_height="64dp"
         android:contentDescription="@string/feature_not_available_subscription"
         android:src="@drawable/ic_hourglass"
-        app:tint="?colorAccent"/>
+        app:tint="?colorAccent" />
 
     <TextView
         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
     <ProgressBar
         android:layout_width="42dp"
         android:layout_height="42dp"
-        android:layout_margin="8dp"/>
+        android:layout_margin="8dp" />
 
     <TextView
         android:layout_width="match_parent"

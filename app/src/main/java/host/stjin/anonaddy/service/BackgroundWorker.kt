@@ -112,13 +112,12 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 aliasWatcherNetworkCallResult = aliasWatcherTask(appContext, networkHelper, encryptedSettingsManager)
 
 
-
                 /*
                 UPDATES
                  */
 
                 if (settingsManager.getSettingsBool(PREFS.NOTIFY_UPDATES)) {
-                    Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String?, _: Boolean, _ :String? ->
+                    Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String?, _: Boolean, _: String? ->
                         if (updateAvailable) {
                             latestVersion?.let {
                                 NotificationHelper(appContext).createUpdateNotification(
@@ -324,19 +323,36 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
 
                 if (settingsManager.getSettingsBool(PREFS.NOTIFY_FAILED_DELIVERIES)) {
                     val previousFailedDeliveryId =
-                        encryptedSettingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID)
+                        encryptedSettingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_NOTIFIED_FAILED_DELIVERIES_LATEST_ID)
 
-                    networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService { result ->
-                        // Store the result if the data succeeded to update in a boolean
-                        failedDeliveriesNetworkCallResult = result
+                    var newDeliveriesCount = 0
+                    var currentFailedDeliveryId: String? = null
+                    networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService(previousFailedDeliveryId) { result ->
+                        if (result != null) {
+                            newDeliveriesCount = result.first
+                            currentFailedDeliveryId = result.second
+                            failedDeliveriesNetworkCallResult = true
+                        } else {
+                            failedDeliveriesNetworkCallResult = false
+                        }
                     }
 
-                    val currentFailedDeliveryId =
-                        encryptedSettingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID)
-
                     // If the current failed delivery id is different from the previous. That means there is a new failed delivery
-                    if (currentFailedDeliveryId != null && previousFailedDeliveryId != null && currentFailedDeliveryId != previousFailedDeliveryId && currentFailedDeliveryId.isNotEmpty()) {
-                        NotificationHelper(appContext).createFailedDeliveryNotification(1)
+                    if (currentFailedDeliveryId != null && previousFailedDeliveryId != null && currentFailedDeliveryId != previousFailedDeliveryId && currentFailedDeliveryId!!.isNotEmpty()) {
+
+                        // Ensure we only create a notification if the locally applied filter found matching deliveries.
+                        // For example, if a new 'outbound' delivery arrived but the user only wants 'inbound' notifications,
+                        // newDeliveriesCount will be 0 and no notification will be triggered.
+                        if (newDeliveriesCount > 0) {
+                            NotificationHelper(appContext).createFailedDeliveryNotification(newDeliveriesCount)
+                        }
+                    }
+
+                    if (currentFailedDeliveryId != null && currentFailedDeliveryId!!.isNotEmpty()) {
+                        encryptedSettingsManager.putSettingsString(
+                            PREFS.BACKGROUND_SERVICE_NOTIFIED_FAILED_DELIVERIES_LATEST_ID,
+                            currentFailedDeliveryId!!
+                        )
                     }
                 } else {
                     // Not required so always success
@@ -377,7 +393,8 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             }
 
             if (BuildConfig.DEBUG) {
-                LoggingHelper(appContext, LoggingHelper.LOGFILES.DEFAULT).addLog(LOGIMPORTANCE.CRITICAL.int,
+                LoggingHelper(appContext, LoggingHelper.LOGFILES.DEFAULT).addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
                     "userResourceNetworkCallResult=${userResourceNetworkCallResult}}\n" +
                             "aliasNetworkCallResult=${aliasNetworkCallResult}}\n" +
                             "aliasWatcherNetworkCallResult=${aliasWatcherNetworkCallResult}}\n" +
@@ -386,7 +403,8 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                             "notifyCertificateExpiryResult=${notifyCertificateExpiryResult}}\n" +
                             "notifySubscriptionNetworkCallResult=${notifySubscriptionNetworkCallResult}}\n" +
                             "accountNotificationsNetworkCallResult=${accountNotificationsNetworkCallResult}}\n",
-                            "doWork()",null)
+                    "doWork()", null
+                )
             }
 
             // If all tasks are successful return a success()

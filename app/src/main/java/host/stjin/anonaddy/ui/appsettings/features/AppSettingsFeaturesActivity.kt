@@ -20,15 +20,12 @@ import host.stjin.anonaddy_shared.managers.SettingsManager.PREFS
 
 
 class AppSettingsFeaturesActivity : BaseActivity() {
-
     private lateinit var settingsManager: SettingsManager
+
     private lateinit var encryptedSettingsManager: SettingsManager
 
-    enum class COMPONENTS(val componentClassName: String) {
-        MAILTO("host.stjin.anonaddy.ui.intent.IntentContextMenuAliasActivity")
-    }
-
     private lateinit var binding: ActivityAppSettingsFeaturesBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesBinding.inflate(layoutInflater)
@@ -54,9 +51,103 @@ class AppSettingsFeaturesActivity : BaseActivity() {
         setOnSwitchListeners()
     }
 
+    // If the user comes back from eg. settings re-check + enable biometricswitch
+    override fun onResume() {
+        super.onResume()
+        loadSettings()
+    }
+
+    private fun setOnClickListeners() {
+        binding.activityAppSettingsFeaturesSectionMailtoSheet.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesMailToActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionWatchAliasSheet.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesWatchAliasActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionNotifyFailedDeliveriesSheet.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyFailedDeliveriesActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyAccountNotificationsActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyAccountNotificationsActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionManageMultipleAliasesSheet.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesManageMultipleAliasesActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionApiTokenExpiryNotification.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyApiTokenExpiryActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionCertificateExpiryNotification.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyCertificateExpiryActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionDomainErrorNotification.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyDomainErrorActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifySubscriptionExpiryActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionWebintentSheet.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesWebIntentResolutionActivity::class.java)
+                startActivity(intent)
+            }
+        })
+    }
+
     private fun checkForSelfHostedInstance() {
         // Hide the switch on Subscription Expiry Notification Card when user is using self-hosted instance
-        if (AddyIo.isUsingHostedInstance){
+        if (AddyIo.isUsingHostedInstance) {
             binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.visibility = View.VISIBLE
             binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.visibility = View.VISIBLE
         } else {
@@ -222,99 +313,7 @@ class AppSettingsFeaturesActivity : BaseActivity() {
         })
     }
 
-    // If the user comes back from eg. settings re-check + enable biometricswitch
-    override fun onResume() {
-        super.onResume()
-        loadSettings()
+    enum class COMPONENTS(val componentClassName: String) {
+        MAILTO("host.stjin.anonaddy.ui.intent.IntentContextMenuAliasActivity")
     }
-
-    private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesSectionMailtoSheet.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesMailToActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        binding.activityAppSettingsFeaturesSectionWatchAliasSheet.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesWatchAliasActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        binding.activityAppSettingsFeaturesSectionNotifyFailedDeliveriesSheet.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyFailedDeliveriesActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyAccountNotificationsActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyAccountNotificationsActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        binding.activityAppSettingsFeaturesSectionManageMultipleAliasesSheet.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesManageMultipleAliasesActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        binding.activityAppSettingsFeaturesSectionApiTokenExpiryNotification.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyApiTokenExpiryActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        binding.activityAppSettingsFeaturesSectionCertificateExpiryNotification.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyCertificateExpiryActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        binding.activityAppSettingsFeaturesSectionDomainErrorNotification.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyDomainErrorActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifySubscriptionExpiryActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        binding.activityAppSettingsFeaturesSectionWebintentSheet.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesWebIntentResolutionActivity::class.java)
-                startActivity(intent)
-            }
-        })
-    }
-
-
 }

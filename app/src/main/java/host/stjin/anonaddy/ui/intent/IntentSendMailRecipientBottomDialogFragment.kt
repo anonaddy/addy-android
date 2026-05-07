@@ -38,69 +38,38 @@ class IntentSendMailRecipientBottomDialogFragment(
     private val recipientBccEmails: ArrayList<String>,
     private val domainOptions: List<String>
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
     private lateinit var settingsManager: SettingsManager
+
     private lateinit var listener: AddIntentSendMailRecipientBottomDialogListener
 
     // True if the bottomsheet succeeded it's action and the DialogFragment should stay up after this sheet closes
     // False if bottomsheet was closed by user, thus the other sheet should close as well
     private var bottomSheetResult = false
 
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddIntentSendMailRecipientBottomDialogListener {
-        suspend fun onPressSend(
-            alias: String,
-            aliasObject: Aliases?,
-            recipients: String,
-            ccRecipients: String,
-            bccRecipients: String,
-            skipAndOpenDefaultMailApp: Boolean = false
-        )
-
-        fun onClose(result: Boolean)
-    }
-
-    override fun onCancel(dialog: DialogInterface) {
-        listener.onClose(bottomSheetResult)
-        super.onCancel(dialog)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
-
     private var _binding: BottomsheetSendMailFromIntentAliasBinding? = null
+
     private val binding get() = _binding!!
 
     private var lastMactText: String = ""
 
     private var aliases: ArrayList<Aliases> = arrayListOf()
 
-
     private val aliasSearchTimeoutMillis = 1000 // 1 seconds timeout
+
     private var isTyping: Boolean = false
+
     private val timeoutHandler: Handler = Handler(Looper.getMainLooper())
+
     private val typingTimeout = Runnable {
         isTyping = false
         setAdapterData(binding.bsSendMailFromIntentAliasesMact.text.toString())
     }
 
+    constructor() : this(arrayListOf(), arrayListOf(), arrayListOf(), listOf())
+
     override fun onPause() {
         super.onPause()
         timeoutHandler.removeCallbacks(typingTimeout)
-    }
-
-    private fun Context.getProgressBarDrawable(): Drawable {
-        val value = TypedValue()
-        theme.resolveAttribute(android.R.attr.progressBarStyleSmall, value, false)
-        val progressBarStyle = value.data
-        val attributes = intArrayOf(android.R.attr.indeterminateDrawable)
-        val array = obtainStyledAttributes(progressBarStyle, attributes)
-        val drawable = array.getDrawableOrThrow(0)
-        array.recycle()
-        return drawable
     }
 
     override fun onCreateView(
@@ -147,6 +116,41 @@ class IntentSendMailRecipientBottomDialogFragment(
         }
         return root
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        listener.onClose(bottomSheetResult)
+        super.onCancel(dialog)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_send_mail_from_intent_alias_send_mail_button) {
+                sendMail(requireContext())
+            }
+        }
+    }
+
+    private fun Context.getProgressBarDrawable(): Drawable {
+        val value = TypedValue()
+        theme.resolveAttribute(android.R.attr.progressBarStyleSmall, value, false)
+        val progressBarStyle = value.data
+        val attributes = intArrayOf(android.R.attr.indeterminateDrawable)
+        val array = obtainStyledAttributes(progressBarStyle, attributes)
+        val drawable = array.getDrawableOrThrow(0)
+        array.recycle()
+        return drawable
     }
 
     private fun setAdapterData(searchQuery: String) {
@@ -213,19 +217,6 @@ class IntentSendMailRecipientBottomDialogFragment(
 
     }
 
-    constructor() : this(arrayListOf(), arrayListOf(), arrayListOf(), listOf())
-
-    companion object {
-        fun newInstance(
-            recipientEmail: ArrayList<String>,
-            recipientCcEmail: ArrayList<String>,
-            recipientBccEmail: ArrayList<String>,
-            domainOptions: List<String>
-        ): IntentSendMailRecipientBottomDialogFragment {
-            return IntentSendMailRecipientBottomDialogFragment(recipientEmail, recipientCcEmail, recipientBccEmail, domainOptions)
-        }
-    }
-
     private fun sendMail(context: Context) {
         val recipientsTiet = binding.bsSendMailFromIntentAliasRecipientTiet.text.toString()
         val recipients = recipientsTiet.split(",")
@@ -288,17 +279,28 @@ class IntentSendMailRecipientBottomDialogFragment(
         }
     }
 
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddIntentSendMailRecipientBottomDialogListener {
+        suspend fun onPressSend(
+            alias: String,
+            aliasObject: Aliases?,
+            recipients: String,
+            ccRecipients: String,
+            bccRecipients: String,
+            skipAndOpenDefaultMailApp: Boolean = false
+        )
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_send_mail_from_intent_alias_send_mail_button) {
-                sendMail(requireContext())
-            }
-        }
+        fun onClose(result: Boolean)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(
+            recipientEmail: ArrayList<String>,
+            recipientCcEmail: ArrayList<String>,
+            recipientBccEmail: ArrayList<String>,
+            domainOptions: List<String>
+        ): IntentSendMailRecipientBottomDialogFragment {
+            return IntentSendMailRecipientBottomDialogFragment(recipientEmail, recipientCcEmail, recipientBccEmail, domainOptions)
+        }
     }
 }

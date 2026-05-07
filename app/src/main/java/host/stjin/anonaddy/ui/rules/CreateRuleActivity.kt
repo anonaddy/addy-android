@@ -30,21 +30,26 @@ import kotlinx.coroutines.launch
 
 class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddConditionBottomDialogListener,
     ActionBottomDialogFragment.AddActionBottomDialogListener {
-
     lateinit var networkHelper: NetworkHelper
+
     private var shouldRefreshOnFinish = false
 
     private var ruleId: String? = null
+
     private lateinit var rules: Rules
+
     private lateinit var recipients: ArrayList<Recipients>
 
     private var conditionBottomDialogFragment: ConditionBottomDialogFragment =
+
         ConditionBottomDialogFragment.newInstance(null, null)
 
     private var actionBottomDialogFragment: ActionBottomDialogFragment =
+
         ActionBottomDialogFragment.newInstance(arrayListOf(), null, null)
 
     private lateinit var binding: ActivityRulesCreateBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRulesCreateBinding.inflate(layoutInflater)
@@ -101,7 +106,135 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
     }
 
-    private fun loadRule(b: Bundle?){
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        val gson = Gson()
+        val json = gson.toJson(rules)
+        val recipientsJson = gson.toJson(recipients)
+        outState.putSerializable("rules", json)
+        outState.putString("rule_id", this.ruleId)
+        outState.putString("recipients", recipientsJson)
+    }
+
+    private fun setOnClickListeners() {
+        toolbarSetAction(binding.activityRulesToolbar, R.drawable.ic_check) {
+            // Update title
+            binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.VISIBLE
+
+            if (ruleId != null) {
+                // Update the rule
+                lifecycleScope.launch {
+                    networkHelper.updateRule({ result ->
+                        when (result) {
+                            "200" -> {
+                                shouldRefreshOnFinish = true
+                                finish()
+                            }
+
+                            else -> {
+                                binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.GONE
+                                SnackbarHelper.createSnackbar(
+                                    this@CreateRuleActivity,
+                                    resources.getString(R.string.error_creating_rule) + "\n" + result,
+                                    binding.activityRulesCreateCL,
+                                    LoggingHelper.LOGFILES.DEFAULT
+                                ).show()
+                            }
+                        }
+                    }, ruleId!!, rules)
+                }
+            } else {
+                // Post the rule
+                lifecycleScope.launch {
+                    networkHelper.createRule({ rule, error ->
+                        if (rule != null) {
+                            shouldRefreshOnFinish = true
+                            finish()
+                        } else {
+                            binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.GONE
+                            SnackbarHelper.createSnackbar(
+                                this@CreateRuleActivity,
+                                resources.getString(R.string.error_creating_rule) + "\n" + error,
+                                binding.activityRulesCreateCL,
+                                LoggingHelper.LOGFILES.DEFAULT
+                            ).show()
+                        }
+                    }, rules)
+                }
+            }
+        }
+
+
+        binding.rulesViewAndOrANDButton.setOnClickListener {
+            rules.operator = "AND"
+        }
+        binding.rulesViewAndOrORButton.setOnClickListener {
+            rules.operator = "OR"
+        }
+    }
+
+    override fun finish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
+        setResult(RESULT_OK, resultIntent)
+        super.finish()
+    }
+
+    // Condition
+    override fun onAddedCondition(conditionEditIndex: Int?, type: String, match: String, values: List<String>) {
+        conditionBottomDialogFragment.dismissAllowingStateLoss()
+
+        val condition = Condition(
+            type = type,
+            match = match,
+            values = values
+        )
+
+        // Edit index is not empty, thus are editing a condition, replace the condition at index
+        if (conditionEditIndex != null) {
+            rules.conditions[conditionEditIndex] = condition
+        } else {
+            rules.conditions.add(condition)
+        }
+
+        setPage()
+    }
+
+    // Actions
+    override fun onAddedAction(actionEditIndex: Int?, type: String, value: String) {
+        actionBottomDialogFragment.dismissAllowingStateLoss()
+        val action = Action(
+            type = type,
+            value = value
+        )
+        // Edit index is not empty, thus are editing an action, replace the action at index
+        if (actionEditIndex != null) {
+            rules.actions[actionEditIndex] = action
+        } else {
+            rules.actions.add(action)
+        }
+
+        setPage()
+    }
+
+    override fun onAddedAction(actionEditIndex: Int?, type: String, value: Boolean) {
+        actionBottomDialogFragment.dismissAllowingStateLoss()
+        val action = Action(
+            type = type,
+            value = value.toString()
+        )
+        // Edit index is not empty, thus are editing an action, replace the action at index
+        if (actionEditIndex != null) {
+            rules.actions[actionEditIndex] = action
+        } else {
+            rules.actions.add(action)
+        }
+
+        setPage()
+    }
+
+    private fun loadRule(b: Bundle?) {
         val ruleId = b?.getString("rule_id")
         if (ruleId == null) {
             // No ruleID, generate an empty rule
@@ -136,13 +269,6 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
         }, false)
-    }
-
-    override fun finish() {
-        val resultIntent = Intent()
-        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
-        setResult(RESULT_OK, resultIntent)
-        super.finish()
     }
 
     private fun generateEmptyRule() {
@@ -199,8 +325,6 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         }
     }
 
-
-
     private suspend fun getRuleInfo(id: String) {
         networkHelper.getSpecificRule({ list, error ->
             if (list != null) {
@@ -224,7 +348,6 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             }
         }, id)
     }
-
 
     @SuppressLint("CutPasteId")
     private fun setPage() {
@@ -381,9 +504,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             val subtitle = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_subtitle)
 
 
-
             // If forward_to type resolve the recipient
-            if (action.type == "forwardTo"){
+            if (action.type == "forwardTo") {
                 val recipient = recipients.firstOrNull { it.id == action.value }
                 subtitle.text = recipient?.email ?: this.resources.getString(R.string.unknown)
             } else {
@@ -437,126 +559,5 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         binding.activityRulesCreateRuleNameTiet.addTextChangedListener {
             rules.name = binding.activityRulesCreateRuleNameTiet.text.toString()
         }
-    }
-
-    private fun setOnClickListeners() {
-        toolbarSetAction(binding.activityRulesToolbar, R.drawable.ic_check) {
-            // Update title
-            binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.VISIBLE
-
-            if (ruleId != null) {
-                // Update the rule
-                lifecycleScope.launch {
-                    networkHelper.updateRule({ result ->
-                        when (result) {
-                            "200" -> {
-                                shouldRefreshOnFinish = true
-                                finish()
-                            }
-                            else -> {
-                                binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.GONE
-                                SnackbarHelper.createSnackbar(
-                                    this@CreateRuleActivity,
-                                    resources.getString(R.string.error_creating_rule) + "\n" + result,
-                                    binding.activityRulesCreateCL,
-                                    LoggingHelper.LOGFILES.DEFAULT
-                                ).show()
-                            }
-                        }
-                    }, ruleId!!, rules)
-                }
-            } else {
-                // Post the rule
-                lifecycleScope.launch {
-                    networkHelper.createRule({ rule, error ->
-                        if (rule != null) {
-                            shouldRefreshOnFinish = true
-                            finish()
-                        } else {
-                            binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.GONE
-                            SnackbarHelper.createSnackbar(
-                                this@CreateRuleActivity,
-                                resources.getString(R.string.error_creating_rule) + "\n" + error,
-                                binding.activityRulesCreateCL,
-                                LoggingHelper.LOGFILES.DEFAULT
-                            ).show()
-                        }
-                    }, rules)
-                }
-            }
-        }
-
-
-        binding.rulesViewAndOrANDButton.setOnClickListener {
-            rules.operator = "AND"
-        }
-        binding.rulesViewAndOrORButton.setOnClickListener {
-            rules.operator = "OR"
-        }
-    }
-
-
-    // Condition
-    override fun onAddedCondition(conditionEditIndex: Int?, type: String, match: String, values: List<String>) {
-        conditionBottomDialogFragment.dismissAllowingStateLoss()
-
-        val condition = Condition(
-            type = type,
-            match = match,
-            values = values
-        )
-
-        // Edit index is not empty, thus are editing a condition, replace the condition at index
-        if (conditionEditIndex != null) {
-            rules.conditions[conditionEditIndex] = condition
-        } else {
-            rules.conditions.add(condition)
-        }
-
-        setPage()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        val gson = Gson()
-        val json = gson.toJson(rules)
-        val recipientsJson = gson.toJson(recipients)
-        outState.putSerializable("rules", json)
-        outState.putString("rule_id", this.ruleId)
-        outState.putString("recipients", recipientsJson)
-    }
-
-    // Actions
-    override fun onAddedAction(actionEditIndex: Int?, type: String, value: String) {
-        actionBottomDialogFragment.dismissAllowingStateLoss()
-        val action = Action(
-            type = type,
-            value = value
-        )
-        // Edit index is not empty, thus are editing an action, replace the action at index
-        if (actionEditIndex != null) {
-            rules.actions[actionEditIndex] = action
-        } else {
-            rules.actions.add(action)
-        }
-
-        setPage()
-    }
-
-    override fun onAddedAction(actionEditIndex: Int?, type: String, value: Boolean) {
-        actionBottomDialogFragment.dismissAllowingStateLoss()
-        val action = Action(
-            type = type,
-            value = value.toString()
-        )
-        // Edit index is not empty, thus are editing an action, replace the action at index
-        if (actionEditIndex != null) {
-            rules.actions[actionEditIndex] = action
-        } else {
-            rules.actions.add(action)
-        }
-
-        setPage()
     }
 }

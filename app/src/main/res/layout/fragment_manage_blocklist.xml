@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_blocklist_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,70 +13,220 @@
         android:layout_height="match_parent"
         app:loopAnimation="false" />
 
-    <include android:id="@+id/fragment_content_unavailable" android:visibility="gone" layout="@layout/fragment_feature_not_available_subscription" />
+    <include
+        android:id="@+id/fragment_content_unavailable"
+        android:visibility="gone"
+        layout="@layout/fragment_feature_not_available_subscription" />
 
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/fragment_blocklist_NSV"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="12dp"
+        android:paddingStart="@dimen/layout_padding"
+        android:paddingEnd="@dimen/layout_padding"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
-        <LinearLayout
-            android:id="@+id/fragment_blocklist_LL1"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/blocklist_search_term_til"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:padding="@dimen/layout_padding_top"
-            android:paddingStart="@dimen/layout_padding"
-            android:paddingEnd="@dimen/layout_padding">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:elevation="10dp"
+            android:outlineProvider="none"
+            app:boxCornerRadiusBottomEnd="28dp"
+            app:boxCornerRadiusBottomStart="28dp"
+            app:boxCornerRadiusTopEnd="28dp"
+            app:boxCornerRadiusTopStart="28dp"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            app:boxBackgroundColor="?attr/colorSurfaceContainerHigh"
+            app:hintEnabled="false"
+            app:startIconDrawable="@drawable/ic_search"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/blocklist_search_term_tiet"
+                style="@style/AddyIoTextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:hint="@string/search"
+                android:imeOptions="actionSearch"
+                android:inputType="textEmailAddress"
+                android:lines="1"
+                android:maxLines="1"
+                android:minLines="1"
+                android:singleLine="true" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/fragment_blocklist_NSV"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
             <LinearLayout
-                style="@style/AddyIoTitleAction"
+                android:id="@+id/fragment_blocklist_LL1"
                 android:layout_width="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp">
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:scrollbars="none"
+                    android:overScrollMode="never">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/fragment_blocklist_chipgroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:selectionRequired="true"
+                        app:singleLine="true"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/fragment_blocklist_chip_all"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:checked="true"
+                            android:text="@string/all" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/fragment_blocklist_chip_domain"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/domain" />
+
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/fragment_blocklist_chip_email"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/email" />
+
+                    </com.google.android.material.chip.ChipGroup>
+                </HorizontalScrollView>
+
+                <LinearLayout
+                    style="@style/AddyIoTitleAction"
+                    android:layout_marginTop="0dp"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/fragment_blocklist_all_blocklist_title"
+                        style="@style/titleTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/blocklist_entries" />
+
+                    <TextView
+                        android:id="@+id/blocklist_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_count_capsule"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="2dp"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:text="10"
+                        tools:visibility="visible" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/fragment_blocklist_add_blocklist_entry_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_blocklist_entry" />
+
+                </LinearLayout>
+
+                <com.todkars.shimmer.ShimmerRecyclerView
+                    android:id="@+id/fragment_blocklist_all_blocklist_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:shimmer_recycler_auto_start="true"
+                    app:shimmer_recycler_layout="@layout/manage_blocklist_recyclerview_list_item_shimmer" />
 
                 <TextView
-                    style="@style/titleTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/blocklist_entries" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/fragment_blocklist_add_blocklist_entry_button"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/fragment_blocklist_no_blocklist"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/add_blocklist_entry" />
+                    android:padding="@dimen/no_result_textview_padding"
+                    android:text="@string/no_blocklist_entries"
+                    android:textAlignment="center"
+                    android:textColor="@color/BlackWhite"
+                    android:visibility="gone" />
+
+                <View
+                    style="@style/divider"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="16dp" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:alpha="0.8"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:contentDescription="@string/Info"
+                        android:paddingEnd="16dp"
+                        android:src="@drawable/ic_info"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:id="@+id/fragment_blocklist_RL_info_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="@string/blocklist_add_desc" />
+                </LinearLayout>
 
             </LinearLayout>
 
-            <com.todkars.shimmer.ShimmerRecyclerView
-                android:id="@+id/fragment_blocklist_all_blocklist_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:shimmer_recycler_auto_start="true"
-                app:shimmer_recycler_layout="@layout/manage_blocklist_recyclerview_list_item_shimmer" />
 
-            <TextView
-                android:id="@+id/fragment_blocklist_no_blocklist"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/no_result_textview_padding"
-                android:text="@string/no_blocklist_entries"
-                android:textAlignment="center"
-                android:textColor="@color/BlackWhite"
-                android:visibility="gone" />
+        </androidx.core.widget.NestedScrollView>
 
+    </LinearLayout>
 
-        </LinearLayout>
-
-
-    </androidx.core.widget.NestedScrollView>
-
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/fragment_blocklist_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:indeterminate="true"
+        android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

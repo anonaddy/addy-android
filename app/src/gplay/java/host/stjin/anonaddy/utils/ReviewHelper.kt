@@ -2,14 +2,14 @@ package host.stjin.anonaddy.utils
 
 import android.app.Activity
 import android.content.Intent
+import androidx.core.net.toUri
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.android.play.core.review.testing.FakeReviewManager
 import host.stjin.anonaddy.BuildConfig
-import androidx.core.net.toUri
 
 class ReviewHelper {
-    fun launchReviewFlow(activity: Activity){
-        val manager = if (BuildConfig.DEBUG){
+    fun launchReviewFlow(activity: Activity) {
+        val manager = if (BuildConfig.DEBUG) {
             FakeReviewManager(activity)
         } else {
             ReviewManagerFactory.create(activity)

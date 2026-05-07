@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.models.Recipients
-import androidx.core.view.isVisible
 
 class RecipientAdapter(
     private val listWithRecipients: ArrayList<Recipients>
@@ -49,6 +49,7 @@ class RecipientAdapter(
                 holder.recipientsRecyclerviewListResendButton.visibility = View.VISIBLE
                 holder.recipientsRecyclerviewListSettingsButton.visibility = View.GONE
             }
+
             listWithRecipients[position].should_encrypt -> {
                 holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_mail_encrypted)
 
@@ -56,6 +57,7 @@ class RecipientAdapter(
                 holder.recipientsRecyclerviewListResendButton.visibility = View.GONE
                 holder.recipientsRecyclerviewListSettingsButton.visibility = View.VISIBLE
             }
+
             else -> {
                 holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_mail)
 
@@ -120,15 +122,19 @@ class RecipientAdapter(
                 R.id.recipients_recyclerview_list_CV -> {
                     expandOptions()
                 }
+
                 R.id.recipients_recyclerview_list_expand_options -> {
                     expandOptions()
                 }
+
                 R.id.recipients_recyclerview_list_settings_button -> {
                     onRecipientClicker.onClickSettings(adapterPosition, p0)
                 }
+
                 R.id.recipients_recyclerview_list_resend_button -> {
                     onRecipientClicker.onClickResend(adapterPosition, p0)
                 }
+
                 R.id.recipients_recyclerview_list_delete_button -> {
                     onRecipientClicker.onClickDelete(adapterPosition, p0)
                 }

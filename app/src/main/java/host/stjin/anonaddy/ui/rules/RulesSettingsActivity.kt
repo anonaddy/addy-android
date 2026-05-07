@@ -7,9 +7,8 @@ import host.stjin.anonaddy.databinding.ActivityRuleSettingsBinding
 
 
 class RulesSettingsActivity : BaseActivity() {
-
-
     private lateinit var binding: ActivityRuleSettingsBinding
+
     private val rulesSettingsFragment = RulesSettingsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +45,3 @@ class RulesSettingsActivity : BaseActivity() {
         }
     }
 }
-
-
-
-

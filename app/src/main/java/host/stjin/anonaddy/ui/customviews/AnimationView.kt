@@ -8,41 +8,15 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.core.content.withStyledAttributes
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import host.stjin.anonaddy.R
-import androidx.core.content.withStyledAttributes
 
 
 class AnimationView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) :
     RelativeLayout(context, attrs, defStyle) {
-
     private var animationView: ImageView? = null
-
-    fun playAnimation(playOnLoop: Boolean, animationDrawable: Int, callback: (() -> Unit)? = null) {
-        val animated = context?.let { AnimatedVectorDrawableCompat.create(it, animationDrawable) }
-        if (playOnLoop || callback != null) {
-            animated?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
-                override fun onAnimationEnd(drawable: Drawable?) {
-
-                    // Add a .5 second pause before looping
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        animationView?.post { animated.start() }
-                        callback?.let { it() }
-                    }, 500)
-
-
-                }
-
-            })
-        }
-        animationView?.setImageDrawable(animated)
-        animated?.start()
-    }
-
-    fun stopAnimation() {
-        animationView?.setImageDrawable(null)
-    }
 
     init {
         val inflater = LayoutInflater.from(context)
@@ -68,5 +42,30 @@ class AnimationView @JvmOverloads constructor(context: Context?, attrs: Attribut
 
                 }
         }
+    }
+
+    fun playAnimation(playOnLoop: Boolean, animationDrawable: Int, callback: (() -> Unit)? = null) {
+        val animated = context?.let { AnimatedVectorDrawableCompat.create(it, animationDrawable) }
+        if (playOnLoop || callback != null) {
+            animated?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
+                override fun onAnimationEnd(drawable: Drawable?) {
+
+                    // Add a .5 second pause before looping
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        animationView?.post { animated.start() }
+                        callback?.let { it() }
+                    }, 500)
+
+
+                }
+
+            })
+        }
+        animationView?.setImageDrawable(animated)
+        animated?.start()
+    }
+
+    fun stopAnimation() {
+        animationView?.setImageDrawable(null)
     }
 }

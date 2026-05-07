@@ -16,22 +16,28 @@ class RefreshLayoutAnimationView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-
     var shouldRefreshOnRelease: Boolean = false
+
     private var alreadyVibrated: Boolean = false
 
     private var pullHeight: Int = 0
+
     private var pullDelta: Int = 0
+
     private var widthOffset: Float = 0.toFloat()
 
     private var aniStatus = AnimatorStatus.PULL_DOWN
 
     private var backPaint: Paint? = null
+
     private var outPaint: Paint? = null
+
     private var path: Path? = null
 
     private var radius: Int = 0
+
     private var localWidth: Int = 0
+
     private var localHeight: Int = 0
 
     private var isRefreshing = true
@@ -40,9 +46,10 @@ class RefreshLayoutAnimationView @JvmOverloads constructor(
 
     private val relHeight: Int get() = (spriDeta * (1 - relRatio)).toInt()
 
-
     private var start1: Long = 0
+
     private var stop: Long = 0
+
     private var spriDeta: Int = 0
 
     private val relRatio: Float
@@ -163,15 +170,19 @@ class RefreshLayoutAnimationView @JvmOverloads constructor(
             AnimatorStatus.PULL_DOWN -> {
                 canvas.drawRect(0f, 0f, localWidth.toFloat(), localHeight.toFloat(), backPaint!!)
             }
+
             AnimatorStatus.REL_DRAG, AnimatorStatus.DRAG_DOWN -> {
                 drawDrag(canvas)
             }
+
             AnimatorStatus.OUTER_CIR -> {
                 invalidate()
             }
+
             AnimatorStatus.REFRESHING -> {
                 invalidate()
             }
+
             AnimatorStatus.DONE -> {
                 invalidate()
             }
@@ -190,17 +201,6 @@ class RefreshLayoutAnimationView @JvmOverloads constructor(
 
     }
 
-    private fun drawDrag(canvas: Canvas) {
-        canvas.drawRect(0f, 0f, localWidth.toFloat(), pullHeight.toFloat(), backPaint!!)
-        path!!.reset()
-        path!!.moveTo(0f, pullHeight.toFloat())
-        path!!.quadTo(
-            widthOffset * localWidth, (pullHeight + (localHeight - pullHeight) * 2).toFloat(),
-            localWidth.toFloat(), pullHeight.toFloat()
-        )
-        canvas.drawPath(path!!, backPaint!!)
-    }
-
     fun setRefreshing(isFresh: Boolean) {
         isRefreshing = isFresh
     }
@@ -217,10 +217,6 @@ class RefreshLayoutAnimationView @JvmOverloads constructor(
         this.onViewAniDone = onViewAniDone
     }
 
-    interface OnViewAniDone {
-        fun viewAniDone()
-    }
-
     fun setAniBackColor(color: Int) {
         backPaint!!.color = color
     }
@@ -228,6 +224,21 @@ class RefreshLayoutAnimationView @JvmOverloads constructor(
     fun setAniForeColor(color: Int) {
         outPaint!!.color = color
         setBackgroundColor(color)
+    }
+
+    private fun drawDrag(canvas: Canvas) {
+        canvas.drawRect(0f, 0f, localWidth.toFloat(), pullHeight.toFloat(), backPaint!!)
+        path!!.reset()
+        path!!.moveTo(0f, pullHeight.toFloat())
+        path!!.quadTo(
+            widthOffset * localWidth, (pullHeight + (localHeight - pullHeight) * 2).toFloat(),
+            localWidth.toFloat(), pullHeight.toFloat()
+        )
+        canvas.drawPath(path!!, backPaint!!)
+    }
+
+    interface OnViewAniDone {
+        fun viewAniDone()
     }
 
     companion object {

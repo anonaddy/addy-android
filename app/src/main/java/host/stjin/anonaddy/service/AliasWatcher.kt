@@ -81,7 +81,12 @@ class AliasWatcher(private val context: Context) {
         val aliasList = getAliasesToWatch()
         // The aliasWatcherlist has a maximum of 25 aliases, the reason for this is to prevent API limitations
         return if (aliasList.count() > 24) {
-            LoggingHelper(context).addLog(LOGIMPORTANCE.INFO.int, context.resources.getString(R.string.aliaswatcher_max_reached), "addAliasToWatch", null)
+            LoggingHelper(context).addLog(
+                LOGIMPORTANCE.INFO.int,
+                context.resources.getString(R.string.aliaswatcher_max_reached),
+                "addAliasToWatch",
+                null
+            )
             Toast.makeText(context, context.resources.getString(R.string.aliaswatcher_max_reached), Toast.LENGTH_LONG).show()
             false
         } else {

@@ -26,31 +26,22 @@ import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 
 class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
     private lateinit var listener: AddUIUXInterfaceBottomDialogListener
+
     private var forceSwitch = false
 
     private var _binding: BottomsheetUiuxInterfaceBinding? = null
+
     private lateinit var settingsManager: SettingsManager
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddUIUXInterfaceBottomDialogListener {
-        fun onDarkModeOff()
-        fun onDarkModeOn()
-        fun onDarkModeAutomatic()
-        fun onApplyDynamicColors()
-    }
-
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    private var startupPages: List<String> = listOf()
+
+    private var startupPageNames: List<String> = listOf()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,9 +62,11 @@ class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.
             0 -> {
                 binding.bsUiuxInterfaceOff.isChecked = true
             }
+
             1 -> {
                 binding.bsUiuxInterfaceOn.isChecked = true
             }
+
             -1 -> {
                 binding.bsUiuxInterfaceAutomatic.isChecked = true
             }
@@ -94,15 +87,59 @@ class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.
 
     }
 
-    private fun spinnerChangeListener(context: Context) {
-        binding.bsUiuxInterfaceStartupPageMact.setOnItemClickListener { _, _, _, _ ->
-            // Since the alias format changed, check if custom is available
-            SettingsManager(false, context).putSettingsString(SettingsManager.PREFS.STARTUP_PAGE, startupPages[startupPageNames.indexOf(binding.bsUiuxInterfaceStartupPageMact.text.toString())])
+    override fun onResume() {
+        super.onResume()
+        loadSettings()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setOnClickListeners() {
+        binding.bsUiuxInterfaceSectionDynamicColors.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.bsUiuxInterfaceSectionDynamicColors.setSwitchChecked(!binding.bsUiuxInterfaceSectionDynamicColors.getSwitchChecked())
+            }
+        })
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            when (p0.id) {
+                R.id.bs_uiux_interface_off -> {
+                    listener.onDarkModeOff()
+                }
+
+                R.id.bs_uiux_interface_on -> {
+                    listener.onDarkModeOn()
+                }
+
+                R.id.bs_uiux_interface_automatic -> {
+                    listener.onDarkModeAutomatic()
+                }
+            }
         }
     }
 
-    private var startupPages: List<String> = listOf()
-    private var startupPageNames: List<String> = listOf()
+    private fun spinnerChangeListener(context: Context) {
+        binding.bsUiuxInterfaceStartupPageMact.setOnItemClickListener { _, _, _, _ ->
+            // Since the alias format changed, check if custom is available
+            SettingsManager(false, context).putSettingsString(
+                SettingsManager.PREFS.STARTUP_PAGE,
+                startupPages[startupPageNames.indexOf(binding.bsUiuxInterfaceStartupPageMact.text.toString())]
+            )
+        }
+    }
+
     private fun fillSpinners(context: Context) {
         startupPages = this.resources.getStringArray(R.array.startup_page_options).toList()
         startupPageNames = this.resources.getStringArray(R.array.startup_page_options_names).toList()
@@ -114,13 +151,6 @@ class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.
         )
         binding.bsUiuxInterfaceStartupPageMact.setAdapter(startupPageAdapter)
     }
-
-
-    override fun onResume() {
-        super.onResume()
-        loadSettings()
-    }
-
 
     private fun loadSettings() {
         binding.bsUiuxInterfaceSectionDynamicColors.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS))
@@ -181,15 +211,6 @@ class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.
         }
     }
 
-    private fun setOnClickListeners() {
-        binding.bsUiuxInterfaceSectionDynamicColors.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.bsUiuxInterfaceSectionDynamicColors.setSwitchChecked(!binding.bsUiuxInterfaceSectionDynamicColors.getSwitchChecked())
-            }
-        })
-    }
-
     private fun setOnSwitchListeners() {
         binding.bsUiuxInterfaceSectionDynamicColors.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
@@ -201,31 +222,17 @@ class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.
         })
     }
 
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddUIUXInterfaceBottomDialogListener {
+        fun onDarkModeOff()
+        fun onDarkModeOn()
+        fun onDarkModeAutomatic()
+        fun onApplyDynamicColors()
+    }
+
     companion object {
         fun newInstance(): UIUXInterfaceBottomDialogFragment {
             return UIUXInterfaceBottomDialogFragment()
         }
-    }
-
-
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            when (p0.id) {
-                R.id.bs_uiux_interface_off -> {
-                    listener.onDarkModeOff()
-                }
-                R.id.bs_uiux_interface_on -> {
-                    listener.onDarkModeOn()
-                }
-                R.id.bs_uiux_interface_automatic -> {
-                    listener.onDarkModeAutomatic()
-                }
-            }
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

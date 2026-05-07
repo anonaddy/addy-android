@@ -28,27 +28,14 @@ import kotlinx.coroutines.launch
 class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, private val nodeId: String?, private val nodeDisplayName: String?) :
     BaseBottomSheetDialogFragment(),
     View.OnClickListener {
-
-
     private lateinit var listener: AddSetupWearOSBottomDialogListener
-
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddSetupWearOSBottomDialogListener {
-        fun onDismissed()
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetSetupWearosBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -75,13 +62,16 @@ class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, priv
 
     }
 
-
-    companion object {
-        fun newInstance(parentActivity: Activity, nodeId: String?, nodeDisplayName: String?): SetupWearOSBottomDialogFragment {
-            return SetupWearOSBottomDialogFragment(parentActivity, nodeId, nodeDisplayName)
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
 
     override fun onClick(p0: View?) {
         if (p0 != null) {
@@ -89,6 +79,7 @@ class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, priv
                 R.id.bs_setup_wearos_confirm_button -> {
                     setupWearableDevice()
                 }
+
                 R.id.bs_setup_wearos_negative_button -> {
                     context?.let { SettingsManager(false, it).putSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG, true) }
                     Toast.makeText(context, this.resources.getString(R.string.wearable_setup_skip_setup), Toast.LENGTH_SHORT).show()
@@ -96,6 +87,11 @@ class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, priv
                 }
             }
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        listener.onDismissed()
     }
 
     private fun setupWearableDevice() {
@@ -144,14 +140,14 @@ class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, priv
 
     }
 
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        listener.onDismissed()
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddSetupWearOSBottomDialogListener {
+        fun onDismissed()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(parentActivity: Activity, nodeId: String?, nodeDisplayName: String?): SetupWearOSBottomDialogFragment {
+            return SetupWearOSBottomDialogFragment(parentActivity, nodeId, nodeDisplayName)
+        }
     }
 }

@@ -44,22 +44,70 @@ import kotlinx.coroutines.launch
 
 
 class RulesSettingsFragment : Fragment(), Refreshable {
-
     private var rules: ArrayList<Rules>? = null
-    private var recipients: ArrayList<Recipients>? = null
-    private var networkHelper: NetworkHelper? = null
-    private var encryptedSettingsManager: SettingsManager? = null
-    private var oneTimeRecyclerViewActions: Boolean = true
 
-    companion object {
-        fun newInstance() = RulesSettingsFragment()
-    }
+    private var recipients: ArrayList<Recipients>? = null
+
+    private var networkHelper: NetworkHelper? = null
+
+    private var encryptedSettingsManager: SettingsManager? = null
+
+    private var oneTimeRecyclerViewActions: Boolean = true
 
     private var _binding: FragmentRuleSettingsBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            if (data?.getBooleanExtra("shouldRefresh", false) == true) {
+                getDataFromWeb(null)
+            }
+        }
+    }
+
+    private lateinit var rulesAdapter: RulesAdapter
+
+    private lateinit var deleteRuleSnackbar: Snackbar
+
+    private val itemTouchHelper by lazy {
+        val simpleItemTouchCallback = object : SimpleCallback(UP or DOWN or START or END, 0) {
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            }
+
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+
+                if (actionState == ACTION_STATE_DRAG) {
+                    viewHolder?.itemView?.alpha = 0.5f
+                }
+            }
+
+            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+                super.clearView(recyclerView, viewHolder)
+                viewHolder.itemView.alpha = 1.0f
+            }
+
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                val adapter = recyclerView.adapter as RulesAdapter
+                val from = viewHolder.adapterPosition
+                val to = target.adapterPosition
+                adapter.moveItem(from, to)
+                adapter.notifyItemMoved(from, to)
+
+                return true
+            }
+
+        }
+
+        ItemTouchHelper(simpleItemTouchCallback)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -93,22 +141,11 @@ class RulesSettingsFragment : Fragment(), Refreshable {
         outState.putString("recipients", recipientsJson)
     }
 
-
     private fun setOnClickListener() {
         binding.fragmentManageRulesCreateRules.setOnClickListener {
             val intent = Intent(requireContext(), CreateRuleActivity::class.java)
             intent.putExtra("recipients", Gson().toJson(recipients))
             resultLauncher.launch(intent)
-        }
-    }
-
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-            if (data?.getBooleanExtra("shouldRefresh", false) == true) {
-                getDataFromWeb(null)
-            }
         }
     }
 
@@ -147,6 +184,28 @@ class RulesSettingsFragment : Fragment(), Refreshable {
             }
             callback()
 
+        }
+    }
+
+    override fun onRefreshData() {
+        // The key is to check if the view is created before proceeding.
+        // `viewLifecycleOwner` can be used as a proxy for this check.
+        if (!isAdded) return
+
+        // Use a try-catch as an ultimate safeguard against rare lifecycle race conditions.
+        try {
+            // This ensures the coroutine is launched only when the view's lifecycle is active.
+            viewLifecycleOwner.lifecycleScope.launch {
+                getDataFromWeb(null)
+            }
+        } catch (e: IllegalStateException) {
+            // Log the error if the lifecycle state was somehow invalid despite the check.
+            LoggingHelper(requireContext()).addLog(
+                LOGIMPORTANCE.CRITICAL.int,
+                "Failed to refresh data, view lifecycle not available. $e",
+                "RulesSettingsFragment",
+                null
+            )
         }
     }
 
@@ -212,7 +271,6 @@ class RulesSettingsFragment : Fragment(), Refreshable {
         }
     }
 
-
     private fun setRulesRecyclerView() {
         binding.fragmentManageRulesAllRulesRecyclerview.apply {
             if (oneTimeRecyclerViewActions) {
@@ -232,8 +290,6 @@ class RulesSettingsFragment : Fragment(), Refreshable {
         }
     }
 
-
-    private lateinit var rulesAdapter: RulesAdapter
     private suspend fun getAllRulesAndSetView(recipients: ArrayList<Recipients>) {
         binding.fragmentManageRulesAllRulesRecyclerview.apply {
             networkHelper?.getAllRules({ list, error ->
@@ -301,6 +357,16 @@ class RulesSettingsFragment : Fragment(), Refreshable {
     }
 
     private fun setRulesAdapter(recipientsList: ArrayList<Recipients>, list: java.util.ArrayList<Rules>) {
+        binding.ruleSettingsCount.apply {
+            val total = list.size
+            if (total > 0) {
+                text = total.toString()
+                visibility = View.VISIBLE
+            } else {
+                visibility = View.GONE
+            }
+        }
+
         binding.fragmentManageRulesAllRulesRecyclerview.apply {
             recipients = recipientsList
             rules = list
@@ -466,8 +532,6 @@ class RulesSettingsFragment : Fragment(), Refreshable {
         }, ruleId)
     }
 
-
-    private lateinit var deleteRuleSnackbar: Snackbar
     private fun deleteRule(id: String, context: Context) {
         MaterialDialogHelper.showMaterialDialog(
             context = requireContext(),
@@ -530,60 +594,7 @@ class RulesSettingsFragment : Fragment(), Refreshable {
         }, id)
     }
 
-
-    private val itemTouchHelper by lazy {
-        val simpleItemTouchCallback = object : SimpleCallback(UP or DOWN or START or END, 0) {
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            }
-
-            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
-                super.onSelectedChanged(viewHolder, actionState)
-
-                if (actionState == ACTION_STATE_DRAG) {
-                    viewHolder?.itemView?.alpha = 0.5f
-                }
-            }
-
-            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
-                super.clearView(recyclerView, viewHolder)
-                viewHolder.itemView.alpha = 1.0f
-            }
-
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                val adapter = recyclerView.adapter as RulesAdapter
-                val from = viewHolder.adapterPosition
-                val to = target.adapterPosition
-                adapter.moveItem(from, to)
-                adapter.notifyItemMoved(from, to)
-
-                return true
-            }
-
-        }
-
-        ItemTouchHelper(simpleItemTouchCallback)
+    companion object {
+        fun newInstance() = RulesSettingsFragment()
     }
-
-    override fun onRefreshData() {
-        // The key is to check if the view is created before proceeding.
-        // `viewLifecycleOwner` can be used as a proxy for this check.
-        if (!isAdded) return
-
-        // Use a try-catch as an ultimate safeguard against rare lifecycle race conditions.
-        try {
-            // This ensures the coroutine is launched only when the view's lifecycle is active.
-            viewLifecycleOwner.lifecycleScope.launch {
-                getDataFromWeb(null)
-            }
-        } catch (e: IllegalStateException) {
-            // Log the error if the lifecycle state was somehow invalid despite the check.
-            LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, "Failed to refresh data, view lifecycle not available. $e", "RulesSettingsFragment", null)
-        }
-    }
-
 }
-
-
-
-

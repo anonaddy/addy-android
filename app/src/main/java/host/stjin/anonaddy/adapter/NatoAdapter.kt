@@ -30,6 +30,7 @@ class NatoAdapter(private val dataSet: ArrayList<NatoAlphabet.NatoItem>, private
                 val binding = ItemNatoLandBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 LandscapeViewHolder(binding)
             }
+
             else -> { // VIEW_TYPE_PORTRAIT
                 val binding = ItemNatoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 PortraitViewHolder(binding)
@@ -47,9 +48,16 @@ class NatoAdapter(private val dataSet: ArrayList<NatoAlphabet.NatoItem>, private
 
                 // Set a different shade of gray for each item
                 val gray = 220 - (position * 10) % 100 // More varied shades
-                (landscapeHolder.binding.root as com.google.android.material.card.MaterialCardView).setCardBackgroundColor(Color.rgb(gray, gray, gray))
+                (landscapeHolder.binding.root as com.google.android.material.card.MaterialCardView).setCardBackgroundColor(
+                    Color.rgb(
+                        gray,
+                        gray,
+                        gray
+                    )
+                )
 
             }
+
             VIEW_TYPE_PORTRAIT -> {
                 val portraitHolder = holder as PortraitViewHolder
                 portraitHolder.binding.itemNatoCharacter.text = item.character.toString()

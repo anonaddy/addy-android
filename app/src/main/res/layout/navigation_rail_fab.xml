@@ -76,7 +76,5 @@
             app:srcCompat="@drawable/ic_bell" />
 
 
-
-
     </LinearLayout>
 </LinearLayout>

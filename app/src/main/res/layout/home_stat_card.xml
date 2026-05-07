@@ -45,7 +45,7 @@
                     android:contentDescription="@string/emails_replied_sent"
                     android:padding="12dp"
                     app:srcCompat="@drawable/ic_email_at"
-                    app:tint="@android:color/white" />
+                    app:tint="@color/DropDownSurfaceLightDarkMode" />
 
 
                 <LinearLayout

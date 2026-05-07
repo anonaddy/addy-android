@@ -8,10 +8,9 @@ import host.stjin.anonaddy.databinding.ActivityFailedDeliveriesBinding
 import kotlinx.coroutines.launch
 
 class FailedDeliveriesActivity : BaseActivity() {
-
     private lateinit var binding: ActivityFailedDeliveriesBinding
-    private val failedDeliveriesFragment = FailedDeliveriesFragment()
 
+    private val failedDeliveriesFragment = FailedDeliveriesFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +31,11 @@ class FailedDeliveriesActivity : BaseActivity() {
 
     // This only applies to <sw600Dp devices
     private fun setRefreshLayout() {
-        binding.ctivityFailedDeliveriesSettingsSwiperefresh.setOnRefreshListener {
-            binding.ctivityFailedDeliveriesSettingsSwiperefresh.isRefreshing = true
+        binding.activityFailedDeliveriesSettingsSwiperefresh.setOnRefreshListener {
+            binding.activityFailedDeliveriesSettingsSwiperefresh.isRefreshing = true
 
             failedDeliveriesFragment.getDataFromWeb(null) {
-                binding.ctivityFailedDeliveriesSettingsSwiperefresh.isRefreshing = false
+                binding.activityFailedDeliveriesSettingsSwiperefresh.isRefreshing = false
             }
         }
     }
@@ -58,5 +57,4 @@ class FailedDeliveriesActivity : BaseActivity() {
         }
 
     }
-
 }

@@ -41,6 +41,7 @@ class ActionReceiver : BroadcastReceiver() {
                     notificationManager.cancel(notificationID)
                 }
             }
+
             NOTIFICATIONACTIONS.DISABLE_ALIAS -> {
                 extra?.let {
                     val manageAliasIntent = Intent(context, ManageAliasActivity::class.java)
@@ -52,6 +53,7 @@ class ActionReceiver : BroadcastReceiver() {
                     notificationManager.cancel(notificationID)
                 }
             }
+
             NOTIFICATIONACTIONS.STOP_UPDATE_CHECK -> {
                 SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES, false)
                 // Dismiss notification
@@ -93,6 +95,7 @@ class ActionReceiver : BroadcastReceiver() {
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.FAILED_BACKUP_NOTIFICATION_ID)
             }
+
             NOTIFICATIONACTIONS.DISABLE_WEAROS_QUICK_SETUP -> {
                 SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG, true)
                 // Dismiss notification

@@ -24,228 +24,228 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/activity_manage_alias_NSV"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0">
-
-        <LinearLayout
-            android:id="@+id/activity_manage_alias_NSV_LL"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/activity_manage_alias_NSV"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:alpha="0">
 
             <LinearLayout
+                android:id="@+id/activity_manage_alias_NSV_LL"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:padding="@dimen/layout_padding">
-
-
-                <TextView
-                    android:id="@+id/activity_manage_alias_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="sans-serif-medium"
-                    android:maxLines="1"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textColor="?colorPrimary"
-                    android:textSize="18sp"
-                    tools:text="@tools:sample/lorem/random" />
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:weightSum="7">
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="@dimen/layout_padding">
 
 
-                    <Space
-                        android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/activity_manage_alias_email"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2" />
-
-                    <app.futured.donut.DonutProgressView
-                        android:id="@+id/activity_manage_alias_chart"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        app:donut_animateChanges="true"
-                        app:donut_bgLineColor="@android:color/transparent"
-                        app:donut_gapAngle="270"
-                        app:donut_gapWidth="0"
-                        app:donut_strokeWidth="24dp" />
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="sans-serif-medium"
+                        android:maxLines="1"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="?colorPrimary"
+                        android:textSize="18sp"
+                        tools:text="@tools:sample/lorem/random" />
 
                     <LinearLayout
-                        android:id="@+id/activity_manage_alias_stats_LL"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical">
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:weightSum="7">
 
-                        <TextView
-                            android:id="@+id/activity_manage_alias_forwarded_count"
+
+                        <Space
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:alpha="0.7"
-                            android:drawablePadding="4dp"
-                            android:gravity="center_vertical"
-                            android:padding="4dp"
-                            android:text="@string/d_forwarded"
-                            android:textColor="@color/BlackWhite"
-                            app:drawableStartCompat="@drawable/ic_inbox"
-                            app:drawableTint="@color/portalOrange" />
+                            android:layout_weight="2" />
 
-                        <TextView
-                            android:id="@+id/activity_manage_alias_replied_count"
+                        <app.futured.donut.DonutProgressView
+                            android:id="@+id/activity_manage_alias_chart"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_weight="1"
+                            app:donut_animateChanges="true"
+                            app:donut_bgLineColor="@android:color/transparent"
+                            app:donut_gapAngle="270"
+                            app:donut_gapWidth="0"
+                            app:donut_strokeWidth="24dp" />
+
+                        <Space
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:alpha="0.7"
-                            android:drawablePadding="4dp"
-                            android:gravity="center_vertical"
-                            android:padding="4dp"
-                            android:text="@string/d_replied"
-                            android:textColor="@color/BlackWhite"
-                            app:drawableStartCompat="@drawable/ic_arrow_back_up"
-                            app:drawableTint="@color/portalBlue" />
+                            android:layout_weight="1" />
 
-                        <TextView
-                            android:id="@+id/activity_manage_alias_sent_count"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:alpha="0.7"
-                            android:drawablePadding="4dp"
-                            android:gravity="center_vertical"
-                            android:padding="4dp"
-                            android:text="@string/d_sent"
-                            android:textColor="@color/BlackWhite"
-                            app:drawableStartCompat="@drawable/ic_mail_forward"
-                            app:drawableTint="@color/easternBlue" />
-
-                        <TextView
-                            android:id="@+id/activity_manage_alias_replies_blocked_count"
+                        <LinearLayout
+                            android:id="@+id/activity_manage_alias_stats_LL"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:alpha="0.7"
-                            android:drawablePadding="4dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:padding="4dp"
-                            android:text="@string/d_blocked"
-                            android:textColor="@color/BlackWhite"
-                            app:drawableStartCompat="@drawable/ic_forbid"
-                            app:drawableTint="@color/softRed" />
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/activity_manage_alias_forwarded_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:alpha="0.7"
+                                android:drawablePadding="4dp"
+                                android:gravity="center_vertical"
+                                android:padding="4dp"
+                                android:text="@string/d_forwarded"
+                                android:textColor="@color/BlackWhite"
+                                app:drawableStartCompat="@drawable/ic_inbox"
+                                app:drawableTint="@color/portalOrange" />
+
+                            <TextView
+                                android:id="@+id/activity_manage_alias_replied_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:alpha="0.7"
+                                android:drawablePadding="4dp"
+                                android:gravity="center_vertical"
+                                android:padding="4dp"
+                                android:text="@string/d_replied"
+                                android:textColor="@color/BlackWhite"
+                                app:drawableStartCompat="@drawable/ic_arrow_back_up"
+                                app:drawableTint="@color/portalBlue" />
+
+                            <TextView
+                                android:id="@+id/activity_manage_alias_sent_count"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:alpha="0.7"
+                                android:drawablePadding="4dp"
+                                android:gravity="center_vertical"
+                                android:padding="4dp"
+                                android:text="@string/d_sent"
+                                android:textColor="@color/BlackWhite"
+                                app:drawableStartCompat="@drawable/ic_mail_forward"
+                                app:drawableTint="@color/easternBlue" />
+
+                            <TextView
+                                android:id="@+id/activity_manage_alias_replies_blocked_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:alpha="0.7"
+                                android:drawablePadding="4dp"
+                                android:gravity="center_vertical"
+                                android:padding="4dp"
+                                android:text="@string/d_blocked"
+                                android:textColor="@color/BlackWhite"
+                                app:drawableStartCompat="@drawable/ic_forbid"
+                                app:drawableTint="@color/softRed" />
+
+                        </LinearLayout>
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2" />
 
                     </LinearLayout>
 
-                    <Space
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/activity_manage_alias_actions_LL"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2" />
+                        android:orientation="horizontal"
+                        android:weightSum="9.5">
+
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/activity_manage_alias_copy"
+                            style="@style/MaterialButtonSecondaryDark"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="4"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:minLines="1"
+                            android:text="@string/copy_alias"
+                            app:icon="@drawable/ic_copy"
+                            app:iconSize="18dp" />
+
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/activity_manage_alias_send"
+                            style="@style/MaterialButtonSecondaryDark"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="4"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:minLines="1"
+                            android:text="@string/send_mail"
+                            app:icon="@drawable/ic_mail_forward"
+                            app:iconSize="18dp" />
+
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                    </LinearLayout>
+
 
                 </LinearLayout>
+
+                <View
+                    style="@style/divider"
+                    android:layout_width="match_parent" />
 
                 <LinearLayout
-                    android:id="@+id/activity_manage_alias_actions_LL"
+                    android:id="@+id/activity_manage_alias_settings_LL"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="9.5">
+                    android:layout_height="match_parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:padding="@dimen/layout_padding">
 
-                    <Space
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        style="@style/AddyIoTitleNoAction"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5" />
+                        android:layout_marginTop="0dp"
+                        android:orientation="horizontal">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/activity_manage_alias_copy"
-                        style="@style/MaterialButtonSecondaryDark"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="4"
-                        android:lines="1"
-                        android:maxLines="1"
-                        android:minLines="1"
-                        android:text="@string/copy_alias"
-                        app:icon="@drawable/ic_copy"
-                        app:iconSize="18dp" />
+                        <TextView
+                            style="@style/titleTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/general" />
+                    </LinearLayout>
 
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5" />
+                    <include
+                        android:id="@+id/activity_manage_alias_general_actions"
+                        layout="@layout/alias_general_actions" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/activity_manage_alias_send"
-                        style="@style/MaterialButtonSecondaryDark"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="4"
-                        android:lines="1"
-                        android:maxLines="1"
-                        android:minLines="1"
-                        android:text="@string/send_mail"
-                        app:icon="@drawable/ic_mail_forward"
-                        app:iconSize="18dp" />
-
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5" />
                 </LinearLayout>
 
-
             </LinearLayout>
-
-            <View
-                style="@style/divider"
-                android:layout_width="match_parent" />
-
-            <LinearLayout
-                android:id="@+id/activity_manage_alias_settings_LL"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                android:padding="@dimen/layout_padding">
-
-                <LinearLayout
-                    style="@style/AddyIoTitleNoAction"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/general" />
-                </LinearLayout>
-
-                <include
-                    android:id="@+id/activity_manage_alias_general_actions"
-                    layout="@layout/alias_general_actions" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

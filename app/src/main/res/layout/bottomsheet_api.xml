@@ -32,7 +32,8 @@
             <Space
                 android:layout_width="36dp"
                 android:layout_weight="1"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,7 +55,6 @@
                 android:contentDescription="@string/use_certificate"
                 android:src="@drawable/ic_certificate" />
         </LinearLayout>
-
 
 
     </LinearLayout>
@@ -152,8 +152,6 @@
                     android:text="@string/credentials_desc"
                     android:textAlignment="center"
                     android:textSize="12sp" />
-
-
 
 
                 <com.google.android.material.button.MaterialButtonToggleGroup
@@ -361,7 +359,6 @@
 
 
                 </LinearLayout>
-
 
 
                 <LinearLayout

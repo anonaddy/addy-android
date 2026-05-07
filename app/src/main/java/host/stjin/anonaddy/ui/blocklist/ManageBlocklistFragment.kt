@@ -6,55 +6,56 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.adapter.BlocklistAdapter
+import host.stjin.anonaddy.databinding.FragmentManageBlocklistBinding
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.BlocklistEntriesArray
+import host.stjin.anonaddy_shared.models.NewBlocklistEntry
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
-import com.google.android.material.snackbar.Snackbar
-import host.stjin.anonaddy.adapter.BlocklistAdapter
-import host.stjin.anonaddy.databinding.FragmentManageBlocklistBinding
-import host.stjin.anonaddy.utils.MaterialDialogHelper
-import host.stjin.anonaddy_shared.models.BlocklistEntries
-import host.stjin.anonaddy_shared.models.NewBlocklistEntry
 
 class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragment.AddBlocklistBottomDialogListener {
+    private var blocklistEntries: BlocklistEntriesArray? = null
 
-    private var blocklistEntries: ArrayList<BlocklistEntries>? = null
     private var networkHelper: NetworkHelper? = null
+
     private var encryptedSettingsManager: SettingsManager? = null
+
     private var oneTimeRecyclerViewActions: Boolean = true
 
     private var manageBlocklistAddBottomDialogFragment: ManageBlocklistAddBottomDialogFragment? = null
-
-
-    companion object {
-        fun newInstance() = ManageBlocklistFragment()
-    }
-
 
     private var _binding: FragmentManageBlocklistBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var blocklistAdapter: BlocklistAdapter
+
+    private lateinit var deleteBlocklistSnackbar: Snackbar
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentManageBlocklistBinding.inflate(inflater, container, false)
-        InsetUtil.applyBottomInset(binding.fragmentBlocklistCL)
+        InsetUtil.applyBottomInset(binding.fragmentBlocklistLL1)
         val root = binding.root
 
         encryptedSettingsManager = SettingsManager(true, requireContext())
@@ -68,8 +69,38 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
         return root
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val gson = Gson()
+        val json = gson.toJson(blocklistEntries)
+        outState.putString("blocklistEntries", json)
+    }
 
     private fun setOnClickListeners() {
+        binding.blocklistSearchTermTiet.addTextChangedListener { text ->
+            val searchText = text?.toString()?.trim()
+            if (searchText.isNullOrEmpty()) {
+                getDataFromWeb(null)
+            }
+        }
+
+        binding.blocklistSearchTermTiet.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH ||
+                actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE ||
+                (event?.action == android.view.KeyEvent.ACTION_DOWN &&
+                        event.keyCode == android.view.KeyEvent.KEYCODE_ENTER)
+            ) {
+                val inputMethodManager =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(binding.blocklistSearchTermTiet.windowToken, 0)
+
+                getDataFromWeb(null)
+                true
+            } else {
+                false
+            }
+        }
+
         binding.fragmentBlocklistAddBlocklistEntryButton.setOnClickListener {
             manageBlocklistAddBottomDialogFragment = ManageBlocklistAddBottomDialogFragment()
             manageBlocklistAddBottomDialogFragment!!.show(
@@ -79,38 +110,50 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val gson = Gson()
-        val json = gson.toJson(blocklistEntries)
-        outState.putString("blocklistEntries", json)
-    }
-
-
     fun getDataFromWeb(savedInstanceState: Bundle?, callback: () -> Unit? = {}) {
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             if (savedInstanceState != null) {
 
-                val blocklistEntries = savedInstanceState.getString("blocklistEntries")
-                if (blocklistEntries!!.isNotEmpty() && blocklistEntries != "null") {
+                val blocklistEntriesJson = savedInstanceState.getString("blocklistEntries")
+                if (blocklistEntriesJson!!.isNotEmpty() && blocklistEntriesJson != "null") {
                     val gson = Gson()
-
-                    val myType = object : TypeToken<ArrayList<BlocklistEntries>>() {}.type
-                    val list = gson.fromJson<ArrayList<BlocklistEntries>>(blocklistEntries, myType)
-                    setBlocklistAdapter(list)
+                    val list = gson.fromJson(blocklistEntriesJson, BlocklistEntriesArray::class.java)
+                    setBlocklistAdapter(list, true)
                 } else {
                     // blocklistEntriesJson could be null when an embedded activity is opened instantly
-                    getAllBlocklistEntriesAndSetRecyclerview()
+                    getAllBlocklistEntriesAndSetRecyclerview(forceReload = true)
                 }
 
             } else {
-                getAllBlocklistEntriesAndSetRecyclerview()
+                getAllBlocklistEntriesAndSetRecyclerview(forceReload = true)
             }
             callback()
         }
     }
 
+    override fun onAddedBlocklistEntry(newBlocklistEntry: NewBlocklistEntry) {
+        manageBlocklistAddBottomDialogFragment?.dismissAllowingStateLoss()
+        // Get the latest data in the background, and update the values when loaded
+        getDataFromWeb(null)
+    }
+
+    private fun setOnNestedScrollViewListener(set: Boolean) {
+        if (set) {
+            binding.fragmentBlocklistNSV.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
+                val threshold = 10 // or some small number to account for rounding errors
+                if (scrollY + v.measuredHeight + threshold >= v.getChildAt(0).measuredHeight) {
+                    // Consider this as being at the bottom
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        // Bottom of NSV reached. Time to load more data (if available)
+                        getAllBlocklistEntriesAndSetRecyclerview()
+                    }
+                }
+            })
+        } else {
+            binding.fragmentBlocklistNSV.setOnScrollChangeListener(null as androidx.core.widget.NestedScrollView.OnScrollChangeListener?)
+        }
+    }
 
     private fun setBlocklistRecyclerView() {
         binding.fragmentBlocklistAllBlocklistRecyclerview.apply {
@@ -128,59 +171,97 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
                 layoutAnimation = animation
 
                 showShimmer()
+
+                binding.fragmentBlocklistChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
+                    if (checkedIds.isNotEmpty()) {
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            getAllBlocklistEntriesAndSetRecyclerview(forceReload = true)
+                        }
+                    }
+                }
             }
         }
     }
 
-    private lateinit var blocklistAdapter: BlocklistAdapter
-    private suspend fun getAllBlocklistEntriesAndSetRecyclerview() {
-        binding.fragmentBlocklistAllBlocklistRecyclerview.apply {
-            networkHelper?.getAllBlocklistEntries { entries, error ->
-                // Sorted by created_at automatically
-                //list?.sortByDescending { it.emails_forwarded }
+    private fun getSelectedFilter(): String? {
+        return when (binding.fragmentBlocklistChipgroup.checkedChipId) {
+            R.id.fragment_blocklist_chip_domain -> "domain"
+            R.id.fragment_blocklist_chip_email -> "email"
+            else -> null
+        }
+    }
 
-                // Check if there are new account notifications since the latest list
-                // If the list is the same, just return and don't bother re-init the layoutmanager
-                if (::blocklistAdapter.isInitialized && entries == blocklistAdapter.getList()) {
-                    return@getAllBlocklistEntries
-                }
+    private suspend fun getAllBlocklistEntriesAndSetRecyclerview(forceReload: Boolean = false) {
 
-                if (entries != null) {
-                    setBlocklistAdapter(entries)
-                } else {
-                    // If the error is 404, the feature is unavailable, let the user know that the feature is not available
-                    if (error == "404") {
-                        binding.fragmentBlocklistLL1.visibility = View.GONE
-                        binding.root.findViewById<View>(R.id.fragment_content_unavailable).visibility = View.VISIBLE
-                    } else {
-                        if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                            SnackbarHelper.createSnackbar(
-                                requireContext(),
-                                requireContext().resources.getString(R.string.something_went_wrong_retrieving_blocklist_entries) + "\n" + error,
-                                (activity as MainActivity).findViewById(R.id.main_container),
-                                LoggingHelper.LOGFILES.DEFAULT
-                            ).show()
-                        } else {
-                            SnackbarHelper.createSnackbar(
-                                requireContext(),
-                                requireContext().resources.getString(R.string.something_went_wrong_retrieving_blocklist_entries) + "\n" + error,
-                                (activity as ManageBlocklistActivity).findViewById(R.id.activity_manage_blocklist_CL),
-                                LoggingHelper.LOGFILES.DEFAULT
-                            ).show()
-                        }
+        if (getSelectedFilter() == null) {
+            binding.fragmentBlocklistAllBlocklistTitle.text = getString(R.string.blocklist_entries)
+        } else {
+            binding.fragmentBlocklistAllBlocklistTitle.text = getString(R.string.blocklist_entries_filtered)
+        }
 
-                        // Show error animations
-                        binding.fragmentBlocklistLL1.visibility = View.GONE
-                        binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
+        if (forceReload) {
+            binding.fragmentBlocklistAllBlocklistRecyclerview.showShimmer()
+            blocklistEntries = null
+        }
+        if (blocklistEntries == null || (blocklistEntries?.meta?.current_page ?: 0) < (blocklistEntries?.meta?.last_page ?: 0)) {
+            binding.fragmentBlocklistProgress.visibility = View.VISIBLE
+            setOnNestedScrollViewListener(false)
+            binding.fragmentBlocklistAllBlocklistRecyclerview.apply {
+                val searchText = binding.blocklistSearchTermTiet.text.toString().trim()
+                networkHelper?.getAllBlocklistEntries(
+                    page = (blocklistEntries?.meta?.current_page ?: 0) + 1,
+                    size = 25,
+                    filter = getSelectedFilter(),
+                    search = if (searchText.isEmpty()) null else searchText.lowercase(java.util.Locale.getDefault())
+                ) { entries, error ->
+                    // Check if there are new account notifications since the latest list
+                    // If the list is the same, just return and don't bother re-init the layoutmanager
+                    if (::blocklistAdapter.isInitialized && entries?.data == blocklistAdapter.getList()) {
+                        setOnNestedScrollViewListener(true)
+                        hideShimmer()
+                        binding.fragmentBlocklistProgress.visibility = View.GONE
+                        return@getAllBlocklistEntries
                     }
 
+                    if (entries != null) {
+                        setBlocklistAdapter(entries, forceReload)
+                    } else {
+                        // If the error is 404, the feature is unavailable, let the user know that the feature is not available
+                        if (error == "404") {
+                            binding.fragmentBlocklistLL1.visibility = View.GONE
+                            binding.root.findViewById<View>(R.id.fragment_content_unavailable).visibility = View.VISIBLE
+                        } else {
+                            if (requireContext().resources.getBoolean(R.bool.isTablet)) {
+                                SnackbarHelper.createSnackbar(
+                                    requireContext(),
+                                    requireContext().resources.getString(R.string.something_went_wrong_retrieving_blocklist_entries) + "\n" + error,
+                                    (activity as MainActivity).findViewById(R.id.main_container),
+                                    LoggingHelper.LOGFILES.DEFAULT
+                                ).show()
+                            } else {
+                                SnackbarHelper.createSnackbar(
+                                    requireContext(),
+                                    requireContext().resources.getString(R.string.something_went_wrong_retrieving_blocklist_entries) + "\n" + error,
+                                    (activity as ManageBlocklistActivity).findViewById(R.id.activity_manage_blocklist_CL),
+                                    LoggingHelper.LOGFILES.DEFAULT
+                                ).show()
+                            }
 
+                            // Show error animations
+                            binding.fragmentBlocklistLL1.visibility = View.GONE
+                            binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
+                        }
+
+
+                    }
+                    binding.fragmentBlocklistProgress.visibility = View.GONE
+                    hideShimmer()
+                    setOnNestedScrollViewListener(true)
                 }
-                hideShimmer()
+
             }
 
         }
-
     }
 
     private fun fragmentShown() {
@@ -193,18 +274,44 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
         }
     }
 
+    private fun setBlocklistAdapter(list: BlocklistEntriesArray, forceReload: Boolean) {
+        binding.blocklistCount.apply {
+            list.meta?.total?.let { total ->
+                if (total > 0) {
+                    text = total.toString()
+                    visibility = View.VISIBLE
+                } else {
+                    visibility = View.GONE
+                }
+            } ?: run { visibility = View.GONE }
+        }
 
-    private fun setBlocklistAdapter(list: ArrayList<BlocklistEntries>) {
         binding.fragmentBlocklistAllBlocklistRecyclerview.apply {
-            blocklistEntries = list
-            if (list.isNotEmpty()) {
+            if (blocklistEntries == null || forceReload) {
+                // If blocklistEntries is empty, assign it
+                blocklistEntries = list
+            } else {
+                // If blocklistEntries is not empty, set the meta and links and append the retrieved failedDeliveries to the list (as pagination is being used)
+                blocklistEntries?.meta = list.meta
+                blocklistEntries?.links = list.links
+                blocklistEntries?.data?.addAll(list.data)
+
+                // Get the totalsize of the adapteritems
+                val totalSize = blocklistAdapter.itemCount
+                // Tell the adapter there is new data (from the original size to the added items)
+                binding.fragmentBlocklistAllBlocklistRecyclerview.post { blocklistAdapter.notifyItemRangeInserted(totalSize, list.data.size - 1) }
+            }
+
+            val data = blocklistEntries?.data ?: list.data
+
+            if (data.isNotEmpty()) {
                 binding.fragmentBlocklistNoBlocklist.visibility = View.GONE
             } else {
                 binding.fragmentBlocklistNoBlocklist.visibility = View.VISIBLE
             }
 
 
-            blocklistAdapter = BlocklistAdapter(list)
+            blocklistAdapter = BlocklistAdapter(data)
             blocklistAdapter.setClickListener(object : BlocklistAdapter.ClickListener {
 
                 override fun onClickDelete(pos: Int, aView: View, id: String) {
@@ -242,13 +349,23 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
         }
     }
 
-    private lateinit var deleteBlocklistSnackbar: Snackbar
-
     private suspend fun deleteBlocklistEntryHttpRequest(id: String, context: Context) {
         networkHelper?.deleteBlocklistEntry({ result ->
             if (result == "204") {
                 deleteBlocklistSnackbar.dismiss()
-                getDataFromWeb(null)
+
+                val index = blocklistEntries?.data?.indexOfFirst { it.id == id } ?: -1
+                if (index != -1) {
+                    blocklistEntries?.data?.removeAt(index)
+                    blocklistAdapter.notifyItemRemoved(index)
+
+                    if (blocklistEntries?.data?.isEmpty() == true) {
+                        binding.fragmentBlocklistNoBlocklist.visibility = View.VISIBLE
+                    }
+                    fragmentShown()
+                } else {
+                    getDataFromWeb(null)
+                }
             } else {
 
                 if (context.resources.getBoolean(R.bool.isTablet)) {
@@ -276,9 +393,7 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
         }, id)
     }
 
-    override fun onAddedBlocklistEntry(newBlocklistEntry: NewBlocklistEntry) {
-        manageBlocklistAddBottomDialogFragment?.dismissAllowingStateLoss()
-        // Get the latest data in the background, and update the values when loaded
-        getDataFromWeb(null)
+    companion object {
+        fun newInstance() = ManageBlocklistFragment()
     }
 }

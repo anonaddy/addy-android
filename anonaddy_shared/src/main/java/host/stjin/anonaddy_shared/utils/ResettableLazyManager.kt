@@ -1,6 +1,6 @@
 package host.stjin.anonaddy_shared.utils
 
-import java.util.*
+import java.util.LinkedList
 import kotlin.reflect.KProperty
 
 class ResettableLazyManager {

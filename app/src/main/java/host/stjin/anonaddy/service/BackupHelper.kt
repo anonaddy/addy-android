@@ -3,6 +3,7 @@ package host.stjin.anonaddy.service
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
+import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -25,7 +26,6 @@ import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.PBEParameterSpec
 import kotlin.system.measureTimeMillis
-import androidx.core.net.toUri
 
 
 // isAppInForeground is being used to determine if a notification or a snackbar should be used

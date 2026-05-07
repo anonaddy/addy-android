@@ -28,16 +28,18 @@ import org.ocpsoft.prettytime.PrettyTime
 
 
 class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener {
-
     private lateinit var settingsManager: SettingsManager
+
     private var forceSwitch = false
+
     private lateinit var networkHelper: NetworkHelper
 
-
     private var addApiBottomDialogFragment: AddApiBottomDialogFragment =
+
         AddApiBottomDialogFragment.newInstance()
 
     private lateinit var binding: ActivityAppSettingsFeaturesNotifyApiTokenExpiryBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifyApiTokenExpiryBinding.inflate(layoutInflater)
@@ -61,6 +63,56 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
         setOnSwitchListeners()
     }
 
+    // If the user comes back from eg. settings re-check + enable biometricswitch
+    override fun onResume() {
+        super.onResume()
+        loadSettings()
+        checkTokenExpiry()
+    }
+
+    private fun setOnClickListeners() {
+        binding.activityAppSettingsFeaturesNotifyApiTokenExpirySection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityAppSettingsFeaturesNotifyApiTokenExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyApiTokenExpirySection.getSwitchChecked())
+            }
+        })
+        binding.activityAppSettingsFeaturesNotifyApiTokenExpiryChangeToken.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AddyIo.API_BASE_URL)
+                if (!addApiBottomDialogFragment.isAdded) {
+                    addApiBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "addApiBottomDialogFragment"
+                    )
+                }
+            }
+        })
+    }
+
+    override fun onClickSave(baseUrl: String, apiKey: String) {
+        addApiBottomDialogFragment.dismissAllowingStateLoss()
+        updateKey(apiKey)
+        checkTokenExpiry()
+
+        // Send the new configuration to all the connected Wear devices
+        try {
+            Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
+                for (node in nodes) {
+                    val configuration = Gson().toJson(WearOSHelper(this).createWearOSConfiguration())
+                    Wearable.getMessageClient(this).sendMessage(
+                        node.id,
+                        "/setup",
+                        configuration.toByteArray()
+                    )
+                }
+
+            }
+        } catch (ex: Exception) {
+            // WearAPI not available, not sending anything to nodes
+            LoggingHelper(this).addLog(LOGIMPORTANCE.WARNING.int, ex.toString(), "MainActivity;onClickSave", null)
+        }
+    }
 
     private fun checkTokenExpiry() {
         lifecycleScope.launch {
@@ -118,34 +170,6 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
         })
     }
 
-    // If the user comes back from eg. settings re-check + enable biometricswitch
-    override fun onResume() {
-        super.onResume()
-        loadSettings()
-        checkTokenExpiry()
-    }
-
-
-    private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesNotifyApiTokenExpirySection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesNotifyApiTokenExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyApiTokenExpirySection.getSwitchChecked())
-            }
-        })
-        binding.activityAppSettingsFeaturesNotifyApiTokenExpiryChangeToken.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AddyIo.API_BASE_URL)
-                if (!addApiBottomDialogFragment.isAdded) {
-                    addApiBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "addApiBottomDialogFragment"
-                    )
-                }
-            }
-        })
-    }
-
     private fun updateKey(apiKey: String) {
         val encryptedSettingsManager = SettingsManager(true, this)
         encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
@@ -158,31 +182,4 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
         val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
     }
-
-
-    override fun onClickSave(baseUrl: String, apiKey: String) {
-        addApiBottomDialogFragment.dismissAllowingStateLoss()
-        updateKey(apiKey)
-        checkTokenExpiry()
-
-        // Send the new configuration to all the connected Wear devices
-        try {
-            Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
-                for (node in nodes) {
-                    val configuration = Gson().toJson(WearOSHelper(this).createWearOSConfiguration())
-                    Wearable.getMessageClient(this).sendMessage(
-                        node.id,
-                        "/setup",
-                        configuration.toByteArray()
-                    )
-                }
-
-            }
-        } catch (ex: Exception) {
-            // WearAPI not available, not sending anything to nodes
-            LoggingHelper(this).addLog(LOGIMPORTANCE.WARNING.int, ex.toString(), "MainActivity;onClickSave", null)
-        }
-    }
-
-
 }

@@ -13,12 +13,13 @@ import android.view.View
 import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.net.toUri
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
+import host.stjin.anonaddy.ui.ActivityTargets
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
-import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.NAVIGATE
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP_ADD_ALIAS_SHEET
@@ -26,7 +27,6 @@ import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_A
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.utils.CacheHelper
 import kotlin.random.Random
-import androidx.core.net.toUri
 
 
 /**
@@ -90,18 +90,21 @@ class AliasWidget2Provider : AppWidgetProvider() {
                     mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                     startActivity(context, mainIntent, null)
                 }
+
                 OPEN_APP_ADD_ALIAS_SHEET -> {
                     val mainIntent = Intent(context, AliasWidget2BottomSheetAddActivity::class.java)
                     mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                     mainIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(context, mainIntent, null)
                 }
+
                 OPEN_APP_TARGET -> {
                     val mainIntent = Intent(context, SplashActivity::class.java)
                     mainIntent.putExtra("target", intent.getStringExtra(OPEN_APP_TARGET))
                     mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                     startActivity(context, mainIntent, null)
                 }
+
                 NAVIGATE -> {
                     if (intent.hasExtra(AliasWidget2Values.COPY_ACTION)) {
                         val alias = intent.getStringExtra(AliasWidget2Values.COPY_ACTION)
@@ -193,23 +196,23 @@ private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager
                 views.setOnClickPendingIntent(R.id.widget_2_layout_3_aliases_add, getPendingSelfIntent(context, OPEN_APP_ADD_ALIAS_SHEET))
                 views.setOnClickPendingIntent(
                     R.id.widget_2_layout_3_aliases_aliases,
-                    getPendingSelfIntent(context, OPEN_APP_TARGET, SearchActivity.SearchTargets.ALIASES.activity)
+                    getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.ALIASES.activity)
                 )
                 views.setOnClickPendingIntent(
                     R.id.widget_2_layout_3_aliases_recipients,
-                    getPendingSelfIntent(context, OPEN_APP_TARGET, SearchActivity.SearchTargets.RECIPIENTS.activity)
+                    getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.RECIPIENTS.activity)
                 )
                 views.setOnClickPendingIntent(
                     R.id.widget_2_layout_3_aliases_domains,
-                    getPendingSelfIntent(context, OPEN_APP_TARGET, SearchActivity.SearchTargets.DOMAINS.activity)
+                    getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.DOMAINS.activity)
                 )
                 views.setOnClickPendingIntent(
                     R.id.widget_2_layout_3_aliases_rules,
-                    getPendingSelfIntent(context, OPEN_APP_TARGET, SearchActivity.SearchTargets.RULES.activity)
+                    getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.RULES.activity)
                 )
                 views.setOnClickPendingIntent(
                     R.id.widget_2_layout_3_aliases_usernames,
-                    getPendingSelfIntent(context, OPEN_APP_TARGET, SearchActivity.SearchTargets.USERNAMES.activity)
+                    getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.USERNAMES.activity)
                 )
 
 

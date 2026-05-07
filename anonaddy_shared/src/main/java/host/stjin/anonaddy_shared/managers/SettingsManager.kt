@@ -5,12 +5,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import androidx.security.crypto.MasterKey.DEFAULT_AES_GCM_MASTER_KEY_SIZE
 import androidx.security.crypto.MasterKey.DEFAULT_MASTER_KEY_ALIAS
-import androidx.core.content.edit
 
 
 class SettingsManager(encrypt: Boolean, private val context: Context) {
@@ -55,7 +55,6 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         PRIVACY_MODE(true, PREFTYPES.BOOLEAN, "privacy_mode"),
         API_KEY(true, PREFTYPES.STRING, "API_KEY"),
         BASE_URL(true, PREFTYPES.STRING, "BASE_URL"),
-        RECENT_SEARCHES(true, PREFTYPES.STRINGSET, "recent_searches"),
         BACKUPS_PASSWORD(true, PREFTYPES.STRING, "backups_password"),
         CERTIFICATE_ALIAS(true, PREFTYPES.STRING, "certificate_alias"),
 
@@ -68,6 +67,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         WEAROS_FAVORITE_ALIASES(true, PREFTYPES.STRINGSET, "wearos_favorite_aliases"),
         DISABLE_WEAROS_QUICK_SETUP_DIALOG(false, PREFTYPES.STRING, "disable_wearos_quick_setup_dialog"),
         SELECTED_WEAROS_DEVICE(false, PREFTYPES.STRING, "selected_wearos_device"),
+
         //BACKGROUND_SERVICE_CACHE_FAVORITE_ALIASES_DATA(true, PREFTYPES.STRING, "cache_favorite_aliases_data"),
         BACKGROUND_SERVICE_CACHE_PINNED_ALIASES_DATA(true, PREFTYPES.STRING, "cache_pinned_aliases_data"),
         //endregion
@@ -100,6 +100,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKGROUND_SERVICE_CACHE_DOMAIN_ERROR_COUNT(true, PREFTYPES.INT, "cache_domain_error_count"),
 
         BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID(true, PREFTYPES.STRING, "cache_failed_deliveries_latest_id"),
+        BACKGROUND_SERVICE_NOTIFIED_FAILED_DELIVERIES_LATEST_ID(true, PREFTYPES.STRING, "notified_failed_deliveries_latest_id"),
 
         // This value keeps track of the previous amount of account notifications so comparisons can be made in the BackgroundWorker
         BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT_PREVIOUS(true, PREFTYPES.INT, "cache_account_notifications_count_previous"),
@@ -154,7 +155,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     }
 
     fun putSettingsString(key: PREFS, string: String) {
-        prefs.edit {putString(key.key, string)}
+        prefs.edit { putString(key.key, string) }
     }
 
     fun getSettingsString(key: PREFS, default: String? = null): String? {
@@ -162,7 +163,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     }
 
     fun putSettingsInt(key: PREFS, int: Int) {
-        prefs.edit {putInt(key.key, int)}
+        prefs.edit { putInt(key.key, int) }
     }
 
     fun getSettingsInt(key: PREFS, default: Int = 0): Int {
@@ -170,7 +171,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     }
 
     fun putSettingsFloat(key: PREFS, float: Float) {
-        prefs.edit {putFloat(key.key, float)}
+        prefs.edit { putFloat(key.key, float) }
     }
 
     fun getSettingsFloat(key: PREFS): Float {
@@ -179,7 +180,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
     fun putStringSet(key: PREFS, mutableset: MutableSet<String>) {
         prefs.edit { remove(key.key) }
-        prefs.edit {putStringSet(key.key, mutableset)}
+        prefs.edit { putStringSet(key.key, mutableset) }
     }
 
     fun getStringSet(key: PREFS): MutableSet<String>? {
@@ -188,7 +189,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
 
     fun removeSetting(value: PREFS) {
-        prefs.edit {remove(value.key)}
+        prefs.edit { remove(value.key) }
     }
 
     fun clearAllData() {

@@ -19,29 +19,37 @@ import host.stjin.anonaddy_shared.models.Recipients
 import kotlinx.coroutines.launch
 
 
-class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, private val actionEditIndex: Int?, private val actionEditObject: Action?): BaseBottomSheetDialogFragment(), View.OnClickListener {
-
-
+class ActionBottomDialogFragment(
+    private val recipients: ArrayList<Recipients>,
+    private val actionEditIndex: Int?,
+    private val actionEditObject: Action?
+) : BaseBottomSheetDialogFragment(), View.OnClickListener {
     private lateinit var listener: AddActionBottomDialogListener
-
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddActionBottomDialogListener {
-        fun onAddedAction(actionEditIndex: Int?, type: String, value: String)
-        fun onAddedAction(actionEditIndex: Int?, type: String, value: Boolean)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetRulesActionBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    /*
+        Check if the type spinner matches any of the value-type type or spinner-type type
+         */
+    private fun spinnerChangeListener(context: Context) {
+        binding.bsRuleActionTypeMact.setOnItemClickListener { _, _, _, _ ->
+            checkIfTypeRequiresValueField(context)
+            checkIfTypeShouldShowHint(context)
+        }
+    }
+
+    private var actionTypes: List<String> = listOf()
+
+    private var bannerLocations: List<String> = listOf()
+
+    private var bannerLocationNames: List<String> = listOf()
+
+    private var actionTypeNames: List<String> = listOf()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -62,56 +70,75 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
         return root
     }
 
-    private fun getAllRecipients(selectedRecipientId: String?) {
-            // Remove the default "Loading recipients" chip
-            binding.bsRuleActionForwardToChipgroup.removeAllViewsInLayout()
-            binding.bsRuleActionForwardToChipgroup.requestLayout()
-            binding.bsRuleActionForwardToChipgroup.invalidate()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-            for (recipient in recipients) {
-                if (recipient.email_verified_at != null) {
-                    val chip = layoutInflater.inflate(R.layout.chip_view, binding.bsRuleActionForwardToChipgroup, false) as Chip
-                    chip.text = recipient.email
-                    chip.tag = recipient.id
-                    chip.isChecked = selectedRecipientId.equals(recipient.id)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
 
-                    binding.bsRuleActionForwardToChipgroup.addView(chip)
-                }
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_rule_action_add_action_button) {
+                addAction(requireContext())
             }
+        }
+    }
+
+    private fun getAllRecipients(selectedRecipientId: String?) {
+        // Remove the default "Loading recipients" chip
+        binding.bsRuleActionForwardToChipgroup.removeAllViewsInLayout()
+        binding.bsRuleActionForwardToChipgroup.requestLayout()
+        binding.bsRuleActionForwardToChipgroup.invalidate()
+
+        for (recipient in recipients) {
+            if (recipient.email_verified_at != null) {
+                val chip = layoutInflater.inflate(R.layout.chip_view, binding.bsRuleActionForwardToChipgroup, false) as Chip
+                chip.text = recipient.email
+                chip.tag = recipient.id
+                chip.isChecked = selectedRecipientId.equals(recipient.id)
+
+                binding.bsRuleActionForwardToChipgroup.addView(chip)
+            }
+        }
 
     }
 
     private fun updateUi(context: Context) {
 
-    if (actionEditObject != null) {
-        val typeText = actionTypeNames[actionTypes.indexOf(actionEditObject.type)]
-        binding.bsRuleActionTypeMact.setText(typeText, false)
-        binding.bsRuleActionValuesTiet.setText(actionEditObject.value)
+        if (actionEditObject != null) {
+            val typeText = actionTypeNames[actionTypes.indexOf(actionEditObject.type)]
+            binding.bsRuleActionTypeMact.setText(typeText, false)
+            binding.bsRuleActionValuesTiet.setText(actionEditObject.value)
 
 
-        // If type is banner location, set value for it
-        if (typeText == context.resources.getString(R.string.set_the_banner_information_location_to)) {
-            binding.bsRuleActionValuesSpinnerBannerLocationMact.setText(actionEditObject.value, false)
-        }
-
-        if (actionEditObject.type == "forwardTo") {
-            viewLifecycleOwner.lifecycleScope.launch {
-                getAllRecipients(actionEditObject.value)
+            // If type is banner location, set value for it
+            if (typeText == context.resources.getString(R.string.set_the_banner_information_location_to)) {
+                binding.bsRuleActionValuesSpinnerBannerLocationMact.setText(actionEditObject.value, false)
             }
+
+            if (actionEditObject.type == "forwardTo") {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    getAllRecipients(actionEditObject.value)
+                }
+            } else {
+                // If not forward_to, get recipients without selected
+                viewLifecycleOwner.lifecycleScope.launch {
+                    getAllRecipients(null)
+                }
+            }
+
+            // Show save instead of add when editing an object
+            binding.bsRuleActionAddActionButton.setText(R.string.save)
         } else {
-            // If not forward_to, get recipients without selected
             viewLifecycleOwner.lifecycleScope.launch {
                 getAllRecipients(null)
             }
         }
-
-        // Show save instead of add when editing an object
-        binding.bsRuleActionAddActionButton.setText(R.string.save)
-    } else {
-        viewLifecycleOwner.lifecycleScope.launch {
-            getAllRecipients(null)
-        }
-    }
 
         checkIfTypeRequiresValueField(context)
         checkIfTypeShouldShowHint(context)
@@ -124,18 +151,6 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
             binding.bsRuleActionValuesTilSubjectHint.visibility = View.GONE
         }
     }
-
-    /*
-    Check if the type spinner matches any of the value-type type or spinner-type type
-     */
-
-    private fun spinnerChangeListener(context: Context) {
-        binding.bsRuleActionTypeMact.setOnItemClickListener { _, _, _, _ ->
-            checkIfTypeRequiresValueField(context)
-            checkIfTypeShouldShowHint(context)
-        }
-    }
-
 
     private fun checkIfTypeRequiresValueField(context: Context) {
         // If the type is set to set banner location show the spinner and hide the value field
@@ -179,11 +194,6 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
 
     }
 
-
-    private var actionTypes: List<String> = listOf()
-    private var bannerLocations: List<String> = listOf()
-    private var bannerLocationNames: List<String> = listOf()
-    private var actionTypeNames: List<String> = listOf()
     private fun fillSpinners(context: Context) {
         actionTypes = this.resources.getStringArray(R.array.actions_type).toList()
         actionTypeNames = this.resources.getStringArray(R.array.actions_type_name).toList()
@@ -204,12 +214,6 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
             bannerLocationNames
         )
         binding.bsRuleActionValuesSpinnerBannerLocationMact.setAdapter(formatAdapter)
-    }
-
-    companion object {
-        fun newInstance(recipients: ArrayList<Recipients>, actionEditIndex: Int?, actionEditObject: Action?): ActionBottomDialogFragment {
-            return ActionBottomDialogFragment(recipients, actionEditIndex, actionEditObject)
-        }
     }
 
     private fun addAction(context: Context) {
@@ -247,7 +251,7 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
                 // Get selected chip
                 var recipient: String
                 val ids: List<Int> = binding.bsRuleActionForwardToChipgroup.checkedChipIds
-                if (ids.isEmpty()){
+                if (ids.isEmpty()) {
                     binding.bsRuleActionForwardToTil.error = context.resources.getString(R.string.select_a_recipient)
                 } else {
                     for (id in ids) {
@@ -259,6 +263,7 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
 
 
             }
+
             else -> {
                 // Else just get the textfield value
                 val value = binding.bsRuleActionValuesTiet.text.toString()
@@ -268,16 +273,15 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
 
     }
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_rule_action_add_action_button) {
-                addAction(requireContext())
-            }
-        }
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddActionBottomDialogListener {
+        fun onAddedAction(actionEditIndex: Int?, type: String, value: String)
+        fun onAddedAction(actionEditIndex: Int?, type: String, value: Boolean)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(recipients: ArrayList<Recipients>, actionEditIndex: Int?, actionEditObject: Action?): ActionBottomDialogFragment {
+            return ActionBottomDialogFragment(recipients, actionEditIndex, actionEditObject)
+        }
     }
 }

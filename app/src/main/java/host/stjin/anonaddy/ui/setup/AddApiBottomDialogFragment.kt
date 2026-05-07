@@ -19,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
@@ -35,31 +36,40 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.managers.SettingsManager.PREFS
 import host.stjin.anonaddy_shared.models.LoginMfaRequired
 import kotlinx.coroutines.launch
-import androidx.core.net.toUri
 
 class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
     private var codeScanner: CodeScanner? = null
+
     private lateinit var listener: AddApiBottomDialogListener
+
     private lateinit var networkHelper: NetworkHelper
-
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddApiBottomDialogListener {
-        fun onClickSave(baseUrl: String, apiKey: String)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetApiBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    private var expirationOptions: List<String> = listOf()
+
+    private var expirationOptionNames: List<String> = listOf()
+
+    private var otpMfaObject: LoginMfaRequired? = null
+
+    private var resultLauncher: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+        when (result) {
+            true -> toggleQrCodeScanning()
+            false -> {
+                // Explain to the user that the feature is unavailable because
+                // the features requires a permission that the user has denied.
+                // At the same time, respect the user's decision. Don't link to
+                // system settings in an effort to convince the user to change
+                // their decision.
+                binding.bsSetupScannerViewDesc.text = requireContext().resources.getString(R.string.qr_permissions_required)
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -112,6 +122,68 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         return root
     }
 
+    override fun onPause() {
+        // Stop preview when the app gets suspended
+        codeScanner?.stopPreview()
+        // Release resources to prevent draining as well as giving other apps a chance to use the camera
+        codeScanner?.releaseResources()
+        super.onPause()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            when (p0.id) {
+                R.id.bs_setup_apikey_sign_in_button -> {
+                    lifecycleScope.launch {
+                        verifyLogin(
+                            requireContext()
+                        )
+                    }
+                }
+
+                R.id.bs_setup_apikey_get_button -> {
+                    val baseUrl = binding.bsSetupInstanceTiet.text.toString()
+
+                    val url = "$baseUrl/settings/api"
+                    val i = Intent(Intent.ACTION_VIEW)
+                    i.data = url.toUri()
+                    startActivity(i)
+                }
+
+                R.id.bs_setup_scanner_view -> {
+                    toggleQrCodeScanning()
+                }
+
+                R.id.bs_setup_apikey_select_cert -> {
+                    val encryptedSettingsManager = SettingsManager(true, requireContext())
+                    val alias = encryptedSettingsManager.getSettingsString(PREFS.CERTIFICATE_ALIAS)
+                    if (alias == null) {
+                        selectCertificate()
+                    } else {
+                        encryptedSettingsManager.removeSetting(PREFS.CERTIFICATE_ALIAS)
+                        Toast.makeText(requireContext(), requireContext().resources.getString(R.string.certificate_removed), Toast.LENGTH_SHORT)
+                            .show()
+                        checkForCertificate()
+
+                        // Re-init as an alias was removed
+                        networkHelper = NetworkHelper(requireContext())
+                    }
+                }
+            }
+        }
+    }
+
     private fun checkForCertificate() {
         val encryptedSettingsManager = SettingsManager(true, requireContext())
         val alias = encryptedSettingsManager.getSettingsString(PREFS.CERTIFICATE_ALIAS)
@@ -142,8 +214,6 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         }
     }
 
-    private var expirationOptions: List<String> = listOf()
-    private var expirationOptionNames: List<String> = listOf()
     private fun fillSpinners(context: Context) {
         expirationOptions = this.resources.getStringArray(R.array.expiration_options).toList()
         expirationOptionNames = this.resources.getStringArray(R.array.expiration_options_names).toList()
@@ -203,15 +273,6 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         toggleQrCodeScanning()
     }
 
-
-    companion object {
-        fun newInstance(apiBaseUrl: String? = null): AddApiBottomDialogFragment {
-            return AddApiBottomDialogFragment(apiBaseUrl)
-        }
-    }
-
-
-    private var otpMfaObject: LoginMfaRequired? = null
     private suspend fun verifyLogin(context: Context) {
 
         // Check if the instance is a valid web address and starts with https:// or http://
@@ -238,27 +299,27 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
             verifyApiKey(context, apiKey, baseUrl)
 
         } else {
-            val expirationOption =  expirationOptions[expirationOptionNames.indexOf(binding.bsRegistrationFormExpirationMact.text.toString())]
+            val expirationOption = expirationOptions[expirationOptionNames.indexOf(binding.bsRegistrationFormExpirationMact.text.toString())]
 
             binding.bsSetupApikeyUsernameTil.error = null
             binding.bsSetupApikeyPasswordTil.error = null
             binding.bsSetupApikeyOtpTil.error = null
 
 
-            if (binding.bsSetupApikeyUsernameTiet.text.isNullOrEmpty()){
+            if (binding.bsSetupApikeyUsernameTiet.text.isNullOrEmpty()) {
                 binding.bsSetupApikeyUsernameTil.error = requireContext().resources.getString(R.string.registration_username_empty)
                 return
             }
 
 
-            if (binding.bsSetupApikeyPasswordTiet.text.isNullOrEmpty()){
+            if (binding.bsSetupApikeyPasswordTiet.text.isNullOrEmpty()) {
                 binding.bsSetupApikeyPasswordTil.error = requireContext().resources.getString(R.string.registration_password_empty)
                 return
             }
 
 
-            if (otpMfaObject != null){
-                if (binding.bsSetupApikeyOtpTiet.text.isNullOrEmpty()){
+            if (otpMfaObject != null) {
+                if (binding.bsSetupApikeyOtpTiet.text.isNullOrEmpty()) {
                     binding.bsSetupApikeyOtpTil.error = requireContext().resources.getString(R.string.otp_required)
                     return
                 }
@@ -286,7 +347,6 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                     baseUrl = baseUrl,
                     mfaKey = otpMfaObject!!.mfa_key,
                     otp = binding.bsSetupApikeyOtpTiet.text.toString(),
-                    xCsrfToken = otpMfaObject!!.csrf_token.toString(), // Token should not be null at this point
                     apiExpiration = expirationOption,
                     cookies = otpMfaObject!!.cookie
                 )
@@ -322,7 +382,6 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         }
 
 
-
     }
 
     private fun verifyApiKey(context: Context, apiKey: String, baseUrl: String) {
@@ -333,7 +392,8 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                     // Or
                     // UserResource ids are the same
                     if (SettingsManager(true, context).getSettingsString(PREFS.API_KEY) == null ||
-                        (activity?.application as AddyIoApp).userResource.id == result.id){
+                        (activity?.application as AddyIoApp).userResource.id == result.id
+                    ) {
                         listener.onClickSave(baseUrl, apiKey)
                     } else {
                         binding.bsSetupApikeyGetButton.isEnabled = true
@@ -361,45 +421,6 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         }
     }
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            when (p0.id) {
-                R.id.bs_setup_apikey_sign_in_button -> {
-                    lifecycleScope.launch {
-                        verifyLogin(
-                            requireContext()
-                        )
-                    }
-                }
-                R.id.bs_setup_apikey_get_button -> {
-                    val baseUrl = binding.bsSetupInstanceTiet.text.toString()
-
-                    val url = "$baseUrl/settings/api"
-                    val i = Intent(Intent.ACTION_VIEW)
-                    i.data = url.toUri()
-                    startActivity(i)
-                }
-                R.id.bs_setup_scanner_view -> {
-                    toggleQrCodeScanning()
-                }
-                R.id.bs_setup_apikey_select_cert -> {
-                    val encryptedSettingsManager = SettingsManager(true, requireContext())
-                    val alias = encryptedSettingsManager.getSettingsString(PREFS.CERTIFICATE_ALIAS)
-                    if (alias == null) {
-                        selectCertificate()
-                    } else {
-                        encryptedSettingsManager.removeSetting(PREFS.CERTIFICATE_ALIAS)
-                        Toast.makeText(requireContext(), requireContext().resources.getString(R.string.certificate_removed), Toast.LENGTH_SHORT).show()
-                        checkForCertificate()
-
-                        // Re-init as an alias was removed
-                        networkHelper = NetworkHelper(requireContext())
-                    }
-                }
-            }
-        }
-    }
-
     private fun selectCertificate() {
         KeyChain.choosePrivateKeyAlias(requireActivity(), object : KeyChainAliasCallback {
             override fun alias(alias: String?) {
@@ -409,7 +430,10 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                 }
 
                 SettingsManager(true, requireContext()).putSettingsString(PREFS.CERTIFICATE_ALIAS, alias)
-                SettingsManager(false, requireContext()).putSettingsBool(PREFS.NOTIFY_CERTIFICATE_EXPIRY, true) // Enable by default when a certificate has been selected
+                SettingsManager(false, requireContext()).putSettingsBool(
+                    PREFS.NOTIFY_CERTIFICATE_EXPIRY,
+                    true
+                ) // Enable by default when a certificate has been selected
 
                 // Since certificate expiry should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
                 BackgroundWorkerHelper(requireContext()).scheduleBackgroundWorker()
@@ -424,30 +448,6 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
             }
         }, null, null, null, null)
     }
-
-
-    override fun onPause() {
-        // Stop preview when the app gets suspended
-        codeScanner?.stopPreview()
-        // Release resources to prevent draining as well as giving other apps a chance to use the camera
-        codeScanner?.releaseResources()
-        super.onPause()
-    }
-
-    private var resultLauncher: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
-        when (result) {
-            true -> toggleQrCodeScanning()
-            false -> {
-                // Explain to the user that the feature is unavailable because
-                // the features requires a permission that the user has denied.
-                // At the same time, respect the user's decision. Don't link to
-                // system settings in an effort to convince the user to change
-                // their decision.
-                binding.bsSetupScannerViewDesc.text = requireContext().resources.getString(R.string.qr_permissions_required)
-            }
-        }
-    }
-
 
     private fun toggleQrCodeScanning() {
         // Check if camera permissions are granted
@@ -471,8 +471,14 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         return text.contains("|") && text.contains("http")
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddApiBottomDialogListener {
+        fun onClickSave(baseUrl: String, apiKey: String)
+    }
+
+    companion object {
+        fun newInstance(apiBaseUrl: String? = null): AddApiBottomDialogFragment {
+            return AddApiBottomDialogFragment(apiBaseUrl)
+        }
     }
 }

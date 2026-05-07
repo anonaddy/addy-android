@@ -21,26 +21,17 @@ import kotlinx.coroutines.launch
 class AddRecipientPublicGpgKeyBottomDialogFragment(
     private val recipientId: String?
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
-
     private lateinit var listener: AddEditGpgKeyBottomDialogListener
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddEditGpgKeyBottomDialogListener {
-        fun onKeyAdded(recipient: Recipients)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetEditGpgKeyRecipientBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(null)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,12 +62,24 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
         return root
     }
 
-    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(null)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-    companion object {
-        fun newInstance(id: String): AddRecipientPublicGpgKeyBottomDialogFragment {
-            return AddRecipientPublicGpgKeyBottomDialogFragment(id)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_edit_recipient_gpg_key_save_button) {
+                addKey(
+                    requireContext()
+                )
+            }
         }
     }
 
@@ -109,18 +112,14 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
         }, recipientId!!, publicPgpKey)
     }
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_edit_recipient_gpg_key_save_button) {
-                addKey(
-                    requireContext()
-                )
-            }
-        }
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddEditGpgKeyBottomDialogListener {
+        fun onKeyAdded(recipient: Recipients)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(id: String): AddRecipientPublicGpgKeyBottomDialogFragment {
+            return AddRecipientPublicGpgKeyBottomDialogFragment(id)
+        }
     }
 }

@@ -13,58 +13,44 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.withStyledAttributes
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.materialswitch.MaterialSwitch
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.utils.AttributeHelper
-import androidx.core.content.withStyledAttributes
 
 
 class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) :
     LinearLayout(context, attrs, defStyle) {
     private var listener: OnSwitchCheckedChangedListener? = null
+
     private var onClicklistener: OnLayoutClickedListener? = null
+
     private var onLongClicklistener: OnLayoutLongClickedListener? = null
+
     private var materialSwitch: MaterialSwitch? = null
+
     var description: TextView? = null
+
     private var progressBar: ProgressBar? = null
+
     private var title: TextView? = null
+
     private var iconStart: ImageView? = null
+
     private var iconEnd: ImageView? = null
 
     private var linearLayout: LinearLayout? = null
+
     private var cardView: MaterialCardView? = null
 
-
-    fun getOnLayoutLongClickedListener(): OnLayoutLongClickedListener? {
-        return onLongClicklistener
-    }
-
-    fun setOnLayoutLongClickedListener(listener: OnLayoutLongClickedListener?) {
-        this.onLongClicklistener = listener
-    }
-
-    fun getOnLayoutClickedListener(): OnLayoutClickedListener? {
-        return onClicklistener
-    }
-
-    fun setOnLayoutClickedListener(listener: OnLayoutClickedListener?) {
-        this.onClicklistener = listener
-    }
-
-    fun getOnSwitchCheckedChangedListener(): OnSwitchCheckedChangedListener? {
-        return listener
-    }
-
-    fun setOnSwitchCheckedChangedListener(listener: OnSwitchCheckedChangedListener?) {
-        this.listener = listener
-    }
-
     private val switchCheckedChangeListener =
+
         CompoundButton.OnCheckedChangeListener { compoundButton, b -> listener?.onCheckedChange(compoundButton, b) }
 
     private val layoutClickedListener =
+
         OnClickListener {
             // If the OnClickListener was set (an action was assigned) call Onclick.
             // Else flip the switch
@@ -76,6 +62,7 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         }
 
     private val layoutLongClickedListener =
+
         OnLongClickListener {
             // If the OnLongClickListener was set (an action was assigned) call onLongClick.
             // Else flip the switch
@@ -88,98 +75,6 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
             }
             true
         }
-
-    fun setSwitchChecked(boolean: Boolean) {
-        materialSwitch?.isChecked = boolean
-    }
-
-    fun getSwitchChecked(): Boolean {
-        return materialSwitch?.isChecked == true
-    }
-
-    fun setLayoutEnabled(boolean: Boolean) {
-        materialSwitch?.isEnabled = boolean
-        materialSwitch?.isClickable = boolean
-
-        linearLayout?.alpha = if (boolean) 1f else 0.5f
-
-        if (boolean) {
-            linearLayout?.setOnClickListener(layoutClickedListener)
-            linearLayout?.setOnLongClickListener(layoutLongClickedListener)
-        } else {
-            linearLayout?.setOnClickListener(null)
-            linearLayout?.setOnLongClickListener(null)
-        }
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setSwitchVibrationEffects() {
-        materialSwitch?.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                materialSwitch!!.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-            } else if (event.action == MotionEvent.ACTION_UP) {
-                materialSwitch!!.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-            }
-            false
-        }
-    }
-
-    fun showProgressBar(boolean: Boolean) {
-        progressBar?.visibility = if (boolean) VISIBLE else GONE
-    }
-
-    fun setDescription(text: String?) {
-        if (text.isNullOrEmpty()) {
-            description?.text = null
-            description?.visibility = GONE
-        } else {
-            description?.text = text
-            description?.visibility = VISIBLE
-        }
-    }
-
-    fun setTitle(text: String?) {
-        if (text.isNullOrEmpty()) {
-            title?.text = text
-            title?.visibility = GONE
-        } else {
-            title?.text = text
-            title?.visibility = VISIBLE
-        }
-    }
-
-    fun setSectionAlert(boolean: Boolean) {
-        if (boolean) {
-            ImageViewCompat.setImageTintList(iconStart!!, ContextCompat.getColorStateList(context, R.color.softRed))
-        } else {
-            ImageViewCompat.setImageTintList(iconStart!!, ColorStateList.valueOf(AttributeHelper.getValueByAttr(context, R.attr.colorControlNormal)))
-        }
-    }
-
-    fun setImageResourceIcons(startIcon: Int?, endIcon: Int?) {
-        if (startIcon != null) {
-            iconStart?.setImageResource(startIcon)
-        }
-        if (endIcon != null) {
-            iconEnd?.setImageResource(endIcon)
-        }
-    }
-
-    fun showSwitch(b: Boolean) {
-        materialSwitch?.visibility = if (b) VISIBLE else GONE
-    }
-
-    interface OnSwitchCheckedChangedListener {
-        fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean)
-    }
-
-    interface OnLayoutClickedListener {
-        fun onClick()
-    }
-
-    interface OnLayoutLongClickedListener {
-        fun onLongClick()
-    }
 
     init {
         val inflater = LayoutInflater.from(context)
@@ -275,4 +170,119 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         }
     }
 
+    fun getOnLayoutLongClickedListener(): OnLayoutLongClickedListener? {
+        return onLongClicklistener
+    }
+
+    fun setOnLayoutLongClickedListener(listener: OnLayoutLongClickedListener?) {
+        this.onLongClicklistener = listener
+    }
+
+    fun getOnLayoutClickedListener(): OnLayoutClickedListener? {
+        return onClicklistener
+    }
+
+    fun setOnLayoutClickedListener(listener: OnLayoutClickedListener?) {
+        this.onClicklistener = listener
+    }
+
+    fun getOnSwitchCheckedChangedListener(): OnSwitchCheckedChangedListener? {
+        return listener
+    }
+
+    fun setOnSwitchCheckedChangedListener(listener: OnSwitchCheckedChangedListener?) {
+        this.listener = listener
+    }
+
+    fun setSwitchChecked(boolean: Boolean) {
+        materialSwitch?.isChecked = boolean
+    }
+
+    fun getSwitchChecked(): Boolean {
+        return materialSwitch?.isChecked == true
+    }
+
+    fun setLayoutEnabled(boolean: Boolean) {
+        materialSwitch?.isEnabled = boolean
+        materialSwitch?.isClickable = boolean
+
+        linearLayout?.alpha = if (boolean) 1f else 0.5f
+
+        if (boolean) {
+            linearLayout?.setOnClickListener(layoutClickedListener)
+            linearLayout?.setOnLongClickListener(layoutLongClickedListener)
+        } else {
+            linearLayout?.setOnClickListener(null)
+            linearLayout?.setOnLongClickListener(null)
+        }
+    }
+
+    fun showProgressBar(boolean: Boolean) {
+        progressBar?.visibility = if (boolean) VISIBLE else GONE
+    }
+
+    fun setDescription(text: String?) {
+        if (text.isNullOrEmpty()) {
+            description?.text = null
+            description?.visibility = GONE
+        } else {
+            description?.text = text
+            description?.visibility = VISIBLE
+        }
+    }
+
+    fun setTitle(text: String?) {
+        if (text.isNullOrEmpty()) {
+            title?.text = text
+            title?.visibility = GONE
+        } else {
+            title?.text = text
+            title?.visibility = VISIBLE
+        }
+    }
+
+    fun setSectionAlert(boolean: Boolean) {
+        if (boolean) {
+            ImageViewCompat.setImageTintList(iconStart!!, ContextCompat.getColorStateList(context, R.color.softRed))
+        } else {
+            ImageViewCompat.setImageTintList(iconStart!!, ColorStateList.valueOf(AttributeHelper.getValueByAttr(context, R.attr.colorControlNormal)))
+        }
+    }
+
+    fun setImageResourceIcons(startIcon: Int?, endIcon: Int?) {
+        if (startIcon != null) {
+            iconStart?.setImageResource(startIcon)
+        }
+        if (endIcon != null) {
+            iconEnd?.setImageResource(endIcon)
+        }
+    }
+
+    fun showSwitch(b: Boolean) {
+        materialSwitch?.visibility = if (b) VISIBLE else GONE
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setSwitchVibrationEffects() {
+        materialSwitch?.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                materialSwitch!!.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            } else if (event.action == MotionEvent.ACTION_UP) {
+                materialSwitch!!.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            }
+            false
+        }
+    }
+
+    interface OnSwitchCheckedChangedListener {
+        fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean)
+    }
+
+    interface OnLayoutClickedListener {
+        fun onClick()
+    }
+
+    interface OnLayoutLongClickedListener {
+        fun onLongClick()
+    }
 }

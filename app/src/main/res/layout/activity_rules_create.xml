@@ -27,219 +27,219 @@
         android:alpha="0"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <LinearLayout
-                android:id="@+id/activity_rules_create_LL1"
+        <LinearLayout
+            android:id="@+id/activity_rules_create_LL1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:padding="@dimen/layout_padding">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/activity_rules_create_rule_name_til"
+                style="@style/AddyIoTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                android:padding="@dimen/layout_padding">
+                android:layout_marginBottom="6dp"
+                android:hint="@string/enter_name"
+                android:visibility="visible">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/activity_rules_create_rule_name_til"
-                    style="@style/AddyIoTextInputLayoutOutlined"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/activity_rules_create_rule_name_tiet"
+                    style="@style/AddyIoTextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="6dp"
-                    android:hint="@string/enter_name"
-                    android:visibility="visible">
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:imeOptions="actionDone"
+                    android:inputType="textMultiLine"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:minLines="1" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/activity_rules_create_rule_name_tiet"
-                        style="@style/AddyIoTextInputEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="top"
-                        android:imeOptions="actionDone"
-                        android:inputType="textMultiLine"
-                        android:lines="1"
-                        android:maxLines="1"
-                        android:minLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:alpha="0.4"
+                android:gravity="center_vertical"
+                android:text="@string/run_rule_on" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/activity_rules_create_rule_run_chipgroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                app:selectionRequired="true"
+                app:singleLine="true"
+                app:singleSelection="false">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/activity_rules_create_rule_run_chip_forwards"
+                    style="@style/AddyIoChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="@string/forwards" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/activity_rules_create_rule_run_chip_replies"
+                    style="@style/AddyIoChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="@string/replies" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/activity_rules_create_rule_run_chip_sends"
+                    style="@style/AddyIoChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="@string/sends" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <LinearLayout
+                style="@style/AddyIoTitleNoAction"
+                android:layout_width="match_parent"
+                android:orientation="horizontal">
 
                 <TextView
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/conditions" />
+
+
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/rules_view_and_or_AND_mbtg"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:alpha="0.4"
-                    android:gravity="center_vertical"
-                    android:text="@string/run_rule_on" />
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/activity_rules_create_rule_run_chipgroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="16dp"
+                    android:layout_height="wrap_content"
+                    android:weightSum="2"
+                    app:checkedButton="@+id/rules_view_and_or_AND_button"
                     app:selectionRequired="true"
-                    app:singleLine="true"
-                    app:singleSelection="false">
+                    app:singleSelection="true">
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/activity_rules_create_rule_run_chip_forwards"
-                        style="@style/AddyIoChip"
+                    <!-- app:materialThemeOverlay makes sure the line is visible in both dark- and lightmode -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/rules_view_and_or_AND_button"
+                        style="@style/AddyIoMaterialToggleButtonAlternative"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:checked="true"
-                        android:text="@string/forwards" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/activity_rules_create_rule_run_chip_replies"
-                        style="@style/AddyIoChip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:checked="true"
-                        android:text="@string/replies" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/activity_rules_create_rule_run_chip_sends"
-                        style="@style/AddyIoChip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:checked="true"
-                        android:text="@string/sends" />
-
-                </com.google.android.material.chip.ChipGroup>
-
-                <LinearLayout
-                    style="@style/AddyIoTitleNoAction"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="@string/conditions" />
+                        android:text="@string/and" />
 
-
-                    <com.google.android.material.button.MaterialButtonToggleGroup
-                        android:id="@+id/rules_view_and_or_AND_mbtg"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/rules_view_and_or_OR_button"
+                        style="@style/AddyIoMaterialToggleButtonAlternative"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:weightSum="2"
-                        app:checkedButton="@+id/rules_view_and_or_AND_button"
-                        app:selectionRequired="true"
-                        app:singleSelection="true">
+                        android:layout_weight="1"
+                        android:text="@string/or" />
 
-                        <!-- app:materialThemeOverlay makes sure the line is visible in both dark- and lightmode -->
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/rules_view_and_or_AND_button"
-                            style="@style/AddyIoMaterialToggleButtonAlternative"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:text="@string/and" />
+                </com.google.android.material.button.MaterialButtonToggleGroup>
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/rules_view_and_or_OR_button"
-                            style="@style/AddyIoMaterialToggleButtonAlternative"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/or" />
-
-                    </com.google.android.material.button.MaterialButtonToggleGroup>
-
-                </LinearLayout>
+            </LinearLayout>
 
 
-                <com.google.android.material.card.MaterialCardView
-                    style="?materialCardViewOutlinedStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:id="@+id/activity_rules_create_LL_conditions"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:clipChildren="false"
-                            android:clipToPadding="false"
-                            android:orientation="vertical"
-                            android:padding="4dp" />
-
-
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
+            <com.google.android.material.card.MaterialCardView
+                style="?materialCardViewOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <LinearLayout
-                    style="@style/AddyIoTitleNoAction"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="12dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/actions_then" />
-
-                </LinearLayout>
-
-                <com.google.android.material.card.MaterialCardView
-                    style="?materialCardViewOutlinedStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/activity_rules_create_LL_conditions"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:clipChildren="false"
                         android:clipToPadding="false"
                         android:orientation="vertical"
-                        android:padding="4dp">
+                        android:padding="4dp" />
 
-                        <LinearLayout
-                            android:id="@+id/activity_rules_create_LL_actions"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:clipChildren="false"
-                            android:clipToPadding="false"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
 
-                <View
-                    style="@style/divider"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="16dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <LinearLayout
+                style="@style/AddyIoTitleNoAction"
+                android:layout_width="match_parent"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/actions_then" />
+
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                style="?materialCardViewOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
-                    android:alpha="0.8"
-                    tools:ignore="UseCompoundDrawables">
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:padding="4dp">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:contentDescription="@string/Info"
-                        android:paddingEnd="16dp"
-                        android:src="@drawable/ic_info"
-                        tools:ignore="RtlSymmetry" />
-
-                    <TextView
-                        android:id="@+id/activity_domain_settings_RL_count_text"
+                    <LinearLayout
+                        android:id="@+id/activity_rules_create_LL_actions"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:text="@string/rules_create_info" />
+                        android:layout_height="match_parent"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:orientation="vertical" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <View
+                style="@style/divider"
+                android:layout_width="match_parent"
+                android:layout_marginTop="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:alpha="0.8"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:contentDescription="@string/Info"
+                    android:paddingEnd="16dp"
+                    android:src="@drawable/ic_info"
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/activity_domain_settings_RL_count_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/rules_create_info" />
             </LinearLayout>
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

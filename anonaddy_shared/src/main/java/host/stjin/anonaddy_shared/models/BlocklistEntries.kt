@@ -1,7 +1,9 @@
 package host.stjin.anonaddy_shared.models
 
 data class BlocklistEntriesArray(
-    val `data`: List<BlocklistEntries>
+    var `data`: ArrayList<BlocklistEntries>,
+    var links: Links?,
+    var meta: Meta?
 )
 
 data class SingleBlocklistEntry(

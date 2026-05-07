@@ -17,7 +17,7 @@ Easily create and manage your addy.io aliases, recipients and more from your pho
 
 > addy.io
 
-- addy.io instance running v1.5.0 or higher (current version of the addy.io app has been tested with v1.5.0)
+- addy.io instance running v1.6.0 or higher (current version of the addy.io app has been tested with v1.6.0)
 
 > Android
 
@@ -83,6 +83,7 @@ Developer-led download channels:
 **Certificate fingerprints for Github builds**
 
 SHA1: B3:54:B7:FB:01:39:DC:5C:ED:BA:FB:B6:9E:7B:C5:C5:CD:CF:0E:F3
+
 SHA256: 12:D4:69:1B:9F:67:A7:06:D4:E5:B0:AB:DF:A2:58:6A:A4:B0:18:BE:A1:99:9E:ED:79:18:0A:73:61:CA:ED:D2
 
 > Note that both Google Play as well as F-Droid use their own signing keys which differ from these

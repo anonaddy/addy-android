@@ -26,27 +26,16 @@ class EditAliasRecipientsBottomDialogFragment(
 ) :
     BaseBottomSheetDialogFragment(),
     View.OnClickListener {
-
-
     private lateinit var listener: AddEditAliasRecipientsBottomDialogListener
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddEditAliasRecipientsBottomDialogListener {
-        fun recipientsEdited(alias: Aliases)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
-
 
     private var _binding: BottomsheetEditRecipientsAliasBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(null, null)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +62,27 @@ class EditAliasRecipientsBottomDialogFragment(
 
         return root
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_editrecipients_save_button) {
+                editRecipients(
+                    requireContext()
+                )
+            }
+        }
     }
 
     private suspend fun getAllRecipients(context: Context) {
@@ -103,18 +113,6 @@ class EditAliasRecipientsBottomDialogFragment(
             }
 
         }, true)
-    }
-
-
-    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(null, null)
-    companion object {
-        fun newInstance(
-            id: String,
-            recipients: List<Recipients>?
-        ): EditAliasRecipientsBottomDialogFragment {
-            return EditAliasRecipientsBottomDialogFragment(id, recipients)
-        }
     }
 
     private fun editRecipients(context: Context) {
@@ -153,18 +151,17 @@ class EditAliasRecipientsBottomDialogFragment(
         }, aliasId, recipients)
     }
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_editrecipients_save_button) {
-                editRecipients(
-                    requireContext()
-                )
-            }
-        }
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddEditAliasRecipientsBottomDialogListener {
+        fun recipientsEdited(alias: Aliases)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(
+            id: String,
+            recipients: List<Recipients>?
+        ): EditAliasRecipientsBottomDialogFragment {
+            return EditAliasRecipientsBottomDialogFragment(id, recipients)
+        }
     }
 }

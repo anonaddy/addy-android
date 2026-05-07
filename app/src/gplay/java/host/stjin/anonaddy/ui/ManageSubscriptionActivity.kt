@@ -5,8 +5,21 @@ import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
-import com.android.billingclient.api.*
+import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PendingPurchasesParams
+import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchasesResponseListener
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryPurchasesParams
+import com.android.billingclient.api.queryProductDetails
 import com.google.android.material.button.MaterialButton
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
@@ -21,19 +34,29 @@ import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import androidx.core.net.toUri
 
 
 class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, PurchasesUpdatedListener, PurchasesResponseListener {
-
     private lateinit var settingsManager: SettingsManager
+
     private lateinit var encryptedSettingsManager: SettingsManager
 
     private var currentSubscriptionSku: String? = null
+
     private var currentSubscriptionPurchaseToken: String? = null
+
     private var hasNewSubscription = false
 
     private lateinit var binding: ActivityManageSubscriptionBinding
+
+    private var selectedTab = "pro"
+
+    private lateinit var billingClient: BillingClient
+
+    private var products = mutableListOf<ProductDetails>()
+
+    private lateinit var featuresContainer: LinearLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityManageSubscriptionBinding.inflate(layoutInflater)
@@ -70,13 +93,82 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
         }
 
 
-
     }
 
-    private var selectedTab = "pro"
-    private lateinit var billingClient: BillingClient
-    private var products = mutableListOf<ProductDetails>()
+    override fun onDestroy() {
+        if (::billingClient.isInitialized) {
+            billingClient.endConnection()
+        }
 
+
+        super.onDestroy()
+    }
+
+    override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
+        when (billingResult.responseCode) {
+            BillingClient.BillingResponseCode.OK if purchases != null -> {
+                for (purchase in purchases) {
+                    handlePurchase(purchase)
+                    lifecycleScope.launch {
+                        getPurchasedItem()
+                    }
+                }
+            }
+
+            BillingClient.BillingResponseCode.USER_CANCELED -> {
+                // Handle an error caused by a user cancelling the purchase flow.
+            }
+
+            else -> {
+                LoggingHelper(this).addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    billingResult.debugMessage,
+                    "onPurchasesUpdated",
+                    billingResult.responseCode.toString()
+                )
+            }
+        }
+    }
+
+    override fun finish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("hasNewSubscription", hasNewSubscription)
+        setResult(RESULT_OK, resultIntent)
+        super.finish()
+    }
+
+    override fun onBillingServiceDisconnected() {
+        billingClient.startConnection(this)
+    }
+
+    override fun onBillingSetupFinished(p0: BillingResult) {
+        if (p0.responseCode == BillingClient.BillingResponseCode.OK) {
+            // Here you can query products
+            lifecycleScope.launch {
+                queryProducts()
+                getPurchasedItem()
+            }
+        }
+    }
+
+    override fun onQueryPurchasesResponse(p0: BillingResult, p1: MutableList<Purchase>) {
+        if (p0.responseCode == BillingClient.BillingResponseCode.OK) {
+            for (purchase in p1) {
+                // Handle each purchase
+                currentSubscriptionSku = purchase.products.first()
+                currentSubscriptionPurchaseToken = purchase.purchaseToken
+                //Log.d("Subscription", "Current subscribed productId: ${purchase.products.joinToString(" ,")}")
+                //Log.d("Subscription", "Current subscribed productId: $currentSubscriptionSku")
+                //Log.d("Subscription", "Current subscribed purchaseToken: $currentSubscriptionPurchaseToken")
+            }
+            lifecycleScope.launch {
+                queryProducts()
+            }
+        } else {
+            // Handle error or no purchase found
+            //Log.e("Billing", "Error or no subscriptions found: " + p0.debugMessage)
+        }
+    }
 
     private fun setupBillingClient() {
         billingClient = BillingClient.newBuilder(this)
@@ -178,8 +270,6 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
         setupFeaturesView()
     }
 
-
-    private lateinit var featuresContainer: LinearLayout
     private fun setupFeaturesView() {
         featuresContainer = findViewById(R.id.activity_manage_subscription_features_LL)
 
@@ -332,30 +422,6 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
         }
     }
 
-    override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
-        when (billingResult.responseCode) {
-            BillingClient.BillingResponseCode.OK if purchases != null -> {
-                for (purchase in purchases) {
-                    handlePurchase(purchase)
-                    lifecycleScope.launch {
-                        getPurchasedItem()
-                    }
-                }
-            }
-            BillingClient.BillingResponseCode.USER_CANCELED -> {
-                // Handle an error caused by a user cancelling the purchase flow.
-            }
-            else -> {
-                LoggingHelper(this).addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    billingResult.debugMessage,
-                    "onPurchasesUpdated",
-                    billingResult.responseCode.toString()
-                )
-            }
-        }
-    }
-
     private fun handlePurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             // Only handle not acknowledged purchases
@@ -379,13 +445,6 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
                 }
             }
         }
-    }
-
-    override fun finish() {
-        val resultIntent = Intent()
-        resultIntent.putExtra("hasNewSubscription", hasNewSubscription)
-        setResult(RESULT_OK, resultIntent)
-        super.finish()
     }
 
     private suspend fun notifyInstanceAboutSubscription(purchase: Purchase, callback: (Boolean) -> Unit) {
@@ -434,48 +493,4 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
             }
         }
     }
-
-    override fun onDestroy() {
-        if (::billingClient.isInitialized) {
-            billingClient.endConnection()
-        }
-
-
-        super.onDestroy()
-    }
-
-    override fun onBillingServiceDisconnected() {
-        billingClient.startConnection(this)
-    }
-
-    override fun onBillingSetupFinished(p0: BillingResult) {
-        if (p0.responseCode == BillingClient.BillingResponseCode.OK) {
-            // Here you can query products
-            lifecycleScope.launch {
-                queryProducts()
-                getPurchasedItem()
-            }
-        }
-    }
-
-    override fun onQueryPurchasesResponse(p0: BillingResult, p1: MutableList<Purchase>) {
-        if (p0.responseCode == BillingClient.BillingResponseCode.OK) {
-            for (purchase in p1) {
-                // Handle each purchase
-                currentSubscriptionSku = purchase.products.first()
-                currentSubscriptionPurchaseToken = purchase.purchaseToken
-                //Log.d("Subscription", "Current subscribed productId: ${purchase.products.joinToString(" ,")}")
-                //Log.d("Subscription", "Current subscribed productId: $currentSubscriptionSku")
-                //Log.d("Subscription", "Current subscribed purchaseToken: $currentSubscriptionPurchaseToken")
-            }
-            lifecycleScope.launch {
-                queryProducts()
-            }
-        } else {
-            // Handle error or no purchase found
-            //Log.e("Billing", "Error or no subscriptions found: " + p0.debugMessage)
-        }
-    }
-
-
 }

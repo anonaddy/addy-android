@@ -8,10 +8,9 @@ import host.stjin.anonaddy.databinding.ActivityManageBlocklistBinding
 import kotlinx.coroutines.launch
 
 class ManageBlocklistActivity : BaseActivity() {
-
     private lateinit var binding: ActivityManageBlocklistBinding
-    private val manageBlocklistFragment = ManageBlocklistFragment()
 
+    private val manageBlocklistFragment = ManageBlocklistFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +40,6 @@ class ManageBlocklistActivity : BaseActivity() {
         }
     }
 
-
     private fun setPage() {
         /**
          * This activity can be called by an URI or Widget/Notification Intent.
@@ -59,5 +57,4 @@ class ManageBlocklistActivity : BaseActivity() {
         }
 
     }
-
 }

@@ -9,9 +9,9 @@ object AddyIo {
     // The versioncode is a combination of MAJOR MINOR PATCH
     //TODO Update on every release
 
-    // 1.5.0
+    // 1.6.0
     var MINIMUMVERSIONCODEMAJOR = 1
-    var MINIMUMVERSIONCODEMINOR = 5
+    var MINIMUMVERSIONCODEMINOR = 6
     var MINIMUMVERSIONCODEPATCH = 0
 
     var VERSIONMAJOR = 0
@@ -21,8 +21,7 @@ object AddyIo {
 
 
     val isUsingHostedInstance: Boolean
-    get() = VERSIONMAJOR == 9999
-
+        get() = VERSIONMAJOR == 9999
 
 
     //resettableLazy(lazyMgr) properties: the value gets computed only upon first access
@@ -82,7 +81,6 @@ object AddyIo {
     // Hosted only
     val API_URL_ACCOUNT_NOTIFICATIONS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/account-notifications" }
     val API_URL_NOTIFY_SUBSCRIPTION: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/notify-subscription" }
-
 
 
     // Github built-in updater

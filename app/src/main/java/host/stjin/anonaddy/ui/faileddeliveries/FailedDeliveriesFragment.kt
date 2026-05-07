@@ -26,25 +26,24 @@ import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener, Refreshable {
-
     private var failedDeliveriesList: FailedDeliveriesArray? = null
+
     private var networkHelper: NetworkHelper? = null
+
     private var encryptedSettingsManager: SettingsManager? = null
+
     private var oneTimeRecyclerViewActions: Boolean = true
 
     private var failedDeliveryDetailsBottomDialogFragment: FailedDeliveryDetailsBottomDialogFragment? = null
-
-
-    companion object {
-        fun newInstance() = FailedDeliveriesFragment()
-    }
-
 
     private var _binding: FragmentFailedDeliveriesBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var failedDeliveriesAdapter: FailedDeliveryAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -65,12 +64,84 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
         return root
     }
 
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val gson = Gson()
         val json = gson.toJson(failedDeliveriesList)
         outState.putString("failedDeliveries", json)
+    }
+
+    fun getDataFromWeb(savedInstanceState: Bundle?, callback: () -> Unit? = {}) {
+        // Get the latest data in the background, and update the values when loaded
+        lifecycleScope.launch {
+            if (savedInstanceState != null) {
+
+                val failedDeliveriesJson = savedInstanceState.getString("failedDeliveries")
+                if (failedDeliveriesJson!!.isNotEmpty() && failedDeliveriesJson != "null") {
+                    val gson = Gson()
+                    val list = gson.fromJson(failedDeliveriesJson, FailedDeliveriesArray::class.java)
+                    setFailedDeliveriesAdapter(list, true)
+                } else {
+                    // failedDeliveriesJson could be null when an embedded activity is opened instantly
+                    getAllFailedDeliveriesAndSetRecyclerview(forceReload = true)
+                }
+
+            } else {
+                getAllFailedDeliveriesAndSetRecyclerview(forceReload = true)
+            }
+            callback()
+        }
+    }
+
+    fun fragmentShown() {
+        if (::failedDeliveriesAdapter.isInitialized) {
+            // Set the count of failed deliveries so that the shimmerview looks better next time AND so that we can use it for the backgroundservice AND mark this a read for the badge
+            encryptedSettingsManager?.putSettingsInt(
+                SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT,
+                failedDeliveriesList?.meta?.total ?: failedDeliveriesAdapter.itemCount
+            )
+
+            val latestId = failedDeliveriesList?.data?.firstOrNull()?.id ?: "" // First in the list is actually the last ID because its sort DESC
+
+            if (latestId.isNotEmpty()) {
+                encryptedSettingsManager?.putSettingsString(
+                    SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID,
+                    latestId
+                )
+                encryptedSettingsManager?.putSettingsString(
+                    SettingsManager.PREFS.BACKGROUND_SERVICE_NOTIFIED_FAILED_DELIVERIES_LATEST_ID,
+                    latestId
+                )
+            }
+        }
+    }
+
+    override fun onDeleted(failedDeliveryId: String) {
+        failedDeliveryDetailsBottomDialogFragment?.dismissAllowingStateLoss()
+        // Get the latest data in the background, and update the values when loaded
+        getDataFromWeb(null)
+    }
+
+    override fun onRefreshData() {
+        // The key is to check if the view is created before proceeding.
+        // `viewLifecycleOwner` can be used as a proxy for this check.
+        if (!isAdded) return
+
+        // Use a try-catch as an ultimate safeguard against rare lifecycle race conditions.
+        try {
+            // This ensures the coroutine is launched only when the view's lifecycle is active.
+            viewLifecycleOwner.lifecycleScope.launch {
+                getDataFromWeb(null)
+            }
+        } catch (e: IllegalStateException) {
+            // Log the error if the lifecycle state was somehow invalid despite the check.
+            LoggingHelper(requireContext()).addLog(
+                LOGIMPORTANCE.CRITICAL.int,
+                "Failed to refresh data, view lifecycle not available. $e",
+                "FailedDeliveriesFragment",
+                null
+            )
+        }
     }
 
     private fun setOnNestedScrollViewListener(set: Boolean) {
@@ -90,30 +161,6 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
         }
     }
 
-
-    fun getDataFromWeb(savedInstanceState: Bundle?, callback: () -> Unit? = {}) {
-        // Get the latest data in the background, and update the values when loaded
-        lifecycleScope.launch {
-            if (savedInstanceState != null) {
-
-                val failedDeliveriesJson = savedInstanceState.getString("failedDeliveries")
-                if (!failedDeliveriesJson.isNullOrEmpty() && failedDeliveriesJson != "null") {
-                    val gson = Gson()
-                    val list = gson.fromJson(failedDeliveriesJson, FailedDeliveriesArray::class.java)
-                    setFailedDeliveriesAdapter(list, true)
-                } else {
-                    // failedDeliveriesJson could be null when an embedded activity is opened instantly
-                    getAllFailedDeliveriesAndSetRecyclerview(forceReload = true)
-                }
-
-            } else {
-                getAllFailedDeliveriesAndSetRecyclerview(forceReload = true)
-            }
-            callback()
-        }
-    }
-
-
     private fun setFailedDeliveriesRecyclerView() {
         binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.apply {
             if (oneTimeRecyclerViewActions) {
@@ -130,7 +177,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                 layoutAnimation = animation
 
                 showShimmer()
-                
+
                 binding.fragmentFailedDeliveriesChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
                     if (checkedIds.isNotEmpty()) {
                         viewLifecycleOwner.lifecycleScope.launch {
@@ -145,18 +192,18 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
     private fun getSelectedFilter(): String? {
         return when (binding.fragmentFailedDeliveriesChipgroup.checkedChipId) {
             R.id.fragment_failed_deliveries_chip_inbound -> "inbound"
+            R.id.fragment_failed_deliveries_chip_inbound_quarantined -> "inbound_quarantined"
             R.id.fragment_failed_deliveries_chip_outbound -> "outbound"
             else -> null
         }
     }
 
-    private lateinit var failedDeliveriesAdapter: FailedDeliveryAdapter
     private suspend fun getAllFailedDeliveriesAndSetRecyclerview(forceReload: Boolean = false) {
 
-        if (getSelectedFilter() == null){
+        if (getSelectedFilter() == null) {
             binding.fragmentFailedDeliveriesAllFailedDeliveriesTitle.text = getString(R.string.failed_deliveries)
         } else {
-            binding.fragmentFailedDeliveriesAllFailedDeliveriesTitle.text = getString(R.string.all_failed_deliveries_filtered)
+            binding.fragmentFailedDeliveriesAllFailedDeliveriesTitle.text = getString(R.string.failed_deliveries_filtered)
         }
 
         if (forceReload) {
@@ -177,6 +224,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                     if (::failedDeliveriesAdapter.isInitialized && list?.data == failedDeliveriesAdapter.getList()) {
                         setOnNestedScrollViewListener(true)
                         hideShimmer()
+                        binding.fragmentFailedDeliveriesProgress.visibility = View.GONE
                         return@getAllFailedDeliveries
                     }
 
@@ -189,23 +237,19 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                             binding.root.findViewById<View>(R.id.fragment_content_unavailable).visibility = View.VISIBLE
                         } else {
                             if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                                (activity as? MainActivity)?.let {
-                                    SnackbarHelper.createSnackbar(
-                                        requireContext(),
-                                        requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
-                                        it.findViewById(R.id.main_container),
-                                        LoggingHelper.LOGFILES.DEFAULT
-                                    ).show()
-                                }
+                                SnackbarHelper.createSnackbar(
+                                    requireContext(),
+                                    requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
+                                    (activity as MainActivity).findViewById(R.id.main_container),
+                                    LoggingHelper.LOGFILES.DEFAULT
+                                ).show()
                             } else {
-                                (activity as? FailedDeliveriesActivity)?.let {
-                                    SnackbarHelper.createSnackbar(
-                                        requireContext(),
-                                        requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
-                                        it.findViewById(R.id.activity_failed_deliveries_settings_CL),
-                                        LoggingHelper.LOGFILES.DEFAULT
-                                    ).show()
-                                }
+                                SnackbarHelper.createSnackbar(
+                                    requireContext(),
+                                    requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
+                                    (activity as FailedDeliveriesActivity).findViewById(R.id.activity_failed_deliveries_settings_CL),
+                                    LoggingHelper.LOGFILES.DEFAULT
+                                ).show()
                             }
 
                             // Show error animations
@@ -223,18 +267,18 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
         }
     }
 
-    fun fragmentShown() {
-        if (::failedDeliveriesAdapter.isInitialized) {
-            // Set the count of failed deliveries so that the shimmerview looks better next time AND so that we can use it for the backgroundservice AND mark this a read for the badge
-            encryptedSettingsManager?.putSettingsInt(
-                SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT,
-                failedDeliveriesList?.meta?.total ?: failedDeliveriesAdapter.itemCount
-            )
-        }
-    }
-
-
     private fun setFailedDeliveriesAdapter(list: FailedDeliveriesArray, forceReload: Boolean) {
+        binding.failedDeliveriesCount.apply {
+            list.meta?.total?.let { total ->
+                if (total > 0) {
+                    text = total.toString()
+                    visibility = View.VISIBLE
+                } else {
+                    visibility = View.GONE
+                }
+            } ?: run { visibility = View.GONE }
+        }
+
         binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.apply {
             if (failedDeliveriesList == null || forceReload) {
                 // If failedDeliveriesList is empty, assign it
@@ -246,10 +290,13 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                 failedDeliveriesList?.data?.addAll(list.data)
 
                 // Get the totalsize of the adapteritems
-                if (::failedDeliveriesAdapter.isInitialized) {
-                    val totalSize = failedDeliveriesAdapter.itemCount
-                    // Tell the adapter there is new data (from the original size to the added items)
-                    binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.post { failedDeliveriesAdapter.notifyItemRangeInserted(totalSize, list.data.size) }
+                val totalSize = failedDeliveriesAdapter.itemCount
+                // Tell the adapter there is new data (from the original size to the added items)
+                binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.post {
+                    failedDeliveriesAdapter.notifyItemRangeInserted(
+                        totalSize,
+                        list.data.size - 1
+                    )
                 }
             }
 
@@ -278,7 +325,6 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
             })
             adapter = failedDeliveriesAdapter
 
-
             // When in tablet mode (aka split screen mode) loading this fragment should not automatically update the value, it should only be updated
             // upon showing (so that the value keeps notifying the user until the user clicks on it.
             // When in phone mode the activity is in foreground and should update the value automatically.
@@ -291,27 +337,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
         }
     }
 
-
-    override fun onDeleted(failedDeliveryId: String) {
-        failedDeliveryDetailsBottomDialogFragment?.dismissAllowingStateLoss()
-        // Get the latest data in the background, and update the values when loaded
-        getDataFromWeb(null)
-    }
-
-    override fun onRefreshData() {
-        // The key is to check if the view is created before proceeding.
-        // `viewLifecycleOwner` can be used as a proxy for this check.
-        if (!isAdded) return
-
-        // Use a try-catch as an ultimate safeguard against rare lifecycle race conditions.
-        try {
-            // This ensures the coroutine is launched only when the view's lifecycle is active.
-            viewLifecycleOwner.lifecycleScope.launch {
-                getDataFromWeb(null)
-            }
-        } catch (e: IllegalStateException) {
-            // Log the error if the lifecycle state was somehow invalid despite the check.
-            LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, "Failed to refresh data, view lifecycle not available. $e", "FailedDeliveriesFragment", null)
-        }
+    companion object {
+        fun newInstance() = FailedDeliveriesFragment()
     }
 }

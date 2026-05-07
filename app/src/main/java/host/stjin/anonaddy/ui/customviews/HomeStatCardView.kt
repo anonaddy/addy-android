@@ -10,33 +10,32 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.withStyledAttributes
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import kotlin.math.roundToInt
-import androidx.core.content.withStyledAttributes
 
 
 class HomeStatCardView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) :
     LinearLayout(context, attrs, defStyle) {
     private var onClicklistener: OnLayoutClickedListener? = null
+
     var description: TextView? = null
+
     private var buttonText: TextView? = null
+
     private var title: TextView? = null
+
     private var icon: ImageView? = null
+
     private var progress: ProgressBar? = null
+
     private var linearLayout: LinearLayout? = null
+
     private var cardView: MaterialCardView? = null
 
-
-    fun getOnLayoutClickedListener(): OnLayoutClickedListener? {
-        return onClicklistener
-    }
-
-    fun setOnLayoutClickedListener(listener: OnLayoutClickedListener?) {
-        this.onClicklistener = listener
-    }
-
     private val layoutClickedListener =
+
         OnClickListener {
             // If the OnClickListener was set (an action was assigned) call Onclick.
             // Else flip the switch
@@ -44,74 +43,6 @@ class HomeStatCardView @JvmOverloads constructor(context: Context?, attrs: Attri
                 onClicklistener?.onClick()
             }
         }
-
-
-    fun setDescription(text: String?) {
-        if (text.isNullOrEmpty()) {
-            description?.text = null
-            description?.visibility = GONE
-        } else {
-            description?.text = text
-            description?.visibility = VISIBLE
-        }
-    }
-
-    fun setButtonText(text: String?) {
-        buttonText?.text = text
-    }
-
-    fun setTitle(text: String?) {
-        if (text.isNullOrEmpty()) {
-            title?.text = text
-            title?.visibility = GONE
-        } else {
-            title?.text = text
-            title?.visibility = VISIBLE
-        }
-    }
-
-    fun setProgress(progressValue: Float) {
-        // Not gonna round 0 to Int, that will fail
-        if (progressValue > 0) {
-            progress?.animateTo(progressValue.roundToInt(), 0)
-        }
-    }
-
-
-    private fun ProgressBar.animateTo(progressTo: Int, startDelay: Long) {
-        val animation = ObjectAnimator.ofInt(
-            this,
-            "progress",
-            this.progress,
-            progressTo
-        )
-        animation.duration = 300
-        animation.interpolator = DecelerateInterpolator()
-        animation.startDelay = startDelay
-        animation.start()
-    }
-
-    private fun setImageResourceIcons(startIcon: Int?, endIcon: Int?) {
-        if (startIcon != null) {
-            icon?.setImageResource(startIcon)
-        }
-        if (endIcon != null) {
-            icon?.setImageResource(endIcon)
-        }
-    }
-
-
-    interface OnSwitchCheckedChangedListener {
-        fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean)
-    }
-
-    interface OnLayoutClickedListener {
-        fun onClick()
-    }
-
-    interface OnLayoutLongClickedListener {
-        fun onLongClick()
-    }
 
     init {
         val inflater = LayoutInflater.from(context)
@@ -165,4 +96,76 @@ class HomeStatCardView @JvmOverloads constructor(context: Context?, attrs: Attri
         }
     }
 
+    fun getOnLayoutClickedListener(): OnLayoutClickedListener? {
+        return onClicklistener
+    }
+
+    fun setOnLayoutClickedListener(listener: OnLayoutClickedListener?) {
+        this.onClicklistener = listener
+    }
+
+    fun setDescription(text: String?) {
+        if (text.isNullOrEmpty()) {
+            description?.text = null
+            description?.visibility = GONE
+        } else {
+            description?.text = text
+            description?.visibility = VISIBLE
+        }
+    }
+
+    fun setButtonText(text: String?) {
+        buttonText?.text = text
+    }
+
+    fun setTitle(text: String?) {
+        if (text.isNullOrEmpty()) {
+            title?.text = text
+            title?.visibility = GONE
+        } else {
+            title?.text = text
+            title?.visibility = VISIBLE
+        }
+    }
+
+    fun setProgress(progressValue: Float) {
+        // Not gonna round 0 to Int, that will fail
+        if (progressValue > 0) {
+            progress?.animateTo(progressValue.roundToInt(), 0)
+        }
+    }
+
+    private fun ProgressBar.animateTo(progressTo: Int, startDelay: Long) {
+        val animation = ObjectAnimator.ofInt(
+            this,
+            "progress",
+            this.progress,
+            progressTo
+        )
+        animation.duration = 300
+        animation.interpolator = DecelerateInterpolator()
+        animation.startDelay = startDelay
+        animation.start()
+    }
+
+    private fun setImageResourceIcons(startIcon: Int?, endIcon: Int?) {
+        if (startIcon != null) {
+            icon?.setImageResource(startIcon)
+        }
+        if (endIcon != null) {
+            icon?.setImageResource(endIcon)
+        }
+    }
+
+    interface OnSwitchCheckedChangedListener {
+        fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean)
+    }
+
+    interface OnLayoutClickedListener {
+        fun onClick()
+    }
+
+    interface OnLayoutLongClickedListener {
+        fun onLongClick()
+    }
 }

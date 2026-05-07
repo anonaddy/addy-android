@@ -5,27 +5,28 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <LinearLayout
-            android:id="@+id/home_statistics_LL"
+    <LinearLayout
+        android:id="@+id/home_statistics_LL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="@dimen/layout_padding_top"
+        android:paddingStart="@dimen/layout_padding"
+        android:paddingEnd="@dimen/layout_padding">
+
+        <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:clipChildren="false"
             android:clipToPadding="false"
+            android:layout_marginTop="8dp"
+            android:columnCount="1"
             android:orientation="vertical"
-            android:padding="@dimen/layout_padding_top"
-            android:paddingStart="@dimen/layout_padding"
-            android:paddingEnd="@dimen/layout_padding">
+            android:useDefaultMargins="true">
 
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:layout_marginTop="8dp"
-                android:columnCount="1"
-                android:orientation="vertical"
-                android:useDefaultMargins="true">
             <host.stjin.anonaddy.ui.customviews.HomeStatCardView
                 android:id="@+id/home_stat_card_bandwidth"
                 android:layout_width="match_parent"
@@ -35,7 +36,84 @@
                 app:StatCardViewIcon="@drawable/ic_gauge"
                 app:StatCardViewShowButton="false"
                 app:StatCardViewTitle="@string/monthly_bandwidth" />
-            </GridLayout>
+        </GridLayout>
+
+        <LinearLayout
+            style="@style/AddyIoTitleAction"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/titleTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/statistics" />
+
+        </LinearLayout>
+
+
+        <GridLayout
+            android:id="@+id/home_stats_gridlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:columnCount="1"
+            android:orientation="vertical"
+            android:useDefaultMargins="true">
+
+            <host.stjin.anonaddy.ui.customviews.HomeStatCardView
+                android:id="@+id/home_stat_card_forwarded"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                app:StatCardViewDescription="0"
+                app:StatCardViewIcon="@drawable/ic_inbox"
+                app:StatCardViewShowButton="false"
+                app:StatCardViewTitle="@string/emails_forwarded" />
+
+            <host.stjin.anonaddy.ui.customviews.HomeStatCardView
+                android:id="@+id/home_stat_card_blocked"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                app:StatCardViewDescription="0"
+                app:StatCardViewIcon="@drawable/ic_forbid"
+                app:StatCardViewShowButton="false"
+                app:StatCardViewTitle="@string/emails_blocked" />
+
+
+            <host.stjin.anonaddy.ui.customviews.HomeStatCardView
+                android:id="@+id/home_stat_card_replies"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                app:StatCardViewDescription="0"
+                app:StatCardViewIcon="@drawable/ic_arrow_back_up"
+                app:StatCardViewShowButton="false"
+                app:StatCardViewTitle="@string/email_replies" />
+
+            <host.stjin.anonaddy.ui.customviews.HomeStatCardView
+                android:id="@+id/home_stat_card_sent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                app:StatCardViewDescription="0"
+                app:StatCardViewIcon="@drawable/ic_mail_forward"
+                app:StatCardViewShowButton="false"
+                app:StatCardViewTitle="@string/email_sent" />
+
+
+        </GridLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical">
 
             <LinearLayout
                 style="@style/AddyIoTitleAction"
@@ -48,166 +126,87 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/statistics" />
+                    android:text="@string/aliases" />
 
             </LinearLayout>
 
-
-
+            <!-- 8dp for spacing below scroll-->
             <GridLayout
-                android:id="@+id/home_stats_gridlayout"
+                android:id="@+id/home_stats_aliases_gridlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:alignmentMode="alignBounds"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:columnCount="1"
-                android:orientation="vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/cardview_extra_padding"
+                android:paddingEnd="@dimen/cardview_extra_padding"
                 android:useDefaultMargins="true">
 
                 <host.stjin.anonaddy.ui.customviews.HomeStatCardView
-                    android:id="@+id/home_stat_card_forwarded"
+                    android:id="@+id/home_stat_card_total_aliases"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    app:StatCardViewDescription="0"
-                    app:StatCardViewIcon="@drawable/ic_inbox"
+                    app:StatCardViewDescription="0/1"
+                    app:StatCardViewIcon="@drawable/ic_email_at"
                     app:StatCardViewShowButton="false"
-                    app:StatCardViewTitle="@string/emails_forwarded" />
+                    app:StatCardViewTitle="@string/total_aliases" />
 
                 <host.stjin.anonaddy.ui.customviews.HomeStatCardView
-                    android:id="@+id/home_stat_card_blocked"
+                    android:id="@+id/home_stat_card_active_aliases"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    app:StatCardViewDescription="0"
-                    app:StatCardViewIcon="@drawable/ic_forbid"
+                    app:StatCardViewDescription="0/1"
+                    app:StatCardViewIcon="@drawable/ic_check"
                     app:StatCardViewShowButton="false"
-                    app:StatCardViewTitle="@string/emails_blocked" />
-
+                    app:StatCardViewTitle="@string/active_aliases" />
 
                 <host.stjin.anonaddy.ui.customviews.HomeStatCardView
-                    android:id="@+id/home_stat_card_replies"
+                    android:id="@+id/home_stat_card_inactive_aliases"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    app:StatCardViewDescription="0"
-                    app:StatCardViewIcon="@drawable/ic_arrow_back_up"
+                    app:StatCardViewDescription="0/1"
+                    app:StatCardViewIcon="@drawable/ic_close"
                     app:StatCardViewShowButton="false"
-                    app:StatCardViewTitle="@string/email_replies" />
+                    app:StatCardViewTitle="@string/inactive_aliases" />
 
                 <host.stjin.anonaddy.ui.customviews.HomeStatCardView
-                    android:id="@+id/home_stat_card_sent"
+                    android:id="@+id/home_stat_card_deleted_aliases"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    app:StatCardViewDescription="0"
-                    app:StatCardViewIcon="@drawable/ic_mail_forward"
+                    app:StatCardViewDescription="0/1"
+                    app:StatCardViewIcon="@drawable/ic_trash"
                     app:StatCardViewShowButton="false"
-                    app:StatCardViewTitle="@string/email_sent" />
+                    app:StatCardViewTitle="@string/deleted_aliases" />
 
+                <host.stjin.anonaddy.ui.customviews.HomeStatCardView
+                    android:id="@+id/home_stat_watched_aliases"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:StatCardViewDescription="0/1"
+                    app:StatCardViewIcon="@drawable/ic_watch_alias"
+                    app:StatCardViewShowButton="false"
+                    app:StatCardViewTitle="@string/watched_aliases" />
 
-
+                <host.stjin.anonaddy.ui.customviews.HomeStatCardView
+                    android:id="@+id/home_stat_pinned_aliases"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:StatCardViewDescription="0/1"
+                    app:StatCardViewIcon="@drawable/ic_pinned"
+                    app:StatCardViewShowButton="false"
+                    app:StatCardViewTitle="@string/pinned_aliases" />
             </GridLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="vertical">
 
-                <LinearLayout
-                    style="@style/AddyIoTitleAction"
-                    android:layout_width="match_parent"
-                    android:layout_marginBottom="12dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/aliases" />
-
-                </LinearLayout>
-
-                <!-- 8dp for spacing below scroll-->
-                <GridLayout
-                    android:id="@+id/home_stats_aliases_gridlayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:alignmentMode="alignBounds"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:columnCount="1"
-                    android:orientation="horizontal"
-                    android:paddingStart="@dimen/cardview_extra_padding"
-                    android:paddingEnd="@dimen/cardview_extra_padding"
-                    android:useDefaultMargins="true">
-
-                    <host.stjin.anonaddy.ui.customviews.HomeStatCardView
-                        android:id="@+id/home_stat_card_total_aliases"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        app:StatCardViewDescription="0/1"
-                        app:StatCardViewIcon="@drawable/ic_email_at"
-                        app:StatCardViewShowButton="false"
-                        app:StatCardViewTitle="@string/total_aliases" />
-
-                    <host.stjin.anonaddy.ui.customviews.HomeStatCardView
-                        android:id="@+id/home_stat_card_active_aliases"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        app:StatCardViewDescription="0/1"
-                        app:StatCardViewIcon="@drawable/ic_check"
-                        app:StatCardViewShowButton="false"
-                        app:StatCardViewTitle="@string/active_aliases" />
-
-                    <host.stjin.anonaddy.ui.customviews.HomeStatCardView
-                        android:id="@+id/home_stat_card_inactive_aliases"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        app:StatCardViewDescription="0/1"
-                        app:StatCardViewIcon="@drawable/ic_close"
-                        app:StatCardViewShowButton="false"
-                        app:StatCardViewTitle="@string/inactive_aliases" />
-
-                    <host.stjin.anonaddy.ui.customviews.HomeStatCardView
-                        android:id="@+id/home_stat_card_deleted_aliases"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        app:StatCardViewDescription="0/1"
-                        app:StatCardViewIcon="@drawable/ic_trash"
-                        app:StatCardViewShowButton="false"
-                        app:StatCardViewTitle="@string/deleted_aliases" />
-
-                    <host.stjin.anonaddy.ui.customviews.HomeStatCardView
-                        android:id="@+id/home_stat_watched_aliases"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        app:StatCardViewDescription="0/1"
-                        app:StatCardViewIcon="@drawable/ic_watch_alias"
-                        app:StatCardViewShowButton="false"
-                        app:StatCardViewTitle="@string/watched_aliases" />
-
-                    <host.stjin.anonaddy.ui.customviews.HomeStatCardView
-                        android:id="@+id/home_stat_pinned_aliases"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        app:StatCardViewDescription="0/1"
-                        app:StatCardViewIcon="@drawable/ic_pinned"
-                        app:StatCardViewShowButton="false"
-                        app:StatCardViewTitle="@string/pinned_aliases" />
-                </GridLayout>
-
-
-            </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -246,18 +245,18 @@
                 android:paddingEnd="@dimen/cardview_extra_padding"
                 android:useDefaultMargins="true">
 
-            <host.stjin.anonaddy.ui.customviews.HomeStatCardView
-                android:id="@+id/home_stat_card_total_recipients"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                app:StatCardViewDescription="0"
-                app:StatCardViewIcon="@drawable/ic_inbox"
-                app:StatCardViewShowButton="false"
-                app:StatCardViewTitle="@string/total_recipients" />
+                <host.stjin.anonaddy.ui.customviews.HomeStatCardView
+                    android:id="@+id/home_stat_card_total_recipients"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:StatCardViewDescription="0"
+                    app:StatCardViewIcon="@drawable/ic_inbox"
+                    app:StatCardViewShowButton="false"
+                    app:StatCardViewTitle="@string/total_recipients" />
             </GridLayout>
         </LinearLayout>
 
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
 

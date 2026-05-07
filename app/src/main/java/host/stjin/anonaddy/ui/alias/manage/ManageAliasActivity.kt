@@ -18,7 +18,9 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.IconCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import app.futured.donut.DonutSection
 import com.google.android.gms.wearable.Wearable
@@ -43,8 +45,6 @@ import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
-import androidx.core.net.toUri
-import androidx.core.graphics.createBitmap
 
 
 class ManageAliasActivity : BaseActivity(),
@@ -52,14 +52,18 @@ class ManageAliasActivity : BaseActivity(),
     EditAliasFromNameBottomDialogFragment.AddEditAliasFromNameBottomDialogListener,
     EditAliasRecipientsBottomDialogFragment.AddEditAliasRecipientsBottomDialogListener,
     EditAliasSendMailRecipientBottomDialogFragment.AddEditAliasSendMailRecipientBottomDialogListener {
-
     lateinit var networkHelper: NetworkHelper
+
     private lateinit var aliasWatcher: AliasWatcher
+
     private var shouldRefreshOnFinish = false
 
     private lateinit var editAliasDescriptionBottomDialogFragment: EditAliasDescriptionBottomDialogFragment
+
     private lateinit var editAliasFromNameBottomDialogFragment: EditAliasFromNameBottomDialogFragment
+
     private lateinit var editAliasRecipientsBottomDialogFragment: EditAliasRecipientsBottomDialogFragment
+
     private lateinit var editAliasSendMailRecipientBottomDialogFragment: EditAliasSendMailRecipientBottomDialogFragment
 
     private var alias: Aliases? = null
@@ -67,13 +71,20 @@ class ManageAliasActivity : BaseActivity(),
             field = value
             value?.let { updateUi(it) }
         }
-    private var forceSwitch = false
-    private var shouldDeactivateThisAlias = false
 
+    private var forceSwitch = false
+
+    private var shouldDeactivateThisAlias = false
 
     // This value is here to keep track if the activity to which we return on finishWithUpdate should update its data.
     // Basically, whenever some information is changed we flip the boolean to true.
     private lateinit var binding: ActivityManageAliasBinding
+
+    private lateinit var restoreAliasSnackbar: Snackbar
+
+    private lateinit var deleteAliasSnackbar: Snackbar
+
+    private lateinit var forgetAliasSnackbar: Snackbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,6 +133,172 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
+    private fun setOnClickListeners() {
+        binding.activityManageAliasEmail.setOnClickListener {
+            val intent = Intent(this, ManageAliasNATOActivity::class.java)
+            intent.putExtra("alias", alias?.email)
+            this.startActivity(intent)
+        }
+
+        binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(!binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.getSwitchChecked())
+            }
+        })
+
+
+        binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(!binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.setSwitchChecked(!binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageAliasGeneralActions.activityManageAliasDescEdit.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editAliasDescriptionBottomDialogFragment.isAdded) {
+                    editAliasDescriptionBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editAliasDescriptionBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        binding.activityManageAliasGeneralActions.activityManageAliasRecipientsEdit.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editAliasRecipientsBottomDialogFragment.isAdded) {
+                    editAliasRecipientsBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editAliasRecipientsBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editAliasFromNameBottomDialogFragment.isAdded) {
+                    editAliasFromNameBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editAliasFromNameBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        binding.activityManageAliasGeneralActions.activityManageAliasDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                deleteAlias()
+            }
+        })
+
+        binding.activityManageAliasGeneralActions.activityManageAliasForget.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forgetAlias()
+            }
+        })
+
+        binding.activityManageAliasGeneralActions.activityManageAliasRestore.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                restoreAlias()
+            }
+        })
+
+        binding.activityManageAliasCopy.setOnClickListener {
+            val clipboard: ClipboardManager =
+                this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("alias", binding.activityManageAliasEmail.text)
+            clipboard.setPrimaryClip(clip)
+            SnackbarHelper.createSnackbar(this, this.resources.getString(R.string.copied_alias), binding.activityManageAliasCL).show()
+        }
+
+        binding.activityManageAliasSend.setOnClickListener {
+            if (!editAliasSendMailRecipientBottomDialogFragment.isAdded) {
+                editAliasSendMailRecipientBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "editAliasSendMailRecipientBottomDialogFragment"
+                )
+            }
+        }
+    }
+
+    override fun finish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
+        setResult(RESULT_OK, resultIntent)
+        super.finish()
+    }
+
+    override fun descriptionEdited(alias: Aliases) {
+        shouldRefreshOnFinish = true
+        editAliasDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
+        this.alias = alias
+    }
+
+    override fun fromNameEdited(alias: Aliases) {
+        shouldRefreshOnFinish = true
+        editAliasFromNameBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editAliasFromNameBottomDialogFragment
+        this.alias = alias
+    }
+
+    override fun recipientsEdited(alias: Aliases) {
+        // This changes the last updated time of the alias which is being shown in the recyclerview in the aliasFragment.
+        // So we update the list when coming back
+        shouldRefreshOnFinish = true
+        editAliasRecipientsBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
+        this.alias = alias
+    }
+
+    override fun onPressSend(toString: String) {
+        // Get recipients
+        val recipients = alias?.let { getSendAddress(toString, it) }
+
+        // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
+        onPressCopy(toString)
+
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = "mailto:".toUri() // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, recipients)
+        if (intent.resolveActivity(packageManager) != null) {
+            AnonAddyUtils.startShareSheetActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))
+        }
+        editAliasSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
+    }
+
+    override fun onPressCopy(toString: String) {
+        // Get recipients
+        val recipients = alias?.let { getSendAddress(toString, it) }
+
+        // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
+        val clipboard: ClipboardManager =
+            this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("recipients", recipients?.joinToString(";"))
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
+        editAliasSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
+    }
+
     private fun setRefreshLayout() {
         binding.activityManageAliasSwiperefresh.setOnRefreshListener {
             binding.activityManageAliasSwiperefresh.isRefreshing = true
@@ -136,7 +313,6 @@ class ManageAliasActivity : BaseActivity(),
         view.draw(canvas)
         return bitmap
     }
-
 
     private fun addAliasAsShortcut() {
         val encryptedSettingsManager = SettingsManager(true, this)
@@ -201,7 +377,6 @@ class ManageAliasActivity : BaseActivity(),
     private fun loadNodes() {
         if (BuildConfig.FLAVOR == "gplay") {
             try {
-                // TODO Maybe add option menu when multiple wearables are connected
                 val nodeClient = Wearable.getNodeClient(this)
                 nodeClient.connectedNodes.addOnSuccessListener { nodes ->
                     // Send a message to all connected nodes
@@ -209,15 +384,29 @@ class ManageAliasActivity : BaseActivity(),
                     if (nodes.any()) {
                         if (this@ManageAliasActivity.alias != null) {
                             toolbarSetSecondAction(binding.activityManageAliasToolbar, R.drawable.ic_send_to_device_watch) {
-                                for (node in nodes) {
-                                    Wearable.getMessageClient(this)
-                                        .sendMessage(node.id, "/showAlias", this@ManageAliasActivity.alias!!.id.toByteArray())
+                                if (nodes.size > 1) {
+                                    val nodeListItems = arrayListOf<CharSequence>()
+                                    nodes.forEach { nodeListItems.add(it.displayName) }
+                                    val nodeListItemsCS: Array<CharSequence> = nodeListItems.toArray(arrayOfNulls<CharSequence>(nodeListItems.size))
+
+                                    val materialDialog = MaterialDialogHelper.showMaterialDialog(
+                                        context = this@ManageAliasActivity,
+                                        title = resources.getString(R.string.select_wearable_device),
+                                        icon = R.drawable.ic_device_watch,
+                                        neutralButtonText = resources.getString(R.string.cancel),
+                                    )
+
+                                    materialDialog.setSingleChoiceItems(
+                                        nodeListItemsCS,
+                                        -1
+                                    ) { dialog, which ->
+                                        sendToWearableNode(nodes[which].id)
+                                        dialog.dismiss()
+                                    }
+                                    materialDialog.show()
+                                } else {
+                                    sendToWearableNode(nodes[0].id)
                                 }
-                                SnackbarHelper.createSnackbar(
-                                    this,
-                                    this.resources.getString(R.string.check_your_wearable),
-                                    binding.activityManageAliasCL
-                                ).show()
                             }
                         }
 
@@ -227,6 +416,16 @@ class ManageAliasActivity : BaseActivity(),
                 LoggingHelper(this).addLog(LOGIMPORTANCE.WARNING.int, ex.toString(), "loadNodes", null)
             }
         }
+    }
+
+    private fun sendToWearableNode(nodeId: String) {
+        Wearable.getMessageClient(this)
+            .sendMessage(nodeId, "/showAlias", this@ManageAliasActivity.alias!!.id.toByteArray())
+        SnackbarHelper.createSnackbar(
+            this,
+            this.resources.getString(R.string.check_your_wearable),
+            binding.activityManageAliasCL
+        ).show()
     }
 
     private fun setChart(forwarded: Float, replied: Float, blocked: Float, sent: Float) {
@@ -354,13 +553,6 @@ class ManageAliasActivity : BaseActivity(),
 
     }
 
-    override fun finish() {
-        val resultIntent = Intent()
-        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
-        setResult(RESULT_OK, resultIntent)
-        super.finish()
-    }
-
     private suspend fun deactivateAlias() {
         networkHelper.deactivateSpecificAlias({ result ->
             binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(false)
@@ -389,7 +581,6 @@ class ManageAliasActivity : BaseActivity(),
             }
         }, this@ManageAliasActivity.alias!!.id)
     }
-
 
     private suspend fun activateAlias() {
         networkHelper.activateSpecificAlias({ alias, result ->
@@ -441,7 +632,6 @@ class ManageAliasActivity : BaseActivity(),
         }, this@ManageAliasActivity.alias!!.id)
     }
 
-
     private suspend fun pinAlias() {
         binding.activityManageAliasToolbar.customToolbarOneHandedActionProgressbar.visibility = View.VISIBLE
         networkHelper.pinSpecificAlias({ alias, result ->
@@ -462,9 +652,6 @@ class ManageAliasActivity : BaseActivity(),
         }, this@ManageAliasActivity.alias!!.id)
     }
 
-
-
-
     private suspend fun disableAttachedRecipientsOnly() {
         networkHelper.deactivateAttachedRecipientsOnly({ result ->
             binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.showProgressBar(false)
@@ -484,7 +671,6 @@ class ManageAliasActivity : BaseActivity(),
         }, this@ManageAliasActivity.alias!!.id)
     }
 
-
     private suspend fun enableAttachedRecipientsOnly() {
         networkHelper.activateAttachedRecipientsOnly({ alias, result ->
             binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.showProgressBar(false)
@@ -503,116 +689,6 @@ class ManageAliasActivity : BaseActivity(),
         }, this@ManageAliasActivity.alias!!.id)
     }
 
-
-
-
-
-    private fun setOnClickListeners() {
-        binding.activityManageAliasEmail.setOnClickListener {
-            val intent = Intent(this, ManageAliasNATOActivity::class.java)
-            intent.putExtra("alias", alias?.email)
-            this.startActivity(intent)
-        }
-
-        binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(!binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.getSwitchChecked())
-            }
-        })
-
-
-        binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(!binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.getSwitchChecked())
-            }
-        })
-
-        binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.setSwitchChecked(!binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.getSwitchChecked())
-            }
-        })
-
-        binding.activityManageAliasGeneralActions.activityManageAliasDescEdit.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!editAliasDescriptionBottomDialogFragment.isAdded) {
-                    editAliasDescriptionBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "editAliasDescriptionBottomDialogFragment"
-                    )
-                }
-            }
-        })
-
-        binding.activityManageAliasGeneralActions.activityManageAliasRecipientsEdit.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!editAliasRecipientsBottomDialogFragment.isAdded) {
-                    editAliasRecipientsBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "editAliasRecipientsBottomDialogFragment"
-                    )
-                }
-            }
-        })
-
-        binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!editAliasFromNameBottomDialogFragment.isAdded) {
-                    editAliasFromNameBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "editAliasFromNameBottomDialogFragment"
-                    )
-                }
-            }
-        })
-
-        binding.activityManageAliasGeneralActions.activityManageAliasDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                deleteAlias()
-            }
-        })
-
-        binding.activityManageAliasGeneralActions.activityManageAliasForget.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forgetAlias()
-            }
-        })
-
-        binding.activityManageAliasGeneralActions.activityManageAliasRestore.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                restoreAlias()
-            }
-        })
-
-        binding.activityManageAliasCopy.setOnClickListener {
-            val clipboard: ClipboardManager =
-                this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("alias", binding.activityManageAliasEmail.text)
-            clipboard.setPrimaryClip(clip)
-            SnackbarHelper.createSnackbar(this, this.resources.getString(R.string.copied_alias), binding.activityManageAliasCL).show()
-        }
-
-        binding.activityManageAliasSend.setOnClickListener {
-            if (!editAliasSendMailRecipientBottomDialogFragment.isAdded) {
-                editAliasSendMailRecipientBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "editAliasSendMailRecipientBottomDialogFragment"
-                )
-            }
-        }
-    }
-
-
-    private lateinit var restoreAliasSnackbar: Snackbar
     private fun restoreAlias() {
         MaterialDialogHelper.aliasRestoreDialog(
             context = this
@@ -630,7 +706,6 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
-    private lateinit var deleteAliasSnackbar: Snackbar
     private fun deleteAlias() {
         MaterialDialogHelper.aliasDeleteDialog(
             context = this
@@ -648,7 +723,6 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
-    private lateinit var forgetAliasSnackbar: Snackbar
     private fun forgetAlias() {
         MaterialDialogHelper.aliasForgetDialog(
             context = this
@@ -881,25 +955,41 @@ class ManageAliasActivity : BaseActivity(),
         if (alias.last_forwarded.isNullOrEmpty()) {
             binding.activityManageAliasGeneralActions.activityManageAliasLastForwarded.setDescription(this.resources.getString(R.string.unknown))
         } else {
-            binding.activityManageAliasGeneralActions.activityManageAliasLastForwarded.setDescription(DateTimeUtils.convertStringToLocalTimeZoneString(alias.last_forwarded))
+            binding.activityManageAliasGeneralActions.activityManageAliasLastForwarded.setDescription(
+                DateTimeUtils.convertStringToLocalTimeZoneString(
+                    alias.last_forwarded
+                )
+            )
         }
 
         if (alias.last_replied.isNullOrEmpty()) {
             binding.activityManageAliasGeneralActions.activityManageAliasLastReplied.setDescription(this.resources.getString(R.string.unknown))
         } else {
-            binding.activityManageAliasGeneralActions.activityManageAliasLastReplied.setDescription(DateTimeUtils.convertStringToLocalTimeZoneString(alias.last_replied))
+            binding.activityManageAliasGeneralActions.activityManageAliasLastReplied.setDescription(
+                DateTimeUtils.convertStringToLocalTimeZoneString(
+                    alias.last_replied
+                )
+            )
         }
 
         if (alias.last_sent.isNullOrEmpty()) {
             binding.activityManageAliasGeneralActions.activityManageAliasLastSent.setDescription(this.resources.getString(R.string.unknown))
         } else {
-            binding.activityManageAliasGeneralActions.activityManageAliasLastSent.setDescription(DateTimeUtils.convertStringToLocalTimeZoneString(alias.last_sent))
+            binding.activityManageAliasGeneralActions.activityManageAliasLastSent.setDescription(
+                DateTimeUtils.convertStringToLocalTimeZoneString(
+                    alias.last_sent
+                )
+            )
         }
 
         if (alias.last_blocked.isNullOrEmpty()) {
             binding.activityManageAliasGeneralActions.activityManageAliasLastBlocked.setDescription(this.resources.getString(R.string.unknown))
         } else {
-            binding.activityManageAliasGeneralActions.activityManageAliasLastBlocked.setDescription(DateTimeUtils.convertStringToLocalTimeZoneString(alias.last_blocked))
+            binding.activityManageAliasGeneralActions.activityManageAliasLastBlocked.setDescription(
+                DateTimeUtils.convertStringToLocalTimeZoneString(
+                    alias.last_blocked
+                )
+            )
         }
 
 
@@ -997,64 +1087,4 @@ class ManageAliasActivity : BaseActivity(),
             binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
         }
     }
-
-
-    override fun descriptionEdited(alias: Aliases) {
-        shouldRefreshOnFinish = true
-        editAliasDescriptionBottomDialogFragment.dismissAllowingStateLoss()
-
-        // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
-        this.alias = alias
-    }
-
-    override fun fromNameEdited(alias: Aliases) {
-        shouldRefreshOnFinish = true
-        editAliasFromNameBottomDialogFragment.dismissAllowingStateLoss()
-
-        // Do this last, will trigger updateUI as well as re-init editAliasFromNameBottomDialogFragment
-        this.alias = alias
-    }
-
-
-    override fun recipientsEdited(alias: Aliases) {
-        // This changes the last updated time of the alias which is being shown in the recyclerview in the aliasFragment.
-        // So we update the list when coming back
-        shouldRefreshOnFinish = true
-        editAliasRecipientsBottomDialogFragment.dismissAllowingStateLoss()
-
-        // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
-        this.alias = alias
-    }
-
-
-    override fun onPressSend(toString: String) {
-        // Get recipients
-        val recipients = alias?.let { getSendAddress(toString, it) }
-
-        // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
-        onPressCopy(toString)
-
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = "mailto:".toUri() // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, recipients)
-        if (intent.resolveActivity(packageManager) != null) {
-            AnonAddyUtils.startShareSheetActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))
-        }
-        editAliasSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
-    }
-
-    override fun onPressCopy(toString: String) {
-        // Get recipients
-        val recipients = alias?.let { getSendAddress(toString, it) }
-
-        // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
-        val clipboard: ClipboardManager =
-            this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("recipients", recipients?.joinToString(";"))
-        clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
-        editAliasSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
-    }
-
-
 }

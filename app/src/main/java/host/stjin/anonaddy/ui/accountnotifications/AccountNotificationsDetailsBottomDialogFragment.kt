@@ -22,22 +22,12 @@ class AccountNotificationsDetailsBottomDialogFragment(
     private val linkText: String?,
     private val link: String?
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
-
     private lateinit var listener: AddAccountNotificationsBottomDialogListener
 
-    interface AddAccountNotificationsBottomDialogListener {
-        fun onOpenUrl(url: String?)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
-
     private var _binding: BottomsheetAccountNotificationsDetailBinding? = null
+
     private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -77,6 +67,16 @@ class AccountNotificationsDetailsBottomDialogFragment(
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
 
     override fun onClick(p0: View?) {
         if (p0 != null) {
@@ -88,10 +88,8 @@ class AccountNotificationsDetailsBottomDialogFragment(
         }
     }
 
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    interface AddAccountNotificationsBottomDialogListener {
+        fun onOpenUrl(url: String?)
     }
 
     companion object {

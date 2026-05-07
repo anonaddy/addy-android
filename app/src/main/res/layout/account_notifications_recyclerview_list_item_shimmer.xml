@@ -25,33 +25,33 @@
             android:baselineAligned="false"
             android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="2dp"
-                    android:background="?colorSurfaceVariant"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif-medium"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textAllCaps="false"
-                    android:textColor="@color/BlackWhite"
-                    android:textSize="16sp"
-                    tools:ignore="HardcodedText" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:background="?colorSurfaceVariant"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textAllCaps="false"
+                android:textColor="@color/BlackWhite"
+                android:textSize="16sp"
+                tools:ignore="HardcodedText" />
 
-                <TextView
-                    android:id="@+id/failed_deliveries_recyclerview_list_alias"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?colorSurfaceVariant"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:minLines="1"
-                    android:singleLine="false"
-                    tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/failed_deliveries_recyclerview_list_alias"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?colorSurfaceVariant"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:lines="1"
+                android:maxLines="1"
+                android:minLines="1"
+                android:singleLine="false"
+                tools:ignore="HardcodedText" />
 
 
         </LinearLayout>

@@ -36,11 +36,31 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/domain_settings_header"
                     style="@style/titleTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/all_domains" />
+
+                <TextView
+                    android:id="@+id/domain_settings_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_count_capsule"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:text="10"
+                    tools:visibility="visible" />
+
+                <Space
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/all_domains" />
+                    android:layout_weight="1" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/fragment_domain_settings_add_domain"

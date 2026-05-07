@@ -21,19 +21,37 @@ import kotlinx.coroutines.launch
 
 
 class DeleteAccountConfirmationBottomSheetDialog : BaseBottomSheetDialogFragment() {
-
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
-
     lateinit var mainHandler: Handler
 
     private var secondsRemaining = 11
+
     private var _binding: BottomsheetDeleteAccountConfirmationBinding? = null
+
     private val binding get() = _binding!!
+
+    private val updateBackground = object : Runnable {
+        override fun run() {
+            secondsRemaining -= 1
+
+            if (secondsRemaining == 0) {
+                binding.bsDeleteAccountConfirmationButton.isEnabled = true
+                binding.bsDeleteAccountConfirmationButton.alpha = 1f
+                binding.bsDeleteAccountConfirmationButton.text =
+                    this@DeleteAccountConfirmationBottomSheetDialog.resources.getString(R.string.delete_account)
+                binding.bsDeleteAccountConfirmationButton.setOnClickListener {
+                    deleteAccountConfirmationDialog()
+                }
+            } else {
+                binding.bsDeleteAccountConfirmationButton.text =
+                    this@DeleteAccountConfirmationBottomSheetDialog.resources.getString(R.string.delete_account_countdown, secondsRemaining)
+                mainHandler.postDelayed(this, 1000)
+
+            }
+
+
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,7 +66,6 @@ class DeleteAccountConfirmationBottomSheetDialog : BaseBottomSheetDialogFragment
 
     }
 
-
     override fun onPause() {
         super.onPause()
         mainHandler.removeCallbacks(updateBackground)
@@ -59,25 +76,15 @@ class DeleteAccountConfirmationBottomSheetDialog : BaseBottomSheetDialogFragment
         mainHandler.post(updateBackground)
     }
 
-    private val updateBackground = object : Runnable {
-        override fun run() {
-            secondsRemaining -= 1
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-            if (secondsRemaining == 0) {
-                binding.bsDeleteAccountConfirmationButton.isEnabled = true
-                binding.bsDeleteAccountConfirmationButton.alpha = 1f
-                binding.bsDeleteAccountConfirmationButton.text = this@DeleteAccountConfirmationBottomSheetDialog.resources.getString(R.string.delete_account)
-                binding.bsDeleteAccountConfirmationButton.setOnClickListener {
-                    deleteAccountConfirmationDialog()
-                }
-            } else {
-                binding.bsDeleteAccountConfirmationButton.text = this@DeleteAccountConfirmationBottomSheetDialog.resources.getString(R.string.delete_account_countdown, secondsRemaining)
-                mainHandler.postDelayed(this, 1000)
-
-            }
-
-
-        }
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
     }
 
     private fun deleteAccountConfirmationDialog(message: String? = null) {
@@ -103,14 +110,16 @@ class DeleteAccountConfirmationBottomSheetDialog : BaseBottomSheetDialogFragment
     }
 
     private suspend fun deleteAccount(password: String) {
-        NetworkHelper(requireContext()).deleteAccount ({ result ->
+        NetworkHelper(requireContext()).deleteAccount({ result ->
             when (result) {
                 "204" -> {
                     (requireContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                 }
+
                 "422" -> {
                     deleteAccountConfirmationDialog(resources.getString(R.string.delete_account_failed))
                 }
+
                 else -> {
                     MaterialDialogHelper.showMaterialDialog(
                         context = requireContext(),
@@ -122,11 +131,6 @@ class DeleteAccountConfirmationBottomSheetDialog : BaseBottomSheetDialogFragment
                 }
             }
         }, password = password)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

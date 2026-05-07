@@ -21,26 +21,14 @@ import kotlinx.coroutines.launch
 
 
 class AddUsernameBottomDialogFragment(private val usernameLimit: Int) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
-
     private lateinit var listener: AddUsernameBottomDialogListener
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddUsernameBottomDialogListener {
-        fun onAdded()
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetAddusernameBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -73,10 +61,22 @@ class AddUsernameBottomDialogFragment(private val usernameLimit: Int) : BaseBott
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-    companion object {
-        fun newInstance(usernameLimit: Int): AddUsernameBottomDialogFragment {
-            return AddUsernameBottomDialogFragment(usernameLimit)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_addusername_username_add_username_button) {
+                addUsername(requireContext())
+            }
         }
     }
 
@@ -114,16 +114,14 @@ class AddUsernameBottomDialogFragment(private val usernameLimit: Int) : BaseBott
         }, address)
     }
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_addusername_username_add_username_button) {
-                addUsername(requireContext())
-            }
-        }
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddUsernameBottomDialogListener {
+        fun onAdded()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(usernameLimit: Int): AddUsernameBottomDialogFragment {
+            return AddUsernameBottomDialogFragment(usernameLimit)
+        }
     }
 }

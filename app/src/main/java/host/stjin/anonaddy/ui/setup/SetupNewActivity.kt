@@ -8,7 +8,6 @@ import host.stjin.anonaddy.databinding.ActivitySetupNewBinding
 
 
 class SetupNewActivity : BaseActivity() {
-
     private lateinit var binding: ActivitySetupNewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,12 +24,10 @@ class SetupNewActivity : BaseActivity() {
         switchFragments(SetupHow1Fragment())
     }
 
-
     fun switchFragments(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.setup_fragment, fragment)
             .commit()
     }
-
 }

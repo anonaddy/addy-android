@@ -30,10 +30,12 @@ class WearableListenerService : WearableListenerService() {
                 intent.flags = FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             }
+
             "/setup" -> {
                 // a serialized wearOSConfiguration is being passed containing the API_KEY and the BASE_URL
                 storeSettings(String(p0.data))
             }
+
             "/reset" -> {
                 Toast.makeText(this, this.resources.getString(R.string.app_reset_requested_by, String(p0.data)), Toast.LENGTH_LONG).show()
 
@@ -41,12 +43,14 @@ class WearableListenerService : WearableListenerService() {
                     (this.getSystemService(ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                 }, 2500)
             }
+
             "/showAlias" -> {
                 val intent = Intent(this@WearableListenerService, ManageAliasActivity::class.java)
                 intent.putExtra("alias", String(p0.data))
                 intent.flags = FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             }
+
             "/setIcon" -> {
                 val iconToSet = LauncherIconController.LauncherIcon.entries.firstOrNull { it.key == String(p0.data) }
                 if (iconToSet != null) {
@@ -70,7 +74,7 @@ class WearableListenerService : WearableListenerService() {
             startActivity(intent)
         } else {
             // Configuration could not be parsed thus is not valid
-            Toast.makeText(this, this.resources.getString(R.string.app_configuration_not_valid),Toast.LENGTH_LONG).show()
+            Toast.makeText(this, this.resources.getString(R.string.app_configuration_not_valid), Toast.LENGTH_LONG).show()
         }
     }
 }

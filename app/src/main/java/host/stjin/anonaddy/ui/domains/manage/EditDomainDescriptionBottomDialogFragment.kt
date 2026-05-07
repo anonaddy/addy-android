@@ -21,26 +21,17 @@ class EditDomainDescriptionBottomDialogFragment(
     private val domainId: String?,
     private val description: String?
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
-
     private lateinit var listener: AddEditDomainDescriptionBottomDialogListener
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddEditDomainDescriptionBottomDialogListener {
-        fun descriptionEdited(domain: Domains)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetEditDescriptionDomainBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(null, null)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,12 +54,24 @@ class EditDomainDescriptionBottomDialogFragment(
         return root
     }
 
-    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(null, null)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-    companion object {
-        fun newInstance(id: String, description: String?): EditDomainDescriptionBottomDialogFragment {
-            return EditDomainDescriptionBottomDialogFragment(id, description)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_editdomain_domain_save_button) {
+                save(
+                    requireContext()
+                )
+            }
         }
     }
 
@@ -101,18 +104,14 @@ class EditDomainDescriptionBottomDialogFragment(
         }, domainId!!, description)
     }
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_editdomain_domain_save_button) {
-                save(
-                    requireContext()
-                )
-            }
-        }
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddEditDomainDescriptionBottomDialogListener {
+        fun descriptionEdited(domain: Domains)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(id: String, description: String?): EditDomainDescriptionBottomDialogFragment {
+            return EditDomainDescriptionBottomDialogFragment(id, description)
+        }
     }
 }

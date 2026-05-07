@@ -20,8 +20,8 @@ import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.FailedDeliveries
-import host.stjin.anonaddy_shared.models.NewBlocklistEntry
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.models.NewBlocklistEntry
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,22 +33,38 @@ import java.io.FileInputStream
 class FailedDeliveryDetailsBottomDialogFragment(
     private val failedDelivery: FailedDeliveries?
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
-
     private lateinit var listener: AddFailedDeliveryBottomDialogListener
 
-    interface AddFailedDeliveryBottomDialogListener {
-        fun onDeleted(failedDeliveryId: String)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
-
     private var _binding: BottomsheetFailedDeliveryDetailBinding? = null
+
     private val binding get() = _binding!!
+
+    private var fileToSave: File? = null
+
+    private val saveFileResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("message/rfc822")) { uri ->
+        if (uri != null) {
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    try {
+                        requireContext().contentResolver.openOutputStream(uri)?.use { outputStream ->
+                            FileInputStream(fileToSave).use { inputStream ->
+                                inputStream.copyTo(outputStream)
+                            }
+                        }
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, requireContext().resources.getString(R.string.file_saved_succesfully), Toast.LENGTH_SHORT).show()
+                        }
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "saveFileResultLauncher", null)
+                            Toast.makeText(context, requireContext().resources.getString(R.string.failed_to_save_file), Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -78,7 +94,7 @@ class FailedDeliveryDetailsBottomDialogFragment(
                 binding.bsFailedDeliveriesResendButton.visibility = View.GONE
             }
 
-            if (failedDelivery.is_stored){
+            if (failedDelivery.is_stored) {
                 binding.bsFailedDeliveriesDownloadButton.visibility = View.VISIBLE
                 binding.bsFailedDeliveriesDownloadButton.setOnClickListener(this)
             } else {
@@ -132,6 +148,43 @@ class FailedDeliveryDetailsBottomDialogFragment(
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    fun saveFileToUserLocation(file: File) {
+        fileToSave = file
+        saveFileResultLauncher.launch(file.name)
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_failed_deliveries_resend_button) {
+                resendFailedDelivery(
+                    requireContext()
+                )
+            } else if (p0.id == R.id.bs_failed_deliveries_delete_button) {
+                deleteFailedDelivery(
+                    requireContext()
+                )
+            } else if (p0.id == R.id.bs_failed_deliveries_download_button) {
+                downloadFailedDelivery(
+                    requireContext()
+                )
+            } else if (p0.id == R.id.bs_failed_deliveries_block_sender_button) {
+                blockSender(
+                    requireContext()
+                )
+            }
+        }
+    }
 
     private fun deleteFailedDelivery(context: Context) {
         // Animate the button to progress
@@ -248,37 +301,6 @@ class FailedDeliveryDetailsBottomDialogFragment(
         }, failedDelivery!!.id)
     }
 
-
-    private var fileToSave: File? = null
-    private val saveFileResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("message/rfc822")) { uri ->
-        if (uri != null) {
-            lifecycleScope.launch {
-                withContext(Dispatchers.IO) {
-                    try {
-                        requireContext().contentResolver.openOutputStream(uri)?.use { outputStream ->
-                            FileInputStream(fileToSave).use { inputStream ->
-                                inputStream.copyTo(outputStream)
-                            }
-                        }
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(context, requireContext().resources.getString(R.string.file_saved_succesfully), Toast.LENGTH_SHORT).show()
-                        }
-                    } catch (e: Exception) {
-                        withContext(Dispatchers.Main) {
-                            LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "saveFileResultLauncher", null)
-                            Toast.makeText(context, requireContext().resources.getString(R.string.failed_to_save_file), Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    fun saveFileToUserLocation(file: File) {
-        fileToSave = file
-        saveFileResultLauncher.launch(file.name)
-    }
-
     private fun blockSender(context: Context) {
         MaterialDialogHelper.showMaterialDialog(
             context = context,
@@ -322,32 +344,8 @@ class FailedDeliveryDetailsBottomDialogFragment(
         }, NewBlocklistEntry("email", sender))
     }
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_failed_deliveries_resend_button) {
-                resendFailedDelivery(
-                    requireContext()
-                )
-            } else if (p0.id == R.id.bs_failed_deliveries_delete_button) {
-                deleteFailedDelivery(
-                    requireContext()
-                )
-            } else if (p0.id == R.id.bs_failed_deliveries_download_button) {
-                downloadFailedDelivery(
-                    requireContext()
-                )
-            } else if (p0.id == R.id.bs_failed_deliveries_block_sender_button) {
-                blockSender(
-                    requireContext()
-                )
-            }
-        }
-    }
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    interface AddFailedDeliveryBottomDialogListener {
+        fun onDeleted(failedDeliveryId: String)
     }
 
     companion object {

@@ -134,6 +134,7 @@ class NetworkHelper(private val context: Context) {
     503	Service Unavailable -- We're temporarily offline for maintenance. Please try again later*/
 
     private val loggingHelper = LoggingHelper(context)
+    private val gson = Gson()
     val encryptedSettingsManager = SettingsManager(true, context)
     private var initDeferred: Deferred<Unit>? = null
 
@@ -174,13 +175,13 @@ class NetworkHelper(private val context: Context) {
         initDeferred?.await()
     }
 
-    private fun setupCustomSocketFactory(alias: String, chain: Array<X509Certificate>?, privateKey: PrivateKey){
+    private fun setupCustomSocketFactory(alias: String, chain: Array<X509Certificate>?, privateKey: PrivateKey) {
 
         val expiryDateOfChain = chain?.firstOrNull()?.notAfter
 
         // If there is an expiry-date check if this is in the pas
         expiryDateOfChain?.let {
-            if (it < Date()){
+            if (it < Date()) {
                 invalidCertificate()
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
@@ -203,9 +204,12 @@ class NetworkHelper(private val context: Context) {
             }
 
             // Other methods can return null or be left unimplemented if not needed
-            override fun chooseServerAlias( keyType: String?,
-                                            issuers: Array<out Principal?>?,
-                                            socket: Socket?): String? = null
+            override fun chooseServerAlias(
+                keyType: String?,
+                issuers: Array<out Principal?>?,
+                socket: Socket?
+            ): String? = null
+
             override fun getClientAliases(keyType: String?, issuers: Array<Principal>?): Array<String>? = null
             override fun getServerAliases(keyType: String?, issuers: Array<Principal>?): Array<String>? = null
         }
@@ -227,6 +231,7 @@ class NetworkHelper(private val context: Context) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "invalidCertificate", null)
         }
     }
+
     private fun getHeaders(apiKey: String? = null): Array<Pair<String, Any>> {
         val apiKeyToSend = apiKey ?: encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
         return arrayOf(
@@ -234,22 +239,23 @@ class NetworkHelper(private val context: Context) {
             "Content-Type" to "application/json",
             "X-Requested-With" to "XMLHttpRequest",
             "Accept" to "application/json",
-            "User-Agent" to getUserAgent()
+            "User-Agent" to userAgent
         )
     }
-    private fun getUserAgent(): String {
+
+    private val userAgent: String by lazy {
         // User-Agent: <product> / <product-version> <comment>
         // <product> / <product-version> <comment>
 
-        val userAgent =
-            "${(context.applicationContext as AddyIoApp).userAgent.userAgentApplicationID} (${(context.applicationContext as AddyIoApp).userAgent.userAgentApplicationBuildType}) / ${(context.applicationContext as AddyIoApp).userAgent.userAgentVersion} (${(context.applicationContext as AddyIoApp).userAgent.userAgentVersionCode})"
+        val ua = "${(context.applicationContext as AddyIoApp).userAgent.userAgentApplicationID} (${(context.applicationContext as AddyIoApp).userAgent.userAgentApplicationBuildType}) / ${(context.applicationContext as AddyIoApp).userAgent.userAgentVersion} (${(context.applicationContext as AddyIoApp).userAgent.userAgentVersionCode})"
 
         if (BuildConfig.DEBUG) {
-            println("User-Agent: $userAgent")
+            println("User-Agent: $ua")
         }
 
-        return userAgent
+        ua
     }
+
     private fun getFuelResponse(response: Response): ByteArray? {
         return try {
             response.data
@@ -257,6 +263,7 @@ class NetworkHelper(private val context: Context) {
             null
         }
     }
+
     // Separate method, with a try/catch because you can't toast on a Non-UI thread. And the widgets might call methods and there *is* a chance
     // these calls return a 404
     private fun invalidApiKey() {
@@ -268,6 +275,7 @@ class NetworkHelper(private val context: Context) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "invalidApiKey", null)
         }
     }
+
     suspend fun registration(
         callback: (String?) -> Unit,
         username: String,
@@ -298,7 +306,7 @@ class NetworkHelper(private val context: Context) {
 
             422 -> {
                 val data = response.data.toString(Charsets.UTF_8)
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, Error::class.java)
                 callback(addyIoData.message)
             }
@@ -328,14 +336,14 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, Login::class.java)
                 callback(addyIoData.api_key, null)
             }
 
             422, 404, 403 -> {
                 val data = response.data.toString(Charsets.UTF_8)
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, Error::class.java)
                 callback(null, addyIoData.message)
             }
@@ -352,7 +360,7 @@ class NetworkHelper(private val context: Context) {
 
     suspend fun loginMfa(
         callback: (Login?, String?) -> Unit,
-        baseUrl: String, mfaKey: String, otp: String, xCsrfToken: String, apiExpiration: String, cookies: Collection<String>
+        baseUrl: String, mfaKey: String, otp: String, apiExpiration: String, cookies: Collection<String>
     ) {
 
         waitForInitAndLog()
@@ -372,11 +380,10 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) = Fuel.post(API_URL_LOGIN_MFA)
             .header(Headers.COOKIE to cookies)
             .appendHeader(
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json",
-                    "User-Agent" to getUserAgent(),
-                    "X-CSRF-TOKEN" to xCsrfToken
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json",
+                "User-Agent" to userAgent
             )
             .body(json.toString())
             .awaitStringResponseResult()
@@ -384,16 +391,18 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> { // Successfully logged in
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, Login::class.java)
                 callback(addyIoData, null)
             }
+
             401 -> { // Invalid mfa_key or mfa_key expired
                 val data = response.data.toString(Charsets.UTF_8)
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, Error::class.java)
                 callback(null, addyIoData.message)
             }
+
             else -> {
 
                 val errorMessage = handleGenericError(response, result, "loginMfa")
@@ -438,34 +447,33 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> { // Successfully logged in
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, Login::class.java)
                 callback(addyIoData, null, null)
             }
+
             422 -> { // MFA REQUIRED
                 val data = response.data.toString(Charsets.UTF_8)
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, LoginMfaRequired::class.java)
-
-                if (addyIoData.csrf_token != null){
-                    addyIoData.cookie = response.headers["Set-Cookie"]
-                    callback(null, addyIoData, null)
-                } else {
-                    callback(null, null, addyIoData.message)
-                }
+                addyIoData.cookie = response.headers["Set-Cookie"]
+                callback(null, addyIoData, null)
             }
+
             401 -> { // Login data incorrect
                 val data = response.data.toString(Charsets.UTF_8)
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, Error::class.java)
                 callback(null, null, addyIoData.message)
             }
+
             403 -> { // MFA required but is hardware key and thus not supported OR the email address has not been validated
                 val data = response.data.toString(Charsets.UTF_8)
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, Error::class.java)
                 callback(null, null, addyIoData.message)
             }
+
             else -> {
 
                 val errorMessage = handleGenericError(response, result, "login")
@@ -539,7 +547,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             else -> {
-                val errorMessage = handleGenericError(response, result, "logout")
+                //val errorMessage = handleGenericError(response, result, "logout")
                 callback(null)
             }
         }
@@ -562,7 +570,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleUserResource::class.java)
                 callback(addyIoData.data, null)
             }
@@ -599,7 +607,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, Version::class.java)
                 callback(addyIoData, null)
             }
@@ -623,6 +631,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * GET USER RESOURCE
      */
@@ -642,7 +651,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleUserResource::class.java)
                 callback(addyIoData.data, null)
             }
@@ -675,7 +684,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, DomainOptions::class.java)
                 callback(addyIoData, null)
             }
@@ -694,6 +703,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * ALIASES
      */
@@ -709,13 +719,7 @@ class NetworkHelper(private val context: Context) {
 
         waitForInitAndLog()
 
-        val array = JSONArray()
-
-        if (recipients != null) {
-            for (recipient in recipients) {
-                array.put(recipient)
-            }
-        }
+        val array = JSONArray(recipients ?: emptyList<String>())
 
         val json = JSONObject()
         json.put("domain", domain)
@@ -733,7 +737,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             201 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
@@ -752,6 +756,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun getAliases(
         callback: (AliasesArray?, String?) -> Unit,
         aliasSortFilter: AliasSortFilter,
@@ -820,7 +825,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, AliasesArray::class.java)
                 callback(addyIoData, null)
             }
@@ -855,7 +860,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, AddyChartData::class.java)
                 callback(addyIoData, null)
             }
@@ -891,7 +896,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
@@ -931,7 +936,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
@@ -971,7 +976,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
@@ -990,6 +995,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun updateRecipientsSpecificAlias(
         callback: (Aliases?, String?) -> Unit,
         aliasId: String,
@@ -999,11 +1005,7 @@ class NetworkHelper(private val context: Context) {
         waitForInitAndLog()
 
         val json = JSONObject()
-        val array = JSONArray()
-
-        for (recipient in recipients) {
-            array.put(recipient)
-        }
+        val array = JSONArray(recipients)
 
         json.put("alias_id", aliasId)
         json.put("recipient_ids", array)
@@ -1018,7 +1020,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
@@ -1046,11 +1048,7 @@ class NetworkHelper(private val context: Context) {
         waitForInitAndLog()
 
         val json = JSONObject()
-        val array = JSONArray()
-
-        for (id in aliases) {
-            array.put(id)
-        }
+        val array = JSONArray(aliases)
 
         json.put("ids", array)
 
@@ -1064,7 +1062,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, BulkAliasesArray::class.java)
                 callback(addyIoData, null)
             }
@@ -1083,6 +1081,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun deactivateSpecificAlias(
         callback: (String?) -> Unit?,
         aliasId: String
@@ -1123,11 +1122,7 @@ class NetworkHelper(private val context: Context) {
         waitForInitAndLog()
 
         val json = JSONObject()
-        val array = JSONArray()
-
-        for (alias in aliases) {
-            array.put(alias.id)
-        }
+        val array = JSONArray(aliases.map { it.id })
 
         json.put("ids", array)
 
@@ -1141,7 +1136,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
                 callback(addyIoData, null)
             }
@@ -1181,7 +1176,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
@@ -1199,7 +1194,9 @@ class NetworkHelper(private val context: Context) {
                 )
             }
         }
-    }    suspend fun pinSpecificAlias(
+    }
+
+    suspend fun pinSpecificAlias(
         callback: (Aliases?, String?) -> Unit,
         aliasId: String
     ) {
@@ -1219,7 +1216,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
@@ -1270,6 +1267,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun bulkActivateAlias(
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
@@ -1278,11 +1276,7 @@ class NetworkHelper(private val context: Context) {
         waitForInitAndLog()
 
         val json = JSONObject()
-        val array = JSONArray()
-
-        for (alias in aliases) {
-            array.put(alias.id)
-        }
+        val array = JSONArray(aliases.map { it.id })
 
         json.put("ids", array)
 
@@ -1296,7 +1290,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
                 callback(addyIoData, null)
             }
@@ -1315,6 +1309,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun deleteAlias(
         callback: (String?) -> Unit,
         aliasId: String
@@ -1355,11 +1350,7 @@ class NetworkHelper(private val context: Context) {
         waitForInitAndLog()
 
         val json = JSONObject()
-        val array = JSONArray()
-
-        for (alias in aliases) {
-            array.put(alias.id)
-        }
+        val array = JSONArray(aliases.map { it.id })
 
         json.put("ids", array)
 
@@ -1373,7 +1364,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
                 callback(addyIoData, null)
             }
@@ -1424,6 +1415,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun bulkForgetAlias(
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
@@ -1432,11 +1424,7 @@ class NetworkHelper(private val context: Context) {
         waitForInitAndLog()
 
         val json = JSONObject()
-        val array = JSONArray()
-
-        for (alias in aliases) {
-            array.put(alias.id)
-        }
+        val array = JSONArray(aliases.map { it.id })
 
         json.put("ids", array)
 
@@ -1450,7 +1438,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
                 callback(addyIoData, null)
             }
@@ -1478,11 +1466,7 @@ class NetworkHelper(private val context: Context) {
         waitForInitAndLog()
 
         val json = JSONObject()
-        val array = JSONArray()
-
-        for (alias in aliases) {
-            array.put(alias.id)
-        }
+        val array = JSONArray(aliases.map { it.id })
 
         json.put("ids", array)
 
@@ -1496,7 +1480,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
                 callback(addyIoData, null)
             }
@@ -1524,11 +1508,7 @@ class NetworkHelper(private val context: Context) {
         waitForInitAndLog()
 
         val json = JSONObject()
-        val array = JSONArray()
-
-        for (alias in aliases) {
-            array.put(alias.id)
-        }
+        val array = JSONArray(aliases.map { it.id })
 
         json.put("ids", array)
 
@@ -1542,7 +1522,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
                 callback(addyIoData, null)
             }
@@ -1561,6 +1541,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun restoreAlias(
         callback: (Aliases?, String?) -> Unit,
         aliasId: String
@@ -1577,7 +1558,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
@@ -1605,11 +1586,7 @@ class NetworkHelper(private val context: Context) {
         waitForInitAndLog()
 
         val json = JSONObject()
-        val array = JSONArray()
-
-        for (alias in aliases) {
-            array.put(alias.id)
-        }
+        val array = JSONArray(aliases.map { it.id })
 
         json.put("ids", array)
 
@@ -1623,7 +1600,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
                 callback(addyIoData, null)
             }
@@ -1664,7 +1641,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
@@ -1715,6 +1692,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * RECIPIENTS
      */
@@ -1739,7 +1717,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             201 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
@@ -1775,19 +1753,13 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, RecipientsArray::class.java)
 
-                val recipientList = ArrayList<Recipients>()
-
-                if (verifiedOnly) {
-                    for (recipient in addyIoData.data) {
-                        if (recipient.email_verified_at != null) {
-                            recipientList.add(recipient)
-                        }
-                    }
+                val recipientList = if (verifiedOnly) {
+                    ArrayList(addyIoData.data.filter { it.email_verified_at != null })
                 } else {
-                    recipientList.addAll(addyIoData.data)
+                    ArrayList(addyIoData.data)
                 }
 
                 callback(recipientList, null)
@@ -1839,6 +1811,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun allowRecipientToReplySend(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -1859,7 +1832,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
@@ -1910,6 +1883,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun disableEncryptionRecipient(
         callback: (String?) -> Unit?,
         recipientId: String
@@ -1941,6 +1915,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableEncryptionRecipient(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -1961,7 +1936,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
@@ -1980,6 +1955,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun disablePgpInlineRecipient(
         callback: (String?) -> Unit?,
         recipientId: String
@@ -2011,6 +1987,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enablePgpInlineRecipient(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -2031,7 +2008,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
@@ -2050,6 +2027,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun disableRemovePgpKeysRecipients(
         callback: (String?) -> Unit?,
         recipientId: String
@@ -2081,6 +2059,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableRemovePgpKeysRecipients(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -2101,7 +2080,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
@@ -2153,6 +2132,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableRemovePgpSignaturesRecipients(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -2173,7 +2153,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
@@ -2225,6 +2205,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableProtectedHeadersRecipient(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -2245,7 +2226,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
@@ -2317,7 +2298,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
@@ -2336,6 +2317,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun getSpecificRecipient(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -2352,7 +2334,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
@@ -2407,6 +2389,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * DOMAINS
      */
@@ -2426,12 +2409,9 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, DomainsArray::class.java)
-                val domainList = ArrayList<Domains>()
-                domainList.addAll(addyIoData.data)
-
-                callback(domainList, null)
+                callback(ArrayList(addyIoData.data), null)
             }
 
             401 -> {
@@ -2501,7 +2481,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             201 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleDomain::class.java)
                 callback(addyIoData.data, "201", null)
             }
@@ -2541,7 +2521,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleDomain::class.java)
                 callback(addyIoData.data, null)
             }
@@ -2560,6 +2540,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun updateDefaultRecipientForSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String,
@@ -2580,7 +2561,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleDomain::class.java)
                 callback(addyIoData.data, null)
             }
@@ -2641,6 +2622,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun activateSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String
@@ -2661,7 +2643,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleDomain::class.java)
                 callback(addyIoData.data, null)
             }
@@ -2712,6 +2694,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableCatchAllSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String
@@ -2732,7 +2715,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleDomain::class.java)
                 callback(addyIoData.data, null)
             }
@@ -2751,6 +2734,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun updateDescriptionSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String,
@@ -2771,7 +2755,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleDomain::class.java)
                 callback(addyIoData.data, null)
             }
@@ -2800,6 +2784,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun updateAutoCreateRegexSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String,
@@ -2820,7 +2805,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleDomain::class.java)
                 callback(addyIoData.data, null)
             }
@@ -2849,6 +2834,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun updateFromNameSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String,
@@ -2869,7 +2855,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleDomain::class.java)
                 callback(addyIoData.data, null)
             }
@@ -2898,6 +2884,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * USERNAMES
      */
@@ -2917,13 +2904,10 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, UsernamesArray::class.java)
 
-                val usernamesList = ArrayList<Usernames>()
-                usernamesList.addAll(addyIoData.data)
-
-                callback(usernamesList, null)
+                callback(ArrayList(addyIoData.data), null)
             }
 
             401 -> {
@@ -2993,7 +2977,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             201 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
@@ -3029,7 +3013,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
@@ -3069,7 +3053,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
@@ -3119,7 +3103,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
@@ -3180,6 +3164,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun activateSpecificUsername(
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
@@ -3200,7 +3185,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
@@ -3240,7 +3225,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
@@ -3290,7 +3275,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
@@ -3319,6 +3304,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun disableCatchAllSpecificUsername(
         callback: (String?) -> Unit?,
         usernameId: String
@@ -3348,6 +3334,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableCatchAllSpecificUsername(
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
@@ -3368,7 +3355,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
@@ -3419,6 +3406,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableCanLoginSpecificUsername(
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
@@ -3439,7 +3427,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
@@ -3458,6 +3446,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * RULES
      */
@@ -3477,12 +3466,10 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, RulesArray::class.java)
 
-                val domainList = ArrayList<Rules>()
-                domainList.addAll(addyIoData.data)
-                callback(domainList, null)
+                callback(ArrayList(addyIoData.data), null)
             }
 
             401 -> {
@@ -3527,7 +3514,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleRule::class.java)
                 callback(addyIoData.data, null)
             }
@@ -3546,6 +3533,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun deleteRule(
         callback: (String?) -> Unit,
         id: String
@@ -3596,7 +3584,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             201 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleRule::class.java)
                 callback(addyIoData.data, null)
             }
@@ -3623,11 +3611,8 @@ class NetworkHelper(private val context: Context) {
 
         waitForInitAndLog()
 
-        val array = JSONArray()
         // Sum up the ids
-        for (rule in rulesArray) {
-            array.put(rule.id)
-        }
+        val array = JSONArray(rulesArray.map { it.id })
         val obj = JSONObject()
         obj.put("ids", array)
         val ruleJson = obj.toString()
@@ -3724,6 +3709,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun activateSpecificRule(
         callback: (Rules?, String?) -> Unit,
         ruleId: String
@@ -3744,7 +3730,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleRule::class.java)
                 callback(addyIoData.data, null)
             }
@@ -3855,8 +3841,10 @@ class NetworkHelper(private val context: Context) {
             size = amountOfAliasesToCache,
         )
     }
+
     suspend fun cachePinnedAliasesData(
-        callback: (Boolean) -> Unit) {
+        callback: (Boolean) -> Unit
+    ) {
 
         waitForInitAndLog()
 
@@ -3889,6 +3877,7 @@ class NetworkHelper(private val context: Context) {
             )
         )
     }
+
     suspend fun cacheUserResourceForWidget(
         callback: (Boolean) -> Unit
     ) {
@@ -3914,34 +3903,50 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun cacheFailedDeliveryCountForWidgetAndBackgroundService(
-        callback: (Boolean) -> Unit
+        previousId: String?,
+        callback: (Pair<Int, String?>?) -> Unit
     ) {
 
         waitForInitAndLog()
 
         val settingsManager = SettingsManager(false, context)
         val filterType = settingsManager.getSettingsString(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES_TYPE) ?: "all"
-        val filter = if (filterType == "all") null else filterType
 
-        getAllFailedDeliveries(1, 1, filter) { result, _ ->
+        // Fetch all failed deliveries without the filter so that the widget's total count accurately
+        // reflects all failed deliveries and the latestId lookup never fails on mixed types.
+        getAllFailedDeliveries(1, 25, null) { result, _ ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
-                callback(false)
+                callback(null)
                 return@getAllFailedDeliveries
             } else {
-                // Store the current count
+                // Store the current count for shimmering
                 val totalCount = result.meta?.total ?: result.data.size
                 encryptedSettingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, totalCount)
 
                 // Store the latest ID
                 val latestId = result.data.firstOrNull()?.id ?: ""
-                encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID, latestId)
+
+                var newDeliveriesCount = 0
+                if (previousId != null) {
+                    for (delivery in result.data) {
+                        if (delivery.id == previousId) break
+                        // Locally filter and count only the deliveries matching the notifyFailedDeliveriesType
+                        if (filterType == "all" || delivery.type == filterType) {
+                            newDeliveriesCount++
+                        }
+                    }
+                } else {
+                    // No previous ID, so we can't reliably count new deliveries
+                    newDeliveriesCount = 0
+                }
 
                 // Stored data, let the BackgroundWorker know the task succeeded
-                callback(true)
+                callback(Pair(newDeliveriesCount, latestId))
             }
         }
     }
+
     /**
      * FAILED DELIVERIES
      */
@@ -3969,7 +3974,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, FailedDeliveriesArray::class.java)
 
                 callback(addyIoData, null)
@@ -4014,7 +4019,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleFailedDelivery::class.java)
                 callback(addyIoData.data, null)
             }
@@ -4080,6 +4085,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun resendFailedDelivery(
         callback: (String?) -> Unit,
         failedDeliveryId: String,
@@ -4087,13 +4093,6 @@ class NetworkHelper(private val context: Context) {
     ) {
 
         waitForInitAndLog()
-
-        val array = JSONArray()
-        if (recipients != null) {
-            for (recipient in recipients) {
-                array.put(recipient)
-            }
-        }
 
         val json = JSONObject()
         json.put("recipient_ids", recipients)
@@ -4155,17 +4154,28 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * BLOCKLIST
      */
 
     suspend fun getAllBlocklistEntries(
-        callback: (ArrayList<BlocklistEntries>?, String?) -> Unit
+        page: Int? = 1,
+        size: Int? = 25,
+        filter: String? = null,
+        search: String? = null,
+        callback: (BlocklistEntriesArray?, String?) -> Unit
     ) {
 
         waitForInitAndLog()
 
-        val (_, response, result) = Fuel.get(API_URL_BLOCKLIST)
+        val parameters = ArrayList<Pair<String, Any>>()
+        if (page != null) parameters.add(Pair("page[number]", page.toString()))
+        if (size != null) parameters.add(Pair("page[size]", size.toString()))
+        if (filter != null) parameters.add(Pair("filter[type]", filter))
+        if (!search.isNullOrEmpty()) parameters.add(Pair("filter[search]", search))
+
+        val (_, response, result) = Fuel.get(API_URL_BLOCKLIST, parameters)
             .appendHeader(
                 *getHeaders()
             )
@@ -4174,13 +4184,10 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, BlocklistEntriesArray::class.java)
 
-                val blockListEntries = ArrayList<BlocklistEntries>()
-                blockListEntries.addAll(addyIoData.data)
-
-                callback(blockListEntries, null)
+                callback(addyIoData, null)
             }
 
             401 -> {
@@ -4258,7 +4265,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             201 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleBlocklistEntry::class.java)
                 callback(addyIoData.data, null)
             }
@@ -4327,7 +4334,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, ApiTokenDetails::class.java)
                 callback(addyIoData, null)
             }
@@ -4392,12 +4399,9 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, AccountNotificationsArray::class.java)
-                val accountNotificationList = ArrayList<AccountNotifications>()
-                accountNotificationList.addAll(addyIoData.data)
-
-                callback(accountNotificationList, null)
+                callback(ArrayList(addyIoData.data), null)
             }
 
             401 -> {
@@ -4414,6 +4418,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun notifyServerForSubscriptionChange(
         callback: (UserResource?, String?) -> Unit,
         purchaseToken: String,
@@ -4435,7 +4440,7 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
-                val gson = Gson()
+                
                 val addyIoData = gson.fromJson(data, SingleUserResource::class.java)
                 callback(addyIoData.data, null)
             }
@@ -4454,6 +4459,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     private fun handleUnauthorized() {
         invalidApiKey()
         Handler(Looper.getMainLooper()).postDelayed({
@@ -4497,6 +4503,7 @@ class NetworkHelper(private val context: Context) {
         )
         return errorMessage
     }
+
     private suspend fun waitForInitAndLog() {
         waitForInit()
         if (BuildConfig.DEBUG) {

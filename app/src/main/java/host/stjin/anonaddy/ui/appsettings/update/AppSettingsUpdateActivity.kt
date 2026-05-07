@@ -3,6 +3,7 @@ package host.stjin.anonaddy.ui.appsettings.update
 import android.content.Intent
 import android.os.Bundle
 import android.widget.CompoundButton
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
@@ -16,18 +17,21 @@ import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.YDGooglePlayUtils
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.launch
-import androidx.core.net.toUri
 
 
 class AppSettingsUpdateActivity : BaseActivity() {
-
     private var checkedForUpdates: Boolean = false
+
     private val addChangelogBottomDialogFragment: ChangelogBottomDialogFragment =
+
         ChangelogBottomDialogFragment.newInstance()
 
     private var forceSwitch = false
+
     private lateinit var settingsManager: SettingsManager
+
     private lateinit var binding: ActivityAppSettingsUpdateBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsUpdateBinding.inflate(layoutInflater)
@@ -53,6 +57,51 @@ class AppSettingsUpdateActivity : BaseActivity() {
 
     }
 
+    // If the user comes back from eg. settings re-check + enable biometricswitch
+    override fun onResume() {
+        super.onResume()
+        loadSettings()
+    }
+
+    private fun setOnClickListeners() {
+        binding.activityAppSettingsUpdateSectionNotify.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityAppSettingsUpdateSectionNotify.setSwitchChecked(!binding.activityAppSettingsUpdateSectionNotify.getSwitchChecked())
+            }
+        })
+
+        binding.activityAppSettingsUpdateSectionChangelog.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!addChangelogBottomDialogFragment.isAdded) {
+                    addChangelogBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "addChangelogBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        binding.activityAppSettingsUpdateSectionDownload.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (checkedForUpdates) {
+                    downloadUpdate()
+                } else {
+                    checkForUpdates(forceCheck = true)
+                }
+            }
+        })
+
+        binding.activityAppSettingsUpdateSectionPreviousChangelog.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val url = "https://github.com/anonaddy/addy-android/blob/master/CHANGELOG.md"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = url.toUri()
+                startActivity(i)
+            }
+        })
+    }
+
     private fun checkForUpdates(forceCheck: Boolean = false) {
         val settingsManager = SettingsManager(false, this)
         if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES) || forceCheck) {
@@ -61,7 +110,7 @@ class AppSettingsUpdateActivity : BaseActivity() {
                 Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String?, isRunningFutureVersion: Boolean, error: String? ->
                     checkedForUpdates = true
 
-                    if (error == null){
+                    if (error == null) {
                         when {
                             updateAvailable -> {
                                 binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.new_update_available))
@@ -138,59 +187,10 @@ class AppSettingsUpdateActivity : BaseActivity() {
         binding.activityAppSettingsUpdateSectionNotify.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES))
     }
 
-
-    // If the user comes back from eg. settings re-check + enable biometricswitch
-    override fun onResume() {
-        super.onResume()
-        loadSettings()
-    }
-
-
-    private fun setOnClickListeners() {
-        binding.activityAppSettingsUpdateSectionNotify.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsUpdateSectionNotify.setSwitchChecked(!binding.activityAppSettingsUpdateSectionNotify.getSwitchChecked())
-            }
-        })
-
-        binding.activityAppSettingsUpdateSectionChangelog.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!addChangelogBottomDialogFragment.isAdded) {
-                    addChangelogBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "addChangelogBottomDialogFragment"
-                    )
-                }
-            }
-        })
-
-        binding.activityAppSettingsUpdateSectionDownload.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (checkedForUpdates) {
-                    downloadUpdate()
-                } else {
-                    checkForUpdates(forceCheck = true)
-                }
-            }
-        })
-
-        binding.activityAppSettingsUpdateSectionPreviousChangelog.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val url = "https://github.com/anonaddy/addy-android/blob/master/CHANGELOG.md"
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = url.toUri()
-                startActivity(i)
-            }
-        })
-    }
-
     private fun downloadUpdate() {
         val url = Updater.figureOutDownloadUrl(this)
         val i = Intent(Intent.ACTION_VIEW)
         i.data = url.toUri()
         startActivity(i)
     }
-
-
 }

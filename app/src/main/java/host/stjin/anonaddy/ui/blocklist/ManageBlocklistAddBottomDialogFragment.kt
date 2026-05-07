@@ -20,20 +20,10 @@ import kotlinx.coroutines.launch
 
 
 class ManageBlocklistAddBottomDialogFragment : BaseBottomSheetDialogFragment() {
-
     private lateinit var listener: AddBlocklistBottomDialogListener
 
-    interface AddBlocklistBottomDialogListener {
-        fun onAddedBlocklistEntry(newBlocklistEntry: NewBlocklistEntry)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
-
     private var _binding: BottomsheetManageBlocklistAddBinding? = null
+
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -57,6 +47,17 @@ class ManageBlocklistAddBottomDialogFragment : BaseBottomSheetDialogFragment() {
         }
 
         return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
     }
 
     private fun validateAndAdd() {
@@ -113,16 +114,15 @@ class ManageBlocklistAddBottomDialogFragment : BaseBottomSheetDialogFragment() {
         val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_menu_popup_item, types)
         binding.bsManageBlocklistAddTypeAutocomplete.setAdapter(adapter)
         binding.bsManageBlocklistAddTypeAutocomplete.setText(types[0], false)
-        
+
         // Clear error when changing type
         binding.bsManageBlocklistAddTypeAutocomplete.setOnItemClickListener { _, _, _, _ ->
             binding.bsManageBlocklistAddValueTil.error = null
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    interface AddBlocklistBottomDialogListener {
+        fun onAddedBlocklistEntry(newBlocklistEntry: NewBlocklistEntry)
     }
 
     companion object {

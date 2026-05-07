@@ -8,10 +8,9 @@ import host.stjin.anonaddy.databinding.ActivityAccountNotificationsBinding
 import kotlinx.coroutines.launch
 
 class AccountNotificationsActivity : BaseActivity() {
-
     private lateinit var binding: ActivityAccountNotificationsBinding
-    private val accountNotificationsFragment = AccountNotificationsFragment()
 
+    private val accountNotificationsFragment = AccountNotificationsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +40,6 @@ class AccountNotificationsActivity : BaseActivity() {
         }
     }
 
-
     private fun setPage() {
         /**
          * This activity can be called by an URI or Widget/Notification Intent.
@@ -59,5 +57,4 @@ class AccountNotificationsActivity : BaseActivity() {
         }
 
     }
-
 }

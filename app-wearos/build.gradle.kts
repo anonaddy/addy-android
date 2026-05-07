@@ -10,7 +10,7 @@ val wear_tiles_version = rootProject.extra["wear_tiles_version"]
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.3.10" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.21" // this version matches your Kotlin version
 
 }
 
@@ -29,9 +29,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v1.6.0 + release 01 + 01 (for wearos)
-        versionCode = 361610101
-        versionName = "1.6.1"
+        // SDK 36 + v1.6.3 + release 01 + 01 (for wearos)
+        versionCode = 361630101
+        versionName = "1.6.3"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -145,12 +145,12 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.11.1")
+    implementation("androidx.work:work-runtime-ktx:2.11.2")
 }
 
 // For parsing wearOSSettings
 dependencies {
-    implementation("com.google.code.gson:gson:2.13.2")
+    implementation("com.google.code.gson:gson:2.14.0")
 }
 
 // For the donut in the aliasview

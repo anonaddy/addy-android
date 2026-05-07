@@ -61,6 +61,7 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:layout_marginTop="4dp">
+
                 <TextView
                     android:id="@+id/main_profile_select_dialog_card_subscription"
                     style="@style/TextAppearance.Material3.BodyMedium"

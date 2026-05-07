@@ -24,10 +24,15 @@ import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 
 class AppSettingsWearOSActivity : BaseActivity() {
-
     private var forceSwitch = false
+
     private lateinit var settingsManager: SettingsManager
+
     private lateinit var binding: ActivityAppSettingsWearosBinding
+
+    private val listOfNodes: ArrayList<Node> = arrayListOf()
+
+    private var nodeClient: NodeClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,115 +57,6 @@ class AppSettingsWearOSActivity : BaseActivity() {
         setOnClickListeners()
         setOnSwitchListeners()
     }
-
-    private fun checkForCertificate() {
-        val alias = SettingsManager(true, this).getSettingsString(SettingsManager.PREFS.CERTIFICATE_ALIAS)
-        if (alias != null) {
-            binding.activityAppSettingsWearosSectionCertificateWarning.visibility = View.VISIBLE
-        } else {
-            binding.activityAppSettingsWearosSectionCertificateWarning.visibility = View.GONE
-        }
-    }
-
-    private fun checkIfApiIsAvailable() {
-        if (BuildConfig.FLAVOR == "gplay") {
-            try {
-                nodeClient = Wearable.getNodeClient(this)
-                nodeClient!!.connectedNodes.addOnSuccessListener {
-                    // nodes available, so reload the nodes
-                    loadNodes()
-                }.addOnFailureListener {
-                    wearApiNotAvailableDialog()
-                }
-            } catch (ex: Exception) {
-                LoggingHelper(this).addLog(LOGIMPORTANCE.WARNING.int, ex.toString(), "checkIfApiIsAvailable", null)
-                wearApiNotAvailableDialog()
-            }
-        } else {
-            gplayLessVersionDialog()
-        }
-    }
-
-    private fun wearApiNotAvailableDialog() {
-        MaterialDialogHelper.showMaterialDialog(
-            context = this,
-            title = resources.getString(R.string.wearable_api_not_available),
-            message = resources.getString(R.string.wearable_api_not_available_desc),
-            icon = R.drawable.ic_brand_google_play,
-            positiveButtonText = resources.getString(R.string.understood),
-            positiveButtonAction = {
-                finish()
-            }
-        ).setCancelable(false).show()
-    }
-
-
-    private fun gplayLessVersionDialog() {
-        MaterialDialogHelper.showMaterialDialog(
-            context = this,
-            title = resources.getString(R.string.wearable_api_not_available),
-            message = resources.getString(R.string.gplayless_wearable_api_not_available_desc),
-            icon = R.drawable.ic_brand_google_play,
-            positiveButtonText = resources.getString(R.string.understood),
-            positiveButtonAction = {
-                finish()
-            }
-        ).setCancelable(false).show()
-    }
-
-    private val listOfNodes: ArrayList<Node> = arrayListOf()
-    private var nodeClient: NodeClient? = null
-    private fun loadNodes() {
-        nodeClient!!.connectedNodes.addOnSuccessListener { nodes ->
-            listOfNodes.clear()
-            for (node in nodes) {
-                listOfNodes.add(node)
-            }
-
-            // Node array has been filled with data, so reload the data
-            loadSettings()
-        }
-    }
-
-    private fun setOnSwitchListeners() {
-        binding.activityAppSettingsWearosSectionQuickSetup.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-                if (compoundButton.isPressed || forceSwitch) {
-                    forceSwitch = false
-                    settingsManager.putSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG, !checked)
-                }
-            }
-        })
-    }
-
-    private fun loadSettings() {
-        // Nothing to load
-        binding.activityAppSettingsWearosSectionQuickSetup.setSwitchChecked(
-            !settingsManager.getSettingsBool(
-                SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG
-            )
-        )
-
-        binding.activityAppSettingsWearosSectionStart.setLayoutEnabled(listOfNodes.any())
-        binding.activityAppSettingsWearosSectionSetup.setLayoutEnabled(listOfNodes.any())
-        binding.activityAppSettingsWearosSectionReset.setLayoutEnabled(listOfNodes.any())
-        binding.activityAppSettingsWearosSectionShowLogs.setLayoutEnabled(listOfNodes.any())
-
-        if (listOfNodes.any()) {
-            val selectedNode = listOfNodes.find { it.id == settingsManager.getSettingsString(SettingsManager.PREFS.SELECTED_WEAROS_DEVICE) }
-            if (selectedNode != null) {
-                binding.activityAppSettingsWearosSectionSelectDevice.setDescription(selectedNode.displayName)
-            } else {
-                // The previously selected node is not available anymore, set the first node as selected now and reload.
-                settingsManager.putSettingsString(SettingsManager.PREFS.SELECTED_WEAROS_DEVICE, listOfNodes[0].id)
-                loadSettings()
-            }
-        } else {
-            binding.activityAppSettingsWearosSectionSelectDevice.setDescription(this.resources.getString(R.string.no_wearable_devices_available))
-        }
-    }
-
 
     // If the user comes back from eg. settings re-check for node changes
     override fun onResume() {
@@ -235,6 +131,111 @@ class AppSettingsWearOSActivity : BaseActivity() {
                 binding.activityAppSettingsWearosSectionQuickSetup.setSwitchChecked(!binding.activityAppSettingsWearosSectionQuickSetup.getSwitchChecked())
             }
         })
+    }
+
+    private fun checkForCertificate() {
+        val alias = SettingsManager(true, this).getSettingsString(SettingsManager.PREFS.CERTIFICATE_ALIAS)
+        if (alias != null) {
+            binding.activityAppSettingsWearosSectionCertificateWarning.visibility = View.VISIBLE
+        } else {
+            binding.activityAppSettingsWearosSectionCertificateWarning.visibility = View.GONE
+        }
+    }
+
+    private fun checkIfApiIsAvailable() {
+        if (BuildConfig.FLAVOR == "gplay") {
+            try {
+                nodeClient = Wearable.getNodeClient(this)
+                nodeClient!!.connectedNodes.addOnSuccessListener {
+                    // nodes available, so reload the nodes
+                    loadNodes()
+                }.addOnFailureListener {
+                    wearApiNotAvailableDialog()
+                }
+            } catch (ex: Exception) {
+                LoggingHelper(this).addLog(LOGIMPORTANCE.WARNING.int, ex.toString(), "checkIfApiIsAvailable", null)
+                wearApiNotAvailableDialog()
+            }
+        } else {
+            gplayLessVersionDialog()
+        }
+    }
+
+    private fun wearApiNotAvailableDialog() {
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.wearable_api_not_available),
+            message = resources.getString(R.string.wearable_api_not_available_desc),
+            icon = R.drawable.ic_brand_google_play,
+            positiveButtonText = resources.getString(R.string.understood),
+            positiveButtonAction = {
+                finish()
+            }
+        ).setCancelable(false).show()
+    }
+
+    private fun gplayLessVersionDialog() {
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.wearable_api_not_available),
+            message = resources.getString(R.string.gplayless_wearable_api_not_available_desc),
+            icon = R.drawable.ic_brand_google_play,
+            positiveButtonText = resources.getString(R.string.understood),
+            positiveButtonAction = {
+                finish()
+            }
+        ).setCancelable(false).show()
+    }
+
+    private fun loadNodes() {
+        nodeClient!!.connectedNodes.addOnSuccessListener { nodes ->
+            listOfNodes.clear()
+            for (node in nodes) {
+                listOfNodes.add(node)
+            }
+
+            // Node array has been filled with data, so reload the data
+            loadSettings()
+        }
+    }
+
+    private fun setOnSwitchListeners() {
+        binding.activityAppSettingsWearosSectionQuickSetup.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    forceSwitch = false
+                    settingsManager.putSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG, !checked)
+                }
+            }
+        })
+    }
+
+    private fun loadSettings() {
+        // Nothing to load
+        binding.activityAppSettingsWearosSectionQuickSetup.setSwitchChecked(
+            !settingsManager.getSettingsBool(
+                SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG
+            )
+        )
+
+        binding.activityAppSettingsWearosSectionStart.setLayoutEnabled(listOfNodes.any())
+        binding.activityAppSettingsWearosSectionSetup.setLayoutEnabled(listOfNodes.any())
+        binding.activityAppSettingsWearosSectionReset.setLayoutEnabled(listOfNodes.any())
+        binding.activityAppSettingsWearosSectionShowLogs.setLayoutEnabled(listOfNodes.any())
+
+        if (listOfNodes.any()) {
+            val selectedNode = listOfNodes.find { it.id == settingsManager.getSettingsString(SettingsManager.PREFS.SELECTED_WEAROS_DEVICE) }
+            if (selectedNode != null) {
+                binding.activityAppSettingsWearosSectionSelectDevice.setDescription(selectedNode.displayName)
+            } else {
+                // The previously selected node is not available anymore, set the first node as selected now and reload.
+                settingsManager.putSettingsString(SettingsManager.PREFS.SELECTED_WEAROS_DEVICE, listOfNodes[0].id)
+                loadSettings()
+            }
+        } else {
+            binding.activityAppSettingsWearosSectionSelectDevice.setDescription(this.resources.getString(R.string.no_wearable_devices_available))
+        }
     }
 
     private fun startAppOnWearable() {

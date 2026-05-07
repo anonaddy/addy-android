@@ -12,6 +12,13 @@ import host.stjin.anonaddy.utils.InsetUtil
 
 
 class SetupHow4Fragment : Fragment(), RegistrationFormBottomDialogFragment.AddRegistrationFormBottomDialogFragmentListener {
+    private var registrationFormBottomDialogFragment: RegistrationFormBottomDialogFragment =
+
+        RegistrationFormBottomDialogFragment.newInstance()
+
+    private var _binding: FragmentSetupHow4Binding? = null
+
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,11 +30,6 @@ class SetupHow4Fragment : Fragment(), RegistrationFormBottomDialogFragment.AddRe
         returnTransition = backward
     }
 
-    private var registrationFormBottomDialogFragment: RegistrationFormBottomDialogFragment =
-        RegistrationFormBottomDialogFragment.newInstance()
-
-    private var _binding: FragmentSetupHow4Binding? = null
-    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
