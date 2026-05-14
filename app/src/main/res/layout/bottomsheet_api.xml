@@ -164,7 +164,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/bs_setup_manual_type_username_password_button"
-                        style="@style/AddyIoMaterialToggleButtonAlternative"
+                        style="@style/AddyIoMaterialToggleButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -172,7 +172,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/bs_setup_manual_type_api_button"
-                        style="@style/AddyIoMaterialToggleButtonAlternative"
+                        style="@style/AddyIoMaterialToggleButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

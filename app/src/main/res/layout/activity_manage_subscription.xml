@@ -55,7 +55,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/proButton"
-                    style="@style/AddyIoMaterialToggleButtonAlternative"
+                    style="@style/AddyIoMaterialToggleButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -63,7 +63,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/liteButton"
-                    style="@style/AddyIoMaterialToggleButtonAlternative"
+                    style="@style/AddyIoMaterialToggleButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
