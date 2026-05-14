@@ -27,6 +27,7 @@ import com.google.gson.Gson
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.AliasAdapter
+import host.stjin.anonaddy.adapter.SearchAdapter
 import host.stjin.anonaddy.databinding.FragmentAliasBinding
 import host.stjin.anonaddy.interfaces.Refreshable
 import host.stjin.anonaddy.service.AliasWatcher
@@ -54,6 +55,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     // 1. Properties
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
+    private var encryptedSettingsManager: SettingsManager? = null
     private var oneTimeRecyclerViewActions: Boolean = true
 
     // Default filter
@@ -104,6 +106,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private var aliasAdapter: AliasAdapter? = null
     private var aliasList: AliasesArray? = null
     var aliasSelectionSnackbar: Snackbar? = null
+    private lateinit var searchAdapter: SearchAdapter
+    private var recentSearchesList: ArrayList<String> = arrayListOf()
 
     // 2. Lifecycle Methods
     override fun onCreateView(
@@ -117,6 +121,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         val root = binding.root
 
         settingsManager = SettingsManager(false, requireContext())
+        encryptedSettingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
 
 
@@ -125,6 +130,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         setOnClickListeners()
         setOnNestedScrollViewListener(true)
         setAliasesRecyclerView()
+        setSearchRecyclerView()
 
 
         getDataFromWeb(savedInstanceState)
@@ -190,7 +196,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             this.aliasSortFilter = aliasSortFilterObject
         }
 
-        val searchText = binding.aliasSearchTermTiet.text.toString().trim()
+        val searchText = binding.aliasSearchBar.text.toString().trim()
         this.aliasSortFilter.filter = if (searchText.isEmpty()) null else searchText.lowercase(java.util.Locale.getDefault())
 
         updateChipSelection(this.aliasSortFilter)
@@ -217,15 +223,27 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
     private fun setOnClickListeners() {
-        binding.aliasSearchTermTiet.addTextChangedListener { text ->
+        binding.aliasSearchView.editText.addTextChangedListener { text ->
             val searchText = text?.toString()?.trim()
             if (searchText.isNullOrEmpty() && aliasSortFilter.filter != null) {
                 aliasSortFilter.filter = null
+                binding.aliasSearchBar.setText(null)
                 getDataFromWeb(null)
             }
         }
 
-        binding.aliasSearchTermTiet.setOnEditorActionListener { _, actionId, event ->
+        binding.aliasSearchView.addTransitionListener { _, _, newState ->
+            if (newState == com.google.android.material.search.SearchView.TransitionState.HIDDEN) {
+                val searchText = binding.aliasSearchView.text.toString().trim()
+                if (searchText.isEmpty() && aliasSortFilter.filter != null) {
+                    aliasSortFilter.filter = null
+                    binding.aliasSearchBar.setText(null)
+                    getDataFromWeb(null)
+                }
+            }
+        }
+
+        binding.aliasSearchView.editText.setOnEditorActionListener { _, actionId, event ->
             if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH ||
                 actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE ||
                 (event?.action == android.view.KeyEvent.ACTION_DOWN &&
@@ -233,9 +251,13 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             ) {
                 val inputMethodManager =
                     requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
-                inputMethodManager.hideSoftInputFromWindow(binding.aliasSearchTermTiet.windowToken, 0)
+                inputMethodManager.hideSoftInputFromWindow(binding.aliasSearchView.windowToken, 0)
 
-                val searchText = binding.aliasSearchTermTiet.text.toString().trim()
+                binding.aliasSearchBar.setText(binding.aliasSearchView.text)
+                binding.aliasSearchView.hide()
+
+                val searchText = binding.aliasSearchView.text.toString().trim()
+                saveRecentSearch(searchText)
                 aliasSortFilter.filter = if (searchText.isEmpty()) null else searchText.lowercase(java.util.Locale.getDefault())
                 getDataFromWeb(null)
                 true
@@ -440,6 +462,59 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             setOnNestedScrollViewListener(set = true)
 
             adapter = aliasAdapter
+        }
+    }
+
+    private fun loadRecentSearches() {
+        val json = encryptedSettingsManager?.getSettingsString(SettingsManager.PREFS.RECENT_SEARCHES_ALIASES)
+        if (json != null) {
+            val type = object : com.google.gson.reflect.TypeToken<ArrayList<String>>() {}.type
+            recentSearchesList = Gson().fromJson(json, type) ?: arrayListOf()
+        }
+    }
+
+    private fun updateRecentSearchesVisibility() {
+        binding.aliasRecentSearchesLayout.visibility = if (recentSearchesList.isEmpty()) View.GONE else View.VISIBLE
+    }
+
+    private fun saveRecentSearch(search: String) {
+        if (search.isEmpty()) return
+        recentSearchesList.remove(search)
+        recentSearchesList.add(0, search)
+        // Keep max 25 recent searches
+        if (recentSearchesList.size > 25) {
+            recentSearchesList.removeAt(25)
+        }
+        val json = Gson().toJson(recentSearchesList)
+        encryptedSettingsManager?.putSettingsString(SettingsManager.PREFS.RECENT_SEARCHES_ALIASES, json)
+        searchAdapter.notifyDataSetChanged()
+        updateRecentSearchesVisibility()
+    }
+
+    private fun setSearchRecyclerView() {
+        binding.aliasSearchView.setupWithSearchBar(binding.aliasSearchBar)
+        loadRecentSearches()
+        updateRecentSearchesVisibility()
+        searchAdapter = SearchAdapter(recentSearchesList)
+        binding.aliasSearchViewRecyclerview.adapter = searchAdapter
+
+        searchAdapter.setClickListener(object : SearchAdapter.ClickListener {
+            override fun onClickSearchResult(pos: Int, aView: View) {
+                val search = recentSearchesList[pos]
+                binding.aliasSearchBar.setText(search)
+                binding.aliasSearchView.setText(search)
+                binding.aliasSearchView.hide()
+
+                aliasSortFilter.filter = search.lowercase(java.util.Locale.getDefault())
+                getDataFromWeb(null)
+            }
+        })
+        
+        binding.aliasClearRecentSearches.setOnClickListener {
+            recentSearchesList.clear()
+            encryptedSettingsManager?.removeSetting(SettingsManager.PREFS.RECENT_SEARCHES_ALIASES)
+            searchAdapter.notifyDataSetChanged()
+            updateRecentSearchesVisibility()
         }
     }
 

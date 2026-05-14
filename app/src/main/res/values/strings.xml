@@ -862,4 +862,5 @@
     <string name="blocklist_add_confirm_desc">Are you sure you want to block %s?</string>
     <string name="blocklist_add_success">This sender was added to the blocklist</string>
     <string name="inbound_quarantined">Inbound quarantined</string>
+    <string name="search_for_aliases">Search for aliases</string>
 </resources>

@@ -14,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.BlocklistAdapter
+import host.stjin.anonaddy.adapter.SearchAdapter
 import host.stjin.anonaddy.databinding.FragmentManageBlocklistBinding
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.utils.InsetUtil
@@ -46,6 +47,8 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
     private val binding get() = _binding!!
 
     private lateinit var blocklistAdapter: BlocklistAdapter
+    private lateinit var searchAdapter: SearchAdapter
+    private var recentSearchesList: ArrayList<String> = arrayListOf()
 
     private lateinit var deleteBlocklistSnackbar: Snackbar
 
@@ -63,6 +66,7 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
 
 
         setBlocklistRecyclerView()
+        setSearchRecyclerView()
         getDataFromWeb(savedInstanceState)
         setOnClickListeners()
 
@@ -77,14 +81,25 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
     }
 
     private fun setOnClickListeners() {
-        binding.blocklistSearchTermTiet.addTextChangedListener { text ->
+        binding.blocklistSearchView.editText.addTextChangedListener { text ->
             val searchText = text?.toString()?.trim()
             if (searchText.isNullOrEmpty()) {
+                binding.blocklistSearchBar.setText(null)
                 getDataFromWeb(null)
             }
         }
 
-        binding.blocklistSearchTermTiet.setOnEditorActionListener { _, actionId, event ->
+        binding.blocklistSearchView.addTransitionListener { _, _, newState ->
+            if (newState == com.google.android.material.search.SearchView.TransitionState.HIDDEN) {
+                val searchText = binding.blocklistSearchView.text.toString().trim()
+                if (searchText.isEmpty()) {
+                    binding.blocklistSearchBar.setText(null)
+                    getDataFromWeb(null)
+                }
+            }
+        }
+
+        binding.blocklistSearchView.editText.setOnEditorActionListener { _, actionId, event ->
             if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH ||
                 actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE ||
                 (event?.action == android.view.KeyEvent.ACTION_DOWN &&
@@ -92,8 +107,13 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
             ) {
                 val inputMethodManager =
                     requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
-                inputMethodManager.hideSoftInputFromWindow(binding.blocklistSearchTermTiet.windowToken, 0)
+                inputMethodManager.hideSoftInputFromWindow(binding.blocklistSearchView.windowToken, 0)
 
+                binding.blocklistSearchBar.setText(binding.blocklistSearchView.text)
+                binding.blocklistSearchView.hide()
+
+                val searchText = binding.blocklistSearchView.text.toString().trim()
+                saveRecentSearch(searchText)
                 getDataFromWeb(null)
                 true
             } else {
@@ -155,6 +175,59 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
         }
     }
 
+    private fun loadRecentSearches() {
+        val settingsManager = SettingsManager(true, requireContext())
+        val json = settingsManager.getSettingsString(SettingsManager.PREFS.RECENT_SEARCHES_BLOCKLIST)
+        if (json != null) {
+            val type = object : com.google.gson.reflect.TypeToken<ArrayList<String>>() {}.type
+            recentSearchesList = Gson().fromJson(json, type) ?: arrayListOf()
+        }
+    }
+
+    private fun updateRecentSearchesVisibility() {
+        binding.blocklistRecentSearchesLayout.visibility = if (recentSearchesList.isEmpty()) View.GONE else View.VISIBLE
+    }
+
+    private fun saveRecentSearch(search: String) {
+        if (search.isEmpty()) return
+        recentSearchesList.remove(search)
+        recentSearchesList.add(0, search)
+        // Keep max 25 recent searches
+        if (recentSearchesList.size > 25) {
+            recentSearchesList.removeAt(25)
+        }
+        val json = Gson().toJson(recentSearchesList)
+        SettingsManager(false, requireContext()).putSettingsString(SettingsManager.PREFS.RECENT_SEARCHES_BLOCKLIST, json)
+        searchAdapter.notifyDataSetChanged()
+        updateRecentSearchesVisibility()
+    }
+
+    private fun setSearchRecyclerView() {
+        binding.blocklistSearchView.setupWithSearchBar(binding.blocklistSearchBar)
+        loadRecentSearches()
+        updateRecentSearchesVisibility()
+        searchAdapter = SearchAdapter(recentSearchesList)
+        binding.blocklistSearchViewRecyclerview.adapter = searchAdapter
+
+        searchAdapter.setClickListener(object : SearchAdapter.ClickListener {
+            override fun onClickSearchResult(pos: Int, aView: View) {
+                val search = recentSearchesList[pos]
+                binding.blocklistSearchBar.setText(search)
+                binding.blocklistSearchView.setText(search)
+                binding.blocklistSearchView.hide()
+
+                getDataFromWeb(null)
+            }
+        })
+        
+        binding.blocklistClearRecentSearches.setOnClickListener {
+            recentSearchesList.clear()
+            SettingsManager(false, requireContext()).removeSetting(SettingsManager.PREFS.RECENT_SEARCHES_BLOCKLIST)
+            searchAdapter.notifyDataSetChanged()
+            updateRecentSearchesVisibility()
+        }
+    }
+
     private fun setBlocklistRecyclerView() {
         binding.fragmentBlocklistAllBlocklistRecyclerview.apply {
             if (oneTimeRecyclerViewActions) {
@@ -207,7 +280,7 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
             binding.fragmentBlocklistProgress.visibility = View.VISIBLE
             setOnNestedScrollViewListener(false)
             binding.fragmentBlocklistAllBlocklistRecyclerview.apply {
-                val searchText = binding.blocklistSearchTermTiet.text.toString().trim()
+                val searchText = binding.blocklistSearchBar.text.toString().trim()
                 networkHelper?.getAllBlocklistEntries(
                     page = (blocklistEntries?.meta?.current_page ?: 0) + 1,
                     size = 25,

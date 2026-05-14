@@ -97,9 +97,6 @@
                     </LinearLayout>
 
 
-                    <com.google.android.material.card.MaterialCardView
-                        style="@style/AddyIoMaterialToggleButtonGroupParentCardView"
-                        android:layout_marginBottom="16dp">
 
                         <com.google.android.material.button.MaterialButtonToggleGroup
                             android:id="@+id/bs_filteroptions_aliases_mbtg"
@@ -152,11 +149,6 @@
                                 android:text="@string/filter_deleted_aliases" />
 
                         </com.google.android.material.button.MaterialButtonToggleGroup>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        style="@style/AddyIoMaterialToggleButtonGroupParentCardView"
-                        android:layout_marginBottom="16dp">
 
                         <com.google.android.material.button.MaterialButtonToggleGroup
                             android:id="@+id/bs_filteroptions_aliases_watched_mbtg"
@@ -185,7 +177,6 @@
                                 android:text="@string/filter_watched_only" />
 
                         </com.google.android.material.button.MaterialButtonToggleGroup>
-                    </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
 

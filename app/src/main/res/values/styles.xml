@@ -374,6 +374,8 @@
         <item name="cornerRadius">@dimen/corner_radius_button</item>
         <item name="android:padding">4dp</item>
         <item name="strokeWidth">0dp</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMaxTextSize">14dp</item>
     </style>
 
     <style name="AddyIoMaterialToggleButtonAlternative" parent="AddyIoMaterialToggleButton">

@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:layout_marginStart="80dp"
+        android:layout_marginStart="96dp"
         android:orientation="vertical"
         android:paddingEnd="@dimen/layout_padding"
         tools:ignore="RtlSymmetry">
