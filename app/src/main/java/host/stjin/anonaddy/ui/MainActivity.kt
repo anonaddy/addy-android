@@ -966,11 +966,13 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     private fun setButtonAccentColor(button: MaterialButton, shouldAccent: Boolean) {
         if (shouldAccent) {
             button.setTextColor(ContextCompat.getColor(this, R.color.softRed))
+            button.icon?.setColorFilter(ContextCompat.getColor(this, R.color.softRed), android.graphics.PorterDuff.Mode.SRC_IN)
         } else {
             val typedValue = TypedValue()
             theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
             val defaultColor = typedValue.data
             button.setTextColor(defaultColor)
+            button.icon?.colorFilter = null
 
         }
     }
