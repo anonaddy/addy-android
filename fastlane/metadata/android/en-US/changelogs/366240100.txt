@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>- Improved searching experience<br />- Moved multiple views to Material 3 Expressive language for a more playful UI<br />- Minor other UI improvements<br />- Performance enhancements and other improvements for a smoother experience</p>
