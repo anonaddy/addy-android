@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v6.2.3 + release 01 + 00 (for app)
-        versionCode = 366230100 // https://developer.android.com/training/wearables/packaging
+        // SDK 36 + v6.2.4 + release 01 + 00 (for app)
+        versionCode = 366240100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on GitHub
-        versionName = "v6.2.3"
+        versionName = "v6.2.4"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -100,7 +100,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.3.10")
     implementation("androidx.core:core-ktx:1.18.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("com.google.android.material:material:1.13.0")
+    implementation("com.google.android.material:material:1.14.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
     implementation("androidx.navigation:navigation-fragment-ktx:2.9.8")
@@ -168,7 +168,7 @@ dependencies {
 // Because the app has a gplayless flavor define a gplayImplementation
 val gplayImplementation by configurations
 dependencies {
-    gplayImplementation("com.google.android.gms:play-services-wearable:19.0.0")
+    gplayImplementation("com.google.android.gms:play-services-wearable:20.0.1")
     gplayImplementation("com.android.billingclient:billing-ktx:8.3.0")
     gplayImplementation("com.google.android.play:review-ktx:2.0.2")
 }

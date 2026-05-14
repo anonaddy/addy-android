@@ -28,7 +28,7 @@
     <!-- FLOATING MATERIAL 3 NAVBAR -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
-        style="@style/Widget.Material3.BottomNavigationView"
+        style="@style/Widget.Material3Expressive.BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

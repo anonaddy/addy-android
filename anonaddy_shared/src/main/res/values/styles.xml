@@ -4,7 +4,7 @@
     <!-- Base application theme. -->
     <!-- This theme contains all the basics that apply to all platforms (such as WearOS) -->
     <!-- Platform specific items should be declared in AppTheme (which parent's BaseTheme) -->
-    <style name="BaseTheme" parent="Theme.Material3.DynamicColors.DayNight">
+    <style name="BaseTheme" parent="Theme.Material3Expressive.DynamicColors.DayNight">
         <!-- Overriding custom colorControlNormal color -->
         <item name="colorControlNormal">@color/colorControlNormal</item>
 
@@ -62,7 +62,7 @@
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
     </style>
 
-    <style name="ThemeOverlay.AppTheme.MediumContrast" parent="Theme.Material3.DynamicColors.DayNight">
+    <style name="ThemeOverlay.AppTheme.MediumContrast" parent="Theme.Material3Expressive.Light.NoActionBar">
         <item name="colorPrimary">@color/md_theme_primary_mediumContrast</item>
         <item name="colorOnPrimary">@color/md_theme_onPrimary_mediumContrast</item>
         <item name="colorPrimaryContainer">@color/md_theme_primaryContainer_mediumContrast</item>
@@ -110,8 +110,7 @@
         <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh_mediumContrast</item>
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest_mediumContrast</item>
     </style>
-
-    <style name="ThemeOverlay.AppTheme.HighContrast" parent="Theme.Material3.DynamicColors.DayNight">
+    <style name="ThemeOverlay.AppTheme.HighContrast" parent="Theme.Material3Expressive.Light.NoActionBar">
         <item name="colorPrimary">@color/md_theme_primary_highContrast</item>
         <item name="colorOnPrimary">@color/md_theme_onPrimary_highContrast</item>
         <item name="colorPrimaryContainer">@color/md_theme_primaryContainer_highContrast</item>

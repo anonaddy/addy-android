@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="WidgetTheme" parent="Theme.Material3.DynamicColors.DayNight">
+    <style name="WidgetTheme" parent="Theme.Material3Expressive.DynamicColors.DayNight">
         <!-- Override default colorBackground attribute with custom color -->
         <item name="android:colorBackground">@color/widget_default_background</item>
         <item name="android:colorAccent">@android:color/white</item>
@@ -148,24 +148,11 @@
         <item name="android:textColor">?colorOnError</item>
     </style>
 
-    <style name="MaterialButtonSecondary.IconOnly" parent="MaterialButtonSecondaryDark">
-        <item name="iconPadding">0dp</item>
-        <item name="android:insetTop">0dp</item>
-        <item name="android:insetBottom">0dp</item>
-        <item name="android:paddingLeft">10dp</item>
-        <item name="android:paddingRight">10dp</item>
-        <item name="android:layout_width">40dp</item> <!-- Larger for expressive touch targets -->
-        <item name="android:layout_height">40dp</item>
-        <item name="iconSize">20dp</item>
-        <item name="cornerRadius">@dimen/corner_radius_cardview</item>
-        <item name="iconTint">?colorPrimary</item>
-    </style>
-
     <!-- END SECONDARY -->
 
     <!-- TERTIARY -->
 
-    <style name="ActionButtonsTertiary" parent="Widget.Material3.Button">
+    <style name="ActionButtonsTertiary" parent="Widget.Material3Expressive.Button">
         <item name="backgroundTint">?colorTertiary</item>
         <item name="android:textColor">?colorOnTertiary</item>
         <item name="iconTint">?colorOnTertiary</item>
@@ -333,7 +320,7 @@
         <item name="android:layout_marginStart">8dp</item>
     </style>
 
-    <style name="RoundFlatButton" parent="Widget.Material3.Button.OutlinedButton">
+    <style name="RoundFlatButton" parent="Widget.Material3Expressive.Button.OutlinedButton">
         <item name="android:textColor">?colorOnSurface</item>
         <item name="strokeWidth">1.5dp</item>
         <item name="strokeColor">?colorOutline</item>
@@ -342,7 +329,7 @@
     <style name="AddyIoChip" parent="Widget.Material3.Chip.Filter" />
 
 
-    <style name="AddyIoCollapsingToolbarLayout" parent="Widget.Material3.CollapsingToolbar.Large">
+    <style name="AddyIoCollapsingToolbarLayout" parent="Widget.Material3Expressive.CollapsingToolbar.Large">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">?colorPrimary</item>
@@ -356,26 +343,26 @@
         <item name="layout_scrollFlags">scroll|exitUntilCollapsed|snap</item>
     </style>
 
-    <style name="AddyIoCollapsingToolbarLayout.Title" parent="Widget.Material3.CollapsingToolbar.Large">
+    <style name="AddyIoCollapsingToolbarLayout.Title" parent="Widget.Material3Expressive.CollapsingToolbar.Large">
         <item name="android:textColor">?colorOnPrimary</item>
         <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded</item>
     </style>
 
-    <style name="AddyIoCollapsingToolbarLayout.SubTitle" parent="Widget.Material3.CollapsingToolbar.Large">
+    <style name="AddyIoCollapsingToolbarLayout.SubTitle" parent="Widget.Material3Expressive.CollapsingToolbar.Large">
         <item name="android:textColor">?colorOnPrimary</item>
         <item name="android:alpha">0.7</item>
         <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded.Subtitle</item>
     </style>
 
 
-    <style name="Widget.Catalog.Button.TextButton.Dialog.FullWidth" parent="Widget.Material3.Button.TextButton.Dialog">
+    <style name="Widget.Catalog.Button.TextButton.Dialog.FullWidth" parent="Widget.Material3Expressive.Button.TextButton.Dialog">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:maxWidth">@null</item>
     </style>
 
     <!-- A theme overlay for dialogs with a center aligned title text, icon and buttons that span the width of the dialog. -->
-    <style name="ThemeOverlay.Catalog.MaterialAlertDialog.Centered.FullWidthButtons" parent="ThemeOverlay.Material3.MaterialAlertDialog.Centered">
+    <style name="ThemeOverlay.Catalog.MaterialAlertDialog.Centered.FullWidthButtons" parent="ThemeOverlay.Material3Expressive.MaterialAlertDialog.Centered">
         <!-- Mark spacer as gone when showing full width buttons -->
         <item name="materialAlertDialogButtonSpacerVisibility">@integer/mtrl_view_gone</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.Catalog.Button.TextButton.Dialog.FullWidth</item>
@@ -383,7 +370,7 @@
         <item name="buttonBarNeutralButtonStyle">@style/Widget.Catalog.Button.TextButton.Dialog.FullWidth</item>
     </style>
 
-    <style name="AddyIoMaterialToggleButton" parent="Widget.Material3.Button.OutlinedButton">
+    <style name="AddyIoMaterialToggleButton" parent="Widget.Material3Expressive.Button.OutlinedButton">
         <item name="cornerRadius">@dimen/corner_radius_button</item>
         <item name="android:padding">4dp</item>
         <item name="strokeWidth">0dp</item>
