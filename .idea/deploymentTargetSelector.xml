@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-05-14T15:56:45.420892Z">
+        <DropdownSelection timestamp="2026-05-24T11:52:35.030303Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/stijn/.android/avd/Resizable_Experimental.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/stijn/.android/avd/Medium_Phone.avd" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -28,10 +28,10 @@
       </SelectionState>
       <SelectionState runConfigName="app-wearos">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-05-08T17:16:13.556402Z">
+        <DropdownSelection timestamp="2026-05-24T11:54:29.985042Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/stijn/.android/avd/Medium_Phone.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/stijn/.android/avd/Wear_OS_Small_Round.avd" />
             </handle>
           </Target>
         </DropdownSelection>

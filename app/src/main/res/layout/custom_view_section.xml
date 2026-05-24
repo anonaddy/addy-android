@@ -90,9 +90,10 @@
 
         </LinearLayout>
 
-        <ProgressBar
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/custom_view_section_progressbar"
-            style="?android:attr/progressBarStyleSmall"
+            style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

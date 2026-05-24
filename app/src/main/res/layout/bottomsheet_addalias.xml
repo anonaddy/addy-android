@@ -171,7 +171,7 @@
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
 
-            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+            <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/bs_addalias_alias_add_alias_button"
                 style="@style/CircularProgressButtonSecondary"
                 android:layout_width="match_parent"

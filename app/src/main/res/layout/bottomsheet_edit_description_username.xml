@@ -76,7 +76,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+            <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/bs_editusername_username_save_button"
                 style="@style/CircularProgressButtonSecondary"
                 android:layout_width="match_parent"

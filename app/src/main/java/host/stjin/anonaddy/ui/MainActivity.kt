@@ -11,9 +11,6 @@ import android.security.KeyChainAliasCallback
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -26,8 +23,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.wearable.Wearable
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.textview.MaterialTextView
 import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
@@ -188,7 +183,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                 if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
                     setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIcon, true)
                 } else {
-                    setButtonAccentColor(binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)!!, true)
+                    setButtonAccentColor(binding.navRail!!.headerView?.findViewById(R.id.navigation_rail_fab_account_notifications)!!, true)
                 }
             } else {
                 hideAccountNotificationsBadge()

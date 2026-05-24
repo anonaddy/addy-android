@@ -55,12 +55,12 @@
                 android:textAlignment="center"
                 android:textColor="@color/BlackWhite" />
 
-            <ProgressBar
+            <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/bs_adddomain_domain_progressbar2"
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="match_parent"
+                style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_gravity="center_horizontal"
                 android:padding="4dp"
                 android:visibility="visible" />
         </LinearLayout>

@@ -77,14 +77,12 @@
         android:orientation="vertical">
 
 
-        <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+        <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
             android:id="@+id/fragment_setup_init_button_api"
             style="@style/CircularProgressButtonTertiary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:drawableEnd="@drawable/ic_key"
-            android:gravity="center_vertical"
             android:text="@string/get_started" />
 
 
@@ -92,7 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+            <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/fragment_setup_init_button_new"
                 style="@style/CircularProgressButtonSecondary"
                 android:layout_width="match_parent"
@@ -102,7 +100,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/new_user" />
 
-            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+            <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/fragment_setup_init_button_restore_backup"
                 style="@style/CircularProgressButtonSecondary"
                 android:layout_width="match_parent"

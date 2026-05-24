@@ -95,6 +95,37 @@
         <item name="android:windowLightNavigationBar">false</item>
     </style>
 
+
+    <style name="Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small" parent="Widget.Material3Expressive.CircularProgressIndicator.Wavy">
+        <item name="trackThickness">@dimen/mtrl_progress_circular_track_thickness_extra_small</item>
+        <item name="indicatorSize">@dimen/mtrl_progress_circular_size_extra_small</item>
+        <item name="indicatorInset">@dimen/mtrl_progress_circular_inset_extra_small</item>
+        <item name="trackCornerRadius">50%</item>
+        <item name="indicatorTrackGapSize">3dp</item>
+        <item name="android:indeterminate">true</item>
+    </style>
+
+    <style name="Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small.Inverse" parent="Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small">
+        <item name="trackColor">?colorOnPrimaryContainer</item>
+        <item name="indicatorColor">?colorOnPrimary</item>
+    </style>
+
+    <style name="Widget.Material3Expressive.CircularProgressIndicator.Wavy.Medium" parent="Widget.Material3Expressive.CircularProgressIndicator.Wavy">
+        <item name="trackThickness">@dimen/mtrl_progress_circular_track_thickness_medium</item>
+        <item name="indicatorSize">@dimen/mtrl_progress_circular_size_medium</item>
+        <item name="indicatorInset">@dimen/mtrl_progress_circular_inset_medium</item>
+        <item name="trackCornerRadius">50%</item>
+        <item name="indicatorTrackGapSize">3dp</item>
+        <item name="android:indeterminate">true</item>
+    </style>
+
+    <style name="Widget.Material3Expressive.CircularProgressIndicator.Wavy.Medium.Inverse" parent="Widget.Material3Expressive.CircularProgressIndicator.Wavy.Medium">
+        <item name="trackColor">?colorPrimary</item>
+        <item name="indicatorColor">?colorSecondaryContainer</item>
+    </style>
+
+
+
     <style name="AddyIoProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progressbar_drawable</item>
         <item name="android:maxHeight">8dip</item>
@@ -109,10 +140,7 @@
     <!-- SECONDARY -->
     <style name="CircularProgressButtonSecondary" parent="MaterialButtonSecondary">
         <item name="android:background">@drawable/circularprogressbutton_secondary</item>
-        <item name="spinning_bar_padding">8dp</item>
-        <item name="spinning_bar_color">?colorOnPrimary</item>
         <item name="android:layout_gravity">center</item>
-        <item name="initialCornerAngle">@dimen/corner_radius_button</item>
         <item name="android:textColor">?colorOnPrimary</item>
         <item name="drawableTint">?colorOnPrimary</item>
         <item name="android:singleLine">false</item>
@@ -126,12 +154,11 @@
     </style>
 
 
-    <style name="MaterialButtonSecondary" parent="Widget.Material3.Button">
+    <style name="MaterialButtonSecondary" parent="Widget.Material3Expressive.Button">
         <item name="backgroundTint">?colorPrimary</item>
         <item name="android:textColor">?colorOnPrimary</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="iconTint">?colorOnPrimary</item>
-        <item name="cornerRadius">@dimen/corner_radius_button</item>
         <item name="android:height">56dp</item> <!-- Increased for expressive feel -->
         <item name="android:singleLine">true</item>
     </style>
@@ -152,7 +179,7 @@
 
     <!-- TERTIARY -->
 
-    <style name="ActionButtonsTertiary" parent="Widget.Material3.Button">
+    <style name="ActionButtonsTertiary" parent="Widget.Material3Expressive.Button">
         <item name="backgroundTint">?colorTertiary</item>
         <item name="android:textColor">?colorOnTertiary</item>
         <item name="iconTint">?colorOnTertiary</item>
@@ -163,10 +190,7 @@
 
     <style name="CircularProgressButtonTertiary" parent="ActionButtonsTertiary">
         <item name="android:background">@drawable/circularprogressbutton_tertiary</item>
-        <item name="spinning_bar_color">?colorOnTertiaryContainer</item>
-        <item name="spinning_bar_padding">8dp</item>
         <item name="android:layout_gravity">center</item>
-        <item name="initialCornerAngle">@dimen/corner_radius_button</item>
         <item name="drawableTint">?colorOnTertiary</item>
         <item name="android:textColor">?colorOnTertiary</item>
     </style>
@@ -370,10 +394,11 @@
         <item name="buttonBarNeutralButtonStyle">@style/Widget.Catalog.Button.TextButton.Dialog.FullWidth</item>
     </style>
 
-    <style name="AddyIoMaterialToggleButton" parent="Widget.Material3Expressive.Button.OutlinedButton">
+    <style name="AddyIoMaterialToggleButton" parent="Widget.Material3Expressive.Button">
         <item name="autoSizeTextType">uniform</item>
         <item name="autoSizeMinTextSize">8sp</item>
         <item name="autoSizeMaxTextSize">14sp</item>
+        <item name="android:ellipsize">none</item>
     </style>
 
     <style name="AddyIoMaterialToggleButtonGroupParentCardView" parent="Widget.Material3.CardView.Elevated">

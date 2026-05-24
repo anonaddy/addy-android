@@ -417,7 +417,6 @@ class ManageDomainsActivity : BaseActivity(),
         var totalBlocked = 0
         var totalReplies = 0
         var totalSent = 0
-        val totalAliases = domain.aliases_count
         var aliases: String
 
         val buf = StringBuilder()

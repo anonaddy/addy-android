@@ -728,7 +728,6 @@ class ManageRecipientsActivity : BaseActivity(),
         var totalBlocked = 0
         var totalReplies = 0
         var totalSent = 0
-        val totalAliases = recipient.aliases_count
         var aliases: String
 
         val buf = StringBuilder()

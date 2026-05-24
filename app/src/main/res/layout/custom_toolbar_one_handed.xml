@@ -54,47 +54,45 @@
             android:visibility="visible">
 
 
-            <ProgressBar
+            <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/custom_toolbar_one_handed_action_progressbar"
-                style="?android:attr/progressBarStyleSmall"
+                style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small.Inverse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end"
-                android:indeterminateTint="?colorSecondaryContainer"
                 android:padding="4dp"
                 android:visibility="gone" />
 
-            <ImageView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/custom_toolbar_one_handed_action_button"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:alpha="0"
-                android:layout_marginStart="16dp"
-                android:layout_gravity="end|bottom"
-                android:background="@drawable/circle_ripple"
-                android:clickable="true"
-                android:visibility="gone"
+                style="?attr/materialIconButtonFilledTonalStyle"
+                android:layout_width="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_height="48dp"
+                app:iconPadding="0dp"
                 android:contentDescription="@string/action"
-                android:focusable="true"
-                android:padding="6dp"
-                android:src="@drawable/ic_check"
-                app:tint="?colorOnSecondaryContainer" />
-
-            <ImageView
-                android:id="@+id/custom_toolbar_one_handed_action_button_2"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginStart="16dp"
-                android:alpha="0"
-                android:layout_gravity="end|bottom"
-                android:background="@drawable/circle_ripple"
-                android:clickable="true"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:maxLines="1"
                 android:visibility="gone"
+                app:icon="@drawable/ic_check"
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/custom_toolbar_one_handed_action_button_2"
+                style="?attr/materialIconButtonFilledTonalStyle"
+                android:layout_width="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_height="48dp"
+                app:iconPadding="0dp"
                 android:contentDescription="@string/save_rule"
-                android:focusable="true"
-                android:padding="6dp"
-                android:src="@drawable/ic_check"
-                app:tint="?colorOnSecondaryContainer" />
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:visibility="gone"
+                app:icon="@drawable/ic_check"
+                app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"/>
+
 
         </LinearLayout>
 

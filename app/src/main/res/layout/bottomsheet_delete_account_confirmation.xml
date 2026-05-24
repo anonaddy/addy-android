@@ -63,7 +63,7 @@
                 android:textAlignment="center"
                 android:text="@string/delete_account_confirmation_desc" />
 
-            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+            <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/bs_delete_account_confirmation_button"
                 style="@style/CircularProgressButtonDeleteStyle"
                 android:layout_width="match_parent"
