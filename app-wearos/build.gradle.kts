@@ -29,9 +29,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v1.6.3 + release 01 + 01 (for wearos)
-        versionCode = 361630101
-        versionName = "1.6.3"
+        // SDK 36 + v1.6.4 + release 01 + 01 (for wearos)
+        versionCode = 361640201 // TODO set release to 01
+        versionName = "1.6.4"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -101,10 +101,10 @@ dependencies {
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.13.0")
+    implementation("com.google.android.material:material:1.14.0")
     implementation("androidx.compose.material3:material3:$compose_material_version")
     implementation("androidx.core:core-ktx:1.18.0")
-    implementation("com.google.android.gms:play-services-wearable:19.0.0")
+    implementation("com.google.android.gms:play-services-wearable:20.0.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("androidx.wear:wear:1.4.0")
@@ -172,7 +172,7 @@ dependencies {
     // Use to fetch tiles from a tile provider in your tests
     testImplementation("androidx.wear.tiles:tiles-testing:$wear_tiles_version")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.10.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.11.0")
     implementation("androidx.wear.tiles:tiles-proto:$wear_tiles_version")
 
 }

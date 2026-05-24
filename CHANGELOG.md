@@ -1,5 +1,23 @@
 # Changelog
 
+## [v6.2.4] - 2026-05-24
+
+### addy.io
+
+##### Fixed/Improved
+
+- Improved searching experience
+- Moved multiple views to Material 3 Expressive language for a more playful UI
+- Minor other UI improvements
+- Performance enhancements and other improvements for a smoother experience
+
+### addy.io for Android wearables _(v1.6.4)_
+
+##### Fixed/Improved
+
+- Minor other UI improvements
+- Performance improvements and other things to make the app even smoother
+
 ## [v6.2.3] - 2026-05-07
 
 ### addy.io

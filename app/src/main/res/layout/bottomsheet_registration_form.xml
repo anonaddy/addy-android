@@ -245,7 +245,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+            <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/bs_registration_form_register_button"
                 style="@style/CircularProgressButtonSecondary"
                 android:layout_width="match_parent"
@@ -270,7 +270,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_registration_form_privacy_policy_button"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    style="@style/Widget.Material3Expressive.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -278,7 +278,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_registration_form_terms_of_service_button"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    style="@style/Widget.Material3Expressive.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

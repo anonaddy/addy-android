@@ -32,10 +32,14 @@
         android:textAlignment="center"
         android:text="@string/activating_subscription_desc" />
 
-    <ProgressBar
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_margin="8dp" />
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/bs_adddomain_domain_progressbar2"
+        style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="4dp"
+        android:layout_margin="8dp"/>
 
     <TextView
         android:layout_width="match_parent"

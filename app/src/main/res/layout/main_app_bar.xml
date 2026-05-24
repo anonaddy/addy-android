@@ -79,120 +79,47 @@
                 android:gravity="end"
                 android:layout_margin="@dimen/collapsingtoolbar_action_margin">
 
-                <RelativeLayout
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="8dp">
-
-
-                    <ImageView
-                        android:id="@+id/main_top_bar_failed_deliveries_icon"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="end|bottom"
-                        android:background="@drawable/circle_ripple"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:padding="6dp"
-                        android:src="@drawable/ic_mail_error"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintDimensionRatio="H,1:1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="?colorOnSecondaryContainer" />
-
-                    <ImageView
-                        android:id="@+id/main_top_bar_failed_deliveries_new_items_icon"
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_alignParentEnd="true"
-                        android:clickable="true"
-                        android:contentDescription="@string/new_failed_deliveries"
-                        android:focusable="true"
-                        android:src="@drawable/circle"
-                        android:tintMode="src_over"
-                        android:visibility="invisible"
-                        app:tint="@color/softRed" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/main_top_bar_account_notifications_icon_RL"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/main_top_bar_failed_deliveries_icon"
+                    style="?attr/materialIconButtonFilledTonalStyle"
+                    android:layout_width="48dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp">
+                    android:layout_height="48dp"
+                    app:iconPadding="0dp"
+                    android:contentDescription="@string/new_failed_deliveries"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    app:icon="@drawable/ic_mail_error"
+                    app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"/>
 
-
-                    <ImageView
-                        android:id="@+id/main_top_bar_account_notifications_icon"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="end|bottom"
-                        android:background="@drawable/circle_ripple"
-                        android:clickable="true"
-                        android:contentDescription="@string/account_notifications"
-                        android:focusable="true"
-                        android:padding="6dp"
-                        android:src="@drawable/ic_bell"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintDimensionRatio="H,1:1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="?colorOnSecondaryContainer" />
-
-                    <ImageView
-                        android:id="@+id/main_top_bar_account_notifications_new_items_icon"
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_alignParentEnd="true"
-                        android:clickable="true"
-                        android:contentDescription="@string/new_account_notifications"
-                        android:focusable="true"
-                        android:src="@drawable/circle"
-                        android:tintMode="src_over"
-                        android:visibility="invisible"
-                        app:tint="@color/softRed" />
-                </RelativeLayout>
-
-                <RelativeLayout
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/main_top_bar_account_notifications_icon"
+                    style="?attr/materialIconButtonFilledTonalStyle"
+                    android:layout_width="48dp"
                     android:layout_marginStart="8dp"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp">
+                    android:layout_height="48dp"
+                    app:iconPadding="0dp"
+                    android:contentDescription="@string/account_notifications"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    app:icon="@drawable/ic_bell"
+                    app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"/>
 
-                    <TextView
-                        android:id="@+id/main_top_bar_user_initials"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_gravity="end|bottom"
-                        android:background="@drawable/circle_ripple"
-                        android:clickable="true"
-                        android:contentDescription="@string/open_options"
-                        android:focusable="true"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="center"
-                        android:padding="6dp"
-                        android:text="SV"
-                        android:textColor="?colorOnSecondaryContainer"
-                        android:textSize="18sp"
-                        android:autoSizeTextType="uniform"
-                        app:layout_collapseMode="pin"
-                        app:tint="?colorOnSecondaryContainer"
-                        tools:ignore="HardcodedText" />
-
-                    <ImageView
-                        android:id="@+id/main_top_bar_user_initials_update_icon"
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_alignParentEnd="true"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:src="@drawable/circle"
-                        android:tintMode="src_over"
-                        android:visibility="invisible"
-                        android:contentDescription="@string/new_update_available"
-                        app:tint="@color/softRed" />
-                </RelativeLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/main_top_bar_user_initials"
+                    style="?attr/materialIconButtonFilledTonalStyle"
+                    android:layout_width="48dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_height="48dp"
+                    app:iconPadding="0dp"
+                    android:contentDescription="@string/open_options"
+                    android:text="SV"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"/>
 
             </LinearLayout>
 

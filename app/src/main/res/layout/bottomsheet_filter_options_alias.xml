@@ -97,66 +97,57 @@
                     </LinearLayout>
 
 
-                    <com.google.android.material.card.MaterialCardView
-                        style="@style/AddyIoMaterialToggleButtonGroupParentCardView"
-                        android:layout_marginBottom="16dp">
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/bs_filteroptions_aliases_mbtg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        app:checkedButton="@+id/bs_filteroptions_aliases_all_button"
+                        app:selectionRequired="true"
+                        app:singleSelection="true">
 
-                        <com.google.android.material.button.MaterialButtonToggleGroup
-                            android:id="@+id/bs_filteroptions_aliases_mbtg"
-                            android:layout_width="match_parent"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bs_filteroptions_aliases_all_button"
+                            style="@style/AddyIoMaterialToggleButton"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:weightSum="5"
-                            app:checkedButton="@+id/bs_filteroptions_aliases_all_button"
-                            app:selectionRequired="true"
-                            app:singleSelection="true">
+                            android:layout_weight="1"
+                            android:text="@string/filter_all_aliases" />
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/bs_filteroptions_aliases_all_button"
-                                style="@style/AddyIoMaterialToggleButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:text="@string/filter_all_aliases" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bs_filteroptions_aliases_active_button"
+                            style="@style/AddyIoMaterialToggleButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/filter_active_aliases" />
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/bs_filteroptions_aliases_active_button"
-                                style="@style/AddyIoMaterialToggleButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/filter_active_aliases" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bs_filteroptions_aliases_inactive_button"
+                            style="@style/AddyIoMaterialToggleButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/filter_inactive_aliases" />
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/bs_filteroptions_aliases_inactive_button"
-                                style="@style/AddyIoMaterialToggleButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/filter_inactive_aliases" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bs_filteroptions_aliases_pinned_button"
+                            style="@style/AddyIoMaterialToggleButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/filter_pinned_aliases" />
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/bs_filteroptions_aliases_pinned_button"
-                                style="@style/AddyIoMaterialToggleButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/filter_pinned_aliases" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bs_filteroptions_aliases_deleted_button"
+                            style="@style/AddyIoMaterialToggleButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/filter_deleted_aliases" />
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/bs_filteroptions_aliases_deleted_button"
-                                style="@style/AddyIoMaterialToggleButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/filter_deleted_aliases" />
-
-                        </com.google.android.material.button.MaterialButtonToggleGroup>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        style="@style/AddyIoMaterialToggleButtonGroupParentCardView"
-                        android:layout_marginBottom="16dp">
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
 
                         <com.google.android.material.button.MaterialButtonToggleGroup
                             android:id="@+id/bs_filteroptions_aliases_watched_mbtg"
@@ -171,7 +162,7 @@
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/bs_filteroptions_aliases_watched_only_all_aliases_button"
                                 style="@style/AddyIoMaterialToggleButton"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/all_aliases" />
@@ -179,13 +170,12 @@
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/bs_filteroptions_aliases_watched_only_button"
                                 style="@style/AddyIoMaterialToggleButton"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/filter_watched_only" />
 
                         </com.google.android.material.button.MaterialButtonToggleGroup>
-                    </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
 
@@ -369,7 +359,7 @@
 
                 </com.google.android.material.chip.ChipGroup>
 
-                <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
                     android:id="@+id/bs_filteroptions_aliases_save_button"
                     style="@style/CircularProgressButtonSecondary"
                     android:layout_width="match_parent"

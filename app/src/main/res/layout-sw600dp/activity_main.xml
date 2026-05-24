@@ -21,6 +21,9 @@
             android:layout_height="wrap_content"
             android:clipChildren="false"
             app:headerLayout="@layout/navigation_rail_fab"
+            app:contentMarginTop="0dp"
+            app:headerMarginBottom="0dp"
+            app:labelMaxLines="1"
             app:labelVisibilityMode="auto"
             app:menu="@menu/rail_nav_menu"
             app:menuGravity="top" />
@@ -33,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:layout_marginStart="80dp"
+        android:layout_marginStart="96dp"
         android:orientation="vertical"
         android:paddingEnd="@dimen/layout_padding"
         tools:ignore="RtlSymmetry">

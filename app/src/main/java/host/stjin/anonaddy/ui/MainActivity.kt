@@ -8,11 +8,9 @@ import android.os.Handler
 import android.os.Looper
 import android.security.KeyChain
 import android.security.KeyChainAliasCallback
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -24,8 +22,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.wearable.Wearable
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.textview.MaterialTextView
+import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
@@ -154,29 +151,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
             if (newDeliveriesCount > 0) {
                 if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                    if (binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.VISIBLE) {
-                        // loading the animation of
-                        // zoom_in.xml file into a variable
-                        val animZoomIn = AnimationUtils.loadAnimation(
-                            this,
-                            R.anim.zoom_in
-                        )
-                        animZoomIn.setAnimationListener(object : Animation.AnimationListener {
-                            override fun onAnimationStart(p0: Animation?) {
-                                binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility = View.VISIBLE
-                            }
-
-                            override fun onAnimationEnd(p0: Animation?) {
-                                //
-                            }
-
-                            override fun onAnimationRepeat(p0: Animation?) {
-                                //
-                            }
-                        }
-                        )
-                        binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomIn)
-                    }
+                    setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesIcon, true)
                 } else {
                     val badge = binding.navRail!!.getOrCreateBadge(R.id.navigation_failed_deliveries)
                     badge.isVisible = true
@@ -206,33 +181,9 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                 encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)
             if ((result?.size ?: 0) > currentAccountNotifications) {
                 if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-
-                    if (binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.visibility != View.VISIBLE) {
-                        // loading the animation of
-                        // zoom_in.xml file into a variable
-                        val animZoomIn = AnimationUtils.loadAnimation(
-                            this,
-                            R.anim.zoom_in
-                        )
-                        animZoomIn.setAnimationListener(object : Animation.AnimationListener {
-                            override fun onAnimationStart(p0: Animation?) {
-                                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.visibility = View.VISIBLE
-                            }
-
-                            override fun onAnimationEnd(p0: Animation?) {
-                                //
-                            }
-
-                            override fun onAnimationRepeat(p0: Animation?) {
-                                //
-                            }
-                        }
-                        )
-                        binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.startAnimation(animZoomIn)
-                    }
+                    setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIcon, true)
                 } else {
-                    binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_account_notifications)!!
-                        .setColorFilter(ContextCompat.getColor(this, R.color.softRed), android.graphics.PorterDuff.Mode.SRC_IN)
+                    setButtonAccentColor(binding.navRail!!.headerView?.findViewById(R.id.navigation_rail_fab_account_notifications)!!, true)
                 }
             } else {
                 hideAccountNotificationsBadge()
@@ -286,17 +237,17 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
         if (AddyIo.isUsingHostedInstance) {
             if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_account_notifications)!!.visibility =
+                binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)!!.visibility =
                     View.VISIBLE
             } else {
-                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIconRL.visibility = View.VISIBLE
+                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIcon.visibility = View.VISIBLE
             }
         } else {
             if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_account_notifications)!!.visibility =
+                binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)!!.visibility =
                     View.GONE
             } else {
-                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIconRL.visibility = View.GONE
+                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIcon.visibility = View.GONE
             }
 
         }
@@ -471,12 +422,12 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
         binding.navRail!!.headerView?.findViewById<TextView>(R.id.navigation_rail_fab_version)!!.text = railVersionText
 
         val usernameInitials = (this.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
-        binding.navRail!!.headerView?.findViewById<TextView>(R.id.main_top_bar_user_initials)!!.text = usernameInitials
+        binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.main_top_bar_user_initials)!!.text = usernameInitials
 
     }
 
     private fun setOnBigScreenClickListener() {
-        binding.navRail!!.headerView?.findViewById<MaterialTextView>(R.id.main_top_bar_user_initials)!!.setOnClickListener {
+        binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.main_top_bar_user_initials)!!.setOnClickListener {
             if (!profileBottomDialogFragment.isAdded) {
                 profileBottomDialogFragment.show(
                     supportFragmentManager,
@@ -485,7 +436,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
             }
         }
 
-        binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_account_notifications)!!.setOnClickListener {
+        binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)!!.setOnClickListener {
             val intent = Intent(this, AccountNotificationsActivity::class.java)
             startActivity(intent)
         }
@@ -990,119 +941,42 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
         val shouldShowDot = mUpdateAvailable || mPermissionsRequired
 
-
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             // If there is an update available or there are permissions required, show the dot
-            if (shouldShowDot) {
-                binding.navRail!!.headerView?.findViewById<MaterialTextView>(R.id.main_top_bar_user_initials)!!
-                    .setTextColor(ContextCompat.getColor(this, R.color.softRed))
-            } else {
-                binding.navRail!!.headerView?.findViewById<MaterialTextView>(R.id.main_top_bar_user_initials)!!
-                    .setTextColor(ContextCompat.getColor(this, R.color.md_theme_onSecondaryContainer))
-            }
+            setButtonAccentColor(binding.navRail!!.headerView?.findViewById(R.id.main_top_bar_user_initials)!!, shouldShowDot)
         } else {
-            // If there is an update available or there are permissions required, show the dot
-            val animZoom = if (shouldShowDot && binding.mainAppBarInclude!!.mainTopBarUserInitialsUpdateIcon.visibility != View.VISIBLE) {
-                // loading the animation of
-                // zoom_in.xml file into a variable
-                AnimationUtils.loadAnimation(
-                    this,
-                    R.anim.zoom_in
-                )
-            } else if (
-            // If there is not update AND there are no permissions required, hide the dot
-                !shouldShowDot &&
-                binding.mainAppBarInclude!!.mainTopBarUserInitialsUpdateIcon.visibility != View.INVISIBLE
-            ) {
-                // loading the animation of
-                // zoom_in.xml file into a variable
-                AnimationUtils.loadAnimation(
-                    this,
-                    R.anim.zoom_out
-                )
-            } else {
-                null
-            }
-
-            animZoom?.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(p0: Animation?) {
-                    binding.mainAppBarInclude!!.mainTopBarUserInitialsUpdateIcon.visibility = if (shouldShowDot) View.INVISIBLE else View.VISIBLE
-                }
-
-                override fun onAnimationEnd(p0: Animation?) {
-                    binding.mainAppBarInclude!!.mainTopBarUserInitialsUpdateIcon.visibility = if (shouldShowDot) View.VISIBLE else View.INVISIBLE
-                }
-
-                override fun onAnimationRepeat(p0: Animation?) {
-                    //
-                }
-            }
-            )
-            animZoom?.let { binding.mainAppBarInclude!!.mainTopBarUserInitialsUpdateIcon.startAnimation(it) }
+            setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarUserInitials, shouldShowDot)
         }
     }
 
     private fun hideFailedDeliveriesBadge() {
         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-
-            if (binding.mainAppBarInclude?.mainTopBarFailedDeliveriesNewItemsIcon?.visibility != View.INVISIBLE) {
-
-                // loading the animation of
-                // zoom_out.xml file into a variable
-                val animZoomOut = AnimationUtils.loadAnimation(
-                    this,
-                    R.anim.zoom_out
-                )
-                animZoomOut.setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationStart(p0: Animation?) {
-                        //
-                    }
-
-                    override fun onAnimationEnd(p0: Animation?) {
-                        binding.mainAppBarInclude?.mainTopBarFailedDeliveriesNewItemsIcon?.visibility = View.INVISIBLE
-                    }
-
-                    override fun onAnimationRepeat(p0: Animation?) {
-                        //
-                    }
-                }
-                )
-                binding.mainAppBarInclude?.mainTopBarFailedDeliveriesNewItemsIcon?.startAnimation(animZoomOut)
-            }
+            setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesIcon, false)
         } else {
             binding.navRail?.removeBadge(R.id.navigation_failed_deliveries)
         }
     }
 
+
+    private fun setButtonAccentColor(button: MaterialButton, shouldAccent: Boolean) {
+        if (shouldAccent) {
+            button.setTextColor(ContextCompat.getColor(this, R.color.softRed))
+            button.icon?.setColorFilter(ContextCompat.getColor(this, R.color.softRed), android.graphics.PorterDuff.Mode.SRC_IN)
+        } else {
+            val typedValue = TypedValue()
+            theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
+            val defaultColor = typedValue.data
+            button.setTextColor(defaultColor)
+            button.icon?.colorFilter = null
+
+        }
+    }
+
     private fun hideAccountNotificationsBadge() {
         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-
-            if (binding.mainAppBarInclude?.mainTopBarAccountNotificationsNewItemsIcon?.visibility != View.INVISIBLE) {
-
-                // loading the animation of
-                // zoom_out.xml file into a variable
-                val animZoomOut = AnimationUtils.loadAnimation(
-                    this,
-                    R.anim.zoom_out
-                )
-                animZoomOut.setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationStart(p0: Animation?) {
-                        //
-                    }
-
-                    override fun onAnimationEnd(p0: Animation?) {
-                        binding.mainAppBarInclude?.mainTopBarAccountNotificationsNewItemsIcon?.visibility = View.INVISIBLE
-                    }
-
-                    override fun onAnimationRepeat(p0: Animation?) {
-                        //
-                    }
-                }
-                )
-                binding.mainAppBarInclude?.mainTopBarAccountNotificationsNewItemsIcon?.startAnimation(animZoomOut)
-            }
+            setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIcon, false)
         } else {
-            binding.navRail?.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_account_notifications)?.colorFilter = null
+            binding.navRail?.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)?.icon?.colorFilter = null
         }
 
     }

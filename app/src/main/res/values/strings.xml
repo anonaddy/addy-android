@@ -67,14 +67,13 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 6.2.3</h3>
+<h3>What\'s new in addy.io for Android 6.2.4</h3>
 <h4>Fixed/Improved</h4>
-<p>- Added support for blocklist pagination<br />- Added support for blocklist filtering<br />- Added support for searching through blocklist items<br />- Added support for filtering failed deliveries for inbound quarantined<br />- Reworked logic for counting failed deliveries<br />- Redesigned searchbar for aliases<br />- Redesigned tablet and foldable UI<br />- Performance enhancements and other improvements for a smoother experience</p>
-<h4>Removed</h4>
-<p>- Removed Global Search in favor of new searchbars</p>
-<h3>What\'s new in addy.io for Android Wearables 1.6.3</h3>
+<p>- Improved searching experience<br />- Moved multiple views to Material 3 Expressive language for a more playful UI<br />- Minor other UI improvements<br />- Performance enhancements and other improvements for a smoother experience</p>
+<h4> </h4>
+<h3>What\'s new in addy.io for Android Wearables 1.6.4</h3>
 <h4>Fixed/Improved</h4>
-<p>- Performance improvements and other things to make the app even smoother</p>]]></string>
+<p>- Minor other UI improvements<br />- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -713,7 +712,7 @@
     <string name="why_subscribe_reason_3_pro">20 Custom Domains</string>
     <string name="why_subscribe_reason_4_pro">20 Additional Usernames</string>
     <string name="why_subscribe_reason_5_pro">20 Rules</string>
-    <string name="why_subscribe_reason_6_pro">100 Anonymous Reply + Send From Daily Limit</string>
+    <string name="why_subscribe_reason_6_pro">200 Anonymous Reply + Send From Daily Limit</string>
     <string name="why_subscribe_reason_7_pro">Unlimited Monthly Bandwidth Limit</string>
     <string name="why_subscribe_reason_8_pro">30 Recipients (real email addresses)</string>
     <string name="why_subscribe_reason_1_lite">50 Active Shared Domain Aliases</string>
@@ -862,4 +861,5 @@
     <string name="blocklist_add_confirm_desc">Are you sure you want to block %s?</string>
     <string name="blocklist_add_success">This sender was added to the blocklist</string>
     <string name="inbound_quarantined">Inbound quarantined</string>
+    <string name="search_for_aliases">Search for aliases</string>
 </resources>

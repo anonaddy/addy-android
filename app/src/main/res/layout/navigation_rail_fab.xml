@@ -46,34 +46,27 @@
         android:layout_marginBottom="16dp"
         android:orientation="vertical">
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/main_top_bar_user_initials"
+            style="?attr/materialIconButtonFilledTonalStyle"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:layout_marginBottom="8dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/circle_ripple"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
+            android:contentDescription="@string/account_notifications"
             android:text="SV"
-            android:textColor="?colorOnSecondaryContainer"
+            android:textStyle="bold"
             android:textSize="18sp"
-            android:fontFamily="sans-serif-medium"
-            android:contentDescription="@string/open_options"
-            tools:ignore="HardcodedText" />
+            android:layout_marginBottom="8dp"
+            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"/>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/navigation_rail_fab_account_notifications"
+            style="?attr/materialIconButtonFilledTonalStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:backgroundTint="?colorOnSurfaceInverse"
-            app:shapeAppearance="?shapeAppearanceCornerLarge"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/account_notifications"
-            app:srcCompat="@drawable/ic_bell" />
+            app:icon="@drawable/ic_bell"
+            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"/>
 
 
     </LinearLayout>

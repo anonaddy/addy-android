@@ -66,12 +66,12 @@
                     android:textSize="24sp"
                     tools:ignore="HardcodedText" />
 
-                <ProgressBar
+                <com.google.android.material.progressindicator.CircularProgressIndicator
                     android:id="@+id/bs_adddomain_domain_progressbar2"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="match_parent"
+                    style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="center_horizontal"
                     android:padding="4dp"
                     android:visibility="visible" />
 
@@ -114,7 +114,7 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
                     android:id="@+id/bs_adddomain_domain_add_domain_button"
                     style="@style/CircularProgressButtonSecondary"
                     android:layout_width="match_parent"

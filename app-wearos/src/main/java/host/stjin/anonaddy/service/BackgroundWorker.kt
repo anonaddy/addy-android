@@ -3,17 +3,16 @@ package host.stjin.anonaddy.service
 import android.content.Context
 import androidx.wear.tiles.TileService
 import androidx.work.Constraints
+import androidx.work.CoroutineWorker
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.tiles.PinnedAliasesTileService
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 
 
@@ -21,14 +20,14 @@ import java.util.concurrent.TimeUnit
 This BackgroundWorker is used for obtaining data in the background, this data is then being used to "Watch" aliases and updating the data the widget uses.
  */
 
-class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
+class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {
 
     private fun updateTiles() {
         TileService.getUpdater(ctx)
             .requestUpdate(PinnedAliasesTileService::class.java)
     }
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
 
         if (BuildConfig.DEBUG) {
             println("doWork() called")
@@ -42,27 +41,23 @@ class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Wor
         var aliasNetworkCallResult = false
         var pinnedAliasNetworkCallResult = false
 
-        // Block the thread until this is finished
-        runBlocking(Dispatchers.Default) {
+        /*
+        CACHE DATA
+         */
 
-            /*
-            CACHE DATA
-             */
+        networkHelper.cacheUserResourceForWidget { result ->
+            // Store the result if the data succeeded to update in a boolean
+            userResourceNetworkCallResult = result
+        }
 
-            networkHelper.cacheUserResourceForWidget { result ->
-                // Store the result if the data succeeded to update in a boolean
-                userResourceNetworkCallResult = result
-            }
+        networkHelper.cacheLastUpdatedAliasesData({ result ->
+            // Store the result if the data succeeded to update in a boolean
+            aliasNetworkCallResult = result
+        })
 
-            networkHelper.cacheLastUpdatedAliasesData({ result ->
-                // Store the result if the data succeeded to update in a boolean
-                aliasNetworkCallResult = result
-            })
-
-            networkHelper.cachePinnedAliasesData { result ->
-                // Store the result if the data succeeded to update in a boolean
-                pinnedAliasNetworkCallResult = result
-            }
+        networkHelper.cachePinnedAliasesData { result ->
+            // Store the result if the data succeeded to update in a boolean
+            pinnedAliasNetworkCallResult = result
         }
 
         // If all tasks are successful return a success()
@@ -91,9 +86,6 @@ class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Wor
 class BackgroundWorkerHelper(private val context: Context) {
     private val CONSTANT_PERIODIC_WORK_REQUEST_TAG = "host.stjin.anonaddy.backgroundworker"
     fun scheduleBackgroundWorker() {
-        // Cancel the work to prevent it from being scheduled twice
-        cancelScheduledBackgroundWorker()
-
         //define constraints
         val myConstraints: Constraints = Constraints.Builder()
             .setRequiresDeviceIdle(false)
@@ -108,7 +100,14 @@ class BackgroundWorkerHelper(private val context: Context) {
             .setConstraints(myConstraints)
             .addTag(CONSTANT_PERIODIC_WORK_REQUEST_TAG)
             .build()
-        WorkManager.getInstance(context).enqueue(refreshCpnWork)
+
+        // Use enqueueUniquePeriodicWork with ExistingPeriodicWorkPolicy.UPDATE to avoid cancelling and re-enqueuing
+        // when no changes are made. This also prevents WorkerStoppedException when re-scheduling.
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+            CONSTANT_PERIODIC_WORK_REQUEST_TAG,
+            ExistingPeriodicWorkPolicy.UPDATE,
+            refreshCpnWork
+        )
 
         if (BuildConfig.DEBUG) {
             println("There is work todo, queued work for every $minutes minutes")
@@ -118,11 +117,10 @@ class BackgroundWorkerHelper(private val context: Context) {
 
 
     private fun cancelScheduledBackgroundWorker() {
-        WorkManager.getInstance(context).cancelAllWorkByTag(CONSTANT_PERIODIC_WORK_REQUEST_TAG)
+        WorkManager.getInstance(context).cancelUniqueWork(CONSTANT_PERIODIC_WORK_REQUEST_TAG)
 
         if (BuildConfig.DEBUG) {
-            println("Cancelled work with tag $CONSTANT_PERIODIC_WORK_REQUEST_TAG")
+            println("Cancelled work with unique name $CONSTANT_PERIODIC_WORK_REQUEST_TAG")
         }
     }
 }
-

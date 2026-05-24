@@ -1,7 +1,6 @@
 package host.stjin.anonaddy
 
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -21,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.button.MaterialButton
 import host.stjin.anonaddy.databinding.CustomToolbarOneHandedBinding
 import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
 import host.stjin.anonaddy.utils.MaterialDialogHelper
@@ -61,22 +61,14 @@ abstract class BaseActivity : AppCompatActivity() {
     This method forces the use of dark/light/auto mode
      */
 
-    @SuppressLint("SwitchIntDef")
     fun checkForDarkModeAndSetFlags() {
         val settingsManager = SettingsManager(false, this)
-        when (settingsManager.getSettingsInt(SettingsManager.PREFS.DARK_MODE, -1)) {
-            0 -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-
-            1 -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            }
-
-            -1 -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            }
+        val mode = when (settingsManager.getSettingsInt(SettingsManager.PREFS.DARK_MODE, -1)) {
+            0 -> AppCompatDelegate.MODE_NIGHT_NO
+            1 -> AppCompatDelegate.MODE_NIGHT_YES
+            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
         }
+        AppCompatDelegate.setDefaultNightMode(mode)
     }
 
 
@@ -87,11 +79,7 @@ abstract class BaseActivity : AppCompatActivity() {
     var hasReachedTopOfNsv: Boolean = true
         set(value) {
             field = value
-
-            if (this.refreshLayout != null) {
-                // hasReachedTopOfNsv, set shouldShowRefreshLayoutOnScroll
-                this.refreshLayout!!.shouldShowRefreshLayoutOnScroll = value && appBarIsExpanded
-            }
+            refreshLayout?.shouldShowRefreshLayoutOnScroll = value && appBarIsExpanded
         }
 
 
@@ -166,59 +154,46 @@ abstract class BaseActivity : AppCompatActivity() {
         customBackPressedMethod: (() -> Unit)? = null,
         showBackButton: Boolean = true
     ) {
-
-        if (showBackButton) {
-            customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.setNavigationIcon(R.drawable.ic_arrow_back) // need to set the icon here to have a navigation icon. You can simple create an vector image by "Vector Asset" and using here
-        }
-
-        customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.setNavigationOnClickListener {
-            if (customBackPressedMethod != null) {
-                customBackPressedMethod.invoke()
-            } else {
-                onBackPressedDispatcher.onBackPressed()
+        customToolbarOneHandedBinding?.apply {
+            if (showBackButton) {
+                customToolbarOneHandedMaterialtoolbar.setNavigationIcon(R.drawable.ic_arrow_back)
             }
+
+            customToolbarOneHandedMaterialtoolbar.setNavigationOnClickListener {
+                customBackPressedMethod?.invoke() ?: onBackPressedDispatcher.onBackPressed()
+            }
+            customToolbarOneHandedMaterialtoolbar.title = getString(title)
+
+            if (image != null) {
+                customToolbarOneHandedImage.setImageDrawable(ContextCompat.getDrawable(this@BaseActivity, image))
+            }
+
+            customToolbarOneHandedMaterialtoolbar.setOnClickListener {
+                sendBroadcast(Intent("scroll_up"))
+            }
+
+            this@BaseActivity.appBarLayout = customToolbarAppbar
         }
-        customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.title = this.resources.getString(title)
-
-        if (customToolbarOneHandedBinding?.customToolbarOneHandedImage != null && image != null) {
-            customToolbarOneHandedBinding.customToolbarOneHandedImage.setImageDrawable(ContextCompat.getDrawable(this, image))
-        }
-
-        customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.setOnClickListener {
-            val intent = Intent("scroll_up")
-            sendBroadcast(intent)
-        }
-
-
 
         this.nestedScrollView = nestedScrollView
-        this.appBarLayout = customToolbarOneHandedBinding?.customToolbarAppbar
     }
 
     fun toolbarSetAction(customToolbarOneHandedBinding: CustomToolbarOneHandedBinding, icon: Int, onClickListener: View.OnClickListener?) {
-        customToolbarOneHandedBinding.customToolbarOneHandedActionButton.visibility = View.VISIBLE
-        customToolbarOneHandedBinding.customToolbarOneHandedActionButton.setImageDrawable(ContextCompat.getDrawable(this, icon))
-
-        if (onClickListener != null) {
-            customToolbarOneHandedBinding.customToolbarOneHandedActionButton.animate()?.alpha(1.0f)
-        } else {
-            customToolbarOneHandedBinding.customToolbarOneHandedActionButton.animate()?.alpha(0.0f)
-        }
-
-        customToolbarOneHandedBinding.customToolbarOneHandedActionButton.setOnClickListener(onClickListener)
+        setupToolbarAction(customToolbarOneHandedBinding.customToolbarOneHandedActionButton, icon, onClickListener)
     }
 
     fun toolbarSetSecondAction(customToolbarOneHandedBinding: CustomToolbarOneHandedBinding, icon: Int, onClickListener: View.OnClickListener?) {
-        customToolbarOneHandedBinding.customToolbarOneHandedActionButton2.visibility = View.VISIBLE
-        customToolbarOneHandedBinding.customToolbarOneHandedActionButton2.setImageDrawable(ContextCompat.getDrawable(this, icon))
+        setupToolbarAction(customToolbarOneHandedBinding.customToolbarOneHandedActionButton2, icon, onClickListener)
+    }
 
-        if (onClickListener != null) {
-            customToolbarOneHandedBinding.customToolbarOneHandedActionButton2.animate()?.alpha(1.0f)
-        } else {
-            customToolbarOneHandedBinding.customToolbarOneHandedActionButton2.animate()?.alpha(0.0f)
+    private fun setupToolbarAction(button: MaterialButton, icon: Int, onClickListener: View.OnClickListener?) {
+        button.apply {
+            visibility = View.VISIBLE
+            setIconResource(icon)
+
+            animate().alpha(if (onClickListener != null) 1.0f else 0.0f)
+            setOnClickListener(onClickListener)
         }
-
-        customToolbarOneHandedBinding.customToolbarOneHandedActionButton2.setOnClickListener(onClickListener)
     }
 
     private var nestedScrollView: NestedScrollView? = null
@@ -273,25 +248,20 @@ abstract class BaseActivity : AppCompatActivity() {
                                 BiometricPrompt.ERROR_NO_BIOMETRICS -> {
                                     MaterialDialogHelper.showMaterialDialog(
                                         context = this@BaseActivity,
-                                        message = this@BaseActivity.resources.getString(R.string.authentication_splash_error_unavailable),
+                                        message = getString(R.string.authentication_splash_error_unavailable),
                                         icon = R.drawable.ic_fingerprint,
-                                        neutralButtonText = this@BaseActivity.resources.getString(R.string.try_again),
+                                        neutralButtonText = getString(R.string.try_again),
                                         neutralButtonAction = {
                                             isAuthenticated(shouldFinishOnError, callback)
                                         },
-                                        positiveButtonText = this@BaseActivity.resources.getString(R.string.reset_app),
+                                        positiveButtonText = getString(R.string.reset_app),
                                         positiveButtonAction = {
                                             (getSystemService(ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                                         }
                                     ).setCancelable(false).show()
                                 }
 
-                                BiometricPrompt.ERROR_USER_CANCELED -> {
-                                    if (shouldFinishOnError) {
-                                        finish()
-                                    }
-                                }
-
+                                BiometricPrompt.ERROR_USER_CANCELED,
                                 BiometricPrompt.ERROR_CANCELED -> {
                                     if (shouldFinishOnError) {
                                         finish()
@@ -300,7 +270,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
                                 else -> {
                                     Toast.makeText(
-                                        this@BaseActivity, resources.getString(
+                                        this@BaseActivity, getString(
                                             R.string.authentication_error_s,
                                             errString
                                         ), Toast.LENGTH_LONG

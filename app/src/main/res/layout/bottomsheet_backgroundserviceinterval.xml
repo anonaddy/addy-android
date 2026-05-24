@@ -69,7 +69,7 @@
                 <!-- app:materialThemeOverlay makes sure the line is visible in both dark- and lightmode -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_15"
-                    style="@style/AddyIoMaterialToggleButtonAlternative"
+                    style="@style/AddyIoMaterialToggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -77,7 +77,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_30"
-                    style="@style/AddyIoMaterialToggleButtonAlternative"
+                    style="@style/AddyIoMaterialToggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -85,7 +85,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_60"
-                    style="@style/AddyIoMaterialToggleButtonAlternative"
+                    style="@style/AddyIoMaterialToggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -93,7 +93,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_120"
-                    style="@style/AddyIoMaterialToggleButtonAlternative"
+                    style="@style/AddyIoMaterialToggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

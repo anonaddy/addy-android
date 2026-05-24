@@ -530,7 +530,7 @@ class NetworkHelper(private val context: Context) {
     suspend fun logout(callback: (String?) -> Unit) {
 
         waitForInitAndLog()
-        val (_, response, result) = Fuel.post(API_URL_LOGOUT)
+        val (_, response, _) = Fuel.post(API_URL_LOGOUT)
             .appendHeader(
                 *getHeaders()
             )
@@ -4472,7 +4472,7 @@ class NetworkHelper(private val context: Context) {
         response: Response,
         result: com.github.kittinunf.result.Result<String, com.github.kittinunf.fuel.core.FuelError>,
         methodName: String
-    ): String? {
+    ): String {
         val ex = result.component2()?.message
         val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
         Log.e("AFA", "${response.statusCode} - $ex")
@@ -4490,7 +4490,7 @@ class NetworkHelper(private val context: Context) {
         response: Response,
         result: com.github.kittinunf.result.Result<ByteArray, com.github.kittinunf.fuel.core.FuelError>,
         methodName: String
-    ): String? {
+    ): String {
         val ex = result.component2()?.message
         val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
         Log.e("AFA", "${response.statusCode} - $ex")

@@ -22,6 +22,7 @@ import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.FailedDeliveries
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.NewBlocklistEntry
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -114,12 +115,12 @@ class FailedDeliveryDetailsBottomDialogFragment(
                 binding.bsFailedDeliveriesTextview.text = Html.fromHtml(
                     context?.resources?.getString(
                         R.string.failed_delivery_details_text,
-                        failedDelivery.created_at,
+                        DateTimeUtils.convertStringToLocalTimeZoneString(failedDelivery.created_at),
                         failedDelivery.destination ?: "",
                         failedDelivery.alias_email ?: "",
                         failedDelivery.sender ?: "",
                         failedDelivery.remote_mta,
-                        failedDelivery.attempted_at,
+                        DateTimeUtils.convertStringToLocalTimeZoneString(failedDelivery.attempted_at),
                         failedDelivery.code
                     ),
                     Html.FROM_HTML_MODE_LEGACY
@@ -129,12 +130,12 @@ class FailedDeliveryDetailsBottomDialogFragment(
                     Html.fromHtml(
                         context?.resources?.getString(
                             R.string.failed_delivery_details_text,
-                            failedDelivery.created_at,
+                            DateTimeUtils.convertStringToLocalTimeZoneString(failedDelivery.created_at),
                             failedDelivery.destination ?: "",
                             failedDelivery.alias_email ?: "",
                             failedDelivery.sender ?: "",
                             failedDelivery.remote_mta,
-                            failedDelivery.attempted_at,
+                            DateTimeUtils.convertStringToLocalTimeZoneString(failedDelivery.attempted_at),
                             failedDelivery.code
                         )
                     )

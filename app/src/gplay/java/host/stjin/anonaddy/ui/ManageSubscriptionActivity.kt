@@ -11,6 +11,7 @@ import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams.SubscriptionProductReplacementParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.ProductDetails
@@ -386,23 +387,27 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
             // If the user wants to go to lite, The user already paid for the more expensive tier, so they keep access until the next billing date.
             // Else The user receives access immediately while keeping the same billing period.
             val replacementMode =
-                if (productDetails.productId == "lite") BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.DEFERRED else BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_PRORATED_PRICE
+                if (productDetails.productId == "lite") SubscriptionProductReplacementParams.ReplacementMode.DEFERRED else SubscriptionProductReplacementParams.ReplacementMode.CHARGE_PRORATED_PRICE
 
-            val billingParams = BillingFlowParams.newBuilder().setProductDetailsParamsList(
-                listOf(
-                    BillingFlowParams.ProductDetailsParams.newBuilder()
-                        .setProductDetails(productDetails)
-                        .setOfferToken(offerToken)
+            val productDetailsParams = BillingFlowParams.ProductDetailsParams.newBuilder()
+                .setProductDetails(productDetails)
+                .setOfferToken(offerToken)
+                .setSubscriptionProductReplacementParams(
+                    SubscriptionProductReplacementParams.newBuilder()
+                        .setOldProductId(currentSubscriptionSku!!)
+                        .setReplacementMode(replacementMode)
                         .build()
                 )
-            ).setSubscriptionUpdateParams(
-                BillingFlowParams.SubscriptionUpdateParams.newBuilder()
-                    .setOldPurchaseToken(currentSubscriptionPurchaseToken!!)
-                    .setSubscriptionReplacementMode(
-                        replacementMode
-                    )
-                    .build()
-            ).build()
+                .build()
+
+            val billingParams = BillingFlowParams.newBuilder()
+                .setProductDetailsParamsList(listOf(productDetailsParams))
+                .setSubscriptionUpdateParams(
+                    BillingFlowParams.SubscriptionUpdateParams.newBuilder()
+                        .setOldPurchaseToken(currentSubscriptionPurchaseToken!!)
+                        .build()
+                )
+                .build()
 
             billingClient.launchBillingFlow(
                 this,

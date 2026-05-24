@@ -87,10 +87,10 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             val gson = Gson()
 
 
-            // Get recipients from the parent activity (this can be null in case of a searchActivity link)
+            // Get recipients from the parent activity
             // In the case of nullOrEmpty, get the recipients first, then load the Rule
             val recipientsStringFromBundle = b?.getString("recipients")
-            if (recipientsStringFromBundle.isNullOrEmpty()) {
+            if (recipientsStringFromBundle.isNullOrEmpty() || recipientsStringFromBundle == "null") {
                 lifecycleScope.launch {
                     getAllRecipients(b)
                 }
