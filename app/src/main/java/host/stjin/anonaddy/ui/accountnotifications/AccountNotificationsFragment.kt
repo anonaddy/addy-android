@@ -143,7 +143,7 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
                         SnackbarHelper.createSnackbar(
                             requireContext(),
                             requireContext().resources.getString(R.string.something_went_wrong_retrieving_account_notifications) + "\n" + error,
-                            (activity as MainActivity).findViewById(R.id.main_container),
+                            (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                             LoggingHelper.LOGFILES.DEFAULT
                         ).show()
                     } else {

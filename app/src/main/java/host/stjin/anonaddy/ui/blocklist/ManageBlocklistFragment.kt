@@ -308,7 +308,7 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
                                 SnackbarHelper.createSnackbar(
                                     requireContext(),
                                     requireContext().resources.getString(R.string.something_went_wrong_retrieving_blocklist_entries) + "\n" + error,
-                                    (activity as MainActivity).findViewById(R.id.main_container),
+                                    (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                                     LoggingHelper.LOGFILES.DEFAULT
                                 ).show()
                             } else {
@@ -448,7 +448,7 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
                             R.string.s_s,
                             context.resources.getString(R.string.error_deleting_blocklist_entry), result
                         ),
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {

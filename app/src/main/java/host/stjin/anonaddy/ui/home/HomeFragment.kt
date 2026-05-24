@@ -336,7 +336,7 @@ class HomeFragment : Fragment(), Refreshable {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {

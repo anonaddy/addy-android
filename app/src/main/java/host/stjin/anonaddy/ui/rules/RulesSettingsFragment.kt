@@ -224,7 +224,7 @@ class RulesSettingsFragment : Fragment(), Refreshable {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + error,
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
@@ -255,7 +255,7 @@ class RulesSettingsFragment : Fragment(), Refreshable {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
@@ -314,7 +314,7 @@ class RulesSettingsFragment : Fragment(), Refreshable {
                             SnackbarHelper.createSnackbar(
                                 requireContext(),
                                 requireContext().resources.getString(R.string.error_obtaining_rules) + "\n" + error,
-                                (activity as MainActivity).findViewById(R.id.main_container),
+                                (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                                 LoggingHelper.LOGFILES.DEFAULT
                             ).show()
                         } else {
@@ -419,7 +419,7 @@ class RulesSettingsFragment : Fragment(), Refreshable {
                                     SnackbarHelper.createSnackbar(
                                         requireContext(),
                                         requireContext().resources.getString(R.string.changing_rules_order_success),
-                                        (activity as MainActivity).findViewById(R.id.main_container),
+                                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                                     ).show()
                                 } else {
                                     SnackbarHelper.createSnackbar(
@@ -433,7 +433,7 @@ class RulesSettingsFragment : Fragment(), Refreshable {
                                     SnackbarHelper.createSnackbar(
                                         requireContext(),
                                         requireContext().resources.getString(R.string.error_changing_rules_order) + "\n" + result,
-                                        (activity as MainActivity).findViewById(R.id.main_container),
+                                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                                     ).show()
                                 } else {
                                     SnackbarHelper.createSnackbar(
@@ -470,7 +470,7 @@ class RulesSettingsFragment : Fragment(), Refreshable {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.rule_deactivated),
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                     ).show()
                 } else {
                     SnackbarHelper.createSnackbar(
@@ -484,7 +484,7 @@ class RulesSettingsFragment : Fragment(), Refreshable {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.error_rules_active) + "\n" + result,
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                     ).show()
                 } else {
                     SnackbarHelper.createSnackbar(
@@ -505,7 +505,7 @@ class RulesSettingsFragment : Fragment(), Refreshable {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.rule_activated),
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                     ).show()
                 } else {
                     SnackbarHelper.createSnackbar(
@@ -519,7 +519,7 @@ class RulesSettingsFragment : Fragment(), Refreshable {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.error_rules_active) + "\n" + error,
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                     ).show()
                 } else {
                     SnackbarHelper.createSnackbar(
@@ -545,7 +545,7 @@ class RulesSettingsFragment : Fragment(), Refreshable {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         this.resources.getString(R.string.deleting_rule),
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         length = Snackbar.LENGTH_INDEFINITE
                     )
                 } else {
@@ -578,7 +578,7 @@ class RulesSettingsFragment : Fragment(), Refreshable {
                             R.string.s_s,
                             context.resources.getString(R.string.error_deleting_rule), result
                         ),
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                     ).show()
                 } else {
                     SnackbarHelper.createSnackbar(

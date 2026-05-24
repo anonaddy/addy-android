@@ -1,5 +1,13 @@
 # Changelog
 
+## [v6.2.5] - 2026-05-24
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed a crash on tablet and foldable devices
+
 ## [v6.2.4] - 2026-05-24
 
 ### addy.io

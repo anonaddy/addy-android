@@ -240,7 +240,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                                 SnackbarHelper.createSnackbar(
                                     requireContext(),
                                     requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
-                                    (activity as MainActivity).findViewById(R.id.main_container),
+                                    (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                                     LoggingHelper.LOGFILES.DEFAULT
                                 ).show()
                             } else {
