@@ -19,9 +19,9 @@ android {
          */
 
         // SDK 36 + v6.2.4 + release 01 + 00 (for app)
-        versionCode = 366240400 // https://developer.android.com/training/wearables/packaging //TODO: Set back to 01
+        versionCode = 366250100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on GitHub
-        versionName = "v6.2.4"
+        versionName = "v6.2.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

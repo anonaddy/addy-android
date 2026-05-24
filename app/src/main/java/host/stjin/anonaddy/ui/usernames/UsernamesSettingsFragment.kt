@@ -189,7 +189,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
@@ -230,7 +230,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                         SnackbarHelper.createSnackbar(
                             requireContext(),
                             this@UsernamesSettingsFragment.resources.getString(R.string.error_obtaining_usernames) + "\n" + error,
-                            (activity as MainActivity).findViewById(R.id.main_container),
+                            (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                             LoggingHelper.LOGFILES.DEFAULT
                         ).show()
                     } else {
@@ -263,7 +263,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         this.resources.getString(R.string.deleting_username),
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         length = Snackbar.LENGTH_INDEFINITE
                     )
                 } else {
@@ -293,7 +293,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         context.resources.getString(R.string.s_s, context.resources.getString(R.string.error_deleting_username), result),
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {

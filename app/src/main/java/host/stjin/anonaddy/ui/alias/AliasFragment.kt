@@ -386,7 +386,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         SnackbarHelper.createSnackbar(
                             context,
                             context.resources.getString(R.string.copied_alias),
-                            (activity as MainActivity).findViewById(R.id.main_container)
+                            (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView()
                         ).show()
                     } else {
                         val bottomNavView: BottomNavigationView? =
@@ -409,7 +409,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                             aliasSelectionSnackbar = SnackbarHelper.createSnackbar(
                                 context,
                                 context.resources.getString(R.string.multiple_alias_selected, selectedAliases.count()),
-                                (activity as MainActivity).findViewById(R.id.main_container),
+                                (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                                 length = Snackbar.LENGTH_INDEFINITE,
                                 allowSwipeDismiss = false
                             ).setAction(R.string.actions) {
@@ -604,7 +604,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                                     SnackbarHelper.createSnackbar(
                                         requireContext(),
                                         requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                        (activity as MainActivity).findViewById(R.id.main_container),
+                                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                                         LoggingHelper.LOGFILES.DEFAULT
                                     ).show()
                                 } else {
@@ -642,7 +642,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                                 SnackbarHelper.createSnackbar(
                                     requireContext(),
                                     requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                    (activity as MainActivity).findViewById(R.id.main_container),
+                                    (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                                     LoggingHelper.LOGFILES.DEFAULT
                                 ).show()
                             } else {
@@ -679,7 +679,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             val snackbar = SnackbarHelper.createSnackbar(
                 requireContext(),
                 requireContext().resources.getString(R.string.alias_search_hint),
-                (activity as MainActivity).findViewById(R.id.main_container),
+                (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                 LoggingHelper.LOGFILES.DEFAULT
             )
             snackbar.show()

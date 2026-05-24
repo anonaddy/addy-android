@@ -253,7 +253,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
@@ -297,7 +297,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + result,
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
@@ -328,7 +328,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
                     SnackbarHelper.createSnackbar(
                         context,
                         context.resources.getString(R.string.error_resend_verification) + "\n" + result,
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
@@ -356,7 +356,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
             SnackbarHelper.createSnackbar(
                 context,
                 context.resources.getString(R.string.verification_email_has_been_sent),
-                (activity as MainActivity).findViewById(R.id.main_container)
+                (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView()
             ).show()
         } else {
             val bottomNavView: BottomNavigationView? =
@@ -382,7 +382,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
                     deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
                         context,
                         this.resources.getString(R.string.deleting_recipient),
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         length = Snackbar.LENGTH_INDEFINITE
                     )
                     deleteRecipientSnackbar.show()
@@ -422,7 +422,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
                             R.string.s_s,
                             context.resources.getString(R.string.error_deleting_recipient), result
                         ),
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         LoggingHelper.LOGFILES.DEFAULT
                     )
                     deleteRecipientSnackbar.show()

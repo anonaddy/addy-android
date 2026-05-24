@@ -200,7 +200,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
@@ -253,7 +253,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                         SnackbarHelper.createSnackbar(
                             requireContext(),
                             this.resources.getString(R.string.error_obtaining_domain) + "\n" + error,
-                            (activity as MainActivity).findViewById(R.id.main_container),
+                            (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                             LoggingHelper.LOGFILES.DEFAULT
                         ).show()
                     } else {
@@ -288,7 +288,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         this.resources.getString(R.string.deleting_domain),
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         length = Snackbar.LENGTH_INDEFINITE
                     )
                 } else {
@@ -321,7 +321,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                             R.string.s_s,
                             context.resources.getString(R.string.error_deleting_domain), result
                         ),
-                        (activity as MainActivity).findViewById(R.id.main_container),
+                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
