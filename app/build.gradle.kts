@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v6.2.4 + release 01 + 00 (for app)
-        versionCode = 366250100 // https://developer.android.com/training/wearables/packaging
+        // SDK 36 + v6.2.6 + release 01 + 00 (for app)
+        versionCode = 366260100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on GitHub
-        versionName = "v6.2.5"
+        versionName = "v6.2.6"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -153,7 +153,7 @@ dependencies {
 
 // Loading spinners when execution actions from e.g. bottom sheets
 dependencies {
-    implementation("com.github.Stjin:LoadingButtonAndroid:3.0.1")
+    implementation("com.github.Stjin:LoadingButtonAndroid:3.0.2")
 }
 
 // Backup manager
