@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>- Minor UI changes and fixes</p>

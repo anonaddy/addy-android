@@ -1,5 +1,13 @@
 # Changelog
 
+## [v6.2.6] - 2026-05-25
+
+### addy.io
+
+##### Fixed/Improved
+
+- Minor UI changes and fixes
+
 ## [v6.2.5] - 2026-05-24
 
 ### addy.io

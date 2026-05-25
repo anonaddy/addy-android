@@ -102,6 +102,8 @@
         <item name="indicatorInset">@dimen/mtrl_progress_circular_inset_extra_small</item>
         <item name="trackCornerRadius">50%</item>
         <item name="indicatorTrackGapSize">3dp</item>
+        <item name="wavelength">12dp</item>
+        <item name="waveAmplitude">1.5dp</item>
         <item name="android:indeterminate">true</item>
     </style>
 
@@ -139,7 +141,6 @@
 
     <!-- SECONDARY -->
     <style name="CircularProgressButtonSecondary" parent="MaterialButtonSecondary">
-        <item name="android:background">@drawable/circularprogressbutton_secondary</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:textColor">?colorOnPrimary</item>
         <item name="drawableTint">?colorOnPrimary</item>
