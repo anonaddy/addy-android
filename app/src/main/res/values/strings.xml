@@ -91,7 +91,9 @@
     <string name="alias_no_description">This alias has no description set. Tap here to add one</string>
     <string name="username_no_description">This username has no description set. Tap here to add one</string>
     <string name="domain_no_description">This domain has no description set. Tap here to add one</string>
+    <string name="recipient_no_description">This recipient has no description set. Tap here to add one</string>
     <string name="edit_desc_alias_desc">Change the description for this alias, describe what this alias is used for</string>
+    <string name="edit_desc_recipient_desc">Change the description for this recipient, describe what this recipient is used for</string>
     <string name="alias_edit_recipients_desc">The list below shows all verified recipients. Select which recipients you want to set as recipient for this alias</string>
     <string name="edit_recipients">Edit recipients</string>
     <string name="error_edit_recipients">Something went wrong while editing the recipients</string>

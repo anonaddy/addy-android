@@ -171,6 +171,7 @@ class ManageUsernamesActivity : BaseActivity(),
 
     override fun descriptionEdited(username: Usernames) {
         editUsernameDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+        shouldRefreshOnFinish = true
 
         // Do this last, will trigger updateUI as well as re-init editUsernameDescriptionBottomDialogFragment
         this.username = username

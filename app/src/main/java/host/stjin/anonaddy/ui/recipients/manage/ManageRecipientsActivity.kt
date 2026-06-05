@@ -25,10 +25,13 @@ import kotlinx.coroutines.launch
 
 
 class ManageRecipientsActivity : BaseActivity(),
-    AddRecipientPublicGpgKeyBottomDialogFragment.AddEditGpgKeyBottomDialogListener {
+    AddRecipientPublicGpgKeyBottomDialogFragment.AddEditGpgKeyBottomDialogListener,
+    EditRecipientDescriptionBottomDialogFragment.AddEditRecipientDescriptionBottomDialogListener {
     lateinit var networkHelper: NetworkHelper
 
     private lateinit var addRecipientPublicGpgKeyBottomDialogFragment: AddRecipientPublicGpgKeyBottomDialogFragment
+
+    private lateinit var editRecipientDescriptionBottomDialogFragment: EditRecipientDescriptionBottomDialogFragment
 
     private var shouldRefreshOnFinish = false
 
@@ -83,6 +86,17 @@ class ManageRecipientsActivity : BaseActivity(),
     }
 
     private fun setOnClickListeners() {
+        binding.activityManageRecipientDescEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editRecipientDescriptionBottomDialogFragment.isAdded) {
+                    editRecipientDescriptionBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editRecipientDescriptionBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
         binding.activityManageRecipientChangePgpKey.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 if (!addRecipientPublicGpgKeyBottomDialogFragment.isAdded) {
@@ -160,6 +174,14 @@ class ManageRecipientsActivity : BaseActivity(),
         addRecipientPublicGpgKeyBottomDialogFragment.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init addRecipientPublicGpgKeyBottomDialogFragment
+        this.recipient = recipient
+    }
+
+    override fun descriptionEdited(recipient: Recipients) {
+        editRecipientDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+        shouldRefreshOnFinish = true
+
+        // Do this last, will trigger updateUI as well as re-init editRecipientDescriptionBottomDialogFragment
         this.recipient = recipient
     }
 
@@ -706,6 +728,27 @@ class ManageRecipientsActivity : BaseActivity(),
         // Set the fingerprint BottomDialogFragment
         addRecipientPublicGpgKeyBottomDialogFragment =
             AddRecipientPublicGpgKeyBottomDialogFragment.newInstance(this@ManageRecipientsActivity.recipient!!.id)
+
+        /**
+         * DESCRIPTION
+         */
+
+        // Set description and initialise the bottomDialogFragment
+        if (recipient.description != null) {
+            binding.activityManageRecipientDescEdit.setDescription(recipient.description)
+        } else {
+            binding.activityManageRecipientDescEdit.setDescription(
+                this.resources.getString(
+                    R.string.recipient_no_description
+                )
+            )
+        }
+
+        // Set this value as it now includes the description
+        editRecipientDescriptionBottomDialogFragment = EditRecipientDescriptionBottomDialogFragment.newInstance(
+            this.recipient!!.id,
+            recipient.description
+        )
 
         /**
          * Fingerprint LAYOUT

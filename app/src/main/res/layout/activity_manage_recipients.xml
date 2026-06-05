@@ -221,6 +221,15 @@
                         app:sectionTitle="@string/encryption_enabled" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_desc_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@tools:sample/lorem/random"
+                        app:sectionEndIcon="@drawable/ic_edit"
+                        app:sectionStartIcon="@drawable/ic_align_justified"
+                        app:sectionTitle="@string/description" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_recipient_change_pgp_key"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

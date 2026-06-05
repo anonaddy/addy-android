@@ -2318,6 +2318,46 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun updateDescriptionSpecificRecipient(
+        callback: (Recipients?, String?) -> Unit,
+        recipientId: String,
+        description: String
+    ) {
+
+        waitForInitAndLog()
+
+        val json = JSONObject()
+        json.put("description", description)
+        val (_, response, result) =
+            Fuel.patch("${API_URL_RECIPIENTS}/$recipientId")
+                .appendHeader(
+                    *getHeaders()
+                )
+                .body(json.toString())
+                .awaitStringResponseResult()
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+
+                val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                handleUnauthorized()
+                callback(null, null)
+            }
+
+            else -> {
+                val errorMessage = handleGenericError(response, result, "updateDescriptionSpecificRecipient")
+                callback(
+                    null,
+                    errorMessage
+                )
+            }
+        }
+    }
+
     suspend fun getSpecificRecipient(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String

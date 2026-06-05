@@ -13,6 +13,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.models.Recipients
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
 class RecipientAdapter(
     private val listWithRecipients: ArrayList<Recipients>
@@ -34,11 +35,16 @@ class RecipientAdapter(
 
         val aliases = listWithRecipients[position].aliases_count
 
+        if (listWithRecipients[position].description != null) {
+            holder.mDescription.text = listWithRecipients[position].description
+        } else {
+            holder.mDescription.text = holder.mDescription.context.resources.getString(
+                R.string.recipients_list_description,
+                aliases
+            )
+        }
 
-        holder.mDescription.text = holder.mDescription.context.resources.getString(
-            R.string.recipients_list_description,
-            aliases
-        )
+
 
         when {
             listWithRecipients[position].email_verified_at == null -> {
