@@ -1,0 +1,2 @@
+<h4>Added</h4>
+<p>- Support for adding and changing the description on recipients</p>
