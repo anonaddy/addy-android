@@ -35,6 +35,7 @@ data class Aliases(
     val emails_replied: Int,
     val emails_sent: Int,
     val recipients: List<Recipients>?,
+    val labels: List<Labels>? = null,
     val last_forwarded: String?,
     val last_blocked: String?,
     val last_replied: String?,

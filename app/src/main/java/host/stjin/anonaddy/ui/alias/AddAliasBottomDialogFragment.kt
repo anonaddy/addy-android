@@ -81,6 +81,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         viewLifecycleOwner.lifecycleScope.launch {
             fillSpinners(requireContext())
             getAllRecipients(requireContext())
+            getAllLabels(requireContext())
         }
 
         binding.bsAddaliasAliasAddAliasButton.setOnClickListener(this)
@@ -113,9 +114,47 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         }
     }
 
+    private suspend fun getAllLabels(context: Context) {
+        binding.bsAddaliasLabelsHeader.setOnClickListener {
+            val chipGroup = binding.bsAddaliasLabelsChipgroup
+            val arrow = binding.bsAddaliasLabelsArrow
+            if (chipGroup.visibility == View.VISIBLE) {
+                chipGroup.visibility = View.GONE
+                arrow.animate().rotation(0f).start()
+            } else {
+                chipGroup.visibility = View.VISIBLE
+                arrow.animate().rotation(180f).start()
+            }
+        }
+
+        val networkHelper = NetworkHelper(context)
+        networkHelper.getAllLabels { labels, _ ->
+            if (labels != null) {
+                binding.bsAddaliasLabelsChipgroup.removeAllViewsInLayout()
+                binding.bsAddaliasLabelsChipgroup.requestLayout()
+                binding.bsAddaliasLabelsChipgroup.invalidate()
+
+                for (label in labels) {
+                    val chip = layoutInflater.inflate(R.layout.chip_view, binding.bsAddaliasLabelsChipgroup, false) as Chip
+                    chip.text = label.name
+                    chip.tag = label.id
+                    try {
+                        chip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor(label.colour))
+                        chip.setTextColor(android.graphics.Color.WHITE)
+                        chip.chipStrokeWidth = 0f
+                        chip.checkedIconTint = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
+                    } catch (e: Exception) {
+                    }
+                    binding.bsAddaliasLabelsChipgroup.addView(chip)
+                }
+            }
+        }
+    }
+
     private suspend fun getAllRecipients(context: Context) {
         val networkHelper = NetworkHelper(context)
         networkHelper.getRecipients({ result, _ ->
+            binding.bsAddaliasRecipientsProgressbar.visibility = View.GONE
             if (result != null) {
                 // Remove the default "Loading recipients" chip
                 binding.bsAddaliasRecipientsChipgroup.removeAllViewsInLayout()
@@ -284,6 +323,12 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             if (chip.isChecked) recipients.add(chip.tag.toString())
         }
 
+        val labels = arrayListOf<String>()
+        for (child in binding.bsAddaliasLabelsChipgroup.children) {
+            val chip: Chip = child as Chip
+            if (chip.isChecked) labels.add(chip.tag.toString())
+        }
+
         val domain = binding.bsAddaliasDomainMact.text.toString()
         val description = binding.bsAddaliasAliasDescTiet.text.toString()
         val localPart = binding.bsAddaliasAliasLocalPartTiet.text.toString()
@@ -293,7 +338,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             ).indexOf(binding.bsAddaliasAliasFormatMact.text.toString())]
 
         viewLifecycleOwner.lifecycleScope.launch {
-            addAliasToAccount(context, domain, description, format, localPart, recipients)
+            addAliasToAccount(context, domain, description, format, localPart, recipients, labels)
         }
     }
 
@@ -303,7 +348,8 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         description: String,
         format: String,
         aliasLocalPart: String,
-        recipients: ArrayList<String>
+        recipients: ArrayList<String>,
+        labels: ArrayList<String>
     ) {
         val networkHelper = NetworkHelper(context)
         networkHelper.addAlias({ alias, error ->
@@ -322,7 +368,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasAliasDescTil.error =
                     context.resources.getString(R.string.error_adding_alias) + "\n" + error
             }
-        }, domain, description, format, aliasLocalPart, recipients)
+        }, domain, description, format, aliasLocalPart, recipients, labels)
     }
 
     // 1. Defines the listener interface with a method passing back data result.

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bs_editrecipients_root"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bs_manage_labels_add_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="16dp"
@@ -22,11 +23,12 @@
             android:src="@drawable/drag_pill" />
 
         <TextView
+            android:id="@+id/bs_manage_labels_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/edit_recipients"
+            android:text="@string/add_label"
             android:textAlignment="center"
             android:textColor="@color/BlackWhite"
             android:textSize="18sp" />
@@ -52,39 +54,60 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="@string/alias_edit_recipients_desc"
+                android:text="@string/label_add_desc"
                 android:textAlignment="center" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/bs_editrecipients_til"
+                android:id="@+id/bs_manage_labels_add_name_til"
                 style="@style/AddyIoTextInputLayoutOutlined"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="@string/label_name">
 
-                <com.google.android.material.progressindicator.CircularProgressIndicator
-                    android:id="@+id/bs_editrecipients_progressbar"
-                    style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:indeterminate="true"
-                    android:visibility="visible" />
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/bs_editrecipients_chipgroup"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/bs_manage_labels_add_name_edittext"
+                    style="@style/AddyIoTextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:minLines="1"
+                    android:singleLine="true" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                style="@style/DescTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/label_color"
+                android:textAlignment="viewStart" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/bs_manage_labels_add_color_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp"
+                android:paddingBottom="@dimen/layout_padding"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/appearance_icons_list_item" />
 
             <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
-                android:id="@+id/bs_editrecipients_save_button"
+                android:id="@+id/bs_manage_labels_add_button"
                 style="@style/CircularProgressButtonSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="@string/save" />
+                android:text="@string/add" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
 </LinearLayout>

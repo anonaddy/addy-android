@@ -310,6 +310,9 @@
             android:name=".ui.blocklist.ManageBlocklistActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ui.labels.ManageLabelsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyApiTokenExpiryActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

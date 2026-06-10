@@ -17,6 +17,12 @@ import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 
 
+import android.widget.ArrayAdapter
+import androidx.lifecycle.lifecycleScope
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Labels
+import kotlinx.coroutines.launch
+
 class FilterOptionsAliasBottomDialogFragment(
     private val aliasSortFilter: AliasSortFilter
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
@@ -27,6 +33,8 @@ class FilterOptionsAliasBottomDialogFragment(
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+    
+    private var allLabels: List<Labels>? = null
 
     // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
     constructor() : this(
@@ -38,7 +46,8 @@ class FilterOptionsAliasBottomDialogFragment(
             onlyPinnedAliases = false,
             sort = null,
             sortDesc = false,
-            filter = null
+            filter = null,
+            filterLabel = null
         )
     ) {
         loadFilter()
@@ -60,8 +69,59 @@ class FilterOptionsAliasBottomDialogFragment(
         loadFilter()
         setOnFilterListeners()
         setOnSortingListeners()
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            loadLabels()
+        }
 
         return root
+    }
+
+    private suspend fun loadLabels() {
+        binding.bsFilteroptionsAliasesLabelsHeader.setOnClickListener {
+            val chipGroup = binding.bsFilteroptionsAliasesLabelsChipgroup
+            val arrow = binding.bsFilteroptionsAliasesLabelsArrow
+            if (chipGroup.visibility == View.VISIBLE) {
+                chipGroup.visibility = View.GONE
+                arrow.animate().rotation(0f).start()
+            } else {
+                chipGroup.visibility = View.VISIBLE
+                arrow.animate().rotation(180f).start()
+            }
+        }
+
+        val networkHelper = NetworkHelper(requireContext())
+        networkHelper.getAllLabels { labels, _ ->
+            if (labels != null) {
+                allLabels = labels
+                
+                binding.bsFilteroptionsAliasesLabelsChipgroup.removeAllViews()
+
+                for (label in labels) {
+                    val chip = com.google.android.material.chip.Chip(requireContext())
+                    chip.text = label.name
+                    chip.isCheckable = true
+                    chip.isChecked = aliasSortFilter.filterLabel == label.id
+                    
+                    try {
+                        chip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor(label.colour))
+                        chip.setTextColor(android.graphics.Color.WHITE)
+                        chip.chipStrokeWidth = 0f
+                        chip.checkedIconTint = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
+                    } catch (e: Exception) {
+                    }
+                    
+                    chip.setOnCheckedChangeListener { _, isChecked ->
+                        if (isChecked) {
+                            aliasSortFilter.filterLabel = label.id
+                        } else if (aliasSortFilter.filterLabel == label.id) {
+                            aliasSortFilter.filterLabel = null
+                        }
+                    }
+                    binding.bsFilteroptionsAliasesLabelsChipgroup.addView(chip)
+                }
+            }
+        }
     }
 
     override fun onResume() {

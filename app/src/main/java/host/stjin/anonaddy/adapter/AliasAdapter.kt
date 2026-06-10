@@ -42,7 +42,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
         val alias = listWithAliases[position]
         holder.mTitle.text = alias.email
 
-        val context = holder.mDescription.context
+        val context = holder.mDesc.context
         val prettyTime = PrettyTime()
         val descriptionParts = mutableListOf<String>()
 
@@ -81,7 +81,32 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
             )
         }
 
-        holder.mDescription.text = descriptionParts.joinToString("\n")
+        holder.mDesc.text = descriptionParts.joinToString("\n")
+
+        /*
+        TODO: This does not work
+         */
+        holder.mLabelsCG.removeAllViews()
+        if (!alias.labels.isNullOrEmpty()) {
+            holder.mLabelsCG.visibility = View.VISIBLE
+            for (label in alias.labels!!) {
+                val chip = LayoutInflater.from(context).inflate(R.layout.chip_view, holder.mLabelsCG, false) as com.google.android.material.chip.Chip
+                chip.text = label.name
+                chip.isClickable = false
+                chip.isCheckable = false
+                try {
+                    chip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor(label.colour))
+                    chip.setTextColor(android.graphics.Color.WHITE)
+                    chip.chipStrokeWidth = 0f
+                    chip.checkedIconTint = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
+                } catch (e: Exception) {
+                    // Fallback
+                }
+                holder.mLabelsCG.addView(chip)
+            }
+        } else {
+            holder.mLabelsCG.visibility = View.GONE
+        }
 
         /*
         CHART
@@ -205,8 +230,9 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
 
         var mCV: MaterialCardView = view.findViewById(R.id.recyclerview_list_CV)
         var mTitle: TextView = view.findViewById(R.id.aliases_recyclerview_list_title)
-        var mDescription: TextView =
+        var mDesc: TextView =
             view.findViewById(R.id.aliases_recyclerview_list_description)
+        var mLabelsCG: com.google.android.material.chip.ChipGroup = view.findViewById(R.id.aliases_recyclerview_list_labels_cg)
         var mWatchedTextView: TextView = view.findViewById(R.id.aliases_recyclerview_list_watched_textview)
         var mAction: ImageView = view.findViewById(R.id.aliases_recyclerview_list_copy)
         var mChart: DonutProgressView = view.findViewById(R.id.aliases_recyclerview_list_chart)

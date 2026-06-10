@@ -54,6 +54,15 @@
         app:sectionTitle="@string/description" />
 
     <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_labels_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionDescription="None"
+        app:sectionEndIcon="@drawable/ic_edit"
+        app:sectionStartIcon="@drawable/ic_label"
+        app:sectionTitle="@string/labels" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
         android:id="@+id/activity_manage_alias_recipients_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

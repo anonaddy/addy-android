@@ -56,7 +56,7 @@
             <LinearLayout
                 android:id="@+id/aliases_recyclerview_list_LL2"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="8.5"
                 android:orientation="vertical">
 
@@ -89,6 +89,12 @@
                     android:singleLine="false"
                     android:text="Stupid Sony newsletters. I don’t want that new PlayStation! I stick to my PSP!"
                     tools:ignore="HardcodedText" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/aliases_recyclerview_list_labels_cg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp" />
 
             </LinearLayout>
 

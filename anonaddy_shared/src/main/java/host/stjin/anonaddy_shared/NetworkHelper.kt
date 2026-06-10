@@ -26,6 +26,7 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_RULES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_USERNAMES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIASES_LABELS_BULK
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALLOWED_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_API_TOKEN_DETAILS
@@ -42,6 +43,10 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ENCRYPTED_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_FAILED_DELIVERIES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_INLINE_ENCRYPTED_RECIPIENTS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_LABELS
+import host.stjin.anonaddy_shared.models.Labels
+import host.stjin.anonaddy_shared.models.LabelsArray
+import host.stjin.anonaddy_shared.models.SingleLabel
 import host.stjin.anonaddy_shared.AddyIo.API_URL_LOGIN
 import host.stjin.anonaddy_shared.AddyIo.API_URL_LOGIN_MFA
 import host.stjin.anonaddy_shared.AddyIo.API_URL_LOGIN_VERIFY
@@ -714,12 +719,14 @@ class NetworkHelper(private val context: Context) {
         description: String,
         format: String,
         aliasLocalPart: String,
-        recipients: ArrayList<String>?
+        recipients: ArrayList<String>?,
+        labels: ArrayList<String>? = null
     ) {
 
         waitForInitAndLog()
 
         val array = JSONArray(recipients ?: emptyList<String>())
+        val labelsArray = JSONArray(labels ?: emptyList<String>())
 
         val json = JSONObject()
         json.put("domain", domain)
@@ -727,6 +734,9 @@ class NetworkHelper(private val context: Context) {
         json.put("format", format)
         json.put("local_part", aliasLocalPart)
         json.put("recipient_ids", array)
+        if (!labels.isNullOrEmpty()) {
+            json.put("label_ids", labelsArray)
+        }
         val (_, response, result) = Fuel.post(API_URL_ALIAS)
             .appendHeader(
                 *getHeaders()
@@ -772,7 +782,9 @@ class NetworkHelper(private val context: Context) {
         Parameters
         https://app.addy.io/docs/#get-all-aliases
          */
+
         val parameters: ArrayList<Pair<String, String>> = arrayListOf()
+
         if (aliasSortFilter.onlyActiveAliases) {
             parameters.add("filter[active]=" to "true")
         } else if (aliasSortFilter.onlyInactiveAliases) {
@@ -816,6 +828,12 @@ class NetworkHelper(private val context: Context) {
         if (!username.isNullOrEmpty()) {
             parameters.add("username" to username)
         }
+        if (!aliasSortFilter.filterLabel.isNullOrEmpty()) {
+            parameters.add("filter[label]" to aliasSortFilter.filterLabel.toString())
+        }
+
+        // Always include labels
+        parameters.add("with=" to "labels")
 
         val (_, response, result) = Fuel.get(API_URL_ALIAS, parameters)
             .appendHeader(
@@ -3479,6 +3497,251 @@ class NetworkHelper(private val context: Context) {
 
             else -> {
                 val errorMessage = handleGenericError(response, result, "enableCanLoginSpecificUsername")
+                callback(
+                    null,
+                    errorMessage
+                )
+            }
+        }
+    }
+
+    /**
+     * LABELS
+     */
+    suspend fun getAllLabels(
+        search: String? = null,
+        callback: (ArrayList<Labels>?, String?) -> Unit
+    ) {
+
+        waitForInitAndLog()
+
+        val url = if (search != null) {
+            "$API_URL_LABELS?filter[search]=$search"
+        } else {
+            API_URL_LABELS
+        }
+
+        val (_, response, result) = Fuel.get(url)
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+
+                val addyIoData = gson.fromJson(data, LabelsArray::class.java)
+
+                callback(ArrayList(addyIoData.data), null)
+            }
+
+            401 -> {
+                handleUnauthorized()
+                callback(null, null)
+            }
+
+            else -> {
+                val errorMessage = handleGenericError(response, result, "getAllLabels")
+                callback(
+                    null,
+                    errorMessage
+                )
+            }
+        }
+    }
+
+    suspend fun getSpecificLabel(
+        callback: (Labels?, String?) -> Unit,
+        id: String
+    ) {
+        waitForInitAndLog()
+
+        val (_, response, result) = Fuel.get("$API_URL_LABELS/$id")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val addyIoData = gson.fromJson(data, SingleLabel::class.java)
+
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                handleUnauthorized()
+                callback(null, null)
+            }
+
+            else -> {
+                val errorMessage = handleGenericError(response, result, "getSpecificLabel")
+                callback(
+                    null,
+                    errorMessage
+                )
+            }
+        }
+    }
+
+    suspend fun addNewLabel(
+        callback: (Labels?, String?) -> Unit,
+        name: String,
+        colour: String
+    ) {
+        waitForInitAndLog()
+
+        val jsonBody = """
+            {
+               "name": "$name",
+               "colour": "$colour"
+            }
+        """.trimIndent()
+
+
+        val (_, response, result) = Fuel.post(API_URL_LABELS)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(jsonBody)
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            201 -> {
+                val data = result.get()
+                val addyIoData = gson.fromJson(data, SingleLabel::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                handleUnauthorized()
+                callback(null, null)
+            }
+
+            else -> {
+                val errorMessage = handleGenericError(response, result, "addNewLabel")
+                callback(
+                    null,
+                    errorMessage
+                )
+            }
+        }
+    }
+
+    suspend fun updateLabel(
+        callback: (Labels?, String?) -> Unit,
+        id: String,
+        name: String,
+        colour: String
+    ) {
+        waitForInitAndLog()
+
+        val jsonBody = """
+            {
+               "name": "$name",
+               "colour": "$colour"
+            }
+        """.trimIndent()
+
+        val (_, response, result) = Fuel.patch("$API_URL_LABELS/$id")
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(jsonBody)
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val addyIoData = gson.fromJson(data, SingleLabel::class.java)
+
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                handleUnauthorized()
+                callback(null, null)
+            }
+
+            else -> {
+                val errorMessage = handleGenericError(response, result, "updateLabel")
+                callback(
+                    null,
+                    errorMessage
+                )
+            }
+        }
+    }
+
+    suspend fun deleteLabel(
+        callback: (String?) -> Unit,
+        id: String
+    ) {
+        waitForInitAndLog()
+
+        val (_, response, result) = Fuel.delete("$API_URL_LABELS/$id")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback(null)
+            }
+
+            401 -> {
+                handleUnauthorized()
+                callback(null)
+            }
+
+            else -> {
+                val errorMessage = handleGenericError(response, result, "deleteLabel")
+                callback(
+                    errorMessage
+                )
+            }
+        }
+    }
+
+    suspend fun bulkUpdateAliasesLabels(
+        callback: (BulkActionResponse?, String?) -> Unit,
+        ids: ArrayList<String>,
+        label_ids: ArrayList<String>
+    ) {
+        waitForInitAndLog()
+
+        val jsonBody = """
+            {
+               "ids": ${gson.toJson(ids)},
+               "label_ids": ${gson.toJson(label_ids)}
+            }
+        """.trimIndent()
+
+        val (_, response, result) = Fuel.post(API_URL_ALIASES_LABELS_BULK)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(jsonBody)
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
+
+                callback(addyIoData, null)
+            }
+
+            401 -> {
+                handleUnauthorized()
+                callback(null, null)
+            }
+
+            else -> {
+                val errorMessage = handleGenericError(response, result, "bulkUpdateAliasesLabels")
                 callback(
                     null,
                     errorMessage

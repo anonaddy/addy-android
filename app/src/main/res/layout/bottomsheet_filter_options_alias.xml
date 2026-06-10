@@ -176,6 +176,48 @@
                                 android:text="@string/filter_watched_only" />
 
                         </com.google.android.material.button.MaterialButtonToggleGroup>
+                        
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="16dp">
+
+                            <LinearLayout
+                                android:id="@+id/bs_filteroptions_aliases_labels_header"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:background="?attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:paddingTop="8dp"
+                                android:paddingBottom="8dp"
+                                android:gravity="center_vertical">
+                                <TextView
+                                    style="@style/titleTextView"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="@string/labels"
+                                    android:textColor="@color/BlackWhite" />
+                                <ImageView
+                                    android:id="@+id/bs_filteroptions_aliases_labels_arrow"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_chevron_down" />
+                            </LinearLayout>
+
+                            <com.google.android.material.chip.ChipGroup
+                                android:id="@+id/bs_filteroptions_aliases_labels_chipgroup"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:visibility="gone"
+                                app:selectionRequired="false"
+                                app:singleSelection="true"
+                                app:singleLine="false" />
+                        </LinearLayout>
 
                 </LinearLayout>
 
