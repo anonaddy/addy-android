@@ -786,15 +786,15 @@ class NetworkHelper(private val context: Context) {
         val parameters: ArrayList<Pair<String, String>> = arrayListOf()
 
         if (aliasSortFilter.onlyActiveAliases) {
-            parameters.add("filter[active]=" to "true")
+            parameters.add("filter[active]" to "true")
         } else if (aliasSortFilter.onlyInactiveAliases) {
-            parameters.add("filter[active]=" to "false")
+            parameters.add("filter[active]" to "false")
         } else if (aliasSortFilter.onlyDeletedAliases) {
-            parameters.add("filter[deleted]=" to "only")
+            parameters.add("filter[deleted]" to "only")
         } else if (aliasSortFilter.onlyPinnedAliases) {
-            parameters.add("filter[pinned]=" to "true")
+            parameters.add("filter[pinned]" to "true")
         } else {
-            parameters.add("filter[deleted]=" to "with")
+            parameters.add("filter[deleted]" to "with")
         }
         if (size != null) {
             parameters.add("page[size]" to size.toString())
@@ -833,7 +833,7 @@ class NetworkHelper(private val context: Context) {
         }
 
         // Always include labels
-        parameters.add("with=" to "labels")
+        parameters.add("with" to "labels")
 
         val (_, response, result) = Fuel.get(API_URL_ALIAS, parameters)
             .appendHeader(
