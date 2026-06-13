@@ -38,10 +38,34 @@ object LabelUtils {
                     Color.green(colorInt),
                     Color.blue(colorInt)
                 )
-                chip.chipBackgroundColor = ColorStateList.valueOf(alphaColor)
-                chip.setTextColor(colorInt)
+
+                val isDarkMode = (context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+                val hsv = FloatArray(3)
+                Color.colorToHSV(colorInt, hsv)
+                if (isDarkMode) {
+                    hsv[2] = 1.0f
+                    hsv[1] = Math.max(0f, hsv[1] - 0.2f)
+                } else {
+                    hsv[2] = Math.min(1f, hsv[2] * 0.7f)
+                    hsv[1] = Math.min(1f, hsv[1] * 1.2f)
+                }
+                val textColorInt = Color.HSVToColor(hsv)
+
+                val defaultBgColor = chip.chipBackgroundColor?.defaultColor ?: Color.TRANSPARENT
+                val defaultTextColor = chip.textColors?.defaultColor ?: Color.GRAY
+
+                val states = arrayOf(
+                    intArrayOf(android.R.attr.state_checked),
+                    intArrayOf(-android.R.attr.state_checked)
+                )
+
+                val bgColors = intArrayOf(alphaColor, defaultBgColor)
+                val textColors = intArrayOf(textColorInt, defaultTextColor)
+
+                chip.chipBackgroundColor = ColorStateList(states, bgColors)
+                chip.setTextColor(ColorStateList(states, textColors))
                 chip.chipStrokeWidth = 0f
-                chip.checkedIconTint = ColorStateList.valueOf(colorInt)
+                chip.checkedIconTint = ColorStateList.valueOf(textColorInt)
                 chip.isChipIconVisible = false
             } catch (e: Exception) {
                 // Fallback

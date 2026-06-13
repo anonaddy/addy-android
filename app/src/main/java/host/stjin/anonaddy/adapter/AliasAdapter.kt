@@ -98,6 +98,18 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
                 try {
                     val colorInt = android.graphics.Color.parseColor(label.colour)
 
+                    val isDarkMode = (context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+                    val hsv = FloatArray(3)
+                    android.graphics.Color.colorToHSV(colorInt, hsv)
+                    if (isDarkMode) {
+                        hsv[2] = 1.0f
+                        hsv[1] = Math.max(0f, hsv[1] - 0.2f)
+                    } else {
+                        hsv[2] = Math.min(1f, hsv[2] * 0.7f)
+                        hsv[1] = Math.min(1f, hsv[1] * 1.2f)
+                    }
+                    val textColorInt = android.graphics.Color.HSVToColor(hsv)
+
                     // Background
                     val bgDrawable = android.graphics.drawable.GradientDrawable()
                     bgDrawable.shape = android.graphics.drawable.GradientDrawable.RECTANGLE
@@ -110,7 +122,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
                     )
                     bgDrawable.setColor(alphaColor)
                     badgeView.background = bgDrawable
-                    text.setTextColor(colorInt)
+                    text.setTextColor(textColorInt)
 
                 } catch (e: Exception) {
                     // Fallback
