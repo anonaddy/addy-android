@@ -24,6 +24,7 @@ import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy.utils.LabelUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
@@ -78,10 +79,17 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         binding.bsAddaliasDomainHelpTextview.text =
             requireContext().resources.getString(R.string.add_alias_desc, (activity?.application as AddyIoApp).userResource.username)
 
+        binding.bsAddaliasAliasAddAliasButton.isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {
-            fillSpinners(requireContext())
-            getAllRecipients(requireContext())
-            getAllLabels(requireContext())
+            val spinnersJob = launch { fillSpinners(requireContext()) }
+            val recipientsJob = launch { getAllRecipients(requireContext()) }
+            val labelsJob = launch { getAllLabels(requireContext()) }
+            
+            spinnersJob.join()
+            recipientsJob.join()
+            labelsJob.join()
+            
+            binding.bsAddaliasAliasAddAliasButton.isEnabled = true
         }
 
         binding.bsAddaliasAliasAddAliasButton.setOnClickListener(this)
@@ -115,53 +123,21 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
     }
 
     private suspend fun getAllLabels(context: Context) {
-        binding.bsAddaliasLabelsHeader.setOnClickListener {
-            val chipGroup = binding.bsAddaliasLabelsChipgroup
-            val arrow = binding.bsAddaliasLabelsArrow
-            if (chipGroup.visibility == View.VISIBLE) {
-                chipGroup.visibility = View.GONE
-                arrow.animate().rotation(0f).start()
-            } else {
-                chipGroup.visibility = View.VISIBLE
-                arrow.animate().rotation(180f).start()
-            }
-        }
+        LabelUtils.setupCollapsibleHeader(
+            binding.bsAddaliasLabelsHeader,
+            binding.bsAddaliasLabelsChipgroup,
+            binding.bsAddaliasLabelsArrow
+        )
 
         val networkHelper = NetworkHelper(context)
         networkHelper.getAllLabels { labels, _ ->
             if (labels != null) {
-                binding.bsAddaliasLabelsChipgroup.removeAllViewsInLayout()
-                binding.bsAddaliasLabelsChipgroup.requestLayout()
-                binding.bsAddaliasLabelsChipgroup.invalidate()
-
-                for (label in labels) {
-                    val chip = layoutInflater.inflate(R.layout.chip_view, binding.bsAddaliasLabelsChipgroup, false) as Chip
-                    chip.text = label.name
-                    chip.tag = label.id
-                    try {
-                        val colorInt = android.graphics.Color.parseColor(label.colour)
-                        val alphaColor = android.graphics.Color.argb(
-                            (0.2 * 255).toInt(),
-                            android.graphics.Color.red(colorInt),
-                            android.graphics.Color.green(colorInt),
-                            android.graphics.Color.blue(colorInt)
-                        )
-                        chip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(alphaColor)
-                        chip.chipStrokeWidth = 0f
-
-                        val dotDrawable = android.graphics.drawable.GradientDrawable()
-                        dotDrawable.shape = android.graphics.drawable.GradientDrawable.OVAL
-                        dotDrawable.setColor(colorInt)
-                        dotDrawable.setSize(24, 24)
-                        
-                        val insetDrawable = android.graphics.drawable.InsetDrawable(dotDrawable, 6, 6, 6, 6)
-                        chip.chipIcon = insetDrawable
-                        chip.isChipIconVisible = true
-                        chip.checkedIconTint = android.content.res.ColorStateList.valueOf(colorInt)
-                    } catch (e: Exception) {
-                    }
-                    binding.bsAddaliasLabelsChipgroup.addView(chip)
-                }
+                LabelUtils.populateLabelsChipGroup(
+                    context,
+                    binding.bsAddaliasLabelsChipgroup,
+                    labels,
+                    emptyList() // None checked by default
+                )
             }
         }
     }

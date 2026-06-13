@@ -7,17 +7,10 @@
     android:background="@drawable/bg_count_capsule"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingStart="6dp"
+    android:paddingStart="8dp"
     android:paddingTop="2dp"
-    android:paddingEnd="6dp"
+    android:paddingEnd="8dp"
     android:paddingBottom="2dp">
-
-    <ImageView
-        android:id="@+id/label_badge_dot"
-        android:layout_width="8dp"
-        android:layout_height="8dp"
-        android:layout_marginEnd="4dp"
-        android:src="@drawable/rounded_square" />
 
     <TextView
         android:id="@+id/label_badge_text"
@@ -25,6 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="0dp"
+        android:textColor="@android:color/white"
         android:textSize="10sp"
         tools:text="pink" />
 </LinearLayout>

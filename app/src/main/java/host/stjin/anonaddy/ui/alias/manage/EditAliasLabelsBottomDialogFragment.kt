@@ -15,6 +15,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditLabelsAliasBinding
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy.utils.LabelUtils
 import host.stjin.anonaddy_shared.models.Labels
 import kotlinx.coroutines.launch
 
@@ -92,38 +93,12 @@ class EditAliasLabelsBottomDialogFragment(
             currentLabelIds.add(recentlyAddedLabelId!!)
         }
 
-        binding.bsEditLabelsAliasChipgroup.removeAllViews()
-
-        for (label in labels) {
-            val chip = Chip(requireContext())
-            chip.text = label.name
-            chip.isCheckable = true
-            chip.isChecked = currentLabelIds.contains(label.id)
-            chip.tag = label.id
-            try {
-                val colorInt = android.graphics.Color.parseColor(label.colour)
-                val alphaColor = android.graphics.Color.argb(
-                    (0.2 * 255).toInt(),
-                    android.graphics.Color.red(colorInt),
-                    android.graphics.Color.green(colorInt),
-                    android.graphics.Color.blue(colorInt)
-                )
-                chip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(alphaColor)
-                chip.chipStrokeWidth = 0f
-
-                val dotDrawable = android.graphics.drawable.GradientDrawable()
-                dotDrawable.shape = android.graphics.drawable.GradientDrawable.OVAL
-                dotDrawable.setColor(colorInt)
-                dotDrawable.setSize(24, 24)
-                
-                val insetDrawable = android.graphics.drawable.InsetDrawable(dotDrawable, 6, 6, 6, 6)
-                chip.chipIcon = insetDrawable
-                chip.isChipIconVisible = true
-                chip.checkedIconTint = android.content.res.ColorStateList.valueOf(colorInt)
-            } catch (e: Exception) {
-            }
-            binding.bsEditLabelsAliasChipgroup.addView(chip)
-        }
+        LabelUtils.populateLabelsChipGroup(
+            requireContext(),
+            binding.bsEditLabelsAliasChipgroup,
+            labels,
+            currentLabelIds
+        )
     }
 
     override fun onDestroyView() {

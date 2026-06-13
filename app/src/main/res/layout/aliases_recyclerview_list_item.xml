@@ -90,14 +90,12 @@
                     android:text="Stupid Sony newsletters. I don’t want that new PlayStation! I stick to my PSP!"
                     tools:ignore="HardcodedText" />
 
-                <TextView
-                    android:id="@+id/aliases_recyclerview_list_labels_tv"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/aliases_recyclerview_list_labels_cg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    app:singleLine="true" />
 
             </LinearLayout>
 

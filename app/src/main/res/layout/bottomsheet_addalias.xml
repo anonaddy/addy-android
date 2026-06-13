@@ -159,11 +159,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <ProgressBar
+
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
                         android:id="@+id/bs_addalias_recipients_progressbar"
+                        style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="center"
+                        android:indeterminate="true"
                         android:visibility="visible" />
 
                     <com.google.android.material.chip.ChipGroup

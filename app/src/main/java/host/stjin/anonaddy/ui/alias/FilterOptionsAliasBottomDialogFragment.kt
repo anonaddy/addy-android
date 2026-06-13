@@ -20,6 +20,7 @@ import host.stjin.anonaddy_shared.models.AliasSortFilter
 import android.widget.ArrayAdapter
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy.utils.LabelUtils
 import host.stjin.anonaddy_shared.models.Labels
 import kotlinx.coroutines.launch
 
@@ -78,62 +79,30 @@ class FilterOptionsAliasBottomDialogFragment(
     }
 
     private suspend fun loadLabels() {
-        binding.bsFilteroptionsAliasesLabelsHeader.setOnClickListener {
-            val chipGroup = binding.bsFilteroptionsAliasesLabelsChipgroup
-            val arrow = binding.bsFilteroptionsAliasesLabelsArrow
-            if (chipGroup.visibility == View.VISIBLE) {
-                chipGroup.visibility = View.GONE
-                arrow.animate().rotation(0f).start()
-            } else {
-                chipGroup.visibility = View.VISIBLE
-                arrow.animate().rotation(180f).start()
-            }
-        }
+        LabelUtils.setupCollapsibleHeader(
+            binding.bsFilteroptionsAliasesLabelsHeader,
+            binding.bsFilteroptionsAliasesLabelsChipgroup,
+            binding.bsFilteroptionsAliasesLabelsArrow
+        )
 
         val networkHelper = NetworkHelper(requireContext())
         networkHelper.getAllLabels { labels, _ ->
             if (labels != null) {
                 allLabels = labels
                 
-                binding.bsFilteroptionsAliasesLabelsChipgroup.removeAllViews()
+                val checkedIds = if (aliasSortFilter.filterLabel != null) listOf(aliasSortFilter.filterLabel!!) else emptyList()
 
-                for (label in labels) {
-                    val chip = com.google.android.material.chip.Chip(requireContext())
-                    chip.text = label.name
-                    chip.isCheckable = true
-                    chip.isChecked = aliasSortFilter.filterLabel == label.id
-                    
-                    try {
-                        val colorInt = android.graphics.Color.parseColor(label.colour)
-                        val alphaColor = android.graphics.Color.argb(
-                            (0.2 * 255).toInt(),
-                            android.graphics.Color.red(colorInt),
-                            android.graphics.Color.green(colorInt),
-                            android.graphics.Color.blue(colorInt)
-                        )
-                        chip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(alphaColor)
-                        chip.chipStrokeWidth = 0f
-
-                        val dotDrawable = android.graphics.drawable.GradientDrawable()
-                        dotDrawable.shape = android.graphics.drawable.GradientDrawable.OVAL
-                        dotDrawable.setColor(colorInt)
-                        dotDrawable.setSize(24, 24)
-                        
-                        val insetDrawable = android.graphics.drawable.InsetDrawable(dotDrawable, 6, 6, 6, 6)
-                        chip.chipIcon = insetDrawable
-                        chip.isChipIconVisible = true
-                        chip.checkedIconTint = android.content.res.ColorStateList.valueOf(colorInt)
-                    } catch (e: Exception) {
+                LabelUtils.populateLabelsChipGroup(
+                    requireContext(),
+                    binding.bsFilteroptionsAliasesLabelsChipgroup,
+                    labels,
+                    checkedIds
+                ) { id, isChecked ->
+                    if (isChecked) {
+                        aliasSortFilter.filterLabel = id
+                    } else if (aliasSortFilter.filterLabel == id) {
+                        aliasSortFilter.filterLabel = null
                     }
-                    
-                    chip.setOnCheckedChangeListener { _, isChecked ->
-                        if (isChecked) {
-                            aliasSortFilter.filterLabel = label.id
-                        } else if (aliasSortFilter.filterLabel == label.id) {
-                            aliasSortFilter.filterLabel = null
-                        }
-                    }
-                    binding.bsFilteroptionsAliasesLabelsChipgroup.addView(chip)
                 }
             }
         }
