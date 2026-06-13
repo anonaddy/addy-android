@@ -139,10 +139,25 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                     chip.text = label.name
                     chip.tag = label.id
                     try {
-                        chip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor(label.colour))
-                        chip.setTextColor(android.graphics.Color.WHITE)
+                        val colorInt = android.graphics.Color.parseColor(label.colour)
+                        val alphaColor = android.graphics.Color.argb(
+                            (0.2 * 255).toInt(),
+                            android.graphics.Color.red(colorInt),
+                            android.graphics.Color.green(colorInt),
+                            android.graphics.Color.blue(colorInt)
+                        )
+                        chip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(alphaColor)
                         chip.chipStrokeWidth = 0f
-                        chip.checkedIconTint = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
+
+                        val dotDrawable = android.graphics.drawable.GradientDrawable()
+                        dotDrawable.shape = android.graphics.drawable.GradientDrawable.OVAL
+                        dotDrawable.setColor(colorInt)
+                        dotDrawable.setSize(24, 24)
+                        
+                        val insetDrawable = android.graphics.drawable.InsetDrawable(dotDrawable, 6, 6, 6, 6)
+                        chip.chipIcon = insetDrawable
+                        chip.isChipIconVisible = true
+                        chip.checkedIconTint = android.content.res.ColorStateList.valueOf(colorInt)
                     } catch (e: Exception) {
                     }
                     binding.bsAddaliasLabelsChipgroup.addView(chip)

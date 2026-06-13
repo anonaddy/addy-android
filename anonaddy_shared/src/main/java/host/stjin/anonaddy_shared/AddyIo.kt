@@ -37,7 +37,6 @@ object AddyIo {
     val API_URL_ALIAS_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/alias-recipients" }
     val API_URL_DOMAIN_OPTIONS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/domain-options" }
     val API_URL_LABELS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/labels" }
-    val API_URL_ALIASES_LABELS_BULK: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/aliases/labels/bulk" }
     val API_URL_ENCRYPTED_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/encrypted-recipients" }
     val API_URL_INLINE_ENCRYPTED_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/inline-encrypted-recipients" }
     val API_URL_REMOVE_PGP_KEYS_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/remove-pgp-keys-recipients" }

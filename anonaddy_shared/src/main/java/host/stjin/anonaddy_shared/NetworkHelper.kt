@@ -26,7 +26,6 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_RULES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_USERNAMES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS
-import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIASES_LABELS_BULK
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALLOWED_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_API_TOKEN_DETAILS
@@ -3720,7 +3719,7 @@ class NetworkHelper(private val context: Context) {
             }
         """.trimIndent()
 
-        val (_, response, result) = Fuel.post(API_URL_ALIASES_LABELS_BULK)
+        val (_, response, result) = Fuel.post("${API_URL_ALIAS}/labels/bulk")
             .appendHeader(
                 *getHeaders()
             )

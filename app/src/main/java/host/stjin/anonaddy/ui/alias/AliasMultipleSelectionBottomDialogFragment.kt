@@ -159,11 +159,9 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasUpdatedAt.visibility = View.GONE
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasRecipientsEdit.visibility = View.GONE
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasDescEdit.visibility = View.GONE
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLabelsEdit.visibility = View.VISIBLE
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLabelsEdit.setDescription(resources.getString(R.string.labels))
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLabelsEdit.setDescription(resources.getString(R.string.add_label_description))
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasFromNameEdit.visibility = View.GONE
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.visibility = View.GONE
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasPinnedSwitchLayout.visibility = View.VISIBLE
 
         // Check if there are any aliases that are NOT deleted
         // if there is any alias that is not deleted, show the delete section. Else all aliases are deleted so hide the section
