@@ -209,13 +209,26 @@
                         android:src="@drawable/ic_chevron_down" />
                 </LinearLayout>
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/bs_addalias_labels_chipgroup"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:visibility="gone"
-                    app:singleLine="false" />
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+                    
+                    <ProgressBar
+                        android:id="@+id/bs_addalias_labels_progressbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:visibility="visible" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/bs_addalias_labels_chipgroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:singleLine="false" />
+                </LinearLayout>
             </LinearLayout>
 
             <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton

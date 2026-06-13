@@ -131,6 +131,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
 
         val networkHelper = NetworkHelper(context)
         networkHelper.getAllLabels { labels, _ ->
+            binding.bsAddaliasLabelsProgressbar.visibility = View.GONE
             if (labels != null) {
                 LabelUtils.populateLabelsChipGroup(
                     context,
