@@ -110,6 +110,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
                     )
                     bgDrawable.setColor(alphaColor)
                     badgeView.background = bgDrawable
+                    text.setTextColor(colorInt)
 
                 } catch (e: Exception) {
                     // Fallback

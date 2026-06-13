@@ -39,6 +39,7 @@ object LabelUtils {
                     Color.blue(colorInt)
                 )
                 chip.chipBackgroundColor = ColorStateList.valueOf(alphaColor)
+                chip.setTextColor(colorInt)
                 chip.chipStrokeWidth = 0f
                 chip.checkedIconTint = ColorStateList.valueOf(colorInt)
                 chip.isChipIconVisible = false
