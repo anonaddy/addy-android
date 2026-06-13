@@ -84,35 +84,55 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
         holder.mDesc.text = descriptionParts.joinToString("\n")
 
         /*
-        Labels
+        Labels using ImageSpan for text ellipsizing
          */
-        holder.mLabelsCG.removeAllViews()
         if (!alias.labels.isNullOrEmpty()) {
-            holder.mLabelsCG.visibility = View.VISIBLE
+            holder.mLabelsTV.visibility = View.VISIBLE
+            val ssb = android.text.SpannableStringBuilder()
+
             for (label in alias.labels!!) {
-                val chip = LayoutInflater.from(context).inflate(R.layout.chip_view, holder.mLabelsCG, false) as com.google.android.material.chip.Chip
-                chip.text = label.name
-                chip.isClickable = false
-                chip.isCheckable = false
+                val badgeView = LayoutInflater.from(context).inflate(R.layout.layout_label_badge, null)
+                val text = badgeView.findViewById<TextView>(R.id.label_badge_text)
+                text.text = label.name
 
                 try {
                     val colorInt = android.graphics.Color.parseColor(label.colour)
+
+                    // Background
+                    val bgDrawable = android.graphics.drawable.GradientDrawable()
+                    bgDrawable.shape = android.graphics.drawable.GradientDrawable.RECTANGLE
+                    bgDrawable.cornerRadius = 100f // Large radius for rounded capsule
                     val alphaColor = android.graphics.Color.argb(
                         (0.2 * 255).toInt(),
                         android.graphics.Color.red(colorInt),
                         android.graphics.Color.green(colorInt),
                         android.graphics.Color.blue(colorInt)
                     )
-                    chip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(alphaColor)
-                    chip.chipStrokeWidth = 0f
-                    // Not setting text color manually so it dynamically uses the theme's text color from ?chipStyle
+                    bgDrawable.setColor(alphaColor)
+                    badgeView.background = bgDrawable
+
                 } catch (e: Exception) {
                     // Fallback
                 }
-                holder.mLabelsCG.addView(chip)
+
+                badgeView.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
+                badgeView.layout(0, 0, badgeView.measuredWidth, badgeView.measuredHeight)
+
+                val bitmap = android.graphics.Bitmap.createBitmap(badgeView.measuredWidth, badgeView.measuredHeight, android.graphics.Bitmap.Config.ARGB_8888)
+                val canvas = android.graphics.Canvas(bitmap)
+                badgeView.draw(canvas)
+
+                ssb.append(" ")
+                val span = android.text.style.ImageSpan(context, bitmap, android.text.style.ImageSpan.ALIGN_CENTER)
+                ssb.setSpan(span, ssb.length - 1, ssb.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssb.append(" ") // small gap
             }
+            holder.mLabelsTV.text = ssb
         } else {
-            holder.mLabelsCG.visibility = View.GONE
+            holder.mLabelsTV.visibility = View.GONE
         }
         /*
         CHART
@@ -238,7 +258,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
         var mTitle: TextView = view.findViewById(R.id.aliases_recyclerview_list_title)
         var mDesc: TextView =
             view.findViewById(R.id.aliases_recyclerview_list_description)
-        var mLabelsCG: com.google.android.material.chip.ChipGroup = view.findViewById(R.id.aliases_recyclerview_list_labels_cg)
+        var mLabelsTV: TextView = view.findViewById(R.id.aliases_recyclerview_list_labels_tv)
         var mWatchedTextView: TextView = view.findViewById(R.id.aliases_recyclerview_list_watched_textview)
         var mAction: ImageView = view.findViewById(R.id.aliases_recyclerview_list_copy)
         var mChart: DonutProgressView = view.findViewById(R.id.aliases_recyclerview_list_chart)
