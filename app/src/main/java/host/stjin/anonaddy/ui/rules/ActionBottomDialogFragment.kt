@@ -90,6 +90,9 @@ class ActionBottomDialogFragment(
     }
 
     private fun getAllRecipients(selectedRecipientId: String?) {
+        // Hide the progressbar
+        binding.bsRuleActionForwardToProgressbar.visibility = View.GONE
+
         // Remove the default "Loading recipients" chip
         binding.bsRuleActionForwardToChipgroup.removeAllViewsInLayout()
         binding.bsRuleActionForwardToChipgroup.requestLayout()

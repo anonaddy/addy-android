@@ -328,7 +328,6 @@
     <string name="username">Username</string>
     <string name="rules_create_info">Rules work on all emails, including replies and also send froms. New conditions and actions will be added over time.</string>
     <string name="manage_your_addyio_account">Manage your addy.io account</string>
-    <string name="loading_recipients">Loading recipients…</string>
     <string name="intent_context_menu">Create alias or send email from alias</string>
     <string name="something_went_wrong_retrieving_domains">Something went wrong while retrieving the domains</string>
     <string name="you_do_not_own_this_domain">You do not own this domain</string>
