@@ -144,7 +144,6 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:textColor">?colorOnPrimary</item>
         <item name="drawableTint">?colorOnPrimary</item>
-        <item name="android:singleLine">false</item>
     </style>
 
     <!-- DELETE STYLE -->
@@ -189,11 +188,12 @@
         <item name="android:height">56dp</item>
     </style>
 
-    <style name="CircularProgressButtonTertiary" parent="ActionButtonsTertiary">
-        <item name="android:background">@drawable/circularprogressbutton_tertiary</item>
+
+    <style name="CircularProgressButtonTertiary" parent="MaterialButtonSecondary">
+        <item name="backgroundTint">?colorTertiary</item>
         <item name="android:layout_gravity">center</item>
-        <item name="drawableTint">?colorOnTertiary</item>
         <item name="android:textColor">?colorOnTertiary</item>
+        <item name="drawableTint">?colorOnTertiary</item>
     </style>
 
 

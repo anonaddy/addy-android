@@ -1,5 +1,13 @@
 # Changelog
 
+## [v6.2.7] - 2026-06-05
+
+### addy.io
+
+##### Added
+
+- Support for adding and changing the description on recipients
+
 ## [v6.2.6] - 2026-05-25
 
 ### addy.io

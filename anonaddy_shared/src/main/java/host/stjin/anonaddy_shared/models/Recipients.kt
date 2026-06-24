@@ -13,6 +13,7 @@ data class Recipients(
     val id: String,
     val user_id: String,
     val email: String,
+    var description: String?,
     var can_reply_send: Boolean,
     var should_encrypt: Boolean,
     var inline_encryption: Boolean,

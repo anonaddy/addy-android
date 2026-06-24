@@ -175,6 +175,8 @@ class ManageDomainsActivity : BaseActivity(),
 
     override fun descriptionEdited(domain: Domains) {
         editDomainDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+        shouldRefreshOnFinish = true
+
         // Do this last, will trigger updateUI as well as re-init editDomainDescriptionBottomDialogFragment
         this.domain = domain
     }

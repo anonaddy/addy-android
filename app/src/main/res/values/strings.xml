@@ -67,9 +67,9 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 6.2.6</h3>
-<h4>Fixed/Improved</h4>
-<p>- Minor UI changes and fixes</p>]]></string>
+<h3>What\'s new in addy.io for Android 6.2.7</h3>
+<h4>Added</h4>
+<p>- Support for adding and changing the description on recipients</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -91,7 +91,9 @@
     <string name="alias_no_description">This alias has no description set. Tap here to add one</string>
     <string name="username_no_description">This username has no description set. Tap here to add one</string>
     <string name="domain_no_description">This domain has no description set. Tap here to add one</string>
+    <string name="recipient_no_description">This recipient has no description set. Tap here to add one</string>
     <string name="edit_desc_alias_desc">Change the description for this alias, describe what this alias is used for</string>
+    <string name="edit_desc_recipient_desc">Change the description for this recipient, describe what this recipient is used for</string>
     <string name="alias_edit_recipients_desc">The list below shows all verified recipients. Select which recipients you want to set as recipient for this alias</string>
     <string name="edit_recipients">Edit recipients</string>
     <string name="error_edit_recipients">Something went wrong while editing the recipients</string>
