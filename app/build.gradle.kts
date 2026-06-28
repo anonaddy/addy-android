@@ -192,4 +192,5 @@ dependencies {
 // Edge-To-Edge
 dependencies {
     implementation("androidx.documentfile:documentfile:1.1.0")
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
 }

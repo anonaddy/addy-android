@@ -93,11 +93,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:orientation="horizontal"
                 android:layout_marginBottom="16dp"
                 android:paddingBottom="@dimen/layout_padding"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/appearance_icons_list_item" />
+                tools:listitem="@layout/label_color_list_item" />
 
             <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/bs_manage_labels_add_button"

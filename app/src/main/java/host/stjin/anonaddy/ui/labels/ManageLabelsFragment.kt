@@ -196,14 +196,14 @@ class ManageLabelsFragment : Fragment(), ManageLabelsAddBottomDialogFragment.Add
                     if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_data) + "\n" + error,
+                            requireContext().resources.getString(R.string.something_went_wrong_retrieving_labels) + "\n" + error,
                             (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
                             LoggingHelper.LOGFILES.DEFAULT
                         ).show()
                     } else {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_data) + "\n" + error,
+                            requireContext().resources.getString(R.string.something_went_wrong_retrieving_labels) + "\n" + error,
                             (activity as ManageLabelsActivity).findViewById(R.id.activity_manage_labels_CL),
                             LoggingHelper.LOGFILES.DEFAULT
                         ).show()

@@ -6,15 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.ColorPickerAdapter
 import host.stjin.anonaddy.databinding.BottomsheetManageLabelsBinding
+import host.stjin.anonaddy.ui.customviews.FlexboxItemDecoration
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Labels
 import kotlinx.coroutines.launch
+import com.google.android.flexbox.FlexboxLayoutManager
+
 
 class ManageLabelsAddBottomDialogFragment(
     private val existingLabel: Labels?
@@ -23,7 +28,7 @@ class ManageLabelsAddBottomDialogFragment(
 
     private var _binding: BottomsheetManageLabelsBinding? = null
     private val binding get() = _binding!!
-    
+
     private lateinit var colorPickerAdapter: ColorPickerAdapter
     private var selectedColor: String? = null
 
@@ -52,7 +57,7 @@ class ManageLabelsAddBottomDialogFragment(
             binding.bsManageLabelsAddNameEdittext.setText(existingLabel.name)
         } else {
             binding.bsManageLabelsTitle.text = requireContext().resources.getString(R.string.new_label)
-            binding.bsManageLabelsAddButton.text = requireContext().resources.getString(R.string.create)
+            binding.bsManageLabelsAddButton.text = requireContext().resources.getString(R.string.add)
         }
 
         binding.bsManageLabelsAddButton.setOnClickListener {
@@ -109,7 +114,7 @@ class ManageLabelsAddBottomDialogFragment(
     private fun setupColorDropdown() {
         val colors = listOf("#06b6d4", "#22c55e", "#eab308", "#f97316", "#ef4444", "#8b5cf6", "#64748b", "#ec4899", "#14b8a6", "#3b82f6")
         colorPickerAdapter = ColorPickerAdapter(requireContext(), colors)
-        
+
         if (existingLabel != null) {
             selectedColor = existingLabel.colour
             colorPickerAdapter.selectedColor = existingLabel.colour
@@ -118,15 +123,21 @@ class ManageLabelsAddBottomDialogFragment(
             colorPickerAdapter.selectedColor = colors[0]
         }
 
+        val layoutManager = FlexboxLayoutManager(context)
+        layoutManager.flexWrap = FlexWrap.WRAP
+        layoutManager.justifyContent = JustifyContent.FLEX_START
+        binding.bsManageLabelsAddColorRv.layoutManager = layoutManager
         binding.bsManageLabelsAddColorRv.adapter = colorPickerAdapter
-        
+        // Add spacing
+        val spacing = resources.getDimensionPixelSize(R.dimen.layout_padding)
+        binding.bsManageLabelsAddColorRv.addItemDecoration(FlexboxItemDecoration(spacing))
+
         colorPickerAdapter.setClickListener(object : ColorPickerAdapter.ClickListener {
             override fun onClick(pos: Int, color: String) {
                 selectedColor = color
             }
         })
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

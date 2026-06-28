@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/label_color_list_item_icon_LL"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/label_color_list_item_icon_ML"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layoutDescription="@xml/label_color_motion_scene">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/label_color_list_item_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@mipmap/ic_launcher"
+            app:imageZoom="1.4" />
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+</LinearLayout>

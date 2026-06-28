@@ -11,6 +11,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.models.Labels
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
 class LabelsAdapter(
     private val listWithLabels: ArrayList<Labels>
@@ -29,7 +30,9 @@ class LabelsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val entry = listWithLabels[position]
         holder.mName.text = entry.name
-        holder.mColorText.text = entry.colour
+        holder.mColorText.text = holder.mColorText.context.resources.getString(
+            R.string.d_aliases,
+            entry.aliases_count)
 
         try {
             holder.mColorIndicator.setColorFilter(Color.parseColor(entry.colour))

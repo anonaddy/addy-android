@@ -863,9 +863,9 @@
     <string name="labels">Labels</string>
     <string name="manage_labels">Manage labels</string>
     <string name="manage_labels_desc">Create labels to organize your aliases</string>
-    <string name="add_label">Add Label</string>
-    <string name="label_name">Label Name</string>
-    <string name="label_color">Label Color</string>
+    <string name="add_label">Add label</string>
+    <string name="label_name">Label name</string>
+    <string name="label_color">Label color</string>
     <string name="no_labels">No labels found</string>
     <string name="label_add_desc">Create labels to organize your aliases. Deleting a label removes it from all aliases</string>
     <string name="delete_label">Delete label</string>
@@ -881,4 +881,6 @@
     <string name="create">Create</string>
     <string name="you_ve_used_d_out_of_d_labels">You\'ve created %1$d out of %2$s labels</string>
     <string name="error_obtaining_data">Error obtaining data</string>
+    <string name="something_went_wrong_retrieving_labels">Something went wrong retrieving labels</string>
+    <string name="d_aliases">%1$d aliases</string>
 </resources>

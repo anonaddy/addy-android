@@ -18,7 +18,7 @@ class ColorPickerAdapter(var context: Context, private val colors: List<String>)
     var selectedColor: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v: View = LayoutInflater.from(parent.context).inflate(R.layout.appearance_icons_list_item, parent, false)
+        val v: View = LayoutInflater.from(parent.context).inflate(R.layout.label_color_list_item, parent, false)
         return ViewHolder(v)
     }
 
@@ -43,8 +43,7 @@ class ColorPickerAdapter(var context: Context, private val colors: List<String>)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val colorHex = colors[position]
-        holder.name.visibility = View.GONE
-        
+
         try {
             val bitmap = android.graphics.Bitmap.createBitmap(1, 1, android.graphics.Bitmap.Config.ARGB_8888)
             bitmap.eraseColor(Color.parseColor(colorHex))
@@ -63,10 +62,9 @@ class ColorPickerAdapter(var context: Context, private val colors: List<String>)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        var iconLl: LinearLayout = itemView.findViewById(R.id.appearance_icon_list_item_icon_LL)
-        var icon: ImageFilterView = itemView.findViewById(R.id.appearance_icon_list_item_icon)
-        var name: TextView = itemView.findViewById(R.id.appearance_icon_list_item_name)
-        var iconMotionLayout: MotionLayout = itemView.findViewById(R.id.appearance_icon_list_item_icon_ML)
+        var iconLl: LinearLayout = itemView.findViewById(R.id.label_color_list_item_icon_LL)
+        var icon: ImageFilterView = itemView.findViewById(R.id.label_color_list_item_icon)
+        var iconMotionLayout: MotionLayout = itemView.findViewById(R.id.label_color_list_item_icon_ML)
 
         init {
             icon.setOnClickListener(this)
@@ -82,7 +80,7 @@ class ColorPickerAdapter(var context: Context, private val colors: List<String>)
 
         override fun onClick(p0: View) {
             when (p0.id) {
-                R.id.appearance_icon_list_item_icon -> {
+                R.id.label_color_list_item_icon -> {
                     val prevSelected = selectedColor
                     selectedColor = colors[adapterPosition]
                     
