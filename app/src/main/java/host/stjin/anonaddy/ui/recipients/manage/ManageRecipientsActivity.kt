@@ -120,6 +120,13 @@ class ManageRecipientsActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageRecipientStatus.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientStatus.setSwitchChecked(!binding.activityManageRecipientStatus.getSwitchChecked())
+            }
+        })
+
         binding.activityManageRecipientActive.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 forceSwitch = true
@@ -201,6 +208,26 @@ class ManageRecipientsActivity : BaseActivity(),
     }
 
     private fun setOnSwitchChangeListeners(fingerprint: String?) {
+        binding.activityManageRecipientStatus.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageRecipientStatus.showProgressBar(true)
+                    forceSwitch = false
+
+                    if (checked) {
+                        lifecycleScope.launch {
+                            activateRecipient()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            deactivateRecipient()
+                        }
+                    }
+                }
+            }
+        })
+
         binding.activityManageRecipientActive.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
@@ -676,6 +703,13 @@ class ManageRecipientsActivity : BaseActivity(),
          *  SWITCH STATUS
          */
 
+        binding.activityManageRecipientStatus.setSwitchChecked(recipient.active)
+        binding.activityManageRecipientStatus.setTitle(
+            if (recipient.active) resources.getString(R.string.recipient_status_active) else resources.getString(
+                R.string.recipient_status_inactive
+            )
+        )
+
         binding.activityManageRecipientCanReplySend.setSwitchChecked(recipient.can_reply_send)
         binding.activityManageRecipientCanReplySend.setTitle(
             if (recipient.can_reply_send) resources.getString(R.string.can_reply_send) else resources.getString(
@@ -877,4 +911,43 @@ class ManageRecipientsActivity : BaseActivity(),
             workingAliasList = null
         }
     }
+
+    private suspend fun deactivateRecipient() {
+        networkHelper.deactivateRecipient({ result ->
+            binding.activityManageRecipientStatus.showProgressBar(false)
+            if (result == "204") {
+                this.recipient!!.active = false
+                shouldRefreshOnFinish = true
+                updateUi(this.recipient!!)
+            } else {
+                binding.activityManageRecipientStatus.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.recipient!!.id)
+    }
+
+    private suspend fun activateRecipient() {
+        networkHelper.activateRecipient({ result ->
+            binding.activityManageRecipientStatus.showProgressBar(false)
+            if (result != null) {
+                this.recipient!!.active = true
+                shouldRefreshOnFinish = true
+                updateUi(this.recipient!!)
+            } else {
+                binding.activityManageRecipientStatus.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.recipient!!.id)
+    }
+
 }

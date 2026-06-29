@@ -86,7 +86,6 @@ class EditDomainRecipientBottomDialogFragment(
         val networkHelper = NetworkHelper(context)
 
         networkHelper.getRecipients({ result, _ ->
-            binding.bsEditrecipientProgressbar.visibility = View.GONE
             binding.bsEditrecipientSaveButton.isEnabled = true
             if (result != null) {
                 // Remove the default "Loading recipients" chip

@@ -23,6 +23,7 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_ACCOUNT_DETAILS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACCOUNT_NOTIFICATIONS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_ALIAS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_DOMAINS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_RULES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_USERNAMES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS
@@ -4814,6 +4815,74 @@ class NetworkHelper(private val context: Context) {
             val callerClass = if (trace.size > 4) trace[4].className else "unknown"
             val currentMethod = if (trace.size > 3) trace[3].methodName else "unknown"
             println("$currentMethod called from $callerClass;$callerMethod")
+        }
+    }
+
+    suspend fun deactivateRecipient(
+        callback: (String?) -> Unit,
+        recipientId: String
+    ) {
+
+        waitForInitAndLog()
+
+        val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_RECIPIENTS}/$recipientId")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+
+            401 -> {
+                handleUnauthorized()
+                callback(null)
+            }
+
+            else -> {
+                val errorMessage = handleGenericError(response, result, "deactivateRecipient")
+                callback(
+                    errorMessage
+                )
+            }
+        }
+    }
+
+    suspend fun activateRecipient(
+        callback: (String?) -> Unit,
+        recipientId: String
+    ) {
+
+        waitForInitAndLog()
+
+        val json = JSONObject()
+        json.put("id", recipientId)
+
+        val (_, response, result) = Fuel.post(API_URL_ACTIVE_RECIPIENTS)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
+            }
+
+            401 -> {
+                handleUnauthorized()
+                callback(null)
+            }
+
+            else -> {
+                val errorMessage = handleGenericError(response, result, "activateRecipient")
+                callback(
+                    errorMessage
+                )
+            }
         }
     }
 }

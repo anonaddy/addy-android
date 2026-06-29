@@ -194,6 +194,15 @@
 
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/recipient_status_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_circle_check"
+                        app:sectionTitle="@string/recipient_status_active" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_recipient_can_reply_send"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

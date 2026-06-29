@@ -54,6 +54,7 @@ object AddyIo {
     val API_URL_CAN_LOGIN_USERNAMES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/loginable-usernames" }
     val API_URL_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/rules" }
     val API_URL_ACTIVE_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-rules" }
+    val API_URL_ACTIVE_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-recipients" }
     val API_URL_REORDER_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/reorder-rules" }
     val API_URL_API_TOKEN_DETAILS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/api-token-details" }
     val API_URL_BLOCKLIST: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/blocklist" }

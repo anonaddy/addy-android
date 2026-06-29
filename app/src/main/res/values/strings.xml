@@ -172,6 +172,9 @@
     <string name="username_aliases">Username aliases</string>
     <string name="domain_status_desc">Use this domain for mail forwarding</string>
     <string name="username_status_desc">Use this username for mail forwarding</string>
+    <string name="recipient_status_active">Recipient active</string>
+    <string name="recipient_status_desc">Use this recipient for mail forwarding</string>
+    <string name="recipient_status_inactive">Recipient inactive</string>
     <string name="delete_domain_desc">You will no longer be able to receive any emails at this domain</string>
     <string name="check_dns">Check DNS</string>
     <string name="check_dns_desc">Verify DNS configuration</string>

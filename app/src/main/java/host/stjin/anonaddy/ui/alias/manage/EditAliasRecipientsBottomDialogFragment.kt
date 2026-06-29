@@ -99,7 +99,6 @@ class EditAliasRecipientsBottomDialogFragment(
         }
 
         networkHelper.getRecipients({ result, _ ->
-            binding.bsEditrecipientsProgressbar.visibility = View.GONE
             binding.bsEditrecipientsSaveButton.isEnabled = true
             if (result != null) {
                 // Remove the default "Loading recipients" chip
