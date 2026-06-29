@@ -154,27 +154,21 @@
                 android:clipToPadding="false"
                 android:overScrollMode="never">
                 
-                <LinearLayout
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/bs_addalias_recipients_chipgroup"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    app:singleLine="true">
 
-
-                    <com.google.android.material.progressindicator.CircularProgressIndicator
-                        android:id="@+id/bs_addalias_recipients_progressbar"
-                        style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small"
+                    <com.google.android.material.chip.Chip
+                        style="?chipStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:indeterminate="true"
-                        android:visibility="visible" />
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/bs_addalias_recipients_chipgroup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        app:singleLine="true" />
-                </LinearLayout>
+                        android:checkable="false"
+                        android:clickable="false"
+                        android:enabled="false"
+                        android:text="@string/loading_recipients" />
+                </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
 
             <LinearLayout
@@ -209,28 +203,20 @@
                         android:src="@drawable/ic_chevron_down" />
                 </LinearLayout>
 
-                <LinearLayout
+                                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/bs_addalias_labels_chipgroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp">
-
-                    <com.google.android.material.progressindicator.CircularProgressIndicator
-                        android:id="@+id/bs_addalias_labels_progressbar"
-                        style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small"
+                    app:singleLine="false">
+                    <com.google.android.material.chip.Chip
+                        style="?chipStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:indeterminate="true"
-                        android:visibility="visible" />
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/bs_addalias_labels_chipgroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        app:singleLine="false" />
-                </LinearLayout>
+                        android:checkable="false"
+                        android:clickable="false"
+                        android:enabled="false"
+                        android:text="@string/loading_labels" />
+                </com.google.android.material.chip.ChipGroup>
             </LinearLayout>
 
             <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton

@@ -109,11 +109,6 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             return
         }
 
-        /**
-         * MIGRATE FROM APP.ANONADDY.COM TO APP.ADDY.IO
-         */
-        migrateFromAnonAddyToAddyIo()
-
 
         // This helper inits the BASE_URL var
         networkHelper = NetworkHelper(this)
@@ -165,17 +160,6 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         }
     }
 
-    private fun migrateFromAnonAddyToAddyIo() {
-
-        val encryptedSettingsManager = SettingsManager(true, this)
-
-        val baseUrl = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL)
-        if (baseUrl == "https://app.anonaddy.com") {
-            // Change baseUrl to app.addy.io
-            encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, API_BASE_URL)
-        }
-    }
-
     @RequiresApi(Build.VERSION_CODES.S)
     private fun skipAndroid12SplashScreenAnimation() {
         // Add a callback that called when the splash screen is animating to
@@ -190,8 +174,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         // The default instance at addy.io does NOT return its version
         // However, assume that the creator of addy.io keeps the main version up-to-date :P
         // So set the versioncode to 9999 so it will always pass the min version check
-        if (API_BASE_URL == this.resources.getString(R.string.default_base_url) ||
-            API_BASE_URL == this.resources.getString(R.string.default_base_url_old)
+        if (API_BASE_URL == this.resources.getString(R.string.default_base_url)
         ) {
             AddyIo.VERSIONMAJOR = 9999
             AddyIo.VERSIONSTRING = this.resources.getString(R.string.latest)

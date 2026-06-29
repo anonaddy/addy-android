@@ -131,8 +131,11 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
 
         val networkHelper = NetworkHelper(context)
         networkHelper.getAllLabels { labels, _ ->
-            binding.bsAddaliasLabelsProgressbar.visibility = View.GONE
             if (labels != null) {
+                // Remove the default "Loading recipients" chip
+                binding.bsAddaliasLabelsChipgroup.removeAllViewsInLayout()
+                binding.bsAddaliasLabelsChipgroup.requestLayout()
+                binding.bsAddaliasLabelsChipgroup.invalidate()
                 LabelUtils.populateLabelsChipGroup(
                     context,
                     binding.bsAddaliasLabelsChipgroup,
@@ -146,7 +149,6 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
     private suspend fun getAllRecipients(context: Context) {
         val networkHelper = NetworkHelper(context)
         networkHelper.getRecipients({ result, _ ->
-            binding.bsAddaliasRecipientsProgressbar.visibility = View.GONE
             if (result != null) {
                 // Remove the default "Loading recipients" chip
                 binding.bsAddaliasRecipientsChipgroup.removeAllViewsInLayout()

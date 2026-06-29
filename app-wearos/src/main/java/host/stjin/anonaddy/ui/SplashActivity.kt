@@ -70,25 +70,9 @@ class SplashActivity : ComponentActivity() {
             // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
             BackgroundWorkerHelper(this).scheduleBackgroundWorker()
 
-            /**
-             * MIGRATE FROM APP.ANONADDY.COM TO APP.ADDY.IO
-             */
-            migrateFromAnonAddyToAddyIo()
-
             val intent = Intent(this, AliasActivity::class.java)
             startActivity(intent)
             finish()
-        }
-    }
-
-    private fun migrateFromAnonAddyToAddyIo() {
-
-        val encryptedSettingsManager = SettingsManager(true, this)
-
-        val baseUrl = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL)
-        if (baseUrl == "https://app.anonaddy.com") {
-            // Change baseUrl to app.addy.io
-            encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, API_BASE_URL)
         }
     }
 

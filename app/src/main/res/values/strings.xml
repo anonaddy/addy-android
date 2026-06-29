@@ -211,7 +211,6 @@
     <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
     <string name="Copy">Copy</string>
     <string name="default_base_url">https://app.addy.io</string>
-    <string name="default_base_url_old">https://app.anonaddy.com</string>
     <string name="addyio_instance">addy.io instance</string>
     <string name="refreshing_data">Refreshing data…</string>
     <string name="refresh">Refresh</string>
@@ -355,6 +354,8 @@
     <string name="search_min_3_char_required">Search term must be at least 3 characters</string>
     <string name="just_like_that">Just like that!</string>
     <string name="select_recipients_for_this_alias">Select recipients for this alias</string>
+    <string name="loading_recipients">Loading recipients…</string>
+    <string name="loading_labels">Loading labels…</string>
     <string name="widget_2_description">An overview of your addy.io stats that dynamically adapts to size</string>
     <string name="widget_1_description">A handy list of the 15 most used aliases</string>
     <string name="add">Add</string>
@@ -407,7 +408,7 @@
     <string name="forget">Forget</string>
     <string name="version_channel_fdroid_info">Please note that it may take a little longer for updates to be visible in F-Droid</string>
     <string name="integration_webintent_resolution">Web intent resolution</string>
-    <string name="integration_webintent_resolution_desc">Open the addy.io app instead of the website for easy access and quick actions such as deactivating your alias via the link in the email banner.\n\nSince this feature is not managed by the addy.io app but by Android itself, manual action is required to link the URL to the app. On many devices this is done automatically, but on devices with Android 12 or higher it is necessary to add this URL manually. The action is easy but cannot be automated.\n\nDue to limitations added in Android 12, it is only possible to use this integration on the hosted instance found at app.addy.io or app.anonaddy.com.</string>
+    <string name="integration_webintent_resolution_desc">Open the addy.io app instead of the website for easy access and quick actions such as deactivating your alias via the link in the email banner.\n\nSince this feature is not managed by the addy.io app but by Android itself, manual action is required to link the URL to the app. On many devices this is done automatically, but on devices with Android 12 or higher it is necessary to add this URL manually. The action is easy but cannot be automated.\n\nDue to limitations added in Android 12, it is only possible to use this integration on the hosted instance found at app.addy.io.</string>
     <string name="webintent_manage_default_apps_pre_sdk24_enable">Click on \"open by default\" and set app links to \"Open in this app\"</string>
     <string name="webintent_manage_default_apps_pre_sdk24_disable">Click on \"open by default\" and set app links to \"Don\'t open in this app\"</string>
     <string name="webintent_manage_default_apps_enable">Enable supported links, click on \"Add link\" and tick the checkbox in front of the URL</string>

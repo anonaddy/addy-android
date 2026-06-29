@@ -56,22 +56,22 @@
                 android:textAlignment="center" />
 
 
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/bs_edit_labels_alias_progressbar"
-                style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                android:visibility="visible" />
-
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/bs_edit_labels_alias_chipgroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                app:singleLine="false" />
+                app:singleLine="false">
+                <com.google.android.material.chip.Chip
+                    style="?chipStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="false"
+                    android:clickable="false"
+                    android:enabled="false"
+                    android:text="@string/loading_labels" />
+            </com.google.android.material.chip.ChipGroup>
 
             <TextView
                 android:id="@+id/bs_edit_labels_alias_error"

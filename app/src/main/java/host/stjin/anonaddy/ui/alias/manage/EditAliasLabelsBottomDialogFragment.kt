@@ -75,7 +75,6 @@ class EditAliasLabelsBottomDialogFragment(
     private suspend fun loadLabels(context: Context) {
         val networkHelper = NetworkHelper(context)
         networkHelper.getAllLabels { labels, error ->
-            binding.bsEditLabelsAliasProgressbar.visibility = View.GONE
             binding.bsEditLabelsAliasSaveButton.isEnabled = true
             if (labels != null) {
                 allLabels = labels
@@ -88,6 +87,7 @@ class EditAliasLabelsBottomDialogFragment(
     }
 
     private fun populateChips(labels: List<Labels>) {
+        binding.bsEditLabelsAliasChipgroup.removeAllViews()
         val currentLabelIds = currentLabels?.map { it.id }?.toMutableList() ?: mutableListOf()
         if (recentlyAddedLabelId != null && !currentLabelIds.contains(recentlyAddedLabelId)) {
             currentLabelIds.add(recentlyAddedLabelId!!)
