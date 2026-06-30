@@ -1,9 +1,10 @@
+import com.android.build.api.dsl.ApplicationExtension
+
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
 }
 
-android {
+configure<ApplicationExtension> {
     compileSdk = 37
     namespace = "host.stjin.anonaddy"
     //compileSdkPreview = "Tiramisu"
@@ -66,17 +67,18 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-        }
-    }
 
     lint {
         disable += setOf("WearableBindListener")
     }
 
 
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
 }
 
 dependencies {
@@ -166,7 +168,7 @@ dependencies {
 // Only implement GPlay in the gplay version
 
 // Because the app has a gplayless flavor define a gplayImplementation
-val gplayImplementation by configurations
+val gplayImplementation = configurations.getByName("gplayImplementation")
 dependencies {
     gplayImplementation("com.google.android.gms:play-services-wearable:20.0.1")
     gplayImplementation("com.android.billingclient:billing-ktx:9.1.0")

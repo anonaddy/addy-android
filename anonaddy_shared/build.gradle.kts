@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.LibraryExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val compose_version = rootProject.extra["compose_version"]
@@ -8,14 +9,12 @@ val wear_compose_version = rootProject.extra["wear_compose_version"]
 
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.3.21" // this version matches your Kotlin version
-
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.0" // this version matches your Kotlin version
 }
 
-android {
+configure<LibraryExtension> {
     namespace = "host.stjin.anonaddy_shared"
-    compileSdk = 36
+    compileSdk = 37
     defaultConfig {
         minSdk = 23
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -28,7 +27,7 @@ android {
     }
 
     buildTypes {
-        release {
+        getByName("release") {
             // Do not enable, Fuel will break
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -38,18 +37,20 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_17  // Replace "17" with your target, e.g., JVM_11, JVM_21
-        }
-    }
+
     composeOptions {
         kotlinCompilerExtensionVersion = "$compose_compiler_version"
     }
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17  // Replace "17" with your target, e.g., JVM_11, JVM_21
+    }
+}
+
 dependencies {
-    implementation("androidx.core:core-ktx:1.18.0")
+    implementation("androidx.core:core-ktx:1.19.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.google.android.material:material:1.14.0")
     testImplementation("junit:junit:4.13.2")
@@ -58,8 +59,6 @@ dependencies {
 }
 
 dependencies {
-    implementation("com.google.code.gson:gson:2.14.0")
-
     // Preferences for storing settings (and crypto settings)
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.security:security-crypto-ktx:1.1.0")
