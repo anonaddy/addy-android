@@ -207,6 +207,7 @@
                     android:id="@+id/bs_addalias_labels_chipgroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:chipSpacingVertical="0dp"
                     app:singleLine="false">
                     <com.google.android.material.chip.Chip
                         style="?chipStyle"

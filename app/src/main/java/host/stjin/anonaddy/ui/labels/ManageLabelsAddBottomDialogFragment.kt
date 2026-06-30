@@ -19,6 +19,7 @@ import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Labels
 import kotlinx.coroutines.launch
 import com.google.android.flexbox.FlexboxLayoutManager
+import host.stjin.anonaddy_shared.models.NewLabelEntry
 
 
 class ManageLabelsAddBottomDialogFragment(
@@ -91,7 +92,7 @@ class ManageLabelsAddBottomDialogFragment(
                             binding.bsManageLabelsAddButton.revertAnimation()
                             binding.bsManageLabelsAddNameTil.error = requireContext().resources.getString(R.string.error_creating_label) + "\n" + error
                         }
-                    }, existingLabel.id, name, color)
+                    }, existingLabel.id, NewLabelEntry(name, color))
                 } else {
                     networkHelper.addNewLabel({ label, error ->
                         if (label != null) {
@@ -103,7 +104,7 @@ class ManageLabelsAddBottomDialogFragment(
                             binding.bsManageLabelsAddButton.revertAnimation()
                             binding.bsManageLabelsAddNameTil.error = requireContext().resources.getString(R.string.error_creating_label) + "\n" + error
                         }
-                    }, name, color)
+                    }, NewLabelEntry(name, color))
                 }
             }
         }

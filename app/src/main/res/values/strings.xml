@@ -887,4 +887,5 @@
     <string name="error_obtaining_data">Error obtaining data</string>
     <string name="something_went_wrong_retrieving_labels">Something went wrong retrieving labels</string>
     <string name="d_aliases">%1$d aliases</string>
+    <string name="none">None</string>
 </resources>

@@ -285,7 +285,10 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         }
 
 
-        val baseUrl = binding.bsSetupInstanceTiet.text.toString()
+        var baseUrl = binding.bsSetupInstanceTiet.text.toString().trim()
+        while (baseUrl.endsWith("/")) {
+            baseUrl = baseUrl.removeSuffix("/")
+        }
         binding.bsSetupInstanceTil.error = null
 
 

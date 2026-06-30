@@ -57,7 +57,7 @@
         android:id="@+id/activity_manage_alias_labels_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:sectionDescription="None"
+        app:sectionDescription="@string/none"
         app:sectionEndIcon="@drawable/ic_edit"
         app:sectionStartIcon="@drawable/ic_label"
         app:sectionTitle="@string/labels" />

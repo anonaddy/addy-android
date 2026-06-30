@@ -17,7 +17,6 @@ import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 
 
-import android.widget.ArrayAdapter
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy.utils.LabelUtils
@@ -48,7 +47,7 @@ class FilterOptionsAliasBottomDialogFragment(
             sort = null,
             sortDesc = false,
             filter = null,
-            filterLabel = null
+            label = null
         )
     ) {
         loadFilter()
@@ -90,7 +89,7 @@ class FilterOptionsAliasBottomDialogFragment(
             if (labels != null) {
                 allLabels = labels
                 
-                val checkedIds = if (aliasSortFilter.filterLabel != null) listOf(aliasSortFilter.filterLabel!!) else emptyList()
+                val checkedIds = if (aliasSortFilter.label != null) listOf(aliasSortFilter.label!!) else emptyList()
 
                 LabelUtils.populateLabelsChipGroup(
                     requireContext(),
@@ -99,9 +98,9 @@ class FilterOptionsAliasBottomDialogFragment(
                     checkedIds
                 ) { id, isChecked ->
                     if (isChecked) {
-                        aliasSortFilter.filterLabel = id
-                    } else if (aliasSortFilter.filterLabel == id) {
-                        aliasSortFilter.filterLabel = null
+                        aliasSortFilter.label = id
+                    } else if (aliasSortFilter.label == id) {
+                        aliasSortFilter.label = null
                     }
                 }
             }

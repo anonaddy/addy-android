@@ -214,6 +214,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:visibility="gone"
+                                app:chipSpacingVertical="0dp"
                                 app:selectionRequired="false"
                                 app:singleSelection="true"
                                 app:singleLine="false" />

@@ -27,6 +27,7 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_RULES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_USERNAMES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS_LABELS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALLOWED_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_API_TOKEN_DETAILS
@@ -88,6 +89,7 @@ import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.Login
 import host.stjin.anonaddy_shared.models.LoginMfaRequired
 import host.stjin.anonaddy_shared.models.NewBlocklistEntry
+import host.stjin.anonaddy_shared.models.NewLabelEntry
 import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.RecipientsArray
 import host.stjin.anonaddy_shared.models.Rules
@@ -720,7 +722,7 @@ class NetworkHelper(private val context: Context) {
         format: String,
         aliasLocalPart: String,
         recipients: ArrayList<String>?,
-        labels: ArrayList<String>? = null
+        labels: ArrayList<String>?
     ) {
 
         waitForInitAndLog()
@@ -734,9 +736,8 @@ class NetworkHelper(private val context: Context) {
         json.put("format", format)
         json.put("local_part", aliasLocalPart)
         json.put("recipient_ids", array)
-        if (!labels.isNullOrEmpty()) {
-            json.put("label_ids", labelsArray)
-        }
+        json.put("label_ids", labelsArray)
+
         val (_, response, result) = Fuel.post(API_URL_ALIAS)
             .appendHeader(
                 *getHeaders()
@@ -828,8 +829,8 @@ class NetworkHelper(private val context: Context) {
         if (!username.isNullOrEmpty()) {
             parameters.add("username" to username)
         }
-        if (!aliasSortFilter.filterLabel.isNullOrEmpty()) {
-            parameters.add("filter[label]" to aliasSortFilter.filterLabel.toString())
+        if (!aliasSortFilter.label.isNullOrEmpty()) {
+            parameters.add("filter[label]" to aliasSortFilter.label.toString())
         }
 
         // Always include labels
@@ -3588,24 +3589,20 @@ class NetworkHelper(private val context: Context) {
 
     suspend fun addNewLabel(
         callback: (Labels?, String?) -> Unit,
-        name: String,
-        colour: String
+        newLabelEntry: NewLabelEntry
     ) {
         waitForInitAndLog()
 
-        val jsonBody = """
-            {
-               "name": "$name",
-               "colour": "$colour"
-            }
-        """.trimIndent()
+        val json = JSONObject()
+        json.put("name", newLabelEntry.name)
+        json.put("colour", newLabelEntry.colour)
 
 
         val (_, response, result) = Fuel.post(API_URL_LABELS)
             .appendHeader(
                 *getHeaders()
             )
-            .body(jsonBody)
+            .body(json.toString())
             .awaitStringResponseResult()
 
         when (response.statusCode) {
@@ -3633,23 +3630,19 @@ class NetworkHelper(private val context: Context) {
     suspend fun updateLabel(
         callback: (Labels?, String?) -> Unit,
         id: String,
-        name: String,
-        colour: String
+        newLabelEntry: NewLabelEntry
     ) {
         waitForInitAndLog()
 
-        val jsonBody = """
-            {
-               "name": "$name",
-               "colour": "$colour"
-            }
-        """.trimIndent()
+        val json = JSONObject()
+        json.put("name", newLabelEntry.name)
+        json.put("colour", newLabelEntry.colour)
 
         val (_, response, result) = Fuel.patch("$API_URL_LABELS/$id")
             .appendHeader(
                 *getHeaders()
             )
-            .body(jsonBody)
+            .body(json.toString())
             .awaitStringResponseResult()
 
         when (response.statusCode) {
@@ -3709,22 +3702,64 @@ class NetworkHelper(private val context: Context) {
     suspend fun bulkUpdateAliasesLabels(
         callback: (BulkActionResponse?, String?) -> Unit,
         ids: ArrayList<String>,
-        label_ids: ArrayList<String>
+        labelIds: ArrayList<String>,
     ) {
         waitForInitAndLog()
 
-        val jsonBody = """
-            {
-               "ids": ${gson.toJson(ids)},
-               "label_ids": ${gson.toJson(label_ids)}
-            }
-        """.trimIndent()
+        val json = JSONObject()
+        json.put("ids", ids)
+        json.put("label_ids", labelIds)
 
         val (_, response, result) = Fuel.post("${API_URL_ALIAS}/labels/bulk")
             .appendHeader(
                 *getHeaders()
             )
-            .body(jsonBody)
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
+
+                callback(addyIoData, null)
+            }
+
+            401 -> {
+                handleUnauthorized()
+                callback(null, null)
+            }
+
+            else -> {
+                val errorMessage = handleGenericError(response, result, "bulkUpdateAliasesLabels")
+                callback(
+                    null,
+                    errorMessage
+                )
+            }
+        }
+    }
+
+
+    /**
+     * UNUSED AS BULK IS BEING USED
+     */
+    suspend fun updateLabelsSpecificAlias(
+        callback: (BulkActionResponse?, String?) -> Unit,
+        aliasId: String,
+        labels: List<Labels>
+    ) {
+        waitForInitAndLog()
+
+        val json = JSONObject()
+        val labelsArray = JSONArray(labels.map { it.id })
+        json.put("label_ids", labelsArray)
+
+        val (_, response, result) = Fuel.post(API_URL_ALIAS_LABELS)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
             .awaitStringResponseResult()
 
         when (response.statusCode) {

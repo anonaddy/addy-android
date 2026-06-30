@@ -9,5 +9,5 @@ data class AliasSortFilter(
     var sort: String?,
     var sortDesc: Boolean,
     var filter: String?,
-    var filterLabel: String? = null
+    var label: String? = null
 )
