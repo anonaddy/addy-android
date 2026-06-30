@@ -30,8 +30,8 @@ android {
          */
 
         // SDK 36 + v1.6.4 + release 01 + 01 (for wearos)
-        versionCode = 361640201 // TODO set release to 01
-        versionName = "1.6.4"
+        versionCode = 361650101 // TODO set release to 01
+        versionName = "1.6.5"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -103,7 +103,7 @@ dependencies {
 dependencies {
     implementation("com.google.android.material:material:1.14.0")
     implementation("androidx.compose.material3:material3:$compose_material_version")
-    implementation("androidx.core:core-ktx:1.18.0")
+    implementation("androidx.core:core-ktx:1.19.0")
     implementation("com.google.android.gms:play-services-wearable:20.0.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.4.0")
