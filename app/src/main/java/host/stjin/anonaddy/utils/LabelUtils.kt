@@ -22,7 +22,7 @@ object LabelUtils {
         chipGroup.removeAllViewsInLayout()
         chipGroup.requestLayout()
         chipGroup.invalidate()
-        
+
         for (label in labels) {
             val chip = LayoutInflater.from(context).inflate(R.layout.chip_view, chipGroup, false) as Chip
             chip.text = label.name
@@ -39,7 +39,8 @@ object LabelUtils {
                     Color.blue(colorInt)
                 )
 
-                val isDarkMode = (context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+                val isDarkMode =
+                    (context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
                 val hsv = FloatArray(3)
                 Color.colorToHSV(colorInt, hsv)
                 if (isDarkMode) {

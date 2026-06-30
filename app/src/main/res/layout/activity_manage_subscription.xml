@@ -48,8 +48,8 @@
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/subscriptionTypeGroup"
                 android:layout_width="match_parent"
-                android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 app:checkedButton="@id/proButton"
                 app:singleSelection="true">
 
@@ -74,9 +74,9 @@
                 android:id="@+id/activity_manage_subscription_progressbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:visibility="visible">
 
@@ -91,17 +91,17 @@
             <LinearLayout
                 android:id="@+id/activity_manage_subscription_products_and_overview"
                 android:layout_width="match_parent"
-                android:layout_marginTop="16dp"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:visibility="gone">
 
 
                 <TextView
                     style="@style/titleTextView"
-                    android:alpha="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:alpha="1"
                     android:text="@string/why_subscribe"
                     android:textAllCaps="false"
                     android:textColor="@color/BlackWhite" />
@@ -110,8 +110,8 @@
                     android:id="@+id/activity_manage_subscription_features_LL"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:orientation="vertical">
 
                 </LinearLayout>
@@ -119,8 +119,8 @@
                 <LinearLayout
                     android:id="@+id/productsContainer"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="16dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:orientation="vertical">
 
                 </LinearLayout>

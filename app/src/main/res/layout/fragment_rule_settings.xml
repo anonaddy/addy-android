@@ -15,8 +15,8 @@
 
     <include
         android:id="@+id/fragment_content_unavailable"
-        android:visibility="gone"
-        layout="@layout/fragment_feature_not_available_subscription" />
+        layout="@layout/fragment_feature_not_available_subscription"
+        android:visibility="gone" />
 
 
     <androidx.core.widget.NestedScrollView

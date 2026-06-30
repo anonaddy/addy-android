@@ -15,19 +15,19 @@
 
     <include
         android:id="@+id/fragment_content_unavailable"
-        android:visibility="gone"
-        layout="@layout/fragment_feature_not_available_subscription" />
+        layout="@layout/fragment_feature_not_available_subscription"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/layout_padding"
-        android:paddingEnd="@dimen/layout_padding"
-        android:padding="@dimen/layout_padding_top"
+        android:layout_marginBottom="8dp"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:layout_marginBottom="8dp">
+        android:orientation="vertical"
+        android:padding="@dimen/layout_padding_top"
+        android:paddingStart="@dimen/layout_padding"
+        android:paddingEnd="@dimen/layout_padding">
 
         <com.google.android.material.search.SearchBar
             android:id="@+id/blocklist_search_bar"
@@ -35,8 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            app:defaultMarginsEnabled="false"
-            android:hint="@string/search" />
+            android:hint="@string/search"
+            app:defaultMarginsEnabled="false" />
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/fragment_blocklist_NSV"
@@ -48,17 +48,17 @@
                 android:id="@+id/fragment_blocklist_LL1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp">
+                android:orientation="vertical">
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:scrollbars="none"
-                    android:overScrollMode="never">
+                    android:overScrollMode="never"
+                    android:scrollbars="none">
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/fragment_blocklist_chipgroup"
@@ -99,8 +99,8 @@
 
                 <LinearLayout
                     style="@style/AddyIoTitleAction"
-                    android:layout_marginTop="0dp"
                     android:layout_width="match_parent"
+                    android:layout_marginTop="0dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -206,16 +206,16 @@
         android:id="@+id/blocklist_search_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:elevation="8dp"
         android:hint="@string/search"
+        app:elevation="8dp"
         app:layout_anchor="@id/blocklist_search_bar">
-        
+
         <LinearLayout
             android:id="@+id/blocklist_recent_searches_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -239,9 +239,9 @@
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/clear"
                     android:minHeight="0dp"
-                    android:paddingVertical="4dp" />
+                    android:paddingVertical="4dp"
+                    android:text="@string/clear" />
 
             </LinearLayout>
 
@@ -249,11 +249,11 @@
                 android:id="@+id/blocklist_search_view_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:overScrollMode="never"
                 android:clipToPadding="false"
+                android:overScrollMode="never"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </LinearLayout>
-            
+
     </com.google.android.material.search.SearchView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

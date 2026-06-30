@@ -126,7 +126,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
             startActivity(intent)
         }
 
-         binding.mainProfileSelectDialogLabelsSettings.setOnClickListener {
+        binding.mainProfileSelectDialogLabelsSettings.setOnClickListener {
             val intent = Intent(activity, ManageLabelsActivity::class.java)
             startActivity(intent)
         }

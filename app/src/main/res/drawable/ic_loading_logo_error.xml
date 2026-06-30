@@ -119,108 +119,108 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
-                    android:propertyName="fillAlpha"
                     android:duration="1"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="fillAlpha"
                     android:startOffset="500"
                     android:valueFrom="0"
                     android:valueTo="0.6"
                     android:valueType="floatType" />
                 <objectAnimator
-                    android:propertyName="fillAlpha"
                     android:duration="1"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
-                    android:valueFrom="0.6"
+                    android:propertyName="fillAlpha"
                     android:startOffset="650"
+                    android:valueFrom="0.6"
                     android:valueTo="0"
                     android:valueType="floatType" />
                 <objectAnimator
-                    android:propertyName="fillAlpha"
                     android:duration="1"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="fillAlpha"
                     android:startOffset="800"
-                    android:valueTo="0.6"
                     android:valueFrom="0"
+                    android:valueTo="0.6"
                     android:valueType="floatType" />
                 <objectAnimator
-                    android:propertyName="fillAlpha"
                     android:duration="1"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
-                    android:valueFrom="0.6"
+                    android:propertyName="fillAlpha"
                     android:startOffset="950"
+                    android:valueFrom="0.6"
                     android:valueTo="0"
                     android:valueType="floatType" />
                 <objectAnimator
-                    android:propertyName="fillAlpha"
                     android:duration="1"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="fillAlpha"
                     android:startOffset="1100"
-                    android:valueTo="0.6"
                     android:valueFrom="0"
+                    android:valueTo="0.6"
                     android:valueType="floatType" />
                 <objectAnimator
-                    android:propertyName="fillAlpha"
                     android:duration="1"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
-                    android:valueFrom="0.6"
+                    android:propertyName="fillAlpha"
                     android:startOffset="1250"
+                    android:valueFrom="0.6"
                     android:valueTo="0"
                     android:valueType="floatType" />
                 <objectAnimator
-                    android:propertyName="fillAlpha"
                     android:duration="1"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="fillAlpha"
                     android:startOffset="1400"
-                    android:valueTo="0.6"
                     android:valueFrom="0"
+                    android:valueTo="0.6"
                     android:valueType="floatType" />
                 <objectAnimator
-                    android:propertyName="fillAlpha"
                     android:duration="1"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
-                    android:valueFrom="0.6"
+                    android:propertyName="fillAlpha"
                     android:startOffset="1550"
+                    android:valueFrom="0.6"
                     android:valueTo="0"
                     android:valueType="floatType" />
                 <objectAnimator
-                    android:propertyName="fillAlpha"
                     android:duration="1"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="fillAlpha"
                     android:startOffset="1700"
-                    android:valueTo="0.6"
                     android:valueFrom="0"
+                    android:valueTo="0.6"
                     android:valueType="floatType" />
                 <objectAnimator
-                    android:propertyName="fillAlpha"
                     android:duration="1"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
-                    android:valueFrom="0.6"
-                    android:valueTo="0"
+                    android:propertyName="fillAlpha"
                     android:startOffset="1850"
-                    android:valueType="floatType" />
-                <objectAnimator
-                    android:propertyName="fillAlpha"
-                    android:duration="1"
-                    android:interpolator="@android:interpolator/fast_out_slow_in"
-                    android:startOffset="2000"
-                    android:valueTo="0.6"
-                    android:valueFrom="0"
-                    android:valueType="floatType" />
-                <objectAnimator
-                    android:propertyName="fillAlpha"
-                    android:duration="1"
-                    android:interpolator="@android:interpolator/fast_out_slow_in"
                     android:valueFrom="0.6"
-                    android:startOffset="2150"
                     android:valueTo="0"
                     android:valueType="floatType" />
                 <objectAnimator
-                    android:propertyName="fillAlpha"
                     android:duration="1"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
-                    android:startOffset="2300"
-                    android:valueTo="0.6"
+                    android:propertyName="fillAlpha"
+                    android:startOffset="2000"
                     android:valueFrom="0"
+                    android:valueTo="0.6"
+                    android:valueType="floatType" />
+                <objectAnimator
+                    android:duration="1"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="fillAlpha"
+                    android:startOffset="2150"
+                    android:valueFrom="0.6"
+                    android:valueTo="0"
+                    android:valueType="floatType" />
+                <objectAnimator
+                    android:duration="1"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="fillAlpha"
+                    android:startOffset="2300"
+                    android:valueFrom="0"
+                    android:valueTo="0.6"
                     android:valueType="floatType" />
             </set>
         </aapt:attr>

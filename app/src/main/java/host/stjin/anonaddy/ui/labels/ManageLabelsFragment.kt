@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.ui.labels
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -25,11 +24,9 @@ import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Labels
-import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
@@ -173,7 +170,7 @@ class ManageLabelsFragment : Fragment(), ManageLabelsAddBottomDialogFragment.Add
                     val gson = Gson()
                     val myType = object : TypeToken<ArrayList<Labels>>() {}.type
                     val list = gson.fromJson<ArrayList<Labels>>(labelsJson, myType)
-                    
+
                     setStats(list.size)
                     setLabelsAdapter(list)
                 } else {

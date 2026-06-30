@@ -12,7 +12,6 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.components.ErrorScreen
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.alias.AliasActivity
-import host.stjin.anonaddy_shared.AddyIo.API_BASE_URL
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
 

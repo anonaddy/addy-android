@@ -50,9 +50,9 @@
                 android:id="@+id/bs_anonaddy_instance_version_unsupported_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/BlackWhite"
                 android:layout_marginBottom="16dp"
-                android:text="@string/addyio_instance_version_unsupported" />
+                android:text="@string/addyio_instance_version_unsupported"
+                android:textColor="@color/BlackWhite" />
 
             <LinearLayout
                 android:layout_width="match_parent"

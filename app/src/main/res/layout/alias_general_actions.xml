@@ -29,10 +29,10 @@
         android:id="@+id/activity_manage_alias_pinned_switch_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:sectionDescription="@string/pin_alias_desc"
         app:sectionShowSwitch="true"
         app:sectionStartIcon="@drawable/ic_pinned"
-        android:visibility="gone"
         app:sectionTitle="@string/pin_alias" />
 
     <host.stjin.anonaddy.ui.customviews.SectionView

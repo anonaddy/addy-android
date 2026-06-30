@@ -27,8 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_refresh"
             android:contentDescription="@string/refresh"
+            android:src="@drawable/ic_refresh"
             android:tint="@android:color/white"
             app:tint="@android:color/white"
             tools:ignore="UseAppTint" />
@@ -38,8 +38,8 @@
     <ListView
         android:id="@+id/widget_alias_list_view"
         android:layout_width="match_parent"
-        android:background="@drawable/widget_1_background_bottom"
         android:layout_height="match_parent"
+        android:background="@drawable/widget_1_background_bottom"
         android:gravity="center"
         android:loopViews="true" />
 

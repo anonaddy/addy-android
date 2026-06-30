@@ -65,6 +65,7 @@
                     android:id="@+id/bs_editrecipients_chipgroup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <com.google.android.material.chip.Chip
                         style="?chipStyle"
                         android:layout_width="wrap_content"

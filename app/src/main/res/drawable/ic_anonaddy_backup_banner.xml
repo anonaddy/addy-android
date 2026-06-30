@@ -95,22 +95,22 @@
             android:fillColor="#00000000"
             android:pathData="M16,26C21.891,26 26.667,24.209 26.667,22C26.667,19.791 21.891,18 16,18C10.109,18 5.333,19.791 5.333,22C5.333,24.209 10.109,26 16,26Z"
             android:strokeWidth="2.5"
-            android:strokeLineCap="round"
             android:strokeColor="#ffffff"
+            android:strokeLineCap="round"
             android:strokeLineJoin="round" />
         <path
+            android:fillColor="#00000000"
             android:pathData="M5.333,22V30C5.333,32.209 10.109,34 16,34C17.475,34.004 18.948,33.885 20.403,33.644M26.667,30V22"
             android:strokeWidth="2.5"
-            android:strokeLineCap="round"
-            android:fillColor="#00000000"
             android:strokeColor="#ffffff"
+            android:strokeLineCap="round"
             android:strokeLineJoin="round" />
         <path
             android:fillColor="#00000000"
             android:pathData="M5.333,30V38C5.333,40.132 9.78,41.873 15.384,41.993M26.667,32.667V30M18.667,39.333H28M28,39.333L24,35.333M28,39.333L24,43.333"
             android:strokeWidth="2.5"
-            android:strokeLineCap="round"
             android:strokeColor="#ffffff"
+            android:strokeLineCap="round"
             android:strokeLineJoin="round" />
         <group>
             <clip-path android:pathData="M91,13.212l23.182,-6.212l6.212,23.182l-23.182,6.212z" />

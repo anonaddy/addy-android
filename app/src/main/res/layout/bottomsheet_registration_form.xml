@@ -45,9 +45,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:clipChildren="false"
             android:clipToPadding="false"
+            android:orientation="vertical"
             android:padding="@dimen/layout_padding">
 
             <TextView
@@ -61,8 +61,8 @@
                 android:id="@+id/bs_registration_form_username_til"
                 style="@style/AddyIoTextInputLayoutOutlined"
                 android:layout_width="match_parent"
-                android:layout_marginBottom="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="0dp"
                 android:hint="@string/registration_username">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -82,8 +82,8 @@
             <TextView
                 style="@style/DescTextStyle"
                 android:layout_width="match_parent"
-                android:layout_marginBottom="16dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/registration_username_footer" />
 
@@ -97,9 +97,9 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_registration_form_email_til"
                 style="@style/AddyIoTextInputLayoutOutlined"
-                android:layout_marginBottom="0dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="0dp"
                 android:hint="@string/registration_email">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -119,8 +119,8 @@
                 android:id="@+id/bs_registration_form_email_verify_til"
                 style="@style/AddyIoTextInputLayoutOutlined"
                 android:layout_width="match_parent"
-                android:layout_marginBottom="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="0dp"
                 android:hint="@string/registration_email_confirm">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -154,9 +154,9 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_registration_form_password_til"
                 style="@style/AddyIoTextInputLayoutOutlined"
-                android:layout_marginBottom="0dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="0dp"
                 android:hint="@string/registration_password">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -175,9 +175,9 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_registration_form_password_verify_til"
                 style="@style/AddyIoTextInputLayoutOutlined"
-                android:layout_marginBottom="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
                 android:hint="@string/registration_password_confirm">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -199,16 +199,16 @@
                 android:id="@+id/bs_registration_form_expiration_til"
                 style="@style/AppTheme.ExposedDropdownMenu"
                 android:layout_width="match_parent"
-                android:layout_marginBottom="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="0dp"
                 android:hint="@string/login_expiration">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/bs_registration_form_expiration_mact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/login_expiration_never"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    android:text="@string/login_expiration_never" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -255,12 +255,12 @@
 
             <TextView
                 style="@style/DescTextStyle"
-                android:layout_marginBottom="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:fontFamily="sans-serif"
-                android:textAlignment="center"
-                android:text="@string/registration_disclaimer" />
+                android:text="@string/registration_disclaimer"
+                android:textAlignment="center" />
 
             <LinearLayout
                 android:layout_width="match_parent"

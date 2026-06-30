@@ -2,9 +2,9 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/appsettings_update_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/appsettings_update_CL"
     android:orientation="vertical">
 
     <include
@@ -64,8 +64,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/update_notify_desc"
-                    app:sectionStartIcon="@drawable/ic_bell"
                     app:sectionShowSwitch="true"
+                    app:sectionStartIcon="@drawable/ic_bell"
                     app:sectionTitle="@string/update_notify_title" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView

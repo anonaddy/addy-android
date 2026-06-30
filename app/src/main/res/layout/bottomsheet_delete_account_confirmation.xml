@@ -58,10 +58,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/BlackWhite"
                 android:layout_marginBottom="16dp"
+                android:text="@string/delete_account_confirmation_desc"
                 android:textAlignment="center"
-                android:text="@string/delete_account_confirmation_desc" />
+                android:textColor="@color/BlackWhite" />
 
             <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/bs_delete_account_confirmation_button"

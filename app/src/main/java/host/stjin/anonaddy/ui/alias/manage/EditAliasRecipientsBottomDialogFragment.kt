@@ -52,7 +52,7 @@ class EditAliasRecipientsBottomDialogFragment(
 
             // Set button listeners and current description
             binding.bsEditrecipientsSaveButton.setOnClickListener(this)
-            
+
             binding.bsEditrecipientsSaveButton.isEnabled = false
 
             viewLifecycleOwner.lifecycleScope.launch {

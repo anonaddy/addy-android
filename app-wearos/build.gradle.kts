@@ -15,7 +15,7 @@ plugins {
 }
 
 android {
-    compileSdk = 36
+    compileSdk = 37
     namespace = "host.stjin.anonaddy"
 
     defaultConfig {
@@ -29,8 +29,8 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v1.6.4 + release 01 + 01 (for wearos)
-        versionCode = 361650101 // TODO set release to 01
+        // SDK 37 + v1.6.4 + release 01 + 01 (for wearos)
+        versionCode = 371650101 // TODO set release to 01
         versionName = "1.6.5"
         vectorDrawables {
             useSupportLibrary = true

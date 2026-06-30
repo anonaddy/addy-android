@@ -98,7 +98,8 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
                 try {
                     val colorInt = android.graphics.Color.parseColor(label.colour)
 
-                    val isDarkMode = (context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+                    val isDarkMode =
+                        (context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
                     val hsv = FloatArray(3)
                     android.graphics.Color.colorToHSV(colorInt, hsv)
                     if (isDarkMode) {
@@ -134,7 +135,8 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
                 )
                 badgeView.layout(0, 0, badgeView.measuredWidth, badgeView.measuredHeight)
 
-                val bitmap = android.graphics.Bitmap.createBitmap(badgeView.measuredWidth, badgeView.measuredHeight, android.graphics.Bitmap.Config.ARGB_8888)
+                val bitmap =
+                    android.graphics.Bitmap.createBitmap(badgeView.measuredWidth, badgeView.measuredHeight, android.graphics.Bitmap.Config.ARGB_8888)
                 val canvas = android.graphics.Canvas(bitmap)
                 badgeView.draw(canvas)
 

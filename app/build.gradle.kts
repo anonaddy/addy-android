@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    compileSdk = 36
+    compileSdk = 37
     namespace = "host.stjin.anonaddy"
     //compileSdkPreview = "Tiramisu"
     defaultConfig {
         applicationId = namespace
         minSdk = 23
-        targetSdk = 36
+        targetSdk = 37
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
         Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
@@ -18,8 +18,8 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v6.2.7 + release 01 + 00 (for app)
-        versionCode = 366300100 // https://developer.android.com/training/wearables/packaging
+        // SDK 37 + v6.2.7 + release 01 + 00 (for app)
+        versionCode = 376300100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on GitHub
         versionName = "v6.3.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

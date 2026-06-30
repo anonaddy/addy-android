@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.alias
 
+
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -15,16 +16,15 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetMultipleSelectionAliasBinding
 import host.stjin.anonaddy.service.AliasWatcher
+import host.stjin.anonaddy.ui.alias.manage.EditAliasLabelsBottomDialogFragment
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
 import kotlinx.coroutines.launch
 
-
-import host.stjin.anonaddy.ui.alias.manage.EditAliasLabelsBottomDialogFragment
-
-class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: List<Aliases>) : BaseBottomSheetDialogFragment(), EditAliasLabelsBottomDialogFragment.AddEditAliasLabelsBottomDialogListener {
+class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: List<Aliases>) : BaseBottomSheetDialogFragment(),
+    EditAliasLabelsBottomDialogFragment.AddEditAliasLabelsBottomDialogListener {
     lateinit var networkHelper: NetworkHelper
 
     private lateinit var listener: AddAliasMultipleSelectionBottomDialogListener

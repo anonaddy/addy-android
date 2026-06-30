@@ -71,12 +71,12 @@
                 android:text="@string/dark_mode" />
 
             <com.google.android.material.button.MaterialButtonToggleGroup
-                android:layout_width="match_parent"
                 android:id="@+id/bs_uiux_interface_materialbuttontogglegroup"
-                android:paddingStart="@dimen/layout_padding"
-                android:paddingEnd="@dimen/layout_padding"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:paddingStart="@dimen/layout_padding"
+                android:paddingEnd="@dimen/layout_padding"
                 android:weightSum="3"
                 app:checkedButton="@+id/bs_uiux_interface_automatic"
                 app:selectionRequired="true"
@@ -125,12 +125,12 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_uiux_interface_startup_page_til"
                 style="@style/AppTheme.ExposedDropdownMenu"
-                android:layout_marginBottom="0dp"
-                android:paddingStart="@dimen/layout_padding"
-                android:paddingEnd="@dimen/layout_padding"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/select_startup_page">
+                android:layout_marginBottom="0dp"
+                android:hint="@string/select_startup_page"
+                android:paddingStart="@dimen/layout_padding"
+                android:paddingEnd="@dimen/layout_padding">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/bs_uiux_interface_startup_page_mact"

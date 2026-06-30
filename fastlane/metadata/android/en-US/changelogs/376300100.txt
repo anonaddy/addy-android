@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>- Support for Android 17<br />- Support for labels, allowing you to organize and color-code your aliases.<br />- You can now activate and deactivate recipients directly within the app. </p>
+<h4>Fixed/Improved</h4>
+<p>- Performance improvements and other things to make the app even smoother</p>

@@ -11,7 +11,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.models.Labels
-import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
 class LabelsAdapter(
     private val listWithLabels: ArrayList<Labels>
@@ -32,7 +31,8 @@ class LabelsAdapter(
         holder.mName.text = entry.name
         holder.mColorText.text = holder.mColorText.context.resources.getString(
             R.string.d_aliases,
-            entry.aliases_count)
+            entry.aliases_count
+        )
 
         try {
             holder.mColorIndicator.setColorFilter(Color.parseColor(entry.colour))
@@ -78,6 +78,7 @@ class LabelsAdapter(
                 R.id.manage_labels_recyclerview_list_delete_button -> {
                     onManageLabelsClicker.onClickDelete(adapterPosition, p0, listWithLabels[adapterPosition].id)
                 }
+
                 R.id.manage_labels_recyclerview_list_CV -> {
                     onManageLabelsClicker.onClickEdit(adapterPosition, p0, listWithLabels[adapterPosition])
                 }

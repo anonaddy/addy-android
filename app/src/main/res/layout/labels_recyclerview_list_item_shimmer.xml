@@ -55,12 +55,12 @@
         <com.google.android.material.button.MaterialButton
             style="@style/MaterialButtonSecondaryDeleteStyle"
             android:layout_width="50dp"
-            app:iconPadding="0dp"
-            app:iconGravity="textEnd"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             app:backgroundTint="?colorSurfaceVariant"
             app:icon="@drawable/ic_trash"
+            app:iconGravity="textEnd"
+            app:iconPadding="0dp"
             app:iconTint="?colorSurfaceVariant" />
 
     </LinearLayout>

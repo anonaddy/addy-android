@@ -29,8 +29,8 @@
                 android:id="@+id/manage_blocklist_recyclerview_list_value"
                 style="@style/TextAppearance.Material3.TitleMedium"
                 android:layout_width="match_parent"
-                android:background="?colorSurfaceVariant"
                 android:layout_height="wrap_content"
+                android:background="?colorSurfaceVariant"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="?attr/colorOnSurface"
@@ -48,8 +48,8 @@
                     style="@style/TextAppearance.Material3.LabelMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?attr/colorPrimary"
                     android:background="?colorSurfaceVariant"
+                    android:textColor="?attr/colorPrimary"
                     tools:text="              " />
 
                 <TextView
@@ -57,8 +57,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="4dp"
-                    android:text="•"
                     android:alpha="0.5"
+                    android:text="•"
                     tools:ignore="HardcodedText" />
 
                 <TextView
@@ -75,12 +75,12 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/manage_blocklist_recyclerview_list_delete_button"
             style="@style/MaterialButtonSecondaryDeleteStyle"
-            app:backgroundTint="?colorSurfaceVariant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/delete"
             android:textColor="?colorSurfaceVariant"
+            app:backgroundTint="?colorSurfaceVariant"
             app:icon="@drawable/ic_trash"
             app:iconTint="?colorSurfaceVariant" />
 

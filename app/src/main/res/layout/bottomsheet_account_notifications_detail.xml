@@ -59,17 +59,17 @@
             <TextView
                 android:id="@+id/bs_account_notifications_created"
                 style="@style/DescTextStyle"
-                android:layout_marginBottom="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:ellipsize="end"
-                android:textStyle="italic"
                 android:fontFamily="sans-serif"
                 android:lines="1"
                 android:maxLines="1"
                 android:minLines="1"
                 android:singleLine="false"
-                android:text="@tools:sample/date/ddmmyy" />
+                android:text="@tools:sample/date/ddmmyy"
+                android:textStyle="italic" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bs_account_notifications_open_button"

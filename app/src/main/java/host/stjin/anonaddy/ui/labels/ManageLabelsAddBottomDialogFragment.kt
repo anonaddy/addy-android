@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -17,9 +18,8 @@ import host.stjin.anonaddy.databinding.BottomsheetManageLabelsBinding
 import host.stjin.anonaddy.ui.customviews.FlexboxItemDecoration
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Labels
-import kotlinx.coroutines.launch
-import com.google.android.flexbox.FlexboxLayoutManager
 import host.stjin.anonaddy_shared.models.NewLabelEntry
+import kotlinx.coroutines.launch
 
 
 class ManageLabelsAddBottomDialogFragment(
@@ -90,7 +90,8 @@ class ManageLabelsAddBottomDialogFragment(
                             dismissAllowingStateLoss()
                         } else {
                             binding.bsManageLabelsAddButton.revertAnimation()
-                            binding.bsManageLabelsAddNameTil.error = requireContext().resources.getString(R.string.error_creating_label) + "\n" + error
+                            binding.bsManageLabelsAddNameTil.error =
+                                requireContext().resources.getString(R.string.error_creating_label) + "\n" + error
                         }
                     }, existingLabel.id, NewLabelEntry(name, color))
                 } else {
@@ -102,7 +103,8 @@ class ManageLabelsAddBottomDialogFragment(
                             dismissAllowingStateLoss()
                         } else {
                             binding.bsManageLabelsAddButton.revertAnimation()
-                            binding.bsManageLabelsAddNameTil.error = requireContext().resources.getString(R.string.error_creating_label) + "\n" + error
+                            binding.bsManageLabelsAddNameTil.error =
+                                requireContext().resources.getString(R.string.error_creating_label) + "\n" + error
                         }
                     }, NewLabelEntry(name, color))
                 }
@@ -139,6 +141,7 @@ class ManageLabelsAddBottomDialogFragment(
             }
         })
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

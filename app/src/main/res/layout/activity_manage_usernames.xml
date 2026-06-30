@@ -139,8 +139,8 @@
                             android:id="@+id/activity_manage_username_aliases_textview"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/BlackWhite"
-                            android:text="@string/aliases_placeholder" />
+                            android:text="@string/aliases_placeholder"
+                            android:textColor="@color/BlackWhite" />
                     </com.facebook.shimmer.ShimmerFrameLayout>
                 </LinearLayout>
 

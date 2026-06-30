@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.recyclerview.widget.RecyclerView
@@ -83,7 +82,7 @@ class ColorPickerAdapter(var context: Context, private val colors: List<String>)
                 R.id.label_color_list_item_icon -> {
                     val prevSelected = selectedColor
                     selectedColor = colors[adapterPosition]
-                    
+
                     // Trigger re-bind to animate new selection and old selection
                     if (prevSelected != null) {
                         notifyItemChanged(colors.indexOf(prevSelected), true)

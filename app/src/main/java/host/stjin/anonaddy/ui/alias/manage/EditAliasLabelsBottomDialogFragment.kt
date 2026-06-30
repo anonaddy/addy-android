@@ -13,13 +13,11 @@ import com.google.android.material.chip.Chip
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditLabelsAliasBinding
-import host.stjin.anonaddy_shared.NetworkHelper
-import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy.ui.labels.ManageLabelsAddBottomDialogFragment
 import host.stjin.anonaddy.utils.LabelUtils
+import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Labels
 import kotlinx.coroutines.launch
-
-import host.stjin.anonaddy.ui.labels.ManageLabelsAddBottomDialogFragment
 
 class EditAliasLabelsBottomDialogFragment(
     private val aliasIds: List<String>?,
@@ -52,7 +50,7 @@ class EditAliasLabelsBottomDialogFragment(
 
             binding.bsEditLabelsAliasSaveButton.setOnClickListener(this)
             binding.bsEditLabelsAliasCreateButton.setOnClickListener(this)
-            
+
             binding.bsEditLabelsAliasSaveButton.isEnabled = false
 
             viewLifecycleOwner.lifecycleScope.launch {

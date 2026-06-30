@@ -13,7 +13,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.models.Recipients
-import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
 class RecipientAdapter(
     private val listWithRecipients: ArrayList<Recipients>

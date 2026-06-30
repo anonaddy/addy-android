@@ -20,11 +20,11 @@ import com.google.android.material.chip.Chip
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAddaliasBinding
+import host.stjin.anonaddy.utils.LabelUtils
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
-import host.stjin.anonaddy.utils.LabelUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
@@ -84,11 +84,11 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             val spinnersJob = launch { fillSpinners(requireContext()) }
             val recipientsJob = launch { getAllRecipients(requireContext()) }
             val labelsJob = launch { getAllLabels(requireContext()) }
-            
+
             spinnersJob.join()
             recipientsJob.join()
             labelsJob.join()
-            
+
             binding.bsAddaliasAliasAddAliasButton.isEnabled = true
         }
 

@@ -63,6 +63,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 app:singleLine="false">
+
                 <com.google.android.material.chip.Chip
                     style="?chipStyle"
                     android:layout_width="wrap_content"
@@ -91,7 +92,6 @@
                 android:text="@string/add_label"
                 app:icon="@drawable/ic_add"
                 app:iconGravity="textStart" />
-
 
 
             <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton

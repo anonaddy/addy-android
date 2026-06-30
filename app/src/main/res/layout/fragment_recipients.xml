@@ -26,8 +26,8 @@
             <HorizontalScrollView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:overScrollMode="never"
                 android:layout_weight="1"
+                android:overScrollMode="never"
                 android:scrollbars="none">
 
                 <com.google.android.material.chip.ChipGroup
@@ -69,8 +69,8 @@
 
         <LinearLayout
             style="@style/AddyIoTitleAction"
-            android:layout_marginTop="0dp"
             android:layout_width="match_parent"
+            android:layout_marginTop="0dp"
             android:orientation="horizontal">
 
 
@@ -78,9 +78,9 @@
                 android:id="@+id/recipients_all_recipients_title"
                 style="@style/titleTextView"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:ellipsize="end"
                 android:lines="1"
-                android:layout_height="match_parent"
                 android:text="@string/recipients" />
 
             <TextView
