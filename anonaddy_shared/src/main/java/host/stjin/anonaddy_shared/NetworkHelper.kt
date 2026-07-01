@@ -3707,9 +3707,14 @@ class NetworkHelper(private val context: Context) {
     ) {
         waitForInitAndLog()
 
+
+        val aliasesIds = JSONArray(ids)
+        val labelIdsArray = JSONArray(labelIds)
+
         val json = JSONObject()
-        json.put("ids", ids)
-        json.put("label_ids", labelIds)
+        json.put("ids", aliasesIds)
+        json.put("label_ids", labelIdsArray)
+
 
         val (_, response, result) = Fuel.post("${API_URL_ALIAS}/labels/bulk")
             .appendHeader(
@@ -3741,50 +3746,6 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
-
-    /**
-     * UNUSED AS BULK IS BEING USED
-     */
-    suspend fun updateLabelsSpecificAlias(
-        callback: (BulkActionResponse?, String?) -> Unit,
-        aliasId: String,
-        labels: List<Labels>
-    ) {
-        waitForInitAndLog()
-
-        val json = JSONObject()
-        val labelsArray = JSONArray(labels.map { it.id })
-        json.put("label_ids", labelsArray)
-
-        val (_, response, result) = Fuel.post(API_URL_ALIAS_LABELS)
-            .appendHeader(
-                *getHeaders()
-            )
-            .body(json.toString())
-            .awaitStringResponseResult()
-
-        when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
-
-                callback(addyIoData, null)
-            }
-
-            401 -> {
-                handleUnauthorized()
-                callback(null, null)
-            }
-
-            else -> {
-                val errorMessage = handleGenericError(response, result, "bulkUpdateAliasesLabels")
-                callback(
-                    null,
-                    errorMessage
-                )
-            }
-        }
-    }
 
     /**
      * RULES
