@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,6 +18,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.LabelsAdapter
+import host.stjin.anonaddy.adapter.SearchAdapter
 import host.stjin.anonaddy.databinding.FragmentManageLabelsBinding
 import host.stjin.anonaddy.interfaces.Refreshable
 import host.stjin.anonaddy.ui.MainActivity
@@ -54,7 +56,11 @@ class ManageLabelsFragment : Fragment(), ManageLabelsAddBottomDialogFragment.Add
     }
 
     private lateinit var labelsAdapter: LabelsAdapter
+    private lateinit var searchAdapter: SearchAdapter
+    private var recentSearchesList: ArrayList<String> = arrayListOf()
+
     private lateinit var deleteLabelSnackbar: Snackbar
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,6 +78,7 @@ class ManageLabelsFragment : Fragment(), ManageLabelsAddBottomDialogFragment.Add
         setStats(0)
         setOnClickListener()
         setLabelsRecyclerView()
+        setSearchRecyclerView()
         getDataFromWeb(savedInstanceState)
 
         return root
@@ -85,6 +92,47 @@ class ManageLabelsFragment : Fragment(), ManageLabelsAddBottomDialogFragment.Add
     }
 
     private fun setOnClickListener() {
+        binding.labelsSearchView.editText.addTextChangedListener { text ->
+            val searchText = text?.toString()?.trim()
+            if (searchText.isNullOrEmpty()) {
+                binding.labelsSearchBar.setText(null)
+                getDataFromWeb(null)
+            }
+        }
+
+        binding.labelsSearchView.addTransitionListener { _, _, newState ->
+            if (newState == com.google.android.material.search.SearchView.TransitionState.HIDDEN) {
+                val searchText = binding.labelsSearchView.text.toString().trim()
+                if (searchText.isEmpty()) {
+                    binding.labelsSearchBar.setText(null)
+                    getDataFromWeb(null)
+                }
+            }
+        }
+
+        binding.labelsSearchView.editText.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH ||
+                actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE ||
+                (event?.action == android.view.KeyEvent.ACTION_DOWN &&
+                        event.keyCode == android.view.KeyEvent.KEYCODE_ENTER)
+            ) {
+                val inputMethodManager =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(binding.labelsSearchView.windowToken, 0)
+
+                binding.labelsSearchBar.setText(binding.labelsSearchView.text)
+                binding.labelsSearchView.hide()
+
+                val searchText = binding.labelsSearchView.text.toString().trim()
+                saveRecentSearch(searchText)
+                getDataFromWeb(null)
+                true
+            } else {
+                false
+            }
+        }
+
+
         binding.fragmentLabelsAddLabelButton.setOnClickListener {
             manageLabelsAddBottomDialogFragment = ManageLabelsAddBottomDialogFragment.newInstance(null)
             manageLabelsAddBottomDialogFragment!!.show(
@@ -93,6 +141,61 @@ class ManageLabelsFragment : Fragment(), ManageLabelsAddBottomDialogFragment.Add
             )
         }
     }
+
+
+    private fun loadRecentSearches() {
+        val settingsManager = SettingsManager(true, requireContext())
+        val json = settingsManager.getSettingsString(SettingsManager.PREFS.RECENT_SEARCHES_LABELS)
+        if (json != null) {
+            val type = object : com.google.gson.reflect.TypeToken<ArrayList<String>>() {}.type
+            recentSearchesList = Gson().fromJson(json, type) ?: arrayListOf()
+        }
+    }
+
+    private fun updateRecentSearchesVisibility() {
+        binding.labelsRecentSearchesLayout.visibility = if (recentSearchesList.isEmpty()) View.GONE else View.VISIBLE
+    }
+
+    private fun saveRecentSearch(search: String) {
+        if (search.isEmpty()) return
+        recentSearchesList.remove(search)
+        recentSearchesList.add(0, search)
+        // Keep max 25 recent searches
+        if (recentSearchesList.size > 25) {
+            recentSearchesList.removeAt(25)
+        }
+        val json = Gson().toJson(recentSearchesList)
+        SettingsManager(false, requireContext()).putSettingsString(SettingsManager.PREFS.RECENT_SEARCHES_LABELS, json)
+        searchAdapter.notifyDataSetChanged()
+        updateRecentSearchesVisibility()
+    }
+
+    private fun setSearchRecyclerView() {
+        binding.labelsSearchView.setupWithSearchBar(binding.labelsSearchBar)
+        loadRecentSearches()
+        updateRecentSearchesVisibility()
+        searchAdapter = SearchAdapter(recentSearchesList)
+        binding.labelsSearchViewRecyclerview.adapter = searchAdapter
+
+        searchAdapter.setClickListener(object : SearchAdapter.ClickListener {
+            override fun onClickSearchResult(pos: Int, aView: View) {
+                val search = recentSearchesList[pos]
+                binding.labelsSearchBar.setText(search)
+                binding.labelsSearchView.setText(search)
+                binding.labelsSearchView.hide()
+
+                getDataFromWeb(null)
+            }
+        })
+
+        binding.labelsClearRecentSearches.setOnClickListener {
+            recentSearchesList.clear()
+            SettingsManager(false, requireContext()).removeSetting(SettingsManager.PREFS.RECENT_SEARCHES_LABELS)
+            searchAdapter.notifyDataSetChanged()
+            updateRecentSearchesVisibility()
+        }
+    }
+
 
     private fun setLabelsRecyclerView() {
         binding.fragmentLabelsAllLabelsRecyclerview.apply {
@@ -186,8 +289,12 @@ class ManageLabelsFragment : Fragment(), ManageLabelsAddBottomDialogFragment.Add
     }
 
     private suspend fun getAllLabelsAndSetView() {
+        binding.fragmentLabelsAllLabelsRecyclerview.showShimmer()
         binding.fragmentLabelsAllLabelsRecyclerview.apply {
-            networkHelper?.getAllLabels { list, error ->
+            val searchText = binding.labelsSearchBar.text.toString().trim()
+            networkHelper?.getAllLabels(
+                search = if (searchText.isEmpty()) null else searchText.lowercase(java.util.Locale.getDefault())
+            ) { list, error ->
                 if (list != null) {
                     setStats(list.size)
                     setLabelsAdapter(list)

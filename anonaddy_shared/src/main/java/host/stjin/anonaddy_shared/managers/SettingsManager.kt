@@ -54,6 +54,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BIOMETRIC_ENABLED(true, PREFTYPES.BOOLEAN, "biometric_enabled"),
         RECENT_SEARCHES_ALIASES(true, PREFTYPES.STRING, "recent_searches_aliases"),
         RECENT_SEARCHES_BLOCKLIST(true, PREFTYPES.STRING, "recent_searches_blocklist"),
+        RECENT_SEARCHES_LABELS(true, PREFTYPES.STRING, "recent_searches_labels"),
         PRIVACY_MODE(true, PREFTYPES.BOOLEAN, "privacy_mode"),
         API_KEY(true, PREFTYPES.STRING, "API_KEY"),
         BASE_URL(true, PREFTYPES.STRING, "BASE_URL"),
