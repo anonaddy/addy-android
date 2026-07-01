@@ -56,7 +56,9 @@ class ManageDomainsActivity : BaseActivity(),
         }
 
     private var workingAliasList: AliasesArray? = null
+    private var aliasesEmailList: List<String> = emptyList()
 
+    private var isAliasesExpanded = false
     private var forceSwitch = false
 
     private lateinit var binding: ActivityManageDomainsBinding
@@ -163,7 +165,10 @@ class ManageDomainsActivity : BaseActivity(),
                 startActivity(i)
             }
         })
-
+        binding.activityManageDomainAliasesShowMoreLessButton.setOnClickListener {
+            isAliasesExpanded = !isAliasesExpanded
+            updateAliasesView()
+        }
     }
 
     override fun finish() {
@@ -419,9 +424,6 @@ class ManageDomainsActivity : BaseActivity(),
         var totalBlocked = 0
         var totalReplies = 0
         var totalSent = 0
-        var aliases: String
-
-        val buf = StringBuilder()
 
         if (aliasesArray != null) {
             binding.activityManageDomainAliasesCountTextview.apply {
@@ -434,20 +436,17 @@ class ManageDomainsActivity : BaseActivity(),
                 }
             }
 
+            val emails = mutableListOf<String>()
             aliasesArray.data = ArrayList(aliasesArray.data.sortedBy { it.email })
             for (alias in aliasesArray.data) {
                 totalForwarded += alias.emails_forwarded
                 totalBlocked += alias.emails_blocked
                 totalReplies += alias.emails_replied
                 totalSent += alias.emails_sent
-
-                if (buf.isNotEmpty()) {
-                    buf.append("\n")
-                }
-                buf.append(alias.email)
+                emails.add(alias.email)
             }
-            aliases = buf.toString()
-            binding.activityManageDomainAliasesTextview.text = aliases
+            aliasesEmailList = emails
+            updateAliasesView()
             binding.activityManageDomainAliasesShimmerframelayout.hideShimmer()
             binding.activityManageDomainBasicShimmerframelayout.hideShimmer() // Stop shimmer only after this info is loaded
 
@@ -591,6 +590,22 @@ class ManageDomainsActivity : BaseActivity(),
 
         setOnSwitchChangeListeners()
         setOnClickListeners()
+    }
+
+    private fun updateAliasesView() {
+        if (aliasesEmailList.size > 10) {
+            binding.activityManageDomainAliasesShowMoreLessButton.visibility = View.VISIBLE
+            if (isAliasesExpanded) {
+                binding.activityManageDomainAliasesTextview.text = aliasesEmailList.joinToString("\n")
+                binding.activityManageDomainAliasesShowMoreLessButton.text = getString(R.string.show_less)
+            } else {
+                binding.activityManageDomainAliasesTextview.text = aliasesEmailList.take(10).joinToString("\n")
+                binding.activityManageDomainAliasesShowMoreLessButton.text = getString(R.string.show_more)
+            }
+        } else {
+            binding.activityManageDomainAliasesShowMoreLessButton.visibility = View.GONE
+            binding.activityManageDomainAliasesTextview.text = aliasesEmailList.joinToString("\n")
+        }
     }
 
     private suspend fun getAliasesAndAddThemToList(domain: Domains) {

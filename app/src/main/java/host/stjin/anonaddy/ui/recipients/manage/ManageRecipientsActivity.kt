@@ -48,7 +48,9 @@ class ManageRecipientsActivity : BaseActivity(),
         }
 
     private var workingAliasList: AliasesArray? = null
+    private var aliasesEmailList: List<String> = emptyList()
 
+    private var isAliasesExpanded = false
     private var forceSwitch = false
 
     private lateinit var binding: ActivityManageRecipientsBinding
@@ -168,6 +170,10 @@ class ManageRecipientsActivity : BaseActivity(),
                 binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setSwitchChecked(!binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.getSwitchChecked())
             }
         })
+        binding.activityManageRecipientAliasesShowMoreLessButton.setOnClickListener {
+            isAliasesExpanded = !isAliasesExpanded
+            updateAliasesView()
+        }
     }
 
     override fun finish() {
@@ -805,9 +811,6 @@ class ManageRecipientsActivity : BaseActivity(),
         var totalBlocked = 0
         var totalReplies = 0
         var totalSent = 0
-        var aliases: String
-
-        val buf = StringBuilder()
 
         if (aliasesArray != null) {
             binding.activityManageRecipientAliasesCountTextview.apply {
@@ -820,21 +823,17 @@ class ManageRecipientsActivity : BaseActivity(),
                 }
             }
 
+            val emails = mutableListOf<String>()
             aliasesArray.data = ArrayList(aliasesArray.data.sortedBy { it.email })
             for (alias in aliasesArray.data) {
                 totalForwarded += alias.emails_forwarded
                 totalBlocked += alias.emails_blocked
                 totalReplies += alias.emails_replied
                 totalSent += alias.emails_sent
-
-                if (buf.isNotEmpty()) {
-                    buf.append("\n")
-                }
-                buf.append(alias.email)
+                emails.add(alias.email)
             }
-            aliases = buf.toString()
-
-            binding.activityManageRecipientAliasesTextview.text = aliases
+            aliasesEmailList = emails
+            updateAliasesView()
             binding.activityManageRecipientAliasesShimmerframelayout.hideShimmer()
             binding.activityManageRecipientBasicShimmerframelayout.hideShimmer() // Stop shimmer only after this info is loaded
 
@@ -853,6 +852,22 @@ class ManageRecipientsActivity : BaseActivity(),
         setOnClickListeners()
     }
 
+    private fun updateAliasesView() {
+        if (aliasesEmailList.size > 10) {
+            binding.activityManageRecipientAliasesShowMoreLessButton.visibility = View.VISIBLE
+            if (isAliasesExpanded) {
+                binding.activityManageRecipientAliasesTextview.text = aliasesEmailList.joinToString("\n")
+                binding.activityManageRecipientAliasesShowMoreLessButton.text = getString(R.string.show_less)
+            } else {
+                binding.activityManageRecipientAliasesTextview.text = aliasesEmailList.take(10).joinToString("\n")
+                binding.activityManageRecipientAliasesShowMoreLessButton.text = getString(R.string.show_more)
+            }
+        } else {
+            binding.activityManageRecipientAliasesShowMoreLessButton.visibility = View.GONE
+            binding.activityManageRecipientAliasesTextview.text = aliasesEmailList.joinToString("\n")
+        }
+    }
+    
     private suspend fun getAliasesAndAddThemToList(recipient: Recipients) {
         binding.activityManageRecipientAliasesShimmerframelayout.startShimmer()
 

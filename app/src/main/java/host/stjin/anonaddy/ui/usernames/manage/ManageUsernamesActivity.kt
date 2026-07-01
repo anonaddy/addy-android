@@ -54,7 +54,9 @@ class ManageUsernamesActivity : BaseActivity(),
         }
 
     private var workingAliasList: AliasesArray? = null
+    private var aliasesEmailList: List<String> = emptyList()
 
+    private var isAliasesExpanded = false
     private var forceSwitch = false
 
     private lateinit var binding: ActivityManageUsernamesBinding
@@ -160,6 +162,10 @@ class ManageUsernamesActivity : BaseActivity(),
                 deleteUsername(this@ManageUsernamesActivity.username!!.id)
             }
         })
+        binding.activityManageUsernameAliasesShowMoreLessButton.setOnClickListener {
+            isAliasesExpanded = !isAliasesExpanded
+            updateAliasesView()
+        }
     }
 
     override fun finish() {
@@ -481,9 +487,6 @@ class ManageUsernamesActivity : BaseActivity(),
         var totalBlocked = 0
         var totalReplies = 0
         var totalSent = 0
-        var aliases: String
-
-        val buf = StringBuilder()
 
         if (aliasesArray != null) {
             binding.activityManageUsernameAliasesCountTextview.apply {
@@ -496,20 +499,17 @@ class ManageUsernamesActivity : BaseActivity(),
                 }
             }
 
+            val emails = mutableListOf<String>()
             aliasesArray.data = ArrayList(aliasesArray.data.sortedBy { it.email })
             for (alias in aliasesArray.data) {
                 totalForwarded += alias.emails_forwarded
                 totalBlocked += alias.emails_blocked
                 totalReplies += alias.emails_replied
                 totalSent += alias.emails_sent
-
-                if (buf.isNotEmpty()) {
-                    buf.append("\n")
-                }
-                buf.append(alias.email)
+                emails.add(alias.email)
             }
-            aliases = buf.toString()
-            binding.activityManageUsernameAliasesTextview.text = aliases
+            aliasesEmailList = emails
+            updateAliasesView()
             binding.activityManageUsernameAliasesShimmerframelayout.hideShimmer()
             binding.activityManageUsernameBasicShimmerframelayout.hideShimmer() // Stop shimmer only after this info is loaded
 
@@ -638,6 +638,23 @@ class ManageUsernamesActivity : BaseActivity(),
         setOnClickListeners()
     }
 
+
+    private fun updateAliasesView() {
+        if (aliasesEmailList.size > 10) {
+            binding.activityManageUsernameAliasesShowMoreLessButton.visibility = View.VISIBLE
+            if (isAliasesExpanded) {
+                binding.activityManageUsernameAliasesTextview.text = aliasesEmailList.joinToString("\n")
+                binding.activityManageUsernameAliasesShowMoreLessButton.text = getString(R.string.show_less)
+            } else {
+                binding.activityManageUsernameAliasesTextview.text = aliasesEmailList.take(10).joinToString("\n")
+                binding.activityManageUsernameAliasesShowMoreLessButton.text = getString(R.string.show_more)
+            }
+        } else {
+            binding.activityManageUsernameAliasesShowMoreLessButton.visibility = View.GONE
+            binding.activityManageUsernameAliasesTextview.text = aliasesEmailList.joinToString("\n")
+        }
+    }
+    
     private suspend fun getAliasesAndAddThemToList(username: Usernames) {
         binding.activityManageUsernameAliasesShimmerframelayout.startShimmer()
 

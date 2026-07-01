@@ -657,7 +657,7 @@
     <string name="can_login_enabled">Can login enabled</string>
     <string name="can_login_disabled">Can login disabled</string>
     <string name="hosted">Hosted</string>
-    <string name="aliases_placeholder">jJWXNAuiZr@addy.io\nqkEZplEAjI@addy.io\ndjtPGlgekN@addy.io\nHeCGU0Eu18@addy.io\nxayQnQKMxB@addy.io\nzQpyRY6NSP@addy.io\np91Jt6BxsT@addy.io\nziyDtuFrem@addy.io\n54zlr6pVat@addy.io\n6AZnQeuCFn@addy.io\nn4Itdz4ccK@addy.io\n3wZJ6aZsdD@addy.io\nKD01UZ3c9A@addy.io\nKLD2Ic9zEb@addy.io\npHhv2o4oke@addy.io</string>
+    <string name="aliases_placeholder">jJWXNAuiZr@addy.io\nqkEZplEAjI@addy.io\ndjtPGlgekN@addy.io\nHeCGU0Eu18@addy.io\nxayQnQKMxB@addy.io\nzQpyRY6NSP@addy.io\np91Jt6BxsT@addy.io\nziyDtuFrem@addy.io\n54zlr6pVat@addy.io\n6AZnQeuCFn@addy.io</string>
     <string name="feature_domain_error_notification">Domain error notification</string>
     <string name="feature_domain_error_notification_desc">Receive a notification when a domain has configuration errors.\n\nThese notifications will appear once (unless another domain with configuration errors is detected)</string>
     <string name="notify_domain_error_feature_section_desc">Receive a notification when a domain has configuration errors</string>
@@ -893,4 +893,6 @@
     <string name="something_went_wrong_retrieving_labels">Something went wrong retrieving labels</string>
     <string name="d_aliases">%1$d aliases</string>
     <string name="none">None</string>
+    <string name="show_more">Show more</string>
+    <string name="show_less">Show less</string>
 </resources>

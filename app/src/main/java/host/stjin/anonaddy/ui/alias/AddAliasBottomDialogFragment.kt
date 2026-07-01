@@ -129,6 +129,10 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             binding.bsAddaliasLabelsArrow
         )
 
+        // Set the initial state of the collapsible section to collapsed
+        binding.bsAddaliasLabelsChipgroup.visibility = View.GONE
+        binding.bsAddaliasLabelsArrow.rotation = 0f
+
         val networkHelper = NetworkHelper(context)
         networkHelper.getAllLabels { labels, _ ->
             if (labels != null) {
