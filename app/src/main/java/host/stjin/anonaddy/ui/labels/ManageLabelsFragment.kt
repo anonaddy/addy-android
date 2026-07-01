@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui.labels
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,6 +27,7 @@ import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.Labels
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -133,7 +135,7 @@ class ManageLabelsFragment : Fragment(), ManageLabelsAddBottomDialogFragment.Add
             labelsAdapter = LabelsAdapter(list)
             labelsAdapter.setClickListener(object : LabelsAdapter.ClickListener {
                 override fun onClickDelete(pos: Int, aView: View, id: String) {
-                    deleteLabel(id)
+                    deleteLabel(id, context)
                 }
 
                 override fun onClickEdit(pos: Int, aView: View, label: Labels) {
@@ -220,7 +222,7 @@ class ManageLabelsFragment : Fragment(), ManageLabelsAddBottomDialogFragment.Add
         getDataFromWeb(null)
     }
 
-    private fun deleteLabel(id: String) {
+    private fun deleteLabel(id: String, context: Context) {
         MaterialDialogHelper.showMaterialDialog(
             context = requireContext(),
             title = requireContext().resources.getString(R.string.delete_label),
@@ -229,7 +231,7 @@ class ManageLabelsFragment : Fragment(), ManageLabelsAddBottomDialogFragment.Add
             neutralButtonText = requireContext().resources.getString(R.string.cancel),
             positiveButtonText = requireContext().resources.getString(R.string.delete),
             positiveButtonAction = {
-                val container = if (requireContext().resources.getBoolean(R.bool.isTablet)) {
+                val container = if (context.resources.getBoolean(R.bool.isTablet)) {
                     (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView()
                 } else {
                     (activity as ManageLabelsActivity).findViewById(R.id.activity_manage_labels_CL)
@@ -243,33 +245,57 @@ class ManageLabelsFragment : Fragment(), ManageLabelsAddBottomDialogFragment.Add
                 )
                 deleteLabelSnackbar.show()
 
-                viewLifecycleOwner.lifecycleScope.launch {
-                    networkHelper?.deleteLabel({ result ->
-                        if (result == null) {
-                            deleteLabelSnackbar.dismiss()
-                            binding.animationFragment.playAnimation(true, R.drawable.ic_loading_logo)
-                            binding.fragmentLabelsNSV.alpha = 0.0f
-                            viewLifecycleOwner.lifecycleScope.launch {
-                                getAllLabelsAndSetView()
-                            }
-                        } else {
-                            deleteLabelSnackbar.dismiss()
-                            SnackbarHelper.createSnackbar(
-                                requireContext(),
-                                requireContext().resources.getString(R.string.error_deleting_label) + "\n" + result,
-                                container,
-                                LoggingHelper.LOGFILES.DEFAULT
-                            ).show()
-                        }
-                    }, id)
+                lifecycleScope.launch {
+                    deleteLabelHttpRequest(id, context)
                 }
             }
         ).show()
     }
 
+    private suspend fun deleteLabelHttpRequest(id: String, context: Context) {
+        val container = if (context.resources.getBoolean(R.bool.isTablet)) {
+            (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView()
+        } else {
+            (activity as ManageLabelsActivity).findViewById(R.id.activity_manage_labels_CL)
+        }
+
+
+        networkHelper?.deleteLabel({ result ->
+                if (result == null) {
+                    deleteLabelSnackbar.dismiss()
+                    getDataFromWeb(null)
+                } else {
+                    deleteLabelSnackbar.dismiss()
+                    SnackbarHelper.createSnackbar(
+                        requireContext(),
+                        requireContext().resources.getString(R.string.error_deleting_label) + "\n" + result,
+                        container,
+                        LoggingHelper.LOGFILES.DEFAULT
+                    ).show()
+                }
+            }, id)
+
+    }
+
     override fun onRefreshData() {
-        binding.animationFragment.playAnimation(true, R.drawable.ic_loading_logo)
-        binding.fragmentLabelsNSV.alpha = 0.0f
-        getDataFromWeb(null)
+        // The key is to check if the view is created before proceeding.
+        // `viewLifecycleOwner` can be used as a proxy for this check.
+        if (!isAdded) return
+
+        // Use a try-catch as an ultimate safeguard against rare lifecycle race conditions.
+        try {
+            // This ensures the coroutine is launched only when the view's lifecycle is active.
+            viewLifecycleOwner.lifecycleScope.launch {
+                getDataFromWeb(null)
+            }
+        } catch (e: IllegalStateException) {
+            // Log the error if the lifecycle state was somehow invalid despite the check.
+            LoggingHelper(requireContext()).addLog(
+                LOGIMPORTANCE.CRITICAL.int,
+                "Failed to refresh data, view lifecycle not available. $e",
+                "DomainSettingsFragment",
+                null
+            )
+        }
     }
 }
