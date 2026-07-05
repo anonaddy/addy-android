@@ -33,7 +33,7 @@ data class UserResource(
     val subscription: String?, // Can be null on selfhosted
     val subscription_type: String?, // Can be null on selfhosted
     val subscription_ends_at: String?, // Can be null on selfhosted
-    val bandwidth_limit: Long,
+    val bandwidth_limit: Long?, // Can be null on selfhosted
     val recipient_count: Int,
     val recipient_limit: Int?, // Can be null on selfhosted
     val active_domain_count: Int,
