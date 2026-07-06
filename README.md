@@ -62,6 +62,7 @@ Easily create and manage your addy.io aliases, recipients and more from your pho
 - Usernames
 - Rules
 - Blocklist
+- Labels
 - Failed deliveries
 
 ## Download

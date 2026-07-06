@@ -35,6 +35,7 @@
 <li>Usernames</li>
 <li>Rules</li>
 <li>Blocklist</li>
+<li>Labels</li>
 <li>Failed deliveries</li>
 </ul>
 <p><strong>What is addy.io</strong></p>
