@@ -54,12 +54,14 @@
         <item>subject</item>
         <item>alias</item>
         <item>alias_description</item>
+        <item>alias_label</item>
     </string-array>
     <string-array name="conditions.type.name">
         <item>@string/the_sender</item>
         <item>@string/the_subject</item>
         <item>@string/the_alias</item>
         <item>@string/the_alias_description</item>
+        <item>@string/the_alias_label</item>
     </string-array>
     <string-array name="conditions.match">
         <item>contains</item>
@@ -125,6 +127,7 @@
     <string name="the_subject">the subject</string>
     <string name="the_alias">the alias</string>
     <string name="the_alias_description">the alias description</string>
+    <string name="the_alias_label">the alias label</string>
     <string name="does_not_contain">does not contain</string>
     <string name="is_exactly">is exactly</string>
     <string name="is_not">is not</string>

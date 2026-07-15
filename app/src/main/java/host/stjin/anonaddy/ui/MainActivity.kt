@@ -981,7 +981,6 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
     }
 
-    // TODO CHECK TABLET, doesnt work from search
     // Also gets called from the startupPage check
     private fun goToTarget(string: String) {
         when (string) {

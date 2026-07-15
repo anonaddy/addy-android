@@ -49,6 +49,7 @@ import org.apache.commons.lang3.StringUtils
 
 class ManageAliasActivity : BaseActivity(),
     EditAliasDescriptionBottomDialogFragment.AddEditAliasDescriptionBottomDialogListener,
+    EditAliasLabelsBottomDialogFragment.AddEditAliasLabelsBottomDialogListener,
     EditAliasFromNameBottomDialogFragment.AddEditAliasFromNameBottomDialogListener,
     EditAliasRecipientsBottomDialogFragment.AddEditAliasRecipientsBottomDialogListener,
     EditAliasSendMailRecipientBottomDialogFragment.AddEditAliasSendMailRecipientBottomDialogListener {
@@ -59,6 +60,7 @@ class ManageAliasActivity : BaseActivity(),
     private var shouldRefreshOnFinish = false
 
     private lateinit var editAliasDescriptionBottomDialogFragment: EditAliasDescriptionBottomDialogFragment
+    private lateinit var editAliasLabelsBottomDialogFragment: EditAliasLabelsBottomDialogFragment
 
     private lateinit var editAliasFromNameBottomDialogFragment: EditAliasFromNameBottomDialogFragment
 
@@ -165,6 +167,18 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageAliasGeneralActions.activityManageAliasLabelsEdit.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editAliasLabelsBottomDialogFragment.isAdded) {
+                    editAliasLabelsBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editAliasLabelsBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
         binding.activityManageAliasGeneralActions.activityManageAliasDescEdit.setOnLayoutClickedListener(object :
             SectionView.OnLayoutClickedListener {
             override fun onClick() {
@@ -242,6 +256,16 @@ class ManageAliasActivity : BaseActivity(),
         resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
         setResult(RESULT_OK, resultIntent)
         super.finish()
+    }
+
+    override fun labelsEdited() {
+        shouldRefreshOnFinish = true
+        editAliasLabelsBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Fetch alias again since we updated labels
+        lifecycleScope.launch {
+            getAliasInfo(this@ManageAliasActivity.alias!!.id)
+        }
     }
 
     override fun descriptionEdited(alias: Aliases) {
@@ -999,6 +1023,24 @@ class ManageAliasActivity : BaseActivity(),
         DateTimeUtils.convertStringToLocalTimeZoneString(alias.updated_at)
             ?.let { binding.activityManageAliasGeneralActions.activityManageAliasUpdatedAt.setDescription(it) }
 
+
+        /**
+         * LABELS
+         */
+
+        val labelNames = alias.labels?.joinToString(", ") { it.name }
+        if (!labelNames.isNullOrEmpty()) {
+            binding.activityManageAliasGeneralActions.activityManageAliasLabelsEdit.setDescription(labelNames)
+        } else {
+            binding.activityManageAliasGeneralActions.activityManageAliasLabelsEdit.setDescription(
+                this.resources.getString(R.string.alias_no_labels)
+            )
+        }
+
+        editAliasLabelsBottomDialogFragment = EditAliasLabelsBottomDialogFragment.newInstance(
+            listOf(alias.id),
+            alias.labels
+        )
 
         /**
          * DESCRIPTION

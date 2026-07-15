@@ -49,6 +49,7 @@
     <string name="get_started">Get started</string>
     <string name="add_alias_desc">Other aliases e.g. alias@%s.addy.io or .me can also be created automatically when they receive their first email</string>
     <string name="description">Description</string>
+    <string name="alias_no_labels">None</string>
     <string name="not_a_valid_domain">This is a not a valid domain</string>
     <string name="not_a_valid_alias_format">Not a valid alias format</string>
     <string name="domain">Domain</string>
@@ -67,9 +68,14 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 6.2.7</h3>
+<h3>What\'s new in addy.io for Android 6.3.0</h3>
 <h4>Added</h4>
-<p>- Support for adding and changing the description on recipients</p>]]></string>
+<p>- Support for Android 17<br />- Support for labels, allowing you to organize and color-code your aliases.<br />- You can now activate and deactivate recipients directly within the app. </p>
+<h4>Fixed/Improved</h4>
+<p>- Performance improvements and other things to make the app even smoother</p>
+<h3>What\'s new in addy.io for Android Wearables 1.6.5</h3>
+<h4>Fixed/Improved</h4>
+<p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -171,6 +177,9 @@
     <string name="username_aliases">Username aliases</string>
     <string name="domain_status_desc">Use this domain for mail forwarding</string>
     <string name="username_status_desc">Use this username for mail forwarding</string>
+    <string name="recipient_status_active">Recipient active</string>
+    <string name="recipient_status_desc">Use this recipient for mail forwarding</string>
+    <string name="recipient_status_inactive">Recipient inactive</string>
     <string name="delete_domain_desc">You will no longer be able to receive any emails at this domain</string>
     <string name="check_dns">Check DNS</string>
     <string name="check_dns_desc">Verify DNS configuration</string>
@@ -210,7 +219,6 @@
     <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
     <string name="Copy">Copy</string>
     <string name="default_base_url">https://app.addy.io</string>
-    <string name="default_base_url_old">https://app.anonaddy.com</string>
     <string name="addyio_instance">addy.io instance</string>
     <string name="refreshing_data">Refreshing data…</string>
     <string name="refresh">Refresh</string>
@@ -327,7 +335,6 @@
     <string name="username">Username</string>
     <string name="rules_create_info">Rules work on all emails, including replies and also send froms. New conditions and actions will be added over time.</string>
     <string name="manage_your_addyio_account">Manage your addy.io account</string>
-    <string name="loading_recipients">Loading recipients…</string>
     <string name="intent_context_menu">Create alias or send email from alias</string>
     <string name="something_went_wrong_retrieving_domains">Something went wrong while retrieving the domains</string>
     <string name="you_do_not_own_this_domain">You do not own this domain</string>
@@ -355,6 +362,8 @@
     <string name="search_min_3_char_required">Search term must be at least 3 characters</string>
     <string name="just_like_that">Just like that!</string>
     <string name="select_recipients_for_this_alias">Select recipients for this alias</string>
+    <string name="loading_recipients">Loading recipients…</string>
+    <string name="loading_labels">Loading labels…</string>
     <string name="widget_2_description">An overview of your addy.io stats that dynamically adapts to size</string>
     <string name="widget_1_description">A handy list of the 15 most used aliases</string>
     <string name="add">Add</string>
@@ -407,7 +416,7 @@
     <string name="forget">Forget</string>
     <string name="version_channel_fdroid_info">Please note that it may take a little longer for updates to be visible in F-Droid</string>
     <string name="integration_webintent_resolution">Web intent resolution</string>
-    <string name="integration_webintent_resolution_desc">Open the addy.io app instead of the website for easy access and quick actions such as deactivating your alias via the link in the email banner.\n\nSince this feature is not managed by the addy.io app but by Android itself, manual action is required to link the URL to the app. On many devices this is done automatically, but on devices with Android 12 or higher it is necessary to add this URL manually. The action is easy but cannot be automated.\n\nDue to limitations added in Android 12, it is only possible to use this integration on the hosted instance found at app.addy.io or app.anonaddy.com.</string>
+    <string name="integration_webintent_resolution_desc">Open the addy.io app instead of the website for easy access and quick actions such as deactivating your alias via the link in the email banner.\n\nSince this feature is not managed by the addy.io app but by Android itself, manual action is required to link the URL to the app. On many devices this is done automatically, but on devices with Android 12 or higher it is necessary to add this URL manually. The action is easy but cannot be automated.\n\nDue to limitations added in Android 12, it is only possible to use this integration on the hosted instance found at app.addy.io.</string>
     <string name="webintent_manage_default_apps_pre_sdk24_enable">Click on \"open by default\" and set app links to \"Open in this app\"</string>
     <string name="webintent_manage_default_apps_pre_sdk24_disable">Click on \"open by default\" and set app links to \"Don\'t open in this app\"</string>
     <string name="webintent_manage_default_apps_enable">Enable supported links, click on \"Add link\" and tick the checkbox in front of the URL</string>
@@ -648,7 +657,7 @@
     <string name="can_login_enabled">Can login enabled</string>
     <string name="can_login_disabled">Can login disabled</string>
     <string name="hosted">Hosted</string>
-    <string name="aliases_placeholder">jJWXNAuiZr@addy.io\nqkEZplEAjI@addy.io\ndjtPGlgekN@addy.io\nHeCGU0Eu18@addy.io\nxayQnQKMxB@addy.io\nzQpyRY6NSP@addy.io\np91Jt6BxsT@addy.io\nziyDtuFrem@addy.io\n54zlr6pVat@addy.io\n6AZnQeuCFn@addy.io\nn4Itdz4ccK@addy.io\n3wZJ6aZsdD@addy.io\nKD01UZ3c9A@addy.io\nKLD2Ic9zEb@addy.io\npHhv2o4oke@addy.io</string>
+    <string name="aliases_placeholder">jJWXNAuiZr@addy.io\nqkEZplEAjI@addy.io\ndjtPGlgekN@addy.io\nHeCGU0Eu18@addy.io\nxayQnQKMxB@addy.io\nzQpyRY6NSP@addy.io\np91Jt6BxsT@addy.io\nziyDtuFrem@addy.io\n54zlr6pVat@addy.io\n6AZnQeuCFn@addy.io</string>
     <string name="feature_domain_error_notification">Domain error notification</string>
     <string name="feature_domain_error_notification_desc">Receive a notification when a domain has configuration errors.\n\nThese notifications will appear once (unless another domain with configuration errors is detected)</string>
     <string name="notify_domain_error_feature_section_desc">Receive a notification when a domain has configuration errors</string>
@@ -860,4 +869,30 @@
     <string name="blocklist_add_success">This sender was added to the blocklist</string>
     <string name="inbound_quarantined">Inbound quarantined</string>
     <string name="search_for_aliases">Search for aliases</string>
+    <string name="labels">Labels</string>
+    <string name="manage_labels">Manage labels</string>
+    <string name="manage_labels_desc">Create labels to organize your aliases</string>
+    <string name="add_label">Add label</string>
+    <string name="label_name">Label name</string>
+    <string name="label_color">Label color</string>
+    <string name="no_labels">No labels found</string>
+    <string name="label_add_desc">Create labels to organize your aliases. Deleting a label removes it from all aliases</string>
+    <string name="delete_label">Delete label</string>
+    <string name="deleting_label">Deleting label…</string>
+    <string name="error_deleting_label">Something went wrong while deleting this label</string>
+    <string name="error_creating_label">Something went wrong while creating this label</string>
+    <string name="cannot_be_empty">Cannot be empty</string>
+    <string name="error_obtaining_labels">@string/could_not_refresh_data</string>
+    <string name="delete_label_desc">Are you sure you want to delete this label? It will be removed from all aliases.</string>
+    <string name="add_label_description">Select labels for this alias. You can choose up to 10 labels</string>
+    <string name="edit_label">Edit label</string>
+    <string name="new_label">New label</string>
+    <string name="create">Create</string>
+    <string name="you_ve_used_d_out_of_d_labels">You\'ve created %1$d out of %2$s labels</string>
+    <string name="error_obtaining_data">Error obtaining data</string>
+    <string name="something_went_wrong_retrieving_labels">Something went wrong retrieving labels</string>
+    <string name="d_aliases">%1$d aliases</string>
+    <string name="none">None</string>
+    <string name="show_more">Show more</string>
+    <string name="show_less">Show less</string>
 </resources>

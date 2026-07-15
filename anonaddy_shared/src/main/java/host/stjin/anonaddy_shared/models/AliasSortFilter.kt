@@ -8,5 +8,6 @@ data class AliasSortFilter(
     var onlyWatchedAliases: Boolean,
     var sort: String?,
     var sortDesc: Boolean,
-    var filter: String?
+    var filter: String?,
+    var label: String? = null
 )

@@ -69,7 +69,7 @@
                     app:singleSelection="true">
 
                     <com.google.android.material.chip.Chip
-                        style="@style/AddyIoChip"
+                        style="?chipStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="false"

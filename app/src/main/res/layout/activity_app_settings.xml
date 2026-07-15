@@ -94,8 +94,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/addyio_for_wearables_desc"
-                    app:sectionTitle="@string/addyio_for_wearables"
-                    app:sectionStartIcon="@drawable/ic_device_watch" />
+                    app:sectionStartIcon="@drawable/ic_device_watch"
+                    app:sectionTitle="@string/addyio_for_wearables" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_backup"
@@ -135,9 +135,9 @@
                     android:id="@+id/activity_app_settings_section_logs"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="8dp"
                     app:sectionDescription="@string/store_logs_desc"
                     app:sectionShowSwitch="true"
-                    android:layout_marginBottom="8dp"
                     app:sectionStartIcon="@drawable/ic_file_alert"
                     app:sectionTitle="@string/store_logs" />
 

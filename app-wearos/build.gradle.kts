@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.ApplicationExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val compose_version = rootProject.extra["compose_version"]
@@ -9,13 +10,12 @@ val wear_tiles_version = rootProject.extra["wear_tiles_version"]
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.3.21" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.0" // this version matches your Kotlin version
 
 }
 
-android {
-    compileSdk = 36
+configure<ApplicationExtension> {
+    compileSdk = 37
     namespace = "host.stjin.anonaddy"
 
     defaultConfig {
@@ -29,9 +29,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v1.6.4 + release 01 + 01 (for wearos)
-        versionCode = 361640201 // TODO set release to 01
-        versionName = "1.6.4"
+        // SDK 37 + v1.6.5 + release 01 + 01 (for wearos)
+        versionCode = 371650101
+        versionName = "1.6.5"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -39,9 +39,14 @@ android {
     }
 
     buildTypes {
-        release {
+        getByName("release") {
+            // Do not enable, Fuel will break
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        getByName("debug") {
+            applicationIdSuffix = ".debug"
+            isDebuggable = true
         }
     }
     buildFeatures {
@@ -54,13 +59,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_17  // Replace "17" with your target, e.g., JVM_11, JVM_21
-        }
-    }
-
 
     /**
      * COMPOSE
@@ -78,22 +76,12 @@ android {
     /**
      * END COMPOSE
      */
+}
 
-
-    buildTypes {
-        getByName("release") {
-            // Do not enable, Fuel will break
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-        getByName("debug") {
-            applicationIdSuffix = ".debug"
-            isDebuggable = true
-        }
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17  // Replace "17" with your target, e.g., JVM_11, JVM_21
     }
-    /**
-     * END FLAVORS
-     */
 }
 
 dependencies {
@@ -103,7 +91,7 @@ dependencies {
 dependencies {
     implementation("com.google.android.material:material:1.14.0")
     implementation("androidx.compose.material3:material3:$compose_material_version")
-    implementation("androidx.core:core-ktx:1.18.0")
+    implementation("androidx.core:core-ktx:1.19.0")
     implementation("com.google.android.gms:play-services-wearable:20.0.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.4.0")

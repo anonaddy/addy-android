@@ -399,7 +399,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 Toast.makeText(this, this.resources.getString(R.string.error_adding_alias), Toast.LENGTH_LONG).show()
                 finish()
             }
-        }, domain, description, format, aliasLocalPart, null)
+        }, domain, description, format, aliasLocalPart, null, null)
     }
 
     private suspend fun addAliasToAccount(
@@ -416,7 +416,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 Toast.makeText(this, this.resources.getString(R.string.error_adding_alias), Toast.LENGTH_LONG).show()
                 finish()
             }
-        }, domain, description, format, aliasLocalPart, null)
+        }, domain, description, format, aliasLocalPart, null, null)
     }
 
     private fun openMailToShareSheet(

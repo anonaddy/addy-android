@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.alias
 
+
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -8,14 +9,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetFilterOptionsAliasBinding
 import host.stjin.anonaddy.service.AliasWatcher
+import host.stjin.anonaddy.utils.LabelUtils
+import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.AliasSortFilter
-
+import host.stjin.anonaddy_shared.models.Labels
+import kotlinx.coroutines.launch
 
 class FilterOptionsAliasBottomDialogFragment(
     private val aliasSortFilter: AliasSortFilter
@@ -28,6 +33,8 @@ class FilterOptionsAliasBottomDialogFragment(
 // onDestroyView.
     private val binding get() = _binding!!
 
+    private var allLabels: List<Labels>? = null
+
     // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
     constructor() : this(
         AliasSortFilter(
@@ -38,7 +45,8 @@ class FilterOptionsAliasBottomDialogFragment(
             onlyPinnedAliases = false,
             sort = null,
             sortDesc = false,
-            filter = null
+            filter = null,
+            label = null
         )
     ) {
         loadFilter()
@@ -61,7 +69,41 @@ class FilterOptionsAliasBottomDialogFragment(
         setOnFilterListeners()
         setOnSortingListeners()
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            loadLabels()
+        }
+
         return root
+    }
+
+    private suspend fun loadLabels() {
+        LabelUtils.setupCollapsibleHeader(
+            binding.bsFilteroptionsAliasesLabelsHeader,
+            binding.bsFilteroptionsAliasesLabelsChipgroup,
+            binding.bsFilteroptionsAliasesLabelsArrow
+        )
+
+        val networkHelper = NetworkHelper(requireContext())
+        networkHelper.getAllLabels { labels, _ ->
+            if (labels != null) {
+                allLabels = labels
+
+                val checkedIds = if (aliasSortFilter.label != null) listOf(aliasSortFilter.label!!) else emptyList()
+
+                LabelUtils.populateLabelsChipGroup(
+                    requireContext(),
+                    binding.bsFilteroptionsAliasesLabelsChipgroup,
+                    labels,
+                    checkedIds
+                ) { id, isChecked ->
+                    if (isChecked) {
+                        aliasSortFilter.label = id
+                    } else if (aliasSortFilter.label == id) {
+                        aliasSortFilter.label = null
+                    }
+                }
+            }
+        }
     }
 
     override fun onResume() {

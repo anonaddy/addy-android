@@ -35,8 +35,8 @@
                     android:id="@+id/appsettings_logviewer_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:nestedScrollingEnabled="false"
                     android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:shimmer_recycler_auto_start="true" />
@@ -68,6 +68,6 @@
         android:layout_marginTop="@dimen/fab_margin"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
-        app:icon="@drawable/ic_close"
-        android:text="@string/clear_logs" />
+        android:text="@string/clear_logs"
+        app:icon="@drawable/ic_close" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

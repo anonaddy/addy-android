@@ -51,12 +51,12 @@
             style="?attr/materialIconButtonFilledTonalStyle"
             android:layout_width="56dp"
             android:layout_height="56dp"
+            android:layout_marginBottom="8dp"
             android:contentDescription="@string/account_notifications"
             android:text="SV"
-            android:textStyle="bold"
             android:textSize="18sp"
-            android:layout_marginBottom="8dp"
-            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"/>
+            android:textStyle="bold"
+            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium" />
 
 
         <com.google.android.material.button.MaterialButton
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/account_notifications"
             app:icon="@drawable/ic_bell"
-            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"/>
+            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium" />
 
 
     </LinearLayout>

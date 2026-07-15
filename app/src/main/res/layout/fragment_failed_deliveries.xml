@@ -15,8 +15,8 @@
 
     <include
         android:id="@+id/fragment_content_unavailable"
-        android:visibility="gone"
-        layout="@layout/fragment_feature_not_available_subscription" />
+        layout="@layout/fragment_feature_not_available_subscription"
+        android:visibility="gone" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/fragment_failed_deliveries_NSV"
@@ -38,8 +38,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:scrollbars="none"
-                android:overScrollMode="never">
+                android:overScrollMode="never"
+                android:scrollbars="none">
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/fragment_failed_deliveries_chipgroup"
@@ -88,8 +88,8 @@
 
             <LinearLayout
                 style="@style/AddyIoTitleAction"
-                android:layout_marginTop="0dp"
                 android:layout_width="match_parent"
+                android:layout_marginTop="0dp"
                 android:orientation="horizontal">
 
                 <TextView

@@ -9,10 +9,10 @@ object AddyIo {
     // The versioncode is a combination of MAJOR MINOR PATCH
     //TODO Update on every release
 
-    // 1.6.2
+    // 1.7.0
     var MINIMUMVERSIONCODEMAJOR = 1
-    var MINIMUMVERSIONCODEMINOR = 6
-    var MINIMUMVERSIONCODEPATCH = 2
+    var MINIMUMVERSIONCODEMINOR = 7
+    var MINIMUMVERSIONCODEPATCH = 0
 
     var VERSIONMAJOR = 0
     var VERSIONMINOR = 0
@@ -35,7 +35,9 @@ object AddyIo {
     val API_URL_ACTIVE_ALIAS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-aliases" }
     val API_URL_PINNED_ALIASES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/pinned-aliases" }
     val API_URL_ALIAS_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/alias-recipients" }
+    val API_URL_ALIAS_LABELS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/alias-labels" }
     val API_URL_DOMAIN_OPTIONS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/domain-options" }
+    val API_URL_LABELS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/labels" }
     val API_URL_ENCRYPTED_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/encrypted-recipients" }
     val API_URL_INLINE_ENCRYPTED_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/inline-encrypted-recipients" }
     val API_URL_REMOVE_PGP_KEYS_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/remove-pgp-keys-recipients" }
@@ -53,6 +55,7 @@ object AddyIo {
     val API_URL_CAN_LOGIN_USERNAMES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/loginable-usernames" }
     val API_URL_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/rules" }
     val API_URL_ACTIVE_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-rules" }
+    val API_URL_ACTIVE_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-recipients" }
     val API_URL_REORDER_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/reorder-rules" }
     val API_URL_API_TOKEN_DETAILS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/api-token-details" }
     val API_URL_BLOCKLIST: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/blocklist" }

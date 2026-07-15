@@ -185,6 +185,7 @@ fun PreviewCreatedAliasDetails() {
         emails_replied = 0,
         emails_sent = 0,
         recipients = null,
+        labels = null,
         last_forwarded = null,
         last_blocked = null,
         last_replied = null,

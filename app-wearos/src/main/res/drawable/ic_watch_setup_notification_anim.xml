@@ -9,31 +9,31 @@
             android:viewportHeight="108">
             <group
                 android:name="group_2"
-                android:translateX="25"
-                android:translateY="18"
                 android:scaleX="0.6316906"
-                android:scaleY="0.6316906">
+                android:scaleY="0.6316906"
+                android:translateX="25"
+                android:translateY="18">
                 <group android:name="group_4">
                     <path
                         android:name="path_8"
-                        android:pathData="M 67.5 72 L 67.5 90 C 67.5 91.192 67.028 92.34 66.181 93.181 C 65.34 94.028 64.192 94.5 63 94.5 L 27 94.5 C 25.808 94.5 24.66 94.028 23.819 93.181 C 22.973 92.34 22.5 91.192 22.5 90 L 22.5 27 C 22.5 25.808 22.973 24.66 23.819 23.819 C 24.66 22.973 25.808 22.5 27 22.5 L 36 22.5 M 45 81 L 45 81.045"
-                        android:fillColor="#000"
                         android:fillAlpha="0"
-                        android:strokeColor="@color/ic_launcher_foreground"
-                        android:strokeAlpha="0"
+                        android:fillColor="#000"
+                        android:pathData="M 67.5 72 L 67.5 90 C 67.5 91.192 67.028 92.34 66.181 93.181 C 65.34 94.028 64.192 94.5 63 94.5 L 27 94.5 C 25.808 94.5 24.66 94.028 23.819 93.181 C 22.973 92.34 22.5 91.192 22.5 90 L 22.5 27 C 22.5 25.808 22.973 24.66 23.819 23.819 C 24.66 22.973 25.808 22.5 27 22.5 L 36 22.5 M 45 81 L 45 81.045"
                         android:strokeWidth="6"
+                        android:strokeAlpha="0"
+                        android:strokeColor="@color/ic_launcher_foreground"
                         android:strokeLineCap="round"
                         android:strokeLineJoin="round" />
                 </group>
                 <group android:name="group_3">
                     <path
                         android:name="path_7"
-                        android:pathData="M 49.5 13.5 L 94.5 13.5 L 94.5 49.5 L 81 49.5 L 63 58.5 L 63 49.5 L 49.5 49.5 L 49.5 13.5 Z"
-                        android:fillColor="#000"
                         android:fillAlpha="0"
-                        android:strokeColor="@color/ic_launcher_foreground"
-                        android:strokeAlpha="0"
+                        android:fillColor="#000"
+                        android:pathData="M 49.5 13.5 L 94.5 13.5 L 94.5 49.5 L 81 49.5 L 63 58.5 L 63 49.5 L 49.5 49.5 L 49.5 13.5 Z"
                         android:strokeWidth="6"
+                        android:strokeAlpha="0"
+                        android:strokeColor="@color/ic_launcher_foreground"
                         android:strokeLineCap="round"
                         android:strokeLineJoin="round" />
                 </group>
@@ -43,47 +43,47 @@
     <target android:name="path_7">
         <aapt:attr name="android:animation">
             <objectAnimator
-                android:propertyName="strokeAlpha"
                 android:duration="275"
                 android:interpolator="@android:interpolator/fast_out_slow_in"
+                android:propertyName="strokeAlpha"
+                android:startOffset="24"
                 android:valueFrom="0"
                 android:valueTo="1"
-                android:valueType="floatType"
-                android:startOffset="24" />
+                android:valueType="floatType" />
         </aapt:attr>
     </target>
     <target android:name="path_8">
         <aapt:attr name="android:animation">
             <objectAnimator
-                android:propertyName="strokeAlpha"
                 android:duration="275"
+                android:interpolator="@android:interpolator/fast_out_slow_in"
+                android:propertyName="strokeAlpha"
                 android:valueFrom="0"
                 android:valueTo="1"
-                android:valueType="floatType"
-                android:interpolator="@android:interpolator/fast_out_slow_in" />
+                android:valueType="floatType" />
         </aapt:attr>
     </target>
     <target android:name="group_3">
         <aapt:attr name="android:animation">
             <objectAnimator
-                android:propertyName="translateY"
                 android:duration="275"
                 android:interpolator="@android:interpolator/fast_out_slow_in"
+                android:propertyName="translateY"
+                android:startOffset="24"
                 android:valueFrom="5"
                 android:valueTo="0"
-                android:valueType="floatType"
-                android:startOffset="24" />
+                android:valueType="floatType" />
         </aapt:attr>
     </target>
     <target android:name="group_4">
         <aapt:attr name="android:animation">
             <objectAnimator
-                android:propertyName="translateY"
                 android:duration="275"
+                android:interpolator="@android:interpolator/fast_out_slow_in"
+                android:propertyName="translateY"
                 android:valueFrom="5"
                 android:valueTo="0"
-                android:valueType="floatType"
-                android:interpolator="@android:interpolator/fast_out_slow_in" />
+                android:valueType="floatType" />
         </aapt:attr>
     </target>
 </animated-vector>

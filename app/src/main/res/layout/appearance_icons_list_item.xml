@@ -11,7 +11,7 @@
         android:id="@+id/appearance_icon_list_item_icon_ML"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        app:layoutDescription="@xml/motion_scene">
+        app:layoutDescription="@xml/appearance_icon_motion_scene">
 
         <androidx.constraintlayout.utils.widget.ImageFilterView
             android:id="@+id/appearance_icon_list_item_icon"
@@ -25,7 +25,7 @@
         android:id="@+id/appearance_icon_list_item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
         android:text="@string/AppIconDefault" />
 </LinearLayout>

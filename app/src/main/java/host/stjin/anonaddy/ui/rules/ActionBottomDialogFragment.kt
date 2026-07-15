@@ -90,6 +90,7 @@ class ActionBottomDialogFragment(
     }
 
     private fun getAllRecipients(selectedRecipientId: String?) {
+
         // Remove the default "Loading recipients" chip
         binding.bsRuleActionForwardToChipgroup.removeAllViewsInLayout()
         binding.bsRuleActionForwardToChipgroup.requestLayout()

@@ -53,6 +53,8 @@ class EditAliasRecipientsBottomDialogFragment(
             // Set button listeners and current description
             binding.bsEditrecipientsSaveButton.setOnClickListener(this)
 
+            binding.bsEditrecipientsSaveButton.isEnabled = false
+
             viewLifecycleOwner.lifecycleScope.launch {
                 getAllRecipients(requireContext())
             }
@@ -97,6 +99,7 @@ class EditAliasRecipientsBottomDialogFragment(
         }
 
         networkHelper.getRecipients({ result, _ ->
+            binding.bsEditrecipientsSaveButton.isEnabled = true
             if (result != null) {
                 // Remove the default "Loading recipients" chip
                 binding.bsEditrecipientsChipgroup.removeAllViewsInLayout()

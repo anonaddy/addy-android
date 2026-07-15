@@ -219,7 +219,7 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
                 getDataFromWeb(null)
             }
         })
-        
+
         binding.blocklistClearRecentSearches.setOnClickListener {
             recentSearchesList.clear()
             SettingsManager(false, requireContext()).removeSetting(SettingsManager.PREFS.RECENT_SEARCHES_BLOCKLIST)

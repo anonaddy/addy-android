@@ -28,19 +28,19 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
-            android:text="SV"
-            android:textStyle="bold"
-            android:textSize="32sp"
-            android:contentDescription="@string/addyio_settings"
             android:layout_marginBottom="8dp"
-            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"/>
+            android:contentDescription="@string/addyio_settings"
+            android:text="SV"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:layout_marginTop="12dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/main_profile_select_dialog_card_accountname"
@@ -56,9 +56,9 @@
                 android:id="@+id/main_profile_select_dialog_card_LL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:gravity="center"
-                android:orientation="vertical"
-                android:layout_marginTop="4dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/main_profile_select_dialog_card_subscription"
@@ -73,8 +73,8 @@
                     style="@style/TextAppearance.Material3.BodySmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:alpha="0.8"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     tools:text="Until Jan 2025" />
             </LinearLayout>
         </LinearLayout>
@@ -105,10 +105,10 @@
 
             <!-- Group 1: Manage Subscription -->
             <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Filled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                style="@style/Widget.Material3.CardView.Filled"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
                 app:cardCornerRadius="24dp"
                 app:strokeWidth="0dp">
@@ -147,6 +147,8 @@
                             style="@style/TextAppearance.Material3.BodySmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:lines="1"
                             android:text="@string/manage_subscription_desc"
                             android:textColor="?attr/colorOnSurfaceVariant" />
                     </LinearLayout>
@@ -155,10 +157,10 @@
 
             <!-- Group 2: Core Features (Domains, Rules, Usernames, Blocklist) -->
             <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Filled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                style="@style/Widget.Material3.CardView.Filled"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
                 app:cardCornerRadius="24dp"
                 app:strokeWidth="0dp">
@@ -204,6 +206,8 @@
                                 style="@style/TextAppearance.Material3.BodySmall"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:lines="1"
                                 android:text="@string/manage_domains_desc"
                                 android:textColor="?attr/colorOnSurfaceVariant" />
                         </LinearLayout>
@@ -245,6 +249,8 @@
                                 style="@style/TextAppearance.Material3.BodySmall"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:lines="1"
                                 android:text="@string/manage_rules_desc"
                                 android:textColor="?attr/colorOnSurfaceVariant" />
                         </LinearLayout>
@@ -286,6 +292,8 @@
                                 style="@style/TextAppearance.Material3.BodySmall"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:lines="1"
                                 android:text="@string/username_settings_desc"
                                 android:textColor="?attr/colorOnSurfaceVariant" />
                         </LinearLayout>
@@ -327,7 +335,52 @@
                                 style="@style/TextAppearance.Material3.BodySmall"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:lines="1"
                                 android:text="@string/blocklist_settings_desc"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Labels -->
+                    <LinearLayout
+                        android:id="@+id/main_profile_select_dialog_labels_settings"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="20dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="16dp"
+                            android:contentDescription="@string/manage_labels"
+                            android:src="@drawable/ic_label"
+                            app:tint="?attr/colorPrimary" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextAppearance.Material3.TitleMedium"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/manage_labels"
+                                android:textColor="?attr/colorOnSurface" />
+
+                            <TextView
+                                android:id="@+id/main_profile_select_dialog_labels_settings_desc"
+                                style="@style/TextAppearance.Material3.BodySmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:lines="1"
+                                android:text="@string/manage_labels_desc"
                                 android:textColor="?attr/colorOnSurfaceVariant" />
                         </LinearLayout>
                     </LinearLayout>
@@ -336,10 +389,10 @@
 
             <!-- Group 3: App Settings -->
             <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Filled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                style="@style/Widget.Material3.CardView.Filled"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
                 app:cardCornerRadius="24dp"
                 app:strokeWidth="0dp">
@@ -400,27 +453,27 @@
                     style="@style/TextAppearance.Material3.BodySmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:alpha="0.6"
                     android:gravity="center"
                     android:text="$ADDYIO_Version"
-                    android:alpha="0.6"
                     tools:ignore="HardcodedText" />
 
                 <TextView
+                    style="@style/TextAppearance.Material3.BodySmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/TextAppearance.Material3.BodySmall"
-                    android:text="@string/addyio_android_stjin"
+                    android:alpha="0.6"
                     android:gravity="center"
-                    android:alpha="0.6" />
+                    android:text="@string/addyio_android_stjin" />
 
                 <TextView
                     android:id="@+id/main_profile_select_dialog_instance_type"
+                    style="@style/TextAppearance.Material3.BodySmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/TextAppearance.Material3.BodySmall"
-                    android:text="@string/crafted_with_love_and_privacy"
-                    android:gravity="center"
                     android:alpha="0.6"
+                    android:gravity="center"
+                    android:text="@string/crafted_with_love_and_privacy"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
         </LinearLayout>

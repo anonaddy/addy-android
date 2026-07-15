@@ -24,23 +24,23 @@
 
         <activity
             android:name=".ui.alias.ManageAliasActivity"
+            android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/edit_alias"
-            android:excludeFromRecents="true"
             android:noHistory="true"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.settings.SettingsActivity"
+            android:excludeFromRecents="true"
             android:exported="false"
             android:label="@string/settings"
-            android:excludeFromRecents="true"
             android:noHistory="true"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.alias.CreateAliasActivity"
+            android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/add_alias"
-            android:excludeFromRecents="true"
             android:noHistory="true"
             android:theme="@style/AppTheme" />
         <activity
@@ -101,9 +101,9 @@
             android:enabled="true"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
-            android:theme="@style/Theme.App.Starting"
             android:roundIcon="@mipmap/ic_launcher_round"
-            android:targetActivity=".ui.SplashActivity">
+            android:targetActivity=".ui.SplashActivity"
+            android:theme="@style/Theme.App.Starting">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -119,8 +119,8 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher_classic"
             android:roundIcon="@mipmap/ic_launcher_classic_round"
-            android:theme="@style/Theme.App.Starting"
-            android:targetActivity=".ui.SplashActivity">
+            android:targetActivity=".ui.SplashActivity"
+            android:theme="@style/Theme.App.Starting">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -136,8 +136,8 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher_gradient"
             android:roundIcon="@mipmap/ic_launcher_gradient_round"
-            android:theme="@style/Theme.App.Starting"
-            android:targetActivity=".ui.SplashActivity">
+            android:targetActivity=".ui.SplashActivity"
+            android:theme="@style/Theme.App.Starting">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -153,8 +153,8 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher_inverse_gradient"
             android:roundIcon="@mipmap/ic_launcher_inverse_gradient_round"
-            android:theme="@style/Theme.App.Starting"
-            android:targetActivity=".ui.SplashActivity">
+            android:targetActivity=".ui.SplashActivity"
+            android:theme="@style/Theme.App.Starting">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -167,16 +167,16 @@
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.App.Starting"
-            android:taskAffinity="host.stjin.anonaddy">
+            android:taskAffinity="host.stjin.anonaddy"
+            android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.SetupActivity"
-            android:exported="true"
             android:excludeFromRecents="true"
+            android:exported="true"
             android:noHistory="true"
             android:theme="@style/AppTheme" />
     </application>

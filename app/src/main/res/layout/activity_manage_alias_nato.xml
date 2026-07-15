@@ -5,8 +5,8 @@
     android:id="@+id/activity_manage_alias_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
+    android:orientation="vertical"
     tools:context=".ui.alias.manage.ManageAliasNATOActivity">
 
     <include
@@ -21,8 +21,8 @@
         android:clipToPadding="false"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_nato" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

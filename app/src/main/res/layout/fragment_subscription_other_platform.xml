@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
+    android:orientation="vertical"
     android:padding="16dp"
     tools:ignore="UseCompoundDrawables">
 
@@ -17,8 +17,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
         android:layout_marginTop="16dp"
-        android:text="@string/subscription_other_platform_title_desc" />
+        android:text="@string/subscription_other_platform_title_desc"
+        android:textAlignment="center" />
 
 </LinearLayout>

@@ -122,7 +122,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <com.facebook.shimmer.ShimmerFrameLayout
                         android:id="@+id/activity_manage_recipient_aliases_shimmerframelayout"
@@ -140,6 +140,14 @@
                             android:text="@string/aliases_placeholder"
                             android:textColor="@color/BlackWhite" />
                     </com.facebook.shimmer.ShimmerFrameLayout>
+                    <TextView
+                        android:id="@+id/activity_manage_recipient_aliases_show_more_less_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/show_more"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -192,6 +200,15 @@
                             android:text="@string/action" />
                     </LinearLayout>
 
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/recipient_status_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_circle_check"
+                        app:sectionTitle="@string/recipient_status_active" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_recipient_can_reply_send"

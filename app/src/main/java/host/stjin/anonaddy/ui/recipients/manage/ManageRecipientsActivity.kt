@@ -48,7 +48,9 @@ class ManageRecipientsActivity : BaseActivity(),
         }
 
     private var workingAliasList: AliasesArray? = null
+    private var aliasesEmailList: List<String> = emptyList()
 
+    private var isAliasesExpanded = false
     private var forceSwitch = false
 
     private lateinit var binding: ActivityManageRecipientsBinding
@@ -120,6 +122,13 @@ class ManageRecipientsActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageRecipientStatus.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientStatus.setSwitchChecked(!binding.activityManageRecipientStatus.getSwitchChecked())
+            }
+        })
+
         binding.activityManageRecipientActive.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 forceSwitch = true
@@ -161,6 +170,10 @@ class ManageRecipientsActivity : BaseActivity(),
                 binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setSwitchChecked(!binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.getSwitchChecked())
             }
         })
+        binding.activityManageRecipientAliasesShowMoreLessButton.setOnClickListener {
+            isAliasesExpanded = !isAliasesExpanded
+            updateAliasesView()
+        }
     }
 
     override fun finish() {
@@ -201,6 +214,26 @@ class ManageRecipientsActivity : BaseActivity(),
     }
 
     private fun setOnSwitchChangeListeners(fingerprint: String?) {
+        binding.activityManageRecipientStatus.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageRecipientStatus.showProgressBar(true)
+                    forceSwitch = false
+
+                    if (checked) {
+                        lifecycleScope.launch {
+                            activateRecipient()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            deactivateRecipient()
+                        }
+                    }
+                }
+            }
+        })
+
         binding.activityManageRecipientActive.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
@@ -676,6 +709,13 @@ class ManageRecipientsActivity : BaseActivity(),
          *  SWITCH STATUS
          */
 
+        binding.activityManageRecipientStatus.setSwitchChecked(recipient.active)
+        binding.activityManageRecipientStatus.setTitle(
+            if (recipient.active) resources.getString(R.string.recipient_status_active) else resources.getString(
+                R.string.recipient_status_inactive
+            )
+        )
+
         binding.activityManageRecipientCanReplySend.setSwitchChecked(recipient.can_reply_send)
         binding.activityManageRecipientCanReplySend.setTitle(
             if (recipient.can_reply_send) resources.getString(R.string.can_reply_send) else resources.getString(
@@ -771,9 +811,6 @@ class ManageRecipientsActivity : BaseActivity(),
         var totalBlocked = 0
         var totalReplies = 0
         var totalSent = 0
-        var aliases: String
-
-        val buf = StringBuilder()
 
         if (aliasesArray != null) {
             binding.activityManageRecipientAliasesCountTextview.apply {
@@ -786,21 +823,17 @@ class ManageRecipientsActivity : BaseActivity(),
                 }
             }
 
+            val emails = mutableListOf<String>()
             aliasesArray.data = ArrayList(aliasesArray.data.sortedBy { it.email })
             for (alias in aliasesArray.data) {
                 totalForwarded += alias.emails_forwarded
                 totalBlocked += alias.emails_blocked
                 totalReplies += alias.emails_replied
                 totalSent += alias.emails_sent
-
-                if (buf.isNotEmpty()) {
-                    buf.append("\n")
-                }
-                buf.append(alias.email)
+                emails.add(alias.email)
             }
-            aliases = buf.toString()
-
-            binding.activityManageRecipientAliasesTextview.text = aliases
+            aliasesEmailList = emails
+            updateAliasesView()
             binding.activityManageRecipientAliasesShimmerframelayout.hideShimmer()
             binding.activityManageRecipientBasicShimmerframelayout.hideShimmer() // Stop shimmer only after this info is loaded
 
@@ -819,6 +852,22 @@ class ManageRecipientsActivity : BaseActivity(),
         setOnClickListeners()
     }
 
+    private fun updateAliasesView() {
+        if (aliasesEmailList.size > 10) {
+            binding.activityManageRecipientAliasesShowMoreLessButton.visibility = View.VISIBLE
+            if (isAliasesExpanded) {
+                binding.activityManageRecipientAliasesTextview.text = aliasesEmailList.joinToString("\n")
+                binding.activityManageRecipientAliasesShowMoreLessButton.text = getString(R.string.show_less)
+            } else {
+                binding.activityManageRecipientAliasesTextview.text = aliasesEmailList.take(10).joinToString("\n")
+                binding.activityManageRecipientAliasesShowMoreLessButton.text = getString(R.string.show_more)
+            }
+        } else {
+            binding.activityManageRecipientAliasesShowMoreLessButton.visibility = View.GONE
+            binding.activityManageRecipientAliasesTextview.text = aliasesEmailList.joinToString("\n")
+        }
+    }
+    
     private suspend fun getAliasesAndAddThemToList(recipient: Recipients) {
         binding.activityManageRecipientAliasesShimmerframelayout.startShimmer()
 
@@ -877,4 +926,43 @@ class ManageRecipientsActivity : BaseActivity(),
             workingAliasList = null
         }
     }
+
+    private suspend fun deactivateRecipient() {
+        networkHelper.deactivateRecipient({ result ->
+            binding.activityManageRecipientStatus.showProgressBar(false)
+            if (result == "204") {
+                this.recipient!!.active = false
+                shouldRefreshOnFinish = true
+                updateUi(this.recipient!!)
+            } else {
+                binding.activityManageRecipientStatus.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.recipient!!.id)
+    }
+
+    private suspend fun activateRecipient() {
+        networkHelper.activateRecipient({ result ->
+            binding.activityManageRecipientStatus.showProgressBar(false)
+            if (result != null) {
+                this.recipient!!.active = true
+                shouldRefreshOnFinish = true
+                updateUi(this.recipient!!)
+            } else {
+                binding.activityManageRecipientStatus.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.recipient!!.id)
+    }
+
 }

@@ -51,11 +51,11 @@
                 style="@style/TextAppearance.Material3.LabelSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/rounded_square"
                 android:backgroundTint="?attr/colorPrimaryContainer"
                 android:paddingHorizontal="6dp"
                 android:paddingVertical="2dp"
-                android:layout_marginBottom="8dp"
                 android:textAllCaps="true"
                 android:textColor="?attr/colorOnPrimaryContainer"
                 android:textStyle="bold"
@@ -65,9 +65,9 @@
                 android:id="@+id/bs_failed_deliveries_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/BlackWhite"
                 android:layout_marginBottom="16dp"
-                android:text="@string/failed_delivery_details_text" />
+                android:text="@string/failed_delivery_details_text"
+                android:textColor="@color/BlackWhite" />
 
             <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/bs_failed_deliveries_resend_button"

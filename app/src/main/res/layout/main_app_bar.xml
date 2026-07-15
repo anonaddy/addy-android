@@ -1,10 +1,9 @@
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_bar"
-    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.CollapsingToolbarLayout
         android:id="@+id/collapsing_toolbar"
@@ -42,11 +41,11 @@
                 <TextView
                     android:id="@+id/main_top_bar_title"
                     style="@style/AddyIoCollapsingToolbarLayout.Title"
-                    android:layout_marginStart="@dimen/collapsingtoolbar_title_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
+                    android:layout_marginStart="@dimen/collapsingtoolbar_title_margin"
                     android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@string/title_home" />
 
                 <com.facebook.shimmer.ShimmerFrameLayout
@@ -64,62 +63,62 @@
 
                     <TextView
                         android:id="@+id/main_top_bar_subtitle"
-                        android:maxLines="1"
-                        android:ellipsize="end"
                         style="@style/AddyIoCollapsingToolbarLayout.SubTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:alpha="0" />
+                        android:alpha="0"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
                 </com.facebook.shimmer.ShimmerFrameLayout>
             </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                android:layout_margin="@dimen/collapsingtoolbar_action_margin">
+                android:layout_margin="@dimen/collapsingtoolbar_action_margin"
+                android:gravity="end">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/main_top_bar_failed_deliveries_icon"
                     style="?attr/materialIconButtonFilledTonalStyle"
                     android:layout_width="48dp"
-                    android:layout_marginStart="8dp"
                     android:layout_height="48dp"
-                    app:iconPadding="0dp"
+                    android:layout_marginStart="8dp"
                     android:contentDescription="@string/new_failed_deliveries"
+                    android:maxLines="1"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:maxLines="1"
                     app:icon="@drawable/ic_mail_error"
-                    app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"/>
+                    app:iconPadding="0dp"
+                    app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/main_top_bar_account_notifications_icon"
                     style="?attr/materialIconButtonFilledTonalStyle"
                     android:layout_width="48dp"
-                    android:layout_marginStart="8dp"
                     android:layout_height="48dp"
-                    app:iconPadding="0dp"
+                    android:layout_marginStart="8dp"
                     android:contentDescription="@string/account_notifications"
+                    android:maxLines="1"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:maxLines="1"
                     app:icon="@drawable/ic_bell"
-                    app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"/>
+                    app:iconPadding="0dp"
+                    app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/main_top_bar_user_initials"
                     style="?attr/materialIconButtonFilledTonalStyle"
                     android:layout_width="48dp"
-                    android:layout_marginStart="8dp"
                     android:layout_height="48dp"
-                    app:iconPadding="0dp"
+                    android:layout_marginStart="8dp"
                     android:contentDescription="@string/open_options"
+                    android:maxLines="1"
                     android:text="SV"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:maxLines="1"
-                    app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"/>
+                    app:iconPadding="0dp"
+                    app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small" />
 
             </LinearLayout>
 

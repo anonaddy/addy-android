@@ -42,7 +42,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
         val alias = listWithAliases[position]
         holder.mTitle.text = alias.email
 
-        val context = holder.mDescription.context
+        val context = holder.mDesc.context
         val prettyTime = PrettyTime()
         val descriptionParts = mutableListOf<String>()
 
@@ -81,8 +81,74 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
             )
         }
 
-        holder.mDescription.text = descriptionParts.joinToString("\n")
+        holder.mDesc.text = descriptionParts.joinToString("\n")
 
+        /*
+        Labels using ImageSpan for text ellipsizing
+         */
+        if (!alias.labels.isNullOrEmpty()) {
+            holder.mLabelsTV.visibility = View.VISIBLE
+            val ssb = android.text.SpannableStringBuilder()
+
+            for (label in alias.labels!!) {
+                val badgeView = LayoutInflater.from(context).inflate(R.layout.layout_label_badge, null)
+                val text = badgeView.findViewById<TextView>(R.id.label_badge_text)
+                text.text = label.name
+
+                try {
+                    val colorInt = android.graphics.Color.parseColor(label.colour)
+
+                    val isDarkMode =
+                        (context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+                    val hsv = FloatArray(3)
+                    android.graphics.Color.colorToHSV(colorInt, hsv)
+                    if (isDarkMode) {
+                        hsv[2] = 1.0f
+                        hsv[1] = Math.max(0f, hsv[1] - 0.2f)
+                    } else {
+                        hsv[2] = Math.min(1f, hsv[2] * 0.7f)
+                        hsv[1] = Math.min(1f, hsv[1] * 1.2f)
+                    }
+                    val textColorInt = android.graphics.Color.HSVToColor(hsv)
+
+                    // Background
+                    val bgDrawable = android.graphics.drawable.GradientDrawable()
+                    bgDrawable.shape = android.graphics.drawable.GradientDrawable.RECTANGLE
+                    bgDrawable.cornerRadius = 100f // Large radius for rounded capsule
+                    val alphaColor = android.graphics.Color.argb(
+                        (0.2 * 255).toInt(),
+                        android.graphics.Color.red(colorInt),
+                        android.graphics.Color.green(colorInt),
+                        android.graphics.Color.blue(colorInt)
+                    )
+                    bgDrawable.setColor(alphaColor)
+                    badgeView.background = bgDrawable
+                    text.setTextColor(textColorInt)
+
+                } catch (e: Exception) {
+                    // Fallback
+                }
+
+                badgeView.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
+                badgeView.layout(0, 0, badgeView.measuredWidth, badgeView.measuredHeight)
+
+                val bitmap =
+                    android.graphics.Bitmap.createBitmap(badgeView.measuredWidth, badgeView.measuredHeight, android.graphics.Bitmap.Config.ARGB_8888)
+                val canvas = android.graphics.Canvas(bitmap)
+                badgeView.draw(canvas)
+
+                ssb.append(" ")
+                val span = android.text.style.ImageSpan(context, bitmap, android.text.style.ImageSpan.ALIGN_CENTER)
+                ssb.setSpan(span, ssb.length - 1, ssb.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssb.append(" ") // small gap
+            }
+            holder.mLabelsTV.text = ssb
+        } else {
+            holder.mLabelsTV.visibility = View.GONE
+        }
         /*
         CHART
          */
@@ -205,8 +271,9 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
 
         var mCV: MaterialCardView = view.findViewById(R.id.recyclerview_list_CV)
         var mTitle: TextView = view.findViewById(R.id.aliases_recyclerview_list_title)
-        var mDescription: TextView =
+        var mDesc: TextView =
             view.findViewById(R.id.aliases_recyclerview_list_description)
+        var mLabelsTV: TextView = view.findViewById(R.id.aliases_recyclerview_list_labels_tv)
         var mWatchedTextView: TextView = view.findViewById(R.id.aliases_recyclerview_list_watched_textview)
         var mAction: ImageView = view.findViewById(R.id.aliases_recyclerview_list_copy)
         var mChart: DonutProgressView = view.findViewById(R.id.aliases_recyclerview_list_chart)

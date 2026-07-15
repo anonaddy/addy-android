@@ -149,33 +149,78 @@
 
                     </com.google.android.material.button.MaterialButtonToggleGroup>
 
-                        <com.google.android.material.button.MaterialButtonToggleGroup
-                            android:id="@+id/bs_filteroptions_aliases_watched_mbtg"
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/bs_filteroptions_aliases_watched_mbtg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:weightSum="2"
+                        app:checkedButton="@+id/bs_filteroptions_aliases_watched_only_all_aliases_button"
+                        app:selectionRequired="true"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bs_filteroptions_aliases_watched_only_all_aliases_button"
+                            style="@style/AddyIoMaterialToggleButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/all_aliases" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bs_filteroptions_aliases_watched_only_button"
+                            style="@style/AddyIoMaterialToggleButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/filter_watched_only" />
+
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/bs_filteroptions_aliases_labels_header"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:weightSum="2"
-                            app:checkedButton="@+id/bs_filteroptions_aliases_watched_only_all_aliases_button"
-                            app:selectionRequired="true"
-                            app:singleSelection="true">
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="8dp">
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/bs_filteroptions_aliases_watched_only_all_aliases_button"
-                                style="@style/AddyIoMaterialToggleButton"
+                            <TextView
+                                style="@style/titleTextView"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="@string/all_aliases" />
+                                android:text="@string/labels"
+                                android:textColor="@color/BlackWhite" />
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/bs_filteroptions_aliases_watched_only_button"
-                                style="@style/AddyIoMaterialToggleButton"
-                                android:layout_width="0dp"
+                            <ImageView
+                                android:id="@+id/bs_filteroptions_aliases_labels_arrow"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/filter_watched_only" />
+                                android:src="@drawable/ic_chevron_down" />
+                        </LinearLayout>
 
-                        </com.google.android.material.button.MaterialButtonToggleGroup>
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/bs_filteroptions_aliases_labels_chipgroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:visibility="gone"
+                            app:chipSpacingVertical="0dp"
+                            app:selectionRequired="false"
+                            app:singleLine="false"
+                            app:singleSelection="true" />
+                    </LinearLayout>
 
                 </LinearLayout>
 

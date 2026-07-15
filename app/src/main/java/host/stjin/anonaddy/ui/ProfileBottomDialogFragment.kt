@@ -22,6 +22,7 @@ import host.stjin.anonaddy.databinding.BottomsheetProfileBinding
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.blocklist.ManageBlocklistActivity
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
+import host.stjin.anonaddy.ui.labels.ManageLabelsActivity
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import host.stjin.anonaddy.utils.AttributeHelper
@@ -122,6 +123,11 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
         binding.mainProfileSelectDialogBlocklistSettings.setOnClickListener {
             val intent = Intent(activity, ManageBlocklistActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.mainProfileSelectDialogLabelsSettings.setOnClickListener {
+            val intent = Intent(activity, ManageLabelsActivity::class.java)
             startActivity(intent)
         }
 

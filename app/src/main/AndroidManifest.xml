@@ -209,9 +209,6 @@
                 <data
                     android:host="app.addy.io"
                     android:pathPrefix="/deactivate" />
-                <data
-                    android:host="app.anonaddy.com"
-                    android:pathPrefix="/deactivate" />
                 <!-- END -->
 
             </intent-filter>
@@ -310,6 +307,9 @@
             android:name=".ui.blocklist.ManageBlocklistActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ui.labels.ManageLabelsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyApiTokenExpiryActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -357,9 +357,6 @@
                 <!-- Hosted hosted instances (Works on > SDK31 devices) -->
                 <data
                     android:host="app.addy.io"
-                    android:pathPrefix="/api/auth/verify" />
-                <data
-                    android:host="app.anonaddy.com"
                     android:pathPrefix="/api/auth/verify" />
                 <!-- END -->
 

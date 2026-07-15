@@ -49,6 +49,7 @@ class EditUsernameRecipientBottomDialogFragment(
 
             // Set button listeners and current description
             binding.bsEditrecipientSaveButton.setOnClickListener(this)
+            binding.bsEditrecipientSaveButton.isEnabled = false
 
             viewLifecycleOwner.lifecycleScope.launch {
                 getAllRecipients(requireContext())
@@ -85,6 +86,7 @@ class EditUsernameRecipientBottomDialogFragment(
         val networkHelper = NetworkHelper(context)
 
         networkHelper.getRecipients({ result, _ ->
+            binding.bsEditrecipientSaveButton.isEnabled = true
             if (result != null) {
                 // Remove the default "Loading recipients" chip
                 binding.bsEditrecipientChipgroup.removeAllViewsInLayout()

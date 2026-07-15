@@ -29,10 +29,10 @@
         android:id="@+id/activity_manage_alias_pinned_switch_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:sectionDescription="@string/pin_alias_desc"
         app:sectionShowSwitch="true"
         app:sectionStartIcon="@drawable/ic_pinned"
-        android:visibility="gone"
         app:sectionTitle="@string/pin_alias" />
 
     <host.stjin.anonaddy.ui.customviews.SectionView
@@ -52,6 +52,15 @@
         app:sectionEndIcon="@drawable/ic_edit"
         app:sectionStartIcon="@drawable/ic_align_justified"
         app:sectionTitle="@string/description" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_labels_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionDescription="@string/none"
+        app:sectionEndIcon="@drawable/ic_edit"
+        app:sectionStartIcon="@drawable/ic_label"
+        app:sectionTitle="@string/labels" />
 
     <host.stjin.anonaddy.ui.customviews.SectionView
         android:id="@+id/activity_manage_alias_recipients_edit"

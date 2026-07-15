@@ -127,7 +127,6 @@
     </style>
 
 
-
     <style name="AddyIoProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progressbar_drawable</item>
         <item name="android:maxHeight">8dip</item>

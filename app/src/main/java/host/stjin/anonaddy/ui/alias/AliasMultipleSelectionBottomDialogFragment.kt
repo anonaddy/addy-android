@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.alias
 
+
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -15,17 +16,20 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetMultipleSelectionAliasBinding
 import host.stjin.anonaddy.service.AliasWatcher
+import host.stjin.anonaddy.ui.alias.manage.EditAliasLabelsBottomDialogFragment
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
 import kotlinx.coroutines.launch
 
-
-class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: List<Aliases>) : BaseBottomSheetDialogFragment() {
+class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: List<Aliases>) : BaseBottomSheetDialogFragment(),
+    EditAliasLabelsBottomDialogFragment.AddEditAliasLabelsBottomDialogListener {
     lateinit var networkHelper: NetworkHelper
 
     private lateinit var listener: AddAliasMultipleSelectionBottomDialogListener
+
+    private lateinit var editAliasLabelsBottomDialogFragment: EditAliasLabelsBottomDialogFragment
 
     private lateinit var aliasWatcher: AliasWatcher
 
@@ -82,6 +86,18 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             }
         })
 
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLabelsEdit.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val aliasIds = selectedAliases.map { it.id }
+                editAliasLabelsBottomDialogFragment = EditAliasLabelsBottomDialogFragment.newInstance(aliasIds, null)
+                editAliasLabelsBottomDialogFragment.show(
+                    childFragmentManager,
+                    "editAliasLabelsBottomDialogFragment"
+                )
+            }
+        })
+
 
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasWatchSwitchLayout.setOnLayoutClickedListener(object :
             SectionView.OnLayoutClickedListener {
@@ -118,6 +134,13 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
         super.onCancel(dialog)
     }
 
+    override fun labelsEdited() {
+        shouldRefreshData = true
+        editAliasLabelsBottomDialogFragment.dismissAllowingStateLoss()
+        listener.onCloseMultipleSelectionBottomDialogFragment(shouldRefreshData)
+        dismissAllowingStateLoss()
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = BottomSheetDialog(requireContext(), theme)
         dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -136,9 +159,9 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasUpdatedAt.visibility = View.GONE
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasRecipientsEdit.visibility = View.GONE
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasDescEdit.visibility = View.GONE
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLabelsEdit.setDescription(resources.getString(R.string.add_label_description))
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasFromNameEdit.visibility = View.GONE
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.visibility = View.GONE
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasPinnedSwitchLayout.visibility = View.VISIBLE
 
         // Check if there are any aliases that are NOT deleted
         // if there is any alias that is not deleted, show the delete section. Else all aliases are deleted so hide the section

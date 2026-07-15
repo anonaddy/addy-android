@@ -20,6 +20,7 @@ import com.google.android.material.chip.Chip
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAddaliasBinding
+import host.stjin.anonaddy.utils.LabelUtils
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
@@ -78,9 +79,17 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         binding.bsAddaliasDomainHelpTextview.text =
             requireContext().resources.getString(R.string.add_alias_desc, (activity?.application as AddyIoApp).userResource.username)
 
+        binding.bsAddaliasAliasAddAliasButton.isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {
-            fillSpinners(requireContext())
-            getAllRecipients(requireContext())
+            val spinnersJob = launch { fillSpinners(requireContext()) }
+            val recipientsJob = launch { getAllRecipients(requireContext()) }
+            val labelsJob = launch { getAllLabels(requireContext()) }
+
+            spinnersJob.join()
+            recipientsJob.join()
+            labelsJob.join()
+
+            binding.bsAddaliasAliasAddAliasButton.isEnabled = true
         }
 
         binding.bsAddaliasAliasAddAliasButton.setOnClickListener(this)
@@ -109,6 +118,34 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         if (p0 != null) {
             if (p0.id == R.id.bs_addalias_alias_add_alias_button) {
                 addAlias(requireContext())
+            }
+        }
+    }
+
+    private suspend fun getAllLabels(context: Context) {
+        LabelUtils.setupCollapsibleHeader(
+            binding.bsAddaliasLabelsHeader,
+            binding.bsAddaliasLabelsChipgroup,
+            binding.bsAddaliasLabelsArrow
+        )
+
+        // Set the initial state of the collapsible section to collapsed
+        binding.bsAddaliasLabelsChipgroup.visibility = View.GONE
+        binding.bsAddaliasLabelsArrow.rotation = 0f
+
+        val networkHelper = NetworkHelper(context)
+        networkHelper.getAllLabels { labels, _ ->
+            if (labels != null) {
+                // Remove the default "Loading recipients" chip
+                binding.bsAddaliasLabelsChipgroup.removeAllViewsInLayout()
+                binding.bsAddaliasLabelsChipgroup.requestLayout()
+                binding.bsAddaliasLabelsChipgroup.invalidate()
+                LabelUtils.populateLabelsChipGroup(
+                    context,
+                    binding.bsAddaliasLabelsChipgroup,
+                    labels,
+                    emptyList() // None checked by default
+                )
             }
         }
     }
@@ -284,6 +321,12 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             if (chip.isChecked) recipients.add(chip.tag.toString())
         }
 
+        val labels = arrayListOf<String>()
+        for (child in binding.bsAddaliasLabelsChipgroup.children) {
+            val chip: Chip = child as Chip
+            if (chip.isChecked) labels.add(chip.tag.toString())
+        }
+
         val domain = binding.bsAddaliasDomainMact.text.toString()
         val description = binding.bsAddaliasAliasDescTiet.text.toString()
         val localPart = binding.bsAddaliasAliasLocalPartTiet.text.toString()
@@ -293,7 +336,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             ).indexOf(binding.bsAddaliasAliasFormatMact.text.toString())]
 
         viewLifecycleOwner.lifecycleScope.launch {
-            addAliasToAccount(context, domain, description, format, localPart, recipients)
+            addAliasToAccount(context, domain, description, format, localPart, recipients, labels)
         }
     }
 
@@ -303,7 +346,8 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         description: String,
         format: String,
         aliasLocalPart: String,
-        recipients: ArrayList<String>
+        recipients: ArrayList<String>,
+        labels: ArrayList<String>
     ) {
         val networkHelper = NetworkHelper(context)
         networkHelper.addAlias({ alias, error ->
@@ -322,7 +366,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasAliasDescTil.error =
                     context.resources.getString(R.string.error_adding_alias) + "\n" + error
             }
-        }, domain, description, format, aliasLocalPart, recipients)
+        }, domain, description, format, aliasLocalPart, recipients, labels)
     }
 
     // 1. Defines the listener interface with a method passing back data result.

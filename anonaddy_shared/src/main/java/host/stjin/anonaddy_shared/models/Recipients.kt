@@ -21,6 +21,7 @@ data class Recipients(
     var remove_pgp_keys: Boolean,
     var remove_pgp_signatures: Boolean,
     var fingerprint: String?,
+    var active: Boolean,
     val email_verified_at: String?,
     var aliases_count: Int?, // Could be null as it does not come with a specific alias->recipients endpoint
     val created_at: String,

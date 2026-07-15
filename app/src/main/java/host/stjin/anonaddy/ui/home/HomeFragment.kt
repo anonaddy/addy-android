@@ -362,7 +362,7 @@ class HomeFragment : Fragment(), Refreshable {
     private fun setStatistics() {
         //  / 1024 / 1024 because api returns bytes
         val currMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth.toDouble() / 1024 / 1024
-        val maxMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth_limit / 1024 / 1024
+        val maxMonthlyBandwidth = ((activity?.application as AddyIoApp).userResource.bandwidth_limit ?: 0) / 1024 / 1024
 
 
         binding.homeStatCardForwarded.setDescription(

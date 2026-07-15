@@ -509,7 +509,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 getDataFromWeb(null)
             }
         })
-        
+
         binding.aliasClearRecentSearches.setOnClickListener {
             recentSearchesList.clear()
             encryptedSettingsManager?.removeSetting(SettingsManager.PREFS.RECENT_SEARCHES_ALIASES)

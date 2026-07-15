@@ -41,15 +41,15 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/bs_addalias_nsv"
         android:layout_width="match_parent"
-        android:fillViewport="true"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:clipChildren="false"
             android:clipToPadding="false"
+            android:orientation="vertical"
             android:padding="@dimen/layout_padding">
 
             <TextView
@@ -170,6 +170,58 @@
                         android:text="@string/loading_recipients" />
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/bs_addalias_labels_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <TextView
+                        style="@style/DescTextStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="0dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/labels" />
+
+                    <ImageView
+                        android:id="@+id/bs_addalias_labels_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_chevron_down" />
+                </LinearLayout>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/bs_addalias_labels_chipgroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:chipSpacingVertical="0dp"
+                    app:singleLine="false">
+
+                    <com.google.android.material.chip.Chip
+                        style="?chipStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="false"
+                        android:clickable="false"
+                        android:enabled="false"
+                        android:text="@string/loading_labels" />
+                </com.google.android.material.chip.ChipGroup>
+            </LinearLayout>
 
             <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/bs_addalias_alias_add_alias_button"
