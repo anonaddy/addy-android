@@ -1,14 +1,14 @@
 # Changelog
 
-## [v6.3.0] - TBD
+## [v6.3.0] - 2026-07-15
 
 ### addy.io
 
 ##### Added
 
 - Support for Android 17
-- Support for labels, allowing you to organize and color-code your aliases.
-- You can now activate and deactivate recipients directly within the app.
+- Support for labels, allowing you to organize and color-code your aliases
+- You can now activate and deactivate recipients directly within the app
 
 ##### Fixed/Improved
 
