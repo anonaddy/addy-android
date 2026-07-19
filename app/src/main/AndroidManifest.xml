@@ -187,6 +187,7 @@
         <activity
             android:name=".ui.alias.manage.ManageAliasActivity"
             android:exported="true"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter
                 android:autoVerify="true"
