@@ -95,6 +95,8 @@
         <item>encryption</item>
         <item>banner</item>
         <item>block</item>
+        <item>blocklistSender</item>
+        <item>blocklistDomain</item>
         <item>removeAttachments</item>
         <item>forwardTo</item>
     </string-array>
@@ -104,6 +106,8 @@
         <item>@string/turn_PGP_encryption_off</item>
         <item>@string/set_the_banner_information_location_to</item>
         <item>@string/block_the_email</item>
+        <item>@string/add_sender_to_blocklist</item>
+        <item>@string/add_domain_to_blocklist</item>
         <item>@string/remove_attachments</item>
         <item>@string/forward_to</item>
     </string-array>
@@ -140,6 +144,8 @@
     <string name="turn_PGP_encryption_off">turn PGP encryption off</string>
     <string name="set_the_banner_information_location_to">set the banner information location to</string>
     <string name="block_the_email">block the email</string>
+    <string name="add_sender_to_blocklist">add sender to blocklist</string>
+    <string name="add_domain_to_blocklist">add domain to blocklist</string>
     <string name="remove_attachments">remove attachments</string>
     <string name="forward_to">forward to</string>
     <string name="domains_format_random_words">Random words</string>
