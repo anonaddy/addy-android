@@ -1130,7 +1130,8 @@ class ManageAliasActivity : BaseActivity(),
         super.onConfigurationChanged(newConfig)
 
         // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        val isTablet = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE && !isTablet) {
             val intent = Intent(this, ManageAliasNATOActivity::class.java)
             intent.putExtra("alias", alias?.email)
             this.startActivity(intent)

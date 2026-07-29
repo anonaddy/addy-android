@@ -25,7 +25,7 @@
         <item>week</item>
         <item>month</item>
         <item>year</item>
-        <item>never</item>
+        <item>never</item>r5
     </string-array>
 
     <string-array name="expiration_options_names">
