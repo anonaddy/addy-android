@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
@@ -136,11 +137,6 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     private fun setOnClickListeners() {
-        binding.activityManageAliasEmail.setOnClickListener {
-            val intent = Intent(this, ManageAliasNATOActivity::class.java)
-            intent.putExtra("alias", alias?.email)
-            this.startActivity(intent)
-        }
 
         binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object :
             SectionView.OnLayoutClickedListener {
@@ -1127,6 +1123,18 @@ class ManageAliasActivity : BaseActivity(),
             // Deactive switch
             forceSwitch = true
             binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        // Checks the orientation of the screen
+        val isTablet = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE && !isTablet) {
+            val intent = Intent(this, ManageAliasNATOActivity::class.java)
+            intent.putExtra("alias", alias?.email)
+            this.startActivity(intent)
         }
     }
 }

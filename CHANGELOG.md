@@ -1,5 +1,25 @@
 # Changelog
 
+## [v6.4.0] - 2026-07-30
+
+### addy.io
+
+##### Added
+
+- Updated NATO view! Simply rotate your phone to landscape when viewing an alias to show it clearly to the cashier.
+- Add the sender's email or domain to the blocklist on your account straight from a rule-action
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.6.6)_
+
+##### Fixed/Improved
+
+- Updated for WearOS 7
+- Performance improvements and other things to make the app even smoother
+
 ## [v6.3.0] - 2026-07-15
 
 ### addy.io

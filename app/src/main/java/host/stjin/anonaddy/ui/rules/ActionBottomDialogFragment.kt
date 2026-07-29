@@ -173,6 +173,18 @@ class ActionBottomDialogFragment(
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.GONE
             }
+            // If the type is set to blocklist sender hide all
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.add_sender_to_blocklist) -> {
+                binding.bsRuleActionForwardToTil.visibility = View.GONE
+                binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
+                binding.bsRuleActionValuesTil.visibility = View.GONE
+            }
+            // If the type is set to blocklist domain hide all
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.add_domain_to_blocklist) -> {
+                binding.bsRuleActionForwardToTil.visibility = View.GONE
+                binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
+                binding.bsRuleActionValuesTil.visibility = View.GONE
+            }
             // If the type is set to remove attachment hide all
             binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.remove_attachments) -> {
                 binding.bsRuleActionForwardToTil.visibility = View.GONE
@@ -240,6 +252,14 @@ class ActionBottomDialogFragment(
             }
             // If the type is set to turn off PGP send a true
             binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.turn_PGP_encryption_off) -> {
+                listener.onAddedAction(actionEditIndex, type, true)
+            }
+            // If the type is set to blocklist sender send a true
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.add_sender_to_blocklist) -> {
+                listener.onAddedAction(actionEditIndex, type, true)
+            }
+            // If the type is set to blocklist domain send a true
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.add_domain_to_blocklist) -> {
                 listener.onAddedAction(actionEditIndex, type, true)
             }
             // If the type is set to remove attachment send a true

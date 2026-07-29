@@ -5,14 +5,14 @@ buildscript {
         // https://developer.android.com/jetpack/androidx/releases/wear-compose
         set("wear_compose_version", "1.6.2")
         // https://developer.android.com/jetpack/androidx/releases/compose
-        set("compose_version", "1.11.3")
+        set("compose_version", "1.11.4")
         set("compose_compiler_version", "1.5.15")
         // https://developer.android.com/jetpack/androidx/releases/activity
         set("compose_activity_version", "1.13.0")
         // https://developer.android.com/jetpack/androidx/releases/compose-material3
         set("compose_material_version", "1.4.0")
         // https://developer.android.com/jetpack/androidx/releases/wear-tiles
-        set("wear_tiles_version", "1.6.0")
+        set("wear_tiles_version", "1.6.1")
     }
     repositories {
         google()
@@ -22,7 +22,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:9.2.1")
+        classpath("com.android.tools.build:gradle:9.3.1")
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
