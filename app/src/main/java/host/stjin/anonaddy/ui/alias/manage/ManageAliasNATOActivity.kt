@@ -12,6 +12,7 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.NatoAdapter
 import host.stjin.anonaddy.databinding.ActivityManageAliasNatoBinding
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.NatoAlphabet
 
 class ManageAliasNATOActivity : BaseActivity() {
@@ -24,6 +25,7 @@ class ManageAliasNATOActivity : BaseActivity() {
 
         super.onCreate(savedInstanceState)
         binding = ActivityManageAliasNatoBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.activityManageAliasNatoRecyclerview)
         val view = binding.root
         setContentView(view)
 

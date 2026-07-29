@@ -45,6 +45,9 @@ class AliasActivity : ComponentActivity() {
             startActivity(intent)
             finish()
             return
+        } else {
+            // Always perform a download
+            downloadAliases()
         }
     }
 

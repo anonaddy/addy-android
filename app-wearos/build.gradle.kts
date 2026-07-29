@@ -10,7 +10,7 @@ val wear_tiles_version = rootProject.extra["wear_tiles_version"]
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.0" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.10" // this version matches your Kotlin version
 
 }
 
@@ -21,7 +21,7 @@ configure<ApplicationExtension> {
     defaultConfig {
         applicationId = namespace
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 37
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
         Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
@@ -30,8 +30,8 @@ configure<ApplicationExtension> {
          */
 
         // SDK 37 + v1.6.5 + release 01 + 01 (for wearos)
-        versionCode = 371650101
-        versionName = "1.6.5"
+        versionCode = 371660201 // TODO TO 01
+        versionName = "1.6.6"
         vectorDrawables {
             useSupportLibrary = true
         }
