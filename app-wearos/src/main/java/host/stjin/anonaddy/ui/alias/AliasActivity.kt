@@ -1,6 +1,9 @@
 package host.stjin.anonaddy.ui.alias
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
@@ -25,10 +29,12 @@ import host.stjin.anonaddy.components.Loading
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.components.AliasList
 import host.stjin.anonaddy.ui.components.CustomTimeText
+import host.stjin.anonaddy_shared.AddyIo.API_BASE_URL
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
 import host.stjin.anonaddy_shared.utils.CacheHelper
+import host.stjin.anonaddy_shared.utils.NetworkUtils
 import kotlinx.coroutines.launch
 
 class AliasActivity : ComponentActivity() {
@@ -109,9 +115,18 @@ class AliasActivity : ComponentActivity() {
                     setComposeContent()
                 } else {
                     setContent {
+                        val baseError = this@AliasActivity.resources.getString(R.string.could_not_refresh_data)
+                        val displayError = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN && NetworkUtils.isLocalAddress(API_BASE_URL) &&
+                            ContextCompat.checkSelfPermission(this@AliasActivity, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            baseError + "\n\n" + resources.getString(R.string.local_network_permission_rationale)
+                        } else {
+                            baseError
+                        }
+
                         ErrorScreen(
                             this@AliasActivity,
-                            this@AliasActivity.resources.getString(R.string.could_not_refresh_data),
+                            displayError,
                             this@AliasActivity.resources.getString(R.string.aliases)
                         )
                     }

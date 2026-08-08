@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Used for scanning the API key -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
     <!--
          Include all the "features" under the camera permission,
          and mark them all as optional.

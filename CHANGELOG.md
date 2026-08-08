@@ -1,5 +1,19 @@
 # Changelog
 
+## [v6.4.1] - 2026-08-08
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed an issue with the new ACCESS_LOCAL_NETWORK permission missing on self-hosted instances
+
+### addy.io for Android wearables _(v1.6.7)_
+
+##### Fixed/Improved
+
+- Fixed an issue with the new ACCESS_LOCAL_NETWORK permission missing on self-hosted instances
+
 ## [v6.4.0] - 2026-07-30
 
 ### addy.io

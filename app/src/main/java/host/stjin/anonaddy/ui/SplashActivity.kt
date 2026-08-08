@@ -1,9 +1,12 @@
 package host.stjin.anonaddy.ui
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -12,7 +15,9 @@ import android.os.Looper
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
@@ -30,6 +35,7 @@ import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.models.UserResourceExtended
+import host.stjin.anonaddy_shared.utils.NetworkUtils
 import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
@@ -45,6 +51,18 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private var loadingDone = false
 
     private lateinit var binding: ActivitySplashBinding
+
+    private var localNetworkPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) {
+            // Permission granted, reload data
+            lifecycleScope.launch {
+                loadDataAndStartApp()
+            }
+        } else {
+            // Permission denied, show error screen with specific message
+            showErrorScreen(resources.getString(R.string.local_network_permission_required))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,6 +140,22 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             finish()
             return
         } else {
+            // Proactive local network permission check for existing installs
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
+                lifecycleScope.launch {
+                    if (NetworkUtils.isLocalAddressRobust(API_BASE_URL)) {
+                        if (ContextCompat.checkSelfPermission(this@SplashActivity, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
+                            localNetworkPermissionLauncher.launch(Manifest.permission.ACCESS_LOCAL_NETWORK)
+                        } else {
+                            loadDataAndStartApp()
+                        }
+                    } else {
+                        loadDataAndStartApp()
+                    }
+                }
+                return
+            }
+
             lifecycleScope.launch {
                 loadDataAndStartApp()
             }
@@ -256,6 +290,14 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private fun showErrorScreen(error: String?) {
         loadingDone = true
 
+        val displayError = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM && NetworkUtils.isLocalAddress(API_BASE_URL) &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED
+        ) {
+            (error ?: "") + "\n\n" + resources.getString(R.string.local_network_permission_rationale)
+        } else {
+            error
+        }
+
         playAnimation(false, R.drawable.ic_loading_logo_error_splash) {
             binding.activitySplashErrorLl1.animate().alpha(1.0f)
             binding.activitySplashErrorLl2.animate().alpha(1.0f)
@@ -271,7 +313,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         }
 
         binding.activitySplashErrorMessage.setOnClickListener {
-            showErrorMessage(error)
+            showErrorMessage(displayError)
         }
     }
 

@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.security.KeyChain
 import android.security.KeyChainAliasCallback
@@ -35,6 +36,7 @@ import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.managers.SettingsManager.PREFS
 import host.stjin.anonaddy_shared.models.LoginMfaRequired
+import host.stjin.anonaddy_shared.utils.NetworkUtils
 import kotlinx.coroutines.launch
 
 class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSheetDialogFragment(), View.OnClickListener {
@@ -67,6 +69,18 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                 // their decision.
                 binding.bsSetupScannerViewDesc.text = requireContext().resources.getString(R.string.qr_permissions_required)
             }
+        }
+    }
+
+    private var localNetworkPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) {
+            // Permission granted, re-trigger verifyLogin
+            lifecycleScope.launch {
+                verifyLogin(requireContext())
+            }
+        } else {
+            // Permission denied, show error
+            binding.bsSetupInstanceTil.error = requireContext().resources.getString(R.string.local_network_permission_required)
         }
     }
 
@@ -284,12 +298,21 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
             return
         }
 
-
         var baseUrl = binding.bsSetupInstanceTiet.text.toString().trim()
         while (baseUrl.endsWith("/")) {
             baseUrl = baseUrl.removeSuffix("/")
         }
         binding.bsSetupInstanceTil.error = null
+
+        // Proactive local network permission check
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
+            if (NetworkUtils.isLocalAddressRobust(baseUrl)) {
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
+                    localNetworkPermissionLauncher.launch(Manifest.permission.ACCESS_LOCAL_NETWORK)
+                    return
+                }
+            }
+        }
 
 
         if (binding.bsSetupManualTypeApiButton.isChecked) {
@@ -365,10 +388,16 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                             binding.bsSetupApikeyOtpTil.visibility = View.VISIBLE
                             binding.bsSetupApikeySignInButton.revertAnimation()
                         } else {
+                            val displayError = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
+                                (error ?: "") + "\n\n" + resources.getString(R.string.local_network_permission_rationale)
+                            } else {
+                                error
+                            }
+
                             MaterialDialogHelper.showMaterialDialog(
                                 context = requireContext(),
                                 title = resources.getString(R.string.login),
-                                message = error,
+                                message = displayError,
                                 icon = R.drawable.ic_key,
                                 neutralButtonText = resources.getString(R.string.close)
                             ).show()
@@ -414,8 +443,14 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                     // Revert the button to normal
                     binding.bsSetupApikeySignInButton.revertAnimation()
 
+                    val displayError = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
+                        (error ?: "") + "\n\n" + resources.getString(R.string.local_network_permission_rationale)
+                    } else {
+                        error
+                    }
+
                     binding.bsSetupApikeyTil.error =
-                        context.resources.getString(R.string.api_invalid) + "\n" + error
+                        context.resources.getString(R.string.api_invalid) + "\n" + displayError
 
                     toggleQrCodeScanning()
 
