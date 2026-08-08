@@ -895,4 +895,6 @@
     <string name="none">None</string>
     <string name="show_more">Show more</string>
     <string name="show_less">Show less</string>
+    <string name="local_network_permission_required">Local network access is required for this instance</string>
+    <string name="local_network_permission_rationale">This instance appears to be on your local network. Android 15+ requires permission to connect to local devices to protect your privacy.</string>
 </resources>
