@@ -4,8 +4,3 @@ Added
 - Add the sender's email or domain to the blocklist on your account straight from a rule-action
 Fixed/Improved
 - Performance improvements and other things to make the app even smoother
-
-What's new in addy.io for Android Wearables 1.6.6
-Fixed/Improved
-- Updated for WearOS 7
-- Performance improvements and other things to make the app even smoother

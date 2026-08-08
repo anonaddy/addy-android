@@ -1,0 +1,3 @@
+What's new in addy.io for Android 6.4.1
+Added
+- Fixed an issue with the new ACCESS_LOCAL_NETWORK permission missing on self-hosted instances
