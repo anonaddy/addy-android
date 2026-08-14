@@ -1,5 +1,26 @@
 # Changelog
 
+## [v6.5.0] - 2026-08-16
+
+### addy.io
+
+##### Added
+
+- Support for Family Plans: You can now share custom domains with family plan members directly from domain settings
+- Added new rule conditions (display from, header, alias catch-all status, attachment presence, spam status, DMARC validation, email size, and forwarded email counts)
+- Added new rule actions (add/remove labels, set alias description, deactivate alias, and delete alias)
+
+##### Fixed/Improved
+
+- Bumped minimum instance version to 1.8.0
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.6.7)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v6.4.1] - 2026-08-08
 
 ### addy.io

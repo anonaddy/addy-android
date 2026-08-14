@@ -19,3 +19,4 @@
 *.py
 *.b64
 ui_files.txt
+/.artifacts

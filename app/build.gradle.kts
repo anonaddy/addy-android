@@ -19,10 +19,10 @@ configure<ApplicationExtension> {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 37 + v6.4.1 + release 01 + 00 (for app)
-        versionCode = 376410100 // https://developer.android.com/training/wearables/packaging
+        // SDK 37 + v6.5.0 + release 01 + 00 (for app)
+        versionCode = 376500100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on GitHub
-        versionName = "v6.4.1"
+        versionName = "v6.5.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -99,12 +99,11 @@ dependencies {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.3.21")
     implementation("androidx.core:core-ktx:1.19.0")
-    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("com.google.android.material:material:1.14.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.2")
     implementation("androidx.navigation:navigation-fragment-ktx:2.9.8")
     implementation("androidx.navigation:navigation-ui-ktx:2.9.8")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")

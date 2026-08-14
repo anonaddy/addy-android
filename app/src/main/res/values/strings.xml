@@ -68,12 +68,14 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 6.4.1</h3>
+<h3>What\'s new in addy.io for Android 6.5.0</h3>
+<h4>Added</h4>
+<p>- Support for Family Plans: You can now share custom domains with family plan members</p>
+<p>- Added new rule conditions and actions (display from, header checks, spam status, attachment checks, label management, alias actions, and more)</p>
 <h4>Fixed/Improved</h4>
-<p>- Fixed an issue with the new ACCESS_LOCAL_NETWORK permission missing on self-hosted instances</p>
-<h3>What\'s new in addy.io for Android Wearables 1.6.7</h3>
-<h4>Fixed/Improved</h4>
-<p>- Fixed an issue with the new ACCESS_LOCAL_NETWORK permission missing on self-hosted instances</p>]]></string>
+<p>- Bumped minimum instance version to 1.8.0</p>
+<p>- Performance improvements and other things to make the app even smoother</p>
+]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
