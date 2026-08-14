@@ -73,7 +73,7 @@
 <p>- Support for Family Plans: You can now share custom domains with family plan members</p>
 <p>- Added new rule conditions and actions (display from, header checks, spam status, attachment checks, label management, alias actions, and more)</p>
 <h4>Fixed/Improved</h4>
-<p>- Bumped minimum instance version to 1.8.0</p>
+<p>- Bumped minimum instance version to 1.7.2</p>
 <p>- Performance improvements and other things to make the app even smoother</p>
 ]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>

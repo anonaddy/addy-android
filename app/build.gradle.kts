@@ -20,7 +20,7 @@ configure<ApplicationExtension> {
          */
 
         // SDK 37 + v6.5.0 + release 01 + 00 (for app)
-        versionCode = 376500100 // https://developer.android.com/training/wearables/packaging
+        versionCode = 376500200 // https://developer.android.com/training/wearables/packaging //TODO set back to 01
         // The "v" is important, as the updater class compares with the RSS feed on GitHub
         versionName = "v6.5.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

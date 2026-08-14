@@ -12,7 +12,7 @@
 
 ##### Fixed/Improved
 
-- Bumped minimum instance version to 1.8.0
+- Bumped minimum instance version to 1.7.2
 - Performance improvements and other things to make the app even smoother
 
 ### addy.io for Android wearables _(v1.6.7)_
