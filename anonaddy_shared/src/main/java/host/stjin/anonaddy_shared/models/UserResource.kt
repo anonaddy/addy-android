@@ -23,6 +23,8 @@ data class UserResource(
     val from_name: String?,
     val email_subject: String?,
     val banner_location: String,
+    val spam_warning_behaviour: String?,
+    val wkd_auto_encrypt: Int?,
     val bandwidth: Long,
     val username_count: Int,
     val username_limit: Int,
@@ -30,9 +32,11 @@ data class UserResource(
     val default_recipient_id: String,
     val default_alias_domain: String,
     val default_alias_format: String,
+    val alias_separator: String?,
     val subscription: String?, // Can be null on selfhosted
     val subscription_type: String?, // Can be null on selfhosted
     val subscription_ends_at: String?, // Can be null on selfhosted
+    val family_plan_role: String?,
     val bandwidth_limit: Long?, // Can be null on selfhosted
     val recipient_count: Int,
     val recipient_limit: Int?, // Can be null on selfhosted

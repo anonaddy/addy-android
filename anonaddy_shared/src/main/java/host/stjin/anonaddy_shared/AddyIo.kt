@@ -49,6 +49,7 @@ object AddyIo {
     val API_URL_DOMAINS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/domains" }
     val API_URL_ACTIVE_DOMAINS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-domains" }
     val API_URL_CATCH_ALL_DOMAINS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/catch-all-domains" }
+    val API_URL_SHARED_WITH_FAMILY_DOMAINS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/shared-with-family-domains" }
     val API_URL_USERNAMES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/usernames" }
     val API_URL_ACTIVE_USERNAMES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-usernames" }
     val API_URL_CATCH_ALL_USERNAMES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/catch-all-usernames" }

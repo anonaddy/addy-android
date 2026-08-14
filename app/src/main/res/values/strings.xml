@@ -225,6 +225,9 @@
     <string name="you_ve_used_d_out_of_d_recipients">You’ve used %1$d out of %2$s recipients</string>
     <string name="no_domains">You have no domains, what about creating one?</string>
     <string name="catch_all_domain_desc">Enable catch-all for this domain</string>
+    <string name="share_domain_with_family">Share domain with family</string>
+    <string name="share_domain_with_family_desc">Allow family plan members to create aliases on this domain</string>
+    <string name="error_edit_shared_with_family">An error occurred while changing the domain sharing state</string>
     <string name="catch_all_username_desc">Enable catch-all for this username</string>
     <string name="catch_all_enabled">Catch-All enabled</string>
     <string name="catch_all_disabled">Catch-All disabled</string>

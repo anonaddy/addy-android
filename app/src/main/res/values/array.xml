@@ -55,6 +55,18 @@
         <item>alias</item>
         <item>alias_description</item>
         <item>alias_label</item>
+        <item>display_from</item>
+        <item>header</item>
+        <item>alias_created_by_catch_all</item>
+        <item>alias_not_created_by_catch_all</item>
+        <item>has_attachments</item>
+        <item>has_no_attachments</item>
+        <item>email_is_spam</item>
+        <item>email_is_not_spam</item>
+        <item>dmarc_failed</item>
+        <item>dmarc_did_not_fail</item>
+        <item>email_size</item>
+        <item>alias_emails_forwarded</item>
     </string-array>
     <string-array name="conditions.type.name">
         <item>@string/the_sender</item>
@@ -62,6 +74,18 @@
         <item>@string/the_alias</item>
         <item>@string/the_alias_description</item>
         <item>@string/the_alias_label</item>
+        <item>@string/the_display_from</item>
+        <item>@string/the_header</item>
+        <item>@string/alias_created_by_catch_all</item>
+        <item>@string/alias_not_created_by_catch_all</item>
+        <item>@string/email_has_attachments</item>
+        <item>@string/email_has_no_attachments</item>
+        <item>@string/email_is_spam</item>
+        <item>@string/email_is_not_spam</item>
+        <item>@string/dmarc_failed</item>
+        <item>@string/dmarc_did_not_fail</item>
+        <item>@string/the_email_size</item>
+        <item>@string/the_alias_emails_forwarded</item>
     </string-array>
     <string-array name="conditions.match">
         <item>contains</item>
@@ -74,6 +98,10 @@
         <item>does not end with</item>
         <item>matches regex</item>
         <item>does not match regex</item>
+        <item>exists</item>
+        <item>does not exist</item>
+        <item>is greater than</item>
+        <item>is less than</item>
     </string-array>
     <string-array name="conditions.match.name">
         <item>@string/contains</item>
@@ -86,6 +114,57 @@
         <item>@string/does_not_end_with</item>
         <item>@string/matches_regex</item>
         <item>@string/does_not_match_regex</item>
+        <item>@string/exists</item>
+        <item>@string/does_not_exist</item>
+        <item>@string/is_greater_than</item>
+        <item>@string/is_less_than</item>
+    </string-array>
+
+    <string-array name="conditions.match.string">
+        <item>contains</item>
+        <item>does not contain</item>
+        <item>is exactly</item>
+        <item>is not</item>
+        <item>starts with</item>
+        <item>does not start with</item>
+        <item>ends with</item>
+        <item>does not end with</item>
+        <item>matches regex</item>
+        <item>does not match regex</item>
+    </string-array>
+    <string-array name="conditions.match.string.name">
+        <item>@string/contains</item>
+        <item>@string/does_not_contain</item>
+        <item>@string/is_exactly</item>
+        <item>@string/is_not</item>
+        <item>@string/starts_with</item>
+        <item>@string/does_not_start_with</item>
+        <item>@string/ends_with</item>
+        <item>@string/does_not_end_with</item>
+        <item>@string/matches_regex</item>
+        <item>@string/does_not_match_regex</item>
+    </string-array>
+
+    <string-array name="conditions.match.header">
+        <item>exists</item>
+        <item>does not exist</item>
+    </string-array>
+    <string-array name="conditions.match.header.name">
+        <item>@string/exists</item>
+        <item>@string/does_not_exist</item>
+    </string-array>
+
+    <string-array name="conditions.match.numeric">
+        <item>is exactly</item>
+        <item>is not</item>
+        <item>is greater than</item>
+        <item>is less than</item>
+    </string-array>
+    <string-array name="conditions.match.numeric.name">
+        <item>@string/is_exactly</item>
+        <item>@string/is_not</item>
+        <item>@string/is_greater_than</item>
+        <item>@string/is_less_than</item>
     </string-array>
 
     <!-- RULE ACTIONS -->
@@ -99,6 +178,11 @@
         <item>blocklistDomain</item>
         <item>removeAttachments</item>
         <item>forwardTo</item>
+        <item>addLabel</item>
+        <item>removeLabel</item>
+        <item>setAliasDescription</item>
+        <item>deactivateAlias</item>
+        <item>deleteAlias</item>
     </string-array>
     <string-array name="actions.type.name">
         <item>@string/replace_the_subject_with</item>
@@ -110,6 +194,11 @@
         <item>@string/add_domain_to_blocklist</item>
         <item>@string/remove_attachments</item>
         <item>@string/forward_to</item>
+        <item>@string/add_label</item>
+        <item>@string/remove_label</item>
+        <item>@string/set_alias_description</item>
+        <item>@string/deactivate_the_alias</item>
+        <item>@string/delete_the_alias</item>
     </string-array>
 
     <string-array name="actions.type.bannerlocation.options">
@@ -132,6 +221,22 @@
     <string name="the_alias">the alias</string>
     <string name="the_alias_description">the alias description</string>
     <string name="the_alias_label">the alias label</string>
+    <string name="the_display_from">the display from</string>
+    <string name="the_header">the header</string>
+    <string name="alias_created_by_catch_all">alias was created by catch-all</string>
+    <string name="alias_not_created_by_catch_all">alias was not created by catch-all</string>
+    <string name="email_has_attachments">email has attachments</string>
+    <string name="email_has_no_attachments">email has no attachments</string>
+    <string name="email_is_spam">email is spam</string>
+    <string name="email_is_not_spam">email is not spam</string>
+    <string name="dmarc_failed">DMARC failed</string>
+    <string name="dmarc_did_not_fail">DMARC did not fail</string>
+    <string name="the_email_size">the email size</string>
+    <string name="the_alias_emails_forwarded">the alias emails forwarded</string>
+    <string name="exists">exists</string>
+    <string name="does_not_exist">does not exist</string>
+    <string name="is_greater_than">is greater than</string>
+    <string name="is_less_than">is less than</string>
     <string name="does_not_contain">does not contain</string>
     <string name="is_exactly">is exactly</string>
     <string name="is_not">is not</string>
@@ -148,6 +253,14 @@
     <string name="add_domain_to_blocklist">add domain to blocklist</string>
     <string name="remove_attachments">remove attachments</string>
     <string name="forward_to">forward to</string>
+    <string name="remove_label">remove label</string>
+    <string name="set_alias_description">set alias description</string>
+    <string name="deactivate_the_alias">deactivate the alias</string>
+    <string name="delete_the_alias">delete the alias</string>
+    <string name="enter_header_name">Enter header name (e.g. List-Unsubscribe)</string>
+    <string name="enter_size_in_bytes">Enter size in bytes (e.g. 1048576)</string>
+    <string name="enter_number_of_emails">Enter number of forwarded emails</string>
+    <string name="enter_description">Enter description</string>
     <string name="domains_format_random_words">Random words</string>
     <string name="domains_format_custom">Custom</string>
     <string name="domains_format_uuid">UUID</string>

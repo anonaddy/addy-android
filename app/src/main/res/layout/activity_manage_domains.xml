@@ -187,6 +187,15 @@
                         app:sectionTitle="@string/catch_all_enabled" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_domain_shared_with_family_switch_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/share_domain_with_family_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_users"
+                        app:sectionTitle="@string/share_domain_with_family" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_domain_desc_edit"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
