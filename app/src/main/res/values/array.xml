@@ -194,7 +194,7 @@
         <item>@string/add_domain_to_blocklist</item>
         <item>@string/remove_attachments</item>
         <item>@string/forward_to</item>
-        <item>@string/add_label</item>
+        <item>@string/add_label_action</item>
         <item>@string/remove_label</item>
         <item>@string/set_alias_description</item>
         <item>@string/deactivate_the_alias</item>
@@ -275,4 +275,5 @@
     <string name="login_expiration_month">1 month</string>
     <string name="login_expiration_year">1 year</string>
     <string name="login_expiration_never">Never</string>
+    <string name="add_label_action">add label</string>
 </resources>

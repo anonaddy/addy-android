@@ -2,6 +2,8 @@ package host.stjin.anonaddy.ui.rules
 
 import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +16,10 @@ import com.google.android.material.chip.Chip
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetRulesActionBinding
+import host.stjin.anonaddy.ui.labels.ManageLabelsAddBottomDialogFragment
+import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Action
+import host.stjin.anonaddy_shared.models.Labels
 import host.stjin.anonaddy_shared.models.Recipients
 import kotlinx.coroutines.launch
 
@@ -23,7 +28,7 @@ class ActionBottomDialogFragment(
     private val recipients: ArrayList<Recipients>,
     private val actionEditIndex: Int?,
     private val actionEditObject: Action?
-) : BaseBottomSheetDialogFragment(), View.OnClickListener {
+) : BaseBottomSheetDialogFragment(), View.OnClickListener, ManageLabelsAddBottomDialogFragment.AddLabelsBottomDialogListener {
     private lateinit var listener: AddActionBottomDialogListener
 
     private var _binding: BottomsheetRulesActionBinding? = null
@@ -31,6 +36,10 @@ class ActionBottomDialogFragment(
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private var allLabels: List<Labels>? = null
+    private var selectedLabelName: String? = null
+    private var recentlyAddedLabelName: String? = null
 
     /*
         Check if the type spinner matches any of the value-type type or spinner-type type
@@ -63,6 +72,7 @@ class ActionBottomDialogFragment(
 
         fillSpinners(requireContext())
         binding.bsRuleActionAddActionButton.setOnClickListener(this)
+        binding.bsRuleActionLabelCreateButton.setOnClickListener(this)
         spinnerChangeListener(requireContext())
 
         updateUi(requireContext())
@@ -85,7 +95,93 @@ class ActionBottomDialogFragment(
         if (p0 != null) {
             if (p0.id == R.id.bs_rule_action_add_action_button) {
                 addAction(requireContext())
+            } else if (p0.id == R.id.bs_rule_action_label_create_button) {
+                val manageLabelsAddBottomDialogFragment = ManageLabelsAddBottomDialogFragment.newInstance(null)
+                manageLabelsAddBottomDialogFragment.show(
+                    childFragmentManager,
+                    "manageLabelsAddBottomDialogFragment"
+                )
             }
+        }
+    }
+
+    override fun onAddedLabelEntry(label: Labels) {
+        recentlyAddedLabelName = label.name
+        viewLifecycleOwner.lifecycleScope.launch {
+            loadLabels(requireContext())
+        }
+    }
+
+    private suspend fun loadLabels(context: Context) {
+        val networkHelper = NetworkHelper(context)
+        networkHelper.getAllLabels { labels, error ->
+            if (labels != null) {
+                allLabels = labels
+                populateLabelChips(context, labels)
+            } else {
+                binding.bsRuleActionLabelError.visibility = View.VISIBLE
+                binding.bsRuleActionLabelError.text = error
+            }
+        }
+    }
+
+    private fun populateLabelChips(context: Context, labels: List<Labels>) {
+        binding.bsRuleActionLabelChipgroup.removeAllViewsInLayout()
+        binding.bsRuleActionLabelChipgroup.requestLayout()
+        binding.bsRuleActionLabelChipgroup.invalidate()
+
+        val labelToSelect = recentlyAddedLabelName ?: selectedLabelName
+
+        for (label in labels) {
+            val chip = layoutInflater.inflate(R.layout.chip_view, binding.bsRuleActionLabelChipgroup, false) as Chip
+            chip.text = label.name
+            chip.tag = label.name
+            chip.isCheckable = true
+            chip.isChecked = labelToSelect.equals(label.name, ignoreCase = true)
+
+            try {
+                val colorInt = Color.parseColor(label.colour)
+                val alphaColor = Color.argb(
+                    (0.2 * 255).toInt(),
+                    Color.red(colorInt),
+                    Color.green(colorInt),
+                    Color.blue(colorInt)
+                )
+
+                val isDarkMode =
+                    (context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+                val hsv = FloatArray(3)
+                Color.colorToHSV(colorInt, hsv)
+                if (isDarkMode) {
+                    hsv[2] = 1.0f
+                    hsv[1] = Math.max(0f, hsv[1] - 0.2f)
+                } else {
+                    hsv[2] = Math.min(1f, hsv[2] * 0.7f)
+                    hsv[1] = Math.min(1f, hsv[1] * 1.2f)
+                }
+                val textColorInt = Color.HSVToColor(hsv)
+
+                val defaultBgColor = chip.chipBackgroundColor?.defaultColor ?: Color.TRANSPARENT
+                val defaultTextColor = chip.textColors?.defaultColor ?: Color.GRAY
+
+                val states = arrayOf(
+                    intArrayOf(android.R.attr.state_checked),
+                    intArrayOf(-android.R.attr.state_checked)
+                )
+
+                val bgColors = intArrayOf(alphaColor, defaultBgColor)
+                val textColors = intArrayOf(textColorInt, defaultTextColor)
+
+                chip.chipBackgroundColor = ColorStateList(states, bgColors)
+                chip.setTextColor(ColorStateList(states, textColors))
+                chip.chipStrokeWidth = 0f
+                chip.checkedIconTint = ColorStateList.valueOf(textColorInt)
+                chip.isChipIconVisible = false
+            } catch (e: Exception) {
+                // Fallback
+            }
+
+            binding.bsRuleActionLabelChipgroup.addView(chip)
         }
     }
 
@@ -135,6 +231,13 @@ class ActionBottomDialogFragment(
                 }
             }
 
+            if (actionEditObject.type == "addLabel" || actionEditObject.type == "removeLabel") {
+                selectedLabelName = actionEditObject.value
+                viewLifecycleOwner.lifecycleScope.launch {
+                    loadLabels(context)
+                }
+            }
+
             // Show save instead of add when editing an object
             binding.bsRuleActionAddActionButton.setText(R.string.save)
         } else {
@@ -167,33 +270,43 @@ class ActionBottomDialogFragment(
         when (type) {
             "banner" -> {
                 binding.bsRuleActionForwardToTil.visibility = View.GONE
+                binding.bsRuleActionLabelTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.VISIBLE
                 binding.bsRuleActionValuesTil.visibility = View.GONE
             }
             "forwardTo" -> {
                 binding.bsRuleActionForwardToTil.visibility = View.VISIBLE
+                binding.bsRuleActionLabelTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.GONE
             }
             "block", "encryption", "blocklistSender", "blocklistDomain", "removeAttachments", "deactivateAlias", "deleteAlias" -> {
                 binding.bsRuleActionForwardToTil.visibility = View.GONE
+                binding.bsRuleActionLabelTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.GONE
             }
             "addLabel", "removeLabel" -> {
                 binding.bsRuleActionForwardToTil.visibility = View.GONE
+                binding.bsRuleActionLabelTil.visibility = View.VISIBLE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
-                binding.bsRuleActionValuesTil.visibility = View.VISIBLE
-                binding.bsRuleActionValuesTil.hint = context.resources.getString(R.string.label_name)
+                binding.bsRuleActionValuesTil.visibility = View.GONE
+                if (allLabels == null) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        loadLabels(context)
+                    }
+                }
             }
             "setAliasDescription" -> {
                 binding.bsRuleActionForwardToTil.visibility = View.GONE
+                binding.bsRuleActionLabelTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.VISIBLE
                 binding.bsRuleActionValuesTil.hint = context.resources.getString(R.string.enter_description)
             }
             else -> {
                 binding.bsRuleActionForwardToTil.visibility = View.GONE
+                binding.bsRuleActionLabelTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.VISIBLE
                 binding.bsRuleActionValuesTil.hint = context.resources.getString(R.string.enter_value)
@@ -251,11 +364,22 @@ class ActionBottomDialogFragment(
                 if (ids.isEmpty()) {
                     binding.bsRuleActionForwardToTil.error = context.resources.getString(R.string.select_a_recipient)
                 } else {
-                    for (id in ids) {
-                        val chip: Chip = binding.bsRuleActionForwardToChipgroup.findViewById(id)
-                        val recipient = chip.tag.toString()
-                        listener.onAddedAction(actionEditIndex, type, recipient)
-                    }
+                    binding.bsRuleActionForwardToTil.error = null
+                    val chip: Chip = binding.bsRuleActionForwardToChipgroup.findViewById(ids[0])
+                    val recipient = chip.tag.toString()
+                    listener.onAddedAction(actionEditIndex, type, recipient)
+                }
+            }
+
+            "addLabel", "removeLabel" -> {
+                val ids: List<Int> = binding.bsRuleActionLabelChipgroup.checkedChipIds
+                if (ids.isEmpty()) {
+                    binding.bsRuleActionLabelTil.error = context.resources.getString(R.string.select_a_label)
+                } else {
+                    binding.bsRuleActionLabelTil.error = null
+                    val chip: Chip = binding.bsRuleActionLabelChipgroup.findViewById(ids[0])
+                    val labelName = chip.text.toString()
+                    listener.onAddedAction(actionEditIndex, type, labelName)
                 }
             }
 
@@ -279,3 +403,4 @@ class ActionBottomDialogFragment(
         }
     }
 }
+
