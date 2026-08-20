@@ -303,32 +303,66 @@ class FailedDeliveryDetailsBottomDialogFragment(
     }
 
     private fun blockSender(context: Context) {
-        MaterialDialogHelper.showMaterialDialog(
-            context = context,
-            title = resources.getString(R.string.blocklist_add),
-            message = resources.getString(R.string.blocklist_add_confirm_desc, failedDelivery?.sender),
-            icon = R.drawable.ic_forbid,
-            neutralButtonText = resources.getString(R.string.cancel),
-            positiveButtonText = resources.getString(R.string.blocklist_add),
-            positiveButtonAction = {
-                binding.bsFailedDeliveriesBlockSenderButton.startAnimation()
-                lifecycleScope.launch {
-                    blockSenderHttp(context)
+        val sender = failedDelivery?.sender ?: return
+        val domain = if (sender.contains("@")) sender.substringAfterLast("@").trim() else null
+
+        if (!domain.isNullOrEmpty()) {
+            val options = arrayOf(
+                "${resources.getString(R.string.email)}: $sender",
+                "${resources.getString(R.string.domain)}: $domain"
+            )
+            var selectedIndex = 0
+
+            val dialog = MaterialDialogHelper.showMaterialDialog(
+                context = context,
+                title = resources.getString(R.string.blocklist_add),
+                icon = R.drawable.ic_forbid,
+                neutralButtonText = resources.getString(R.string.cancel),
+                positiveButtonText = resources.getString(R.string.blocklist_add),
+                positiveButtonAction = {
+                    val type = if (selectedIndex == 0) "email" else "domain"
+                    val value = if (selectedIndex == 0) sender else domain
+                    binding.bsFailedDeliveriesBlockSenderButton.startAnimation()
+                    lifecycleScope.launch {
+                        blockSenderHttp(context, type, value)
+                    }
                 }
-            },
-        ).show()
+            )
+            dialog.setSingleChoiceItems(options, selectedIndex) { _, which ->
+                selectedIndex = which
+            }
+            dialog.show()
+        } else {
+            MaterialDialogHelper.showMaterialDialog(
+                context = context,
+                title = resources.getString(R.string.blocklist_add),
+                message = resources.getString(R.string.blocklist_add_confirm_desc, sender),
+                icon = R.drawable.ic_forbid,
+                neutralButtonText = resources.getString(R.string.cancel),
+                positiveButtonText = resources.getString(R.string.blocklist_add),
+                positiveButtonAction = {
+                    binding.bsFailedDeliveriesBlockSenderButton.startAnimation()
+                    lifecycleScope.launch {
+                        blockSenderHttp(context, "email", sender)
+                    }
+                },
+            ).show()
+        }
     }
 
-    private suspend fun blockSenderHttp(context: Context) {
+    private suspend fun blockSenderHttp(context: Context, type: String, value: String) {
         val networkHelper = NetworkHelper(context)
-        val sender = failedDelivery?.sender ?: return
         networkHelper.addBlocklistEntry({ result, error ->
             if (result != null) {
                 binding.bsFailedDeliveriesBlockSenderButton.revertAnimation()
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
                     title = resources.getString(R.string.blocklist_add),
-                    message = context.resources.getString(R.string.blocklist_add_success),
+                    message = if (type == "domain") {
+                        context.resources.getString(R.string.blocklist_add_domain_success)
+                    } else {
+                        context.resources.getString(R.string.blocklist_add_success)
+                    },
                     icon = R.drawable.ic_forbid,
                     neutralButtonText = resources.getString(R.string.close)
                 ).show()
@@ -342,7 +376,7 @@ class FailedDeliveryDetailsBottomDialogFragment(
                     neutralButtonText = resources.getString(R.string.close)
                 ).show()
             }
-        }, NewBlocklistEntry("email", sender))
+        }, NewBlocklistEntry(type, value))
     }
 
     interface AddFailedDeliveryBottomDialogListener {
