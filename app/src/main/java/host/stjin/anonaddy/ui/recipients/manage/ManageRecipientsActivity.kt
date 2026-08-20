@@ -174,6 +174,18 @@ class ManageRecipientsActivity : BaseActivity(),
             isAliasesExpanded = !isAliasesExpanded
             updateAliasesView()
         }
+
+        val showAliasCountInfo = View.OnClickListener {
+            MaterialDialogHelper.showMaterialDialog(
+                context = this,
+                title = resources.getString(R.string.recipient_aliases),
+                message = resources.getString(R.string.recipient_aliases_count_info),
+                icon = R.drawable.ic_info,
+                neutralButtonText = resources.getString(R.string.close)
+            ).show()
+        }
+        binding.activityManageRecipientAliasesInfoButton.setOnClickListener(showAliasCountInfo)
+        binding.activityManageRecipientAliasesCountTextview.setOnClickListener(showAliasCountInfo)
     }
 
     override fun finish() {

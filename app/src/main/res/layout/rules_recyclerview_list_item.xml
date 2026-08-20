@@ -76,8 +76,7 @@
                     android:fontFamily="sans-serif"
                     android:lines="1"
                     android:maxLines="1"
-                    android:minLines="1"
-                    android:singleLine="false"
+                    android:singleLine="true"
                     android:text="if sender is no-reply@microsoft.com block email"
                     tools:ignore="HardcodedText" />
             </LinearLayout>

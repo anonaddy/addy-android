@@ -142,6 +142,7 @@
     <string name="remove_public_key">Remove public key</string>
     <string name="action">Action</string>
     <string name="recipient_aliases">Recipient aliases</string>
+    <string name="recipient_aliases_count_info">This only shows the total number of aliases that the recipient is directly assigned to.</string>
     <string name="encryption_disabled">Encryption disabled</string>
     <string name="change_public_gpg_key">Change public GPG key</string>
     <string name="add_public_gpg_key">Add public GPG key</string>

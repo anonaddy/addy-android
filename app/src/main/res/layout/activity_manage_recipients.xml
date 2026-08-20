@@ -111,6 +111,17 @@
                         tools:text="10"
                         tools:visibility="visible" />
 
+                    <ImageView
+                        android:id="@+id/activity_manage_recipient_aliases_info_button"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/recipient_aliases_count_info"
+                        android:src="@drawable/ic_info"
+                        android:tooltipText="@string/recipient_aliases_count_info" />
+
                     <Space
                         android:layout_width="0dp"
                         android:layout_height="match_parent"

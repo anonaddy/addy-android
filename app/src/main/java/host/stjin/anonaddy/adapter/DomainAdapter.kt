@@ -41,10 +41,14 @@ class DomainAdapter(
             }
 
             else -> {
-                holder.mDescription.text = holder.mDescription.context.resources.getString(
-                    R.string.domains_list_description,
-                    listWithDomains[position].aliases_count
-                )
+                if (listWithDomains[position].description != null) {
+                    holder.mDescription.text = listWithDomains[position].description
+                } else {
+                    holder.mDescription.text = holder.mDescription.context.resources.getString(
+                        R.string.domains_list_description,
+                        listWithDomains[position].aliases_count
+                    )
+                }
                 holder.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_dns)
             }
         }
