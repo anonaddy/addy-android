@@ -51,6 +51,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         //endregion
 
         // Encrypted
+        DEFAULT_EMAIL_CLIENT(true, PREFTYPES.STRING, "default_email_client"),
         BIOMETRIC_ENABLED(true, PREFTYPES.BOOLEAN, "biometric_enabled"),
         RECENT_SEARCHES_ALIASES(true, PREFTYPES.STRING, "recent_searches_aliases"),
         RECENT_SEARCHES_BLOCKLIST(true, PREFTYPES.STRING, "recent_searches_blocklist"),

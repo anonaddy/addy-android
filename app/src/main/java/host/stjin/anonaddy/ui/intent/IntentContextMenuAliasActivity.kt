@@ -15,7 +15,6 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.AnonAddyUtils
-import host.stjin.anonaddy.utils.AnonAddyUtils.startShareSheetActivityExcludingOwnApp
 import host.stjin.anonaddy.utils.CustomPatterns
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -425,15 +424,15 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         anonaddyBccRecipientAddresses: Array<String?>
     ) {
         // Open the mailto app select sheet, but make sure to exclude ourselves!
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = "mailto:".toUri() // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, recipients)
-        intent.putExtra(Intent.EXTRA_CC, anonaddyCcRecipientAddresses)
-        intent.putExtra(Intent.EXTRA_BCC, anonaddyBccRecipientAddresses)
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject?.let { fromHtml(it) })
-        intent.putExtra(Intent.EXTRA_TEXT, body?.let { fromHtml(it) })
+        val intent = AnonAddyUtils.buildEmailIntent(
+            recipients = recipients,
+            cc = anonaddyCcRecipientAddresses,
+            bcc = anonaddyBccRecipientAddresses,
+            subject = subject?.let { fromHtml(it) },
+            body = body?.let { fromHtml(it) }
+        )
         if (intent.resolveActivity(packageManager) != null) {
-            startShareSheetActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))
+            AnonAddyUtils.sendEmail(this, intent, this.resources.getString(R.string.send_mail), supportFragmentManager)
         }
     }
 

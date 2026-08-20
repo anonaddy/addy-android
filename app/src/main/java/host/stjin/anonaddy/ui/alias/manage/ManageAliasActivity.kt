@@ -297,11 +297,9 @@ class ManageAliasActivity : BaseActivity(),
         // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
         onPressCopy(toString)
 
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = "mailto:".toUri() // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, recipients)
+        val intent = AnonAddyUtils.buildEmailIntent(recipients = recipients)
         if (intent.resolveActivity(packageManager) != null) {
-            AnonAddyUtils.startShareSheetActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))
+            AnonAddyUtils.sendEmail(this, intent, this.resources.getString(R.string.send_mail), supportFragmentManager)
         }
         editAliasSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
     }

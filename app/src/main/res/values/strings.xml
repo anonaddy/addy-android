@@ -899,4 +899,10 @@
     <string name="none">None</string>
     <string name="show_more">Show more</string>
     <string name="show_less">Show less</string>
+    <string name="preferred_email_client">Preferred email client</string>
+    <string name="preferred_email_client_desc">Select which email app opens when sending emails</string>
+    <string name="always_ask">Always ask</string>
+    <string name="always_use_this_app">Always use this app</string>
+    <string name="choose_email_app">Choose email app</string>
+    <string name="no_email_app_found">No email app found on this device</string>
 </resources>

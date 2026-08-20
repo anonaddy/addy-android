@@ -74,6 +74,14 @@
                 </host.stjin.anonaddy.ui.customviews.SectionView>
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_section_preferred_email_client"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/always_ask"
+                    app:sectionStartIcon="@drawable/ic_mail"
+                    app:sectionTitle="@string/preferred_email_client" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_updater"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

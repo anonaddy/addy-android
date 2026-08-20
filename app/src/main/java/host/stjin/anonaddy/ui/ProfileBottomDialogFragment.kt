@@ -224,20 +224,27 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun setSubscriptionText() {
-        if ((activity?.application as AddyIoApp).userResource.subscription != null) {
+        val userResource = (activity?.application as AddyIoApp).userResource
+        if (userResource.subscription != null) {
             binding.mainProfileSelectDialogCardLL.visibility = View.VISIBLE
             binding.mainProfileSelectDialogCardSubscription.text =
-                resources.getString(R.string.subscription_user, (activity?.application as AddyIoApp).userResource.subscription)
+                resources.getString(R.string.subscription_user, userResource.subscription)
+
+            if (userResource.family_plan_role != null) {
+                binding.mainProfileSelectDialogCardFamilyIcon.visibility = View.VISIBLE
+            } else {
+                binding.mainProfileSelectDialogCardFamilyIcon.visibility = View.GONE
+            }
         } else {
             binding.mainProfileSelectDialogCardLL.visibility = View.GONE
         }
 
-        if ((activity?.application as AddyIoApp).userResource.subscription_ends_at != null) {
+        if (userResource.subscription_ends_at != null) {
             binding.mainProfileSelectDialogCardSubscriptionUntil.visibility = View.VISIBLE
             binding.mainProfileSelectDialogCardSubscriptionUntil.text =
                 resources.getString(
                     R.string.subscription_user_until, DateTimeUtils.convertStringToLocalTimeZoneString(
-                        (activity?.application as AddyIoApp).userResource.subscription_ends_at,
+                        userResource.subscription_ends_at,
                         DateTimeUtils.DatetimeFormat.DATE
                     )
                 )

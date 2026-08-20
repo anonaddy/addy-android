@@ -32,6 +32,7 @@ import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
 import host.stjin.anonaddy.ui.appsettings.wearos.AppSettingsWearOSActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
@@ -43,7 +44,8 @@ import kotlinx.coroutines.launch
 
 class AppSettingsActivity : BaseActivity(),
     UIUXInterfaceBottomDialogFragment.AddUIUXInterfaceBottomDialogListener,
-    BackgroundServiceIntervalBottomDialogFragment.AddBackgroundServiceIntervalBottomDialogListener {
+    BackgroundServiceIntervalBottomDialogFragment.AddBackgroundServiceIntervalBottomDialogListener,
+    PreferredEmailClientBottomDialogFragment.PreferredEmailClientBottomDialogListener {
     private val addUIUXInterfaceBottomDialogFragment: UIUXInterfaceBottomDialogFragment =
 
         UIUXInterfaceBottomDialogFragment.newInstance()
@@ -123,6 +125,16 @@ class AppSettingsActivity : BaseActivity(),
                         "addDarkModeBottomDialogFragment"
                     )
                 }
+            }
+        })
+
+        binding.activityAppSettingsSectionPreferredEmailClient.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val dialog = PreferredEmailClientBottomDialogFragment()
+                dialog.show(
+                    supportFragmentManager,
+                    "PreferredEmailClientBottomDialogFragment"
+                )
             }
         })
 
@@ -297,6 +309,12 @@ class AppSettingsActivity : BaseActivity(),
         addBackgroundServiceIntervalBottomDialogFragment.dismissAllowingStateLoss()
     }
 
+    override fun onPreferredEmailClientSelected(packageName: String?, appName: String) {
+        binding.activityAppSettingsSectionPreferredEmailClient.setDescription(
+            if (packageName.isNullOrEmpty()) resources.getString(R.string.always_ask) else appName
+        )
+    }
+
     private fun checkForVariant() {
         if (BuildConfig.FLAVOR == "gplay") {
             binding.activityAppSettingsSectionReview.visibility = View.VISIBLE
@@ -332,6 +350,20 @@ class AppSettingsActivity : BaseActivity(),
         binding.activityAppSettingsSectionSecurity.setSwitchChecked(encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED))
         binding.activityAppSettingsSectionLogs.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS))
         binding.activityAppSettingsSectionPrivacy.setSwitchChecked(encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE))
+
+        val preferredPackage = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.DEFAULT_EMAIL_CLIENT)
+        if (preferredPackage.isNullOrEmpty()) {
+            binding.activityAppSettingsSectionPreferredEmailClient.setDescription(resources.getString(R.string.always_ask))
+        } else {
+            val appName = AnonAddyUtils.getAppNameFromPackage(this, preferredPackage)
+            if (appName != null) {
+                binding.activityAppSettingsSectionPreferredEmailClient.setDescription(appName)
+            } else {
+                // If the app was uninstalled, reset to Always ask
+                encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.DEFAULT_EMAIL_CLIENT, "")
+                binding.activityAppSettingsSectionPreferredEmailClient.setDescription(resources.getString(R.string.always_ask))
+            }
+        }
     }
 
     private fun setOnSwitchListeners() {
