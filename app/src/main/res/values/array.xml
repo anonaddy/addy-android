@@ -78,14 +78,14 @@
         <item>@string/the_header</item>
         <item>@string/alias_created_by_catch_all</item>
         <item>@string/alias_not_created_by_catch_all</item>
-        <item>@string/email_has_attachments</item>
-        <item>@string/email_has_no_attachments</item>
+        <item>@string/has_attachments</item>
+        <item>@string/has_no_attachments</item>
         <item>@string/email_is_spam</item>
         <item>@string/email_is_not_spam</item>
         <item>@string/dmarc_failed</item>
         <item>@string/dmarc_did_not_fail</item>
         <item>@string/the_email_size</item>
-        <item>@string/the_alias_emails_forwarded</item>
+        <item>@string/alias_emails_forwarded</item>
     </string-array>
     <string-array name="conditions.match">
         <item>contains</item>
@@ -195,10 +195,10 @@
         <item>@string/remove_attachments</item>
         <item>@string/forward_to</item>
         <item>@string/add_label_action</item>
-        <item>@string/remove_label</item>
-        <item>@string/set_alias_description</item>
-        <item>@string/deactivate_the_alias</item>
-        <item>@string/delete_the_alias</item>
+        <item>@string/remove_label_action</item>
+        <item>@string/set_alias_description_action</item>
+        <item>@string/deactivate_alias_action</item>
+        <item>@string/delete_alias_action</item>
     </string-array>
 
     <string-array name="actions.type.bannerlocation.options">
@@ -221,18 +221,18 @@
     <string name="the_alias">the alias</string>
     <string name="the_alias_description">the alias description</string>
     <string name="the_alias_label">the alias label</string>
-    <string name="the_display_from">the display from</string>
+    <string name="the_display_from">the from name</string>
     <string name="the_header">the header</string>
     <string name="alias_created_by_catch_all">alias was created by catch-all</string>
     <string name="alias_not_created_by_catch_all">alias was not created by catch-all</string>
-    <string name="email_has_attachments">email has attachments</string>
-    <string name="email_has_no_attachments">email has no attachments</string>
-    <string name="email_is_spam">email is spam</string>
-    <string name="email_is_not_spam">email is not spam</string>
-    <string name="dmarc_failed">DMARC failed</string>
-    <string name="dmarc_did_not_fail">DMARC did not fail</string>
+    <string name="has_attachments">email has attachments</string>
+    <string name="has_no_attachments">email has no attachments</string>
+    <string name="email_is_spam">email is marked as spam</string>
+    <string name="email_is_not_spam">email is not marked as spam</string>
+    <string name="dmarc_failed">DMARC validation failed</string>
+    <string name="dmarc_did_not_fail">DMARC validation did not fail</string>
     <string name="the_email_size">the email size</string>
-    <string name="the_alias_emails_forwarded">the alias emails forwarded</string>
+    <string name="alias_emails_forwarded">the number of emails forwarded by alias</string>
     <string name="exists">exists</string>
     <string name="does_not_exist">does not exist</string>
     <string name="is_greater_than">is greater than</string>
@@ -253,10 +253,10 @@
     <string name="add_domain_to_blocklist">add domain to blocklist</string>
     <string name="remove_attachments">remove attachments</string>
     <string name="forward_to">forward to</string>
-    <string name="remove_label">remove label</string>
-    <string name="set_alias_description">set alias description</string>
-    <string name="deactivate_the_alias">deactivate the alias</string>
-    <string name="delete_the_alias">delete the alias</string>
+    <string name="remove_label_action">remove label</string>
+    <string name="set_alias_description_action">set alias description to</string>
+    <string name="deactivate_alias_action">deactivate alias</string>
+    <string name="delete_alias_action">delete alias</string>
     <string name="enter_header_name">Enter header name (e.g. List-Unsubscribe)</string>
     <string name="enter_size_in_bytes">Enter size in bytes (e.g. 1048576)</string>
     <string name="enter_number_of_emails">Enter number of forwarded emails</string>

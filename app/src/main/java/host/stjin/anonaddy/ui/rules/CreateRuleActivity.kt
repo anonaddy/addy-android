@@ -418,19 +418,31 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             val typeIndex = typeTypes.indexOf(condition.type)
             val typeText = if (typeIndex != -1) typeNames[typeIndex] else condition.type
 
-            val matchTypes = this.resources.getStringArray(R.array.conditions_match)
-            val matchNames = this.resources.getStringArray(R.array.conditions_match_name)
-            val matchIndex = if (condition.match != null) matchTypes.indexOf(condition.match) else -1
-            val matchText = if (matchIndex != -1) matchNames[matchIndex] else condition.match
+            val isBooleanCondition = when (condition.type) {
+                "alias_created_by_catch_all", "alias_not_created_by_catch_all",
+                "has_attachments", "has_no_attachments",
+                "email_is_spam", "email_is_not_spam",
+                "dmarc_failed", "dmarc_did_not_fail" -> true
+                else -> false
+            }
 
-            if (matchText.isNullOrEmpty()) {
+            if (isBooleanCondition) {
                 title.text = this.resources.getString(R.string.rule_if_, "`${typeText}`")
             } else {
-                title.text = this.resources.getString(R.string.rule_if_, "`${typeText}` ${matchText}...")
+                val matchTypes = this.resources.getStringArray(R.array.conditions_match)
+                val matchNames = this.resources.getStringArray(R.array.conditions_match_name)
+                val matchIndex = if (condition.match != null) matchTypes.indexOf(condition.match) else -1
+                val matchText = if (matchIndex != -1) matchNames[matchIndex] else condition.match
+
+                if (matchText.isNullOrEmpty()) {
+                    title.text = this.resources.getString(R.string.rule_if_, "`${typeText}`")
+                } else {
+                    title.text = this.resources.getString(R.string.rule_if_, "`${typeText}` ${matchText}...")
+                }
             }
 
             val subtitle = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_subtitle)
-            val valuesText = condition.values?.joinToString(", ") ?: ""
+            val valuesText = if (isBooleanCondition) "" else (condition.values?.joinToString(", ") ?: "")
             subtitle.text = valuesText
             subtitle.visibility = if (valuesText.isNotEmpty()) View.VISIBLE else View.GONE
 

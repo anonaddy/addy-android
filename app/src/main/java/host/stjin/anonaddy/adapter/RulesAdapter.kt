@@ -62,18 +62,30 @@ class RulesAdapter(
             val typeIndex = typeTypes.indexOf(condition.type)
             val typeText = if (typeIndex != -1) typeNames[typeIndex] else condition.type
 
-            val matchTypes = context.resources.getStringArray(R.array.conditions_match)
-            val matchNames = context.resources.getStringArray(R.array.conditions_match_name)
-            val matchIndex = if (condition.match != null) matchTypes.indexOf(condition.match) else -1
-            val matchText = if (matchIndex != -1) matchNames[matchIndex] else condition.match
+            val isBooleanCondition = when (condition.type) {
+                "alias_created_by_catch_all", "alias_not_created_by_catch_all",
+                "has_attachments", "has_no_attachments",
+                "email_is_spam", "email_is_not_spam",
+                "dmarc_failed", "dmarc_did_not_fail" -> true
+                else -> false
+            }
 
-            val firstValue = condition.values?.firstOrNull() ?: ""
-            if (!matchText.isNullOrEmpty() && firstValue.isNotEmpty()) {
-                "$typeText $matchText $firstValue"
-            } else if (!matchText.isNullOrEmpty()) {
-                "$typeText $matchText"
-            } else {
+            if (isBooleanCondition) {
                 typeText
+            } else {
+                val matchTypes = context.resources.getStringArray(R.array.conditions_match)
+                val matchNames = context.resources.getStringArray(R.array.conditions_match_name)
+                val matchIndex = if (condition.match != null) matchTypes.indexOf(condition.match) else -1
+                val matchText = if (matchIndex != -1) matchNames[matchIndex] else condition.match
+
+                val firstValue = condition.values?.firstOrNull() ?: ""
+                if (!matchText.isNullOrEmpty() && firstValue.isNotEmpty()) {
+                    "$typeText $matchText $firstValue"
+                } else if (!matchText.isNullOrEmpty()) {
+                    "$typeText $matchText"
+                } else {
+                    typeText
+                }
             }
         } else {
             ""
