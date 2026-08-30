@@ -1,11 +1,9 @@
-package host.stjin.anonaddy.ui.alias
+package host.stjin.anonaddy.ui.aliases
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -54,40 +52,29 @@ import app.futured.donut.compose.DonutProgress
 import app.futured.donut.compose.data.DonutModel
 import app.futured.donut.compose.data.DonutSection
 import com.google.android.gms.wearable.Wearable
+import androidx.activity.viewModels
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.components.ErrorScreen
-import host.stjin.anonaddy.components.Loading
-import host.stjin.anonaddy.components.ShowOnDeviceComposeContent
-import host.stjin.anonaddy.service.BackgroundWorkerHelper
-import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.components.CustomTimeText
+import host.stjin.anonaddy.ui.components.ErrorScreen
+import host.stjin.anonaddy.ui.components.Loading
 import host.stjin.anonaddy.ui.components.ScalingLazyColumnWithRSB
-import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy.ui.components.ShowOnDeviceComposeContent
 import host.stjin.anonaddy_shared.models.Aliases
-import host.stjin.anonaddy_shared.ui.theme.AppTheme
-import host.stjin.anonaddy_shared.ui.theme.getAddyIoChipColors
-import host.stjin.anonaddy_shared.ui.theme.getAddyIoToggleChipColors
+import host.stjin.anonaddy_shared.network.NetworkResult
+import host.stjin.anonaddy.ui.theme.AppTheme
+import host.stjin.anonaddy.ui.theme.getAddyIoChipColors
+import host.stjin.anonaddy.ui.theme.getAddyIoToggleChipColors
 import host.stjin.anonaddy_shared.utils.CacheHelper
 import kotlinx.coroutines.launch
 
-class ManageAliasActivity : ComponentActivity() {
+import host.stjin.anonaddy.ui.base.BaseComponentActivity
 
-    private var alias: Aliases? = null
-    private lateinit var networkHelper: NetworkHelper
+class ManageAliasActivity : BaseComponentActivity() {
+
+    private val viewModel: ManageAliasViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val userResource = CacheHelper.getBackgroundServiceCacheUserResource(this)
-        if (userResource == null) {
-            // App not setup, open splash
-            val intent = Intent(this, SplashActivity::class.java)
-            startActivity(intent)
-            finish()
-            return
-        }
-
-        networkHelper = NetworkHelper(this)
 
         val aliasId: String? = intent.getStringExtra("alias")
         val aliasList = CacheHelper.getBackgroundServiceCacheLastUpdatedAliasesData(this)
@@ -105,10 +92,9 @@ class ManageAliasActivity : ComponentActivity() {
             showAliasOnDevice(aliasId)
         } else {
             // Check if the alias exists in the local storage
-            this.alias = aliasList.firstOrNull { it.id == aliasId }
-            if (this.alias != null) {
-                isAliasActive = this.alias!!.active
-                isAliasPinned = this.alias!!.pinned
+            val foundAlias = aliasList.firstOrNull { it.id == aliasId }
+            if (foundAlias != null) {
+                viewModel.setInitialAlias(foundAlias)
                 setContent {
                     ComposeContent()
                 }
@@ -119,24 +105,22 @@ class ManageAliasActivity : ComponentActivity() {
                 // The alias does not exist in local storage, the alias could be sent from the paired device
                 // Try to obtain the alias from web
                 lifecycleScope.launch {
-                    NetworkHelper(this@ManageAliasActivity).getSpecificAlias({ result, error ->
-                        if (result != null) {
-                            this@ManageAliasActivity.alias = result
-                            isAliasActive = result.active
-                            isAliasPinned = result.pinned
+                    when (val result = viewModel.getSpecificAlias(aliasId)) {
+                        is NetworkResult.Success<Aliases> -> {
                             setContent {
                                 ComposeContent()
                             }
-                        } else {
+                        }
+                        is NetworkResult.Error -> {
                             setContent {
                                 ErrorScreen(
                                     this@ManageAliasActivity,
-                                    this@ManageAliasActivity.resources.getString(R.string.error_adding_alias) + "\n" + error,
+                                    this@ManageAliasActivity.resources.getString(R.string.error_adding_alias) + "\n" + result.error,
                                     this@ManageAliasActivity.resources.getString(R.string.edit_alias)
                                 )
                             }
                         }
-                    }, aliasId)
+                    }
                 }
             }
         }
@@ -186,19 +170,17 @@ class ManageAliasActivity : ComponentActivity() {
 
     }
 
-    private var isAliasActive by mutableStateOf(false)
-    private var isChangingActivationStatus by mutableStateOf(false)
-    private var isChangingPinnedStatus by mutableStateOf(false)
-    private var isAliasPinned by mutableStateOf(false)
-
     @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
     @Composable
     private fun ComposeContent() {
-        val currentAlias = alias ?: return // Exit if null
+        val currentAlias = viewModel.alias ?: return // Exit if null
         LaunchedEffect(Unit) {
             if (intent.getBooleanExtra("pinAlias", false)) {
-                isChangingPinnedStatus = true
-                pinAlias()
+                viewModel.isChangingPinnedStatus = true
+                val (_, errorMsg) = viewModel.pinAlias()
+                if (errorMsg != null) {
+                    Toast.makeText(this@ManageAliasActivity, errorMsg, Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -231,7 +213,7 @@ class ManageAliasActivity : ComponentActivity() {
                     state = scalingLazyListState,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    item { GetDonut() }
+                    item { DonutChart() }
                     item {
                         Text(
                             text = currentAlias.email,
@@ -248,44 +230,68 @@ class ManageAliasActivity : ComponentActivity() {
                         )
                     }
                     item {
+                        val forwardedText = remember(currentAlias.emails_forwarded) {
+                            this@ManageAliasActivity.resources.getQuantityString(R.plurals.d_forwarded, currentAlias.emails_forwarded, currentAlias.emails_forwarded)
+                        }
                         StatTextView(
-                            string = this@ManageAliasActivity.resources.getString(R.string.d_forwarded, currentAlias.emails_forwarded),
+                            string = forwardedText,
                             icon = R.drawable.ic_inbox,
                             colorResource(
                                 id = R.color.portalOrange
                             )
                         )
                     }
-                    item {
-                        StatTextView(
-                            string = this@ManageAliasActivity.resources.getString(R.string.d_replied, currentAlias.emails_replied),
-                            icon = R.drawable.ic_arrow_back_up,
-                            colorResource(
-                                id = R.color.portalBlue
+                    if (currentAlias.emails_replied > 0) {
+                        item {
+                            val repliedText = remember(currentAlias.emails_replied) {
+                                this@ManageAliasActivity.resources.getQuantityString(R.plurals.d_replied, currentAlias.emails_replied, currentAlias.emails_replied)
+                            }
+                            StatTextView(
+                                string = repliedText,
+                                icon = R.drawable.ic_arrow_back_up,
+                                colorResource(
+                                    id = R.color.portalBlue
+                                )
                             )
-                        )
+                        }
+                    }
+                    if (currentAlias.emails_sent > 0) {
+                        item {
+                            val sentText = remember(currentAlias.emails_sent) {
+                                this@ManageAliasActivity.resources.getQuantityString(R.plurals.d_sent, currentAlias.emails_sent, currentAlias.emails_sent)
+                            }
+                            StatTextView(
+                                string = sentText,
+                                icon = R.drawable.ic_mail_forward,
+                                colorResource(
+                                    id = R.color.easternBlue
+                                )
+                            )
+                        }
+                    }
+                    if (currentAlias.emails_blocked > 0) {
+                        item {
+                            val blockedText = remember(currentAlias.emails_blocked) {
+                                this@ManageAliasActivity.resources.getQuantityString(R.plurals.d_blocked, currentAlias.emails_blocked, currentAlias.emails_blocked)
+                            }
+                            StatTextView(
+                                string = blockedText,
+                                icon = R.drawable.ic_forbid,
+                                colorResource(
+                                    id = R.color.softRed
+                                )
+                            )
+                        }
                     }
                     item {
-                        StatTextView(
-                            string = this@ManageAliasActivity.resources.getString(R.string.d_sent, currentAlias.emails_sent),
-                            icon = R.drawable.ic_mail_forward,
-                            colorResource(
-                                id = R.color.easternBlue
-                            )
-                        )
+                        AliasActiveToggle(scalingLazyListState, haptic)
                     }
                     item {
-                        StatTextView(
-                            string = this@ManageAliasActivity.resources.getString(R.string.d_blocked, currentAlias.emails_blocked),
-                            icon = R.drawable.ic_forbid,
-                            colorResource(
-                                id = R.color.softRed
-                            )
-                        )
+                        AliasPinnedToggle(scalingLazyListState, haptic)
                     }
-                    item { AliasActiveToggle(scalingLazyListState, haptic) }
-                    item { AliasPinnedToggle(scalingLazyListState, haptic) }
-                    item { ShowOnDeviceChip(scalingLazyListState) }
+                    item {
+                        ShowOnDeviceButton(scalingLazyListState, currentAlias)
+                    }
                 }
             }
 
@@ -294,22 +300,21 @@ class ManageAliasActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun ShowOnDeviceChip(scalingLazyListState: ScalingLazyListState) {
-        val currentAlias = alias ?: return // Exit if null
+    private fun ShowOnDeviceButton(
+        scalingLazyListState: ScalingLazyListState,
+        currentAlias: Aliases
+    ) {
         Chip(
             modifier = Modifier
                 .padding(top = 2.dp, bottom = 2.dp)
                 .fillMaxWidth(),
-            onClick = {
-                if (!scalingLazyListState.isScrollInProgress) {
-                    // Happens in method
-                    //haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    showAliasOnDevice(currentAlias.id)
-                }
+            label = {
+                Text(
+                    resources.getString(
+                        R.string.show_on_paired_device
+                    ), maxLines = 1, overflow = TextOverflow.Ellipsis
+                )
             },
-            colors = getAddyIoChipColors(),
-            enabled = true,
-            label = { Text(text = resources.getString(R.string.show_on_paired_device)) },
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_devices),
@@ -318,6 +323,12 @@ class ManageAliasActivity : ComponentActivity() {
                         .size(24.dp)
                         .wrapContentSize(align = Alignment.Center),
                 )
+            },
+            colors = getAddyIoChipColors(),
+            onClick = {
+                if (!scalingLazyListState.isScrollInProgress) {
+                    showAliasOnDevice(currentAlias.id)
+                }
             }
         )
     }
@@ -330,24 +341,30 @@ class ManageAliasActivity : ComponentActivity() {
                 .fillMaxWidth(),
             label = {
                 Text(
-                    if (isAliasPinned) resources.getString(R.string.pinned) else resources.getString(
+                    if (viewModel.isAliasPinned) resources.getString(R.string.pinned) else resources.getString(
                         R.string.pin
                     ), maxLines = 1, overflow = TextOverflow.Ellipsis
                 )
             },
-            checked = isAliasPinned,
+            checked = viewModel.isAliasPinned,
             onCheckedChange = {
                 if (!scalingLazyListState.isScrollInProgress) {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                    if (isAliasPinned) {
+                    if (viewModel.isAliasPinned) {
                         lifecycleScope.launch {
-                            isChangingPinnedStatus = true
-                            unpinAlias()
+                            viewModel.isChangingPinnedStatus = true
+                            val (_, errorMsg) = viewModel.unpinAlias()
+                            if (errorMsg != null) {
+                                Toast.makeText(this@ManageAliasActivity, errorMsg, Toast.LENGTH_SHORT).show()
+                            }
                         }
                     } else {
                         lifecycleScope.launch {
-                            isChangingPinnedStatus = true
-                            pinAlias()
+                            viewModel.isChangingPinnedStatus = true
+                            val (_, errorMsg) = viewModel.pinAlias()
+                            if (errorMsg != null) {
+                                Toast.makeText(this@ManageAliasActivity, errorMsg, Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }
@@ -357,7 +374,7 @@ class ManageAliasActivity : ComponentActivity() {
             },
             secondaryLabel = {
                 Text(
-                    if (isChangingPinnedStatus) {
+                    if (viewModel.isChangingPinnedStatus) {
                         resources.getString(
                             R.string.changing_status
                         )
@@ -368,7 +385,7 @@ class ManageAliasActivity : ComponentActivity() {
             },
             appIcon = {
                 Icon(
-                    painter = if (isAliasPinned) painterResource(id = R.drawable.ic_pinned) else painterResource(
+                    painter = if (viewModel.isAliasPinned) painterResource(id = R.drawable.ic_pinned) else painterResource(
                         id = R.drawable.ic_pinned_off
                     ),
                     contentDescription = resources.getString(R.string.pin_alias),
@@ -389,22 +406,22 @@ class ManageAliasActivity : ComponentActivity() {
                 .fillMaxWidth(),
             label = {
                 Text(
-                    if (isAliasActive) resources.getString(R.string.activated) else resources.getString(
+                    if (viewModel.isAliasActive) resources.getString(R.string.activated) else resources.getString(
                         R.string.deactivated
                     ), maxLines = 1, overflow = TextOverflow.Ellipsis
                 )
             },
-            checked = isAliasActive,
+            checked = viewModel.isAliasActive,
             colors = getAddyIoToggleChipColors(),
             toggleControl = {
                 Icon(
-                    imageVector = ToggleChipDefaults.switchIcon(checked = isAliasActive),
-                    contentDescription = if (isAliasActive) resources.getString(R.string.activated) else resources.getString(R.string.deactivated),
+                    imageVector = ToggleChipDefaults.switchIcon(checked = viewModel.isAliasActive),
+                    contentDescription = if (viewModel.isAliasActive) resources.getString(R.string.activated) else resources.getString(R.string.deactivated),
                 )
             },
             secondaryLabel = {
                 Text(
-                    if (isChangingActivationStatus) {
+                    if (viewModel.isChangingActivationStatus) {
                         resources.getString(
                             R.string.changing_status
                         )
@@ -415,17 +432,23 @@ class ManageAliasActivity : ComponentActivity() {
             },
             onCheckedChange = {
                 if (!scalingLazyListState.isScrollInProgress) {
-                    isAliasActive = it
-                    if (!isChangingActivationStatus) {
-                        if (isAliasActive) {
+                    viewModel.isAliasActive = it
+                    if (!viewModel.isChangingActivationStatus) {
+                        if (viewModel.isAliasActive) {
                             lifecycleScope.launch {
-                                isChangingActivationStatus = true
-                                activateAlias()
+                                viewModel.isChangingActivationStatus = true
+                                val (_, errorMsg) = viewModel.activateAlias()
+                                if (errorMsg != null) {
+                                    Toast.makeText(this@ManageAliasActivity, errorMsg, Toast.LENGTH_SHORT).show()
+                                }
                             }
                         } else {
                             lifecycleScope.launch {
-                                isChangingActivationStatus = true
-                                deactivateAlias()
+                                viewModel.isChangingActivationStatus = true
+                                val (_, errorMsg) = viewModel.deactivateAlias()
+                                if (errorMsg != null) {
+                                    Toast.makeText(this@ManageAliasActivity, errorMsg, Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -435,65 +458,6 @@ class ManageAliasActivity : ComponentActivity() {
             },
             enabled = true
         )
-    }
-
-
-    private suspend fun deactivateAlias() {
-        networkHelper.deactivateSpecificAlias({ result ->
-            isChangingActivationStatus = false
-            if (result == "204") {
-                isAliasActive = false
-            } else {
-                Toast.makeText(this, this.resources.getString(R.string.error_edit_active) + "\n" + result, Toast.LENGTH_SHORT).show()
-            }
-
-            // Since an alias was deactivated , call scheduleBackgroundWorker. This method will schedule the service if its required
-            BackgroundWorkerHelper(this).scheduleBackgroundWorker()
-        }, this.alias!!.id)
-    }
-
-
-    private suspend fun activateAlias() {
-        networkHelper.activateSpecificAlias({ alias, result ->
-            isChangingActivationStatus = false
-            if (alias != null) {
-                isAliasActive = true
-            } else {
-                Toast.makeText(this, this.resources.getString(R.string.error_edit_active) + "\n" + result, Toast.LENGTH_SHORT).show()
-            }
-
-            // Since an alias was activated , call scheduleBackgroundWorker. This method will schedule the service if its required
-            BackgroundWorkerHelper(this).scheduleBackgroundWorker()
-        }, this.alias!!.id)
-    }
-
-    private suspend fun unpinAlias() {
-        networkHelper.unpinSpecificAlias({ result ->
-            isChangingPinnedStatus = false
-            if (result == "204") {
-                isAliasPinned = false
-            } else {
-                Toast.makeText(this, this.resources.getString(R.string.error_edit_pinned) + "\n" + result, Toast.LENGTH_SHORT).show()
-            }
-
-            // Since an alias was deactivated , call scheduleBackgroundWorker. This method will schedule the service if its required
-            BackgroundWorkerHelper(this).scheduleBackgroundWorker()
-        }, this.alias!!.id)
-    }
-
-
-    private suspend fun pinAlias() {
-        networkHelper.pinSpecificAlias({ alias, result ->
-            isChangingPinnedStatus = false
-            if (alias != null) {
-                isAliasPinned = true
-            } else {
-                Toast.makeText(this, this.resources.getString(R.string.error_edit_pinned) + "\n" + result, Toast.LENGTH_SHORT).show()
-            }
-
-            // Since an alias was activated , call scheduleBackgroundWorker. This method will schedule the service if its required
-            BackgroundWorkerHelper(this).scheduleBackgroundWorker()
-        }, this.alias!!.id)
     }
 
     @Composable
@@ -509,68 +473,85 @@ class ManageAliasActivity : ComponentActivity() {
     }
 
     @Composable
-    fun GetDonut() {
-        val currentAlias = alias ?: return // Exit if null
-        val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
+    fun DonutChart() {
+        val currentAlias = viewModel.alias ?: return // Exit if null
+        val portalOrange = colorResource(id = R.color.portalOrange)
+        val portalBlue = colorResource(id = R.color.portalBlue)
+        val easternBlue = colorResource(id = R.color.easternBlue)
+        val softRed = colorResource(id = R.color.softRed)
 
-        // If there are no statistics, sent the emptyDonut value to 1 so that a donut can be drawn
-        val emptyDonut = if (currentAlias.emails_forwarded == 0 &&
-            currentAlias.emails_replied == 0 &&
-            currentAlias.emails_sent == 0 &&
-            currentAlias.emails_blocked == 0
-        ) 1 else 0
+        val donutModel = remember(
+            currentAlias.emails_forwarded,
+            currentAlias.emails_replied,
+            currentAlias.emails_sent,
+            currentAlias.emails_blocked,
+            portalOrange, portalBlue, easternBlue, softRed
+        ) {
+            val emptyDonut = if (currentAlias.emails_forwarded == 0 &&
+                currentAlias.emails_replied == 0 &&
+                currentAlias.emails_sent == 0 &&
+                currentAlias.emails_blocked == 0
+            ) 1 else 0
 
-        val section1 = DonutSection(
-            color = colorResource(id = R.color.portalOrange),
-            amount = currentAlias.emails_forwarded.toFloat() + emptyDonut
-        )
-        // Always show section 1
-        listOfDonutSection.add(section1)
-
-
-        if (currentAlias.emails_replied > 0) {
-            val section2 = DonutSection(
-                color = colorResource(id = R.color.portalBlue),
-                amount = currentAlias.emails_replied.toFloat()
+            val sections = ArrayList<DonutSection>(4)
+            sections.add(
+                DonutSection(
+                    color = portalOrange,
+                    amount = currentAlias.emails_forwarded.toFloat() + emptyDonut
+                )
             )
-            listOfDonutSection.add(section2)
-        }
 
-        if (currentAlias.emails_sent > 0) {
-            val section3 = DonutSection(
-                color = colorResource(id = R.color.easternBlue),
-                amount = currentAlias.emails_sent.toFloat()
-            )
-            listOfDonutSection.add(section3)
-        }
+            if (currentAlias.emails_replied > 0) {
+                sections.add(
+                    DonutSection(
+                        color = portalBlue,
+                        amount = currentAlias.emails_replied.toFloat()
+                    )
+                )
+            }
 
-        if (currentAlias.emails_blocked > 0) {
-            val section4 = DonutSection(
-                color = colorResource(id = R.color.softRed),
-                amount = currentAlias.emails_blocked.toFloat()
-            )
-            listOfDonutSection.add(section4)
-        }
+            if (currentAlias.emails_sent > 0) {
+                sections.add(
+                    DonutSection(
+                        color = easternBlue,
+                        amount = currentAlias.emails_sent.toFloat()
+                    )
+                )
+            }
 
-        if (listOfDonutSection.sumOf { it.amount.toInt() } > 0) {
-            DonutProgress(
-                model = DonutModel(
-                    cap = listOfDonutSection.sumOf { it.amount.toInt() }.toFloat(),
+            if (currentAlias.emails_blocked > 0) {
+                sections.add(
+                    DonutSection(
+                        color = softRed,
+                        amount = currentAlias.emails_blocked.toFloat()
+                    )
+                )
+            }
+
+            val cap = sections.sumOf { it.amount.toInt() }.toFloat()
+            if (cap > 0) {
+                DonutModel(
+                    cap = cap,
                     masterProgress = 1f,
                     gapWidthDegrees = 0f,
                     gapAngleDegrees = 270f,
                     strokeWidth = 16f,
                     backgroundLineColor = Color.Transparent,
-                    // Sort the list by amount so that the biggest number will fill the whole ring
-                    sections = listOfDonutSection.sortedBy { it.amount },
-                ), modifier = Modifier
+                    sections = sections.sortedBy { it.amount }
+                )
+            } else {
+                null
+            }
+        }
+
+        if (donutModel != null) {
+            DonutProgress(
+                model = donutModel,
+                modifier = Modifier
                     .height(56.dp)
                     .width(56.dp)
             )
-        } else {
-            // There is not data to fill the donut, so don't compose anything
         }
-
     }
 
 }

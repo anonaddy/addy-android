@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
 
     <application
-        android:name="host.stjin.anonaddy_shared.AddyIoApp"
+        android:name=".AddyIoAppImpl"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -24,7 +24,7 @@
             android:required="true" />
 
         <activity
-            android:name=".ui.alias.ManageAliasActivity"
+            android:name=".ui.aliases.ManageAliasActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/edit_alias"
@@ -38,14 +38,14 @@
             android:noHistory="true"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ui.alias.CreateAliasActivity"
+            android:name=".ui.aliases.CreateAliasActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/add_alias"
             android:noHistory="true"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ui.alias.AliasActivity"
+            android:name=".ui.aliases.AliasesActivity"
             android:exported="true"
             android:label="@string/aliases"
             android:taskAffinity="host.stjin.anonaddy"
@@ -72,23 +72,34 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-
                 <data
                     android:host="*"
                     android:pathPrefix="/setup"
                     android:scheme="wear" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
                 <data
                     android:host="*"
                     android:pathPrefix="/start"
                     android:scheme="wear" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
                 <data
                     android:host="*"
                     android:pathPrefix="/reset"
                     android:scheme="wear" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
                 <data
                     android:host="*"
                     android:pathPrefix="/setIcon"
                     android:scheme="wear" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
                 <data
                     android:host="*"
                     android:pathPrefix="/showAlias"
@@ -103,8 +114,7 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round"
-            android:targetActivity=".ui.SplashActivity"
-            android:theme="@style/Theme.App.Starting">
+            android:targetActivity=".ui.SplashActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -120,8 +130,7 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher_classic"
             android:roundIcon="@mipmap/ic_launcher_classic_round"
-            android:targetActivity=".ui.SplashActivity"
-            android:theme="@style/Theme.App.Starting">
+            android:targetActivity=".ui.SplashActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -137,8 +146,7 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher_gradient"
             android:roundIcon="@mipmap/ic_launcher_gradient_round"
-            android:targetActivity=".ui.SplashActivity"
-            android:theme="@style/Theme.App.Starting">
+            android:targetActivity=".ui.SplashActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -154,8 +162,7 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher_inverse_gradient"
             android:roundIcon="@mipmap/ic_launcher_inverse_gradient_round"
-            android:targetActivity=".ui.SplashActivity"
-            android:theme="@style/Theme.App.Starting">
+            android:targetActivity=".ui.SplashActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

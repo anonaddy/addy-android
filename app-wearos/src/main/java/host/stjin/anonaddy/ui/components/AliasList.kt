@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.wear.tooling.preview.devices.WearDevices
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.foundation.lazy.items
@@ -27,10 +27,10 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.ui.alias.ManageAliasActivity
+import host.stjin.anonaddy.ui.aliases.ManageAliasActivity
 import host.stjin.anonaddy.utils.ColorUtils
 import host.stjin.anonaddy_shared.models.Aliases
-import host.stjin.anonaddy_shared.ui.theme.AppTheme
+import host.stjin.anonaddy.ui.theme.AppTheme
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
 
@@ -112,7 +112,7 @@ fun AliasList(aliases: List<Aliases>, scalingLazyListState: ScalingLazyListState
 
 @ExperimentalWearMaterialApi
 @Preview(
-    device = Devices.WEAR_OS_SMALL_ROUND,
+    device = WearDevices.SMALL_ROUND,
     showSystemUi = true,
     backgroundColor = 0xff000000,
     showBackground = true

@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-08-20T17:35:55.543638Z">
+        <DropdownSelection timestamp="2026-08-28T18:14:41.182194Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/stijn/.android/avd/Medium_Phone.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/stijn/.android/avd/Wear_OS_Small_Round.avd" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -15,12 +15,22 @@
           <targets>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=/Users/stjin/.android/avd/Pixel_Fold_API_34.avd" />
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=P11277001376" />
               </handle>
             </Target>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="PhysicalDevice" identifier="serial=P11277001376" />
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=9ce354f1" />
+              </handle>
+            </Target>
+            <Target type="DEFAULT_BOOT">
+              <handle>
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=LMF100EMWbbdb4b98" />
+              </handle>
+            </Target>
+            <Target type="DEFAULT_BOOT">
+              <handle>
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=0F006EM213700A" />
               </handle>
             </Target>
           </targets>

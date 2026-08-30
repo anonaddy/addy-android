@@ -25,8 +25,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.wear.tooling.preview.devices.WearDevices
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,11 +37,11 @@ import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.ui.alias.CreateAliasActivity
-import host.stjin.anonaddy.ui.alias.ManageAliasActivity
+import host.stjin.anonaddy.ui.aliases.CreateAliasActivity
+import host.stjin.anonaddy.ui.aliases.ManageAliasActivity
 import host.stjin.anonaddy_shared.models.Aliases
-import host.stjin.anonaddy_shared.ui.theme.AppTheme
-import host.stjin.anonaddy_shared.ui.theme.getAddyIoButtonColors
+import host.stjin.anonaddy.ui.theme.AppTheme
+import host.stjin.anonaddy.ui.theme.getAddyIoButtonColors
 
 private val SPACING_ALIAS_BUTTONS = Dp(24f)
 private val SPACING_BUTTONS = Dp(8f)
@@ -158,7 +158,7 @@ private fun ShowOnDeviceLayout(alias: Aliases, context: Context, activity: Creat
 
 @ExperimentalWearMaterialApi
 @Preview(
-    device = Devices.WEAR_OS_SMALL_ROUND,
+    device = WearDevices.SMALL_ROUND,
     showSystemUi = true,
     backgroundColor = 0xff000000,
     showBackground = true

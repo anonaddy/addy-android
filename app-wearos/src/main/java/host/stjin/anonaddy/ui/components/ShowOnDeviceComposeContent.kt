@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.components
+package host.stjin.anonaddy.ui.components
 
 import android.content.Context
 import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
@@ -29,7 +29,6 @@ import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.ui.components.ScalingLazyColumnWithRSB
 
 @OptIn(ExperimentalAnimationGraphicsApi::class)
 @Composable

@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.components
+package host.stjin.anonaddy.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.wear.tooling.preview.devices.WearDevices
 import androidx.compose.ui.unit.dp
 import host.stjin.anonaddy.R
 
@@ -28,7 +28,7 @@ fun Loading() {
 }
 
 @Preview(
-    device = Devices.WEAR_OS_SMALL_ROUND,
+    device = WearDevices.SMALL_ROUND,
     showSystemUi = true,
     backgroundColor = 0xff000000,
     showBackground = true

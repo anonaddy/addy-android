@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.components
+package host.stjin.anonaddy.ui.components
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box
@@ -14,8 +14,8 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.wear.tooling.preview.devices.WearDevices
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
@@ -27,9 +27,7 @@ import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.ui.components.CustomTimeText
-import host.stjin.anonaddy.ui.components.ScalingLazyColumnWithRSB
-import host.stjin.anonaddy_shared.ui.theme.AppTheme
+import host.stjin.anonaddy.ui.theme.AppTheme
 
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
@@ -82,7 +80,7 @@ fun ErrorScreen(context: Context, text: String, leadingText: String? = null) {
 }
 
 @Preview(
-    device = Devices.WEAR_OS_SMALL_ROUND,
+    device = WearDevices.SMALL_ROUND,
     showSystemUi = true,
     backgroundColor = 0xff000000,
     showBackground = true

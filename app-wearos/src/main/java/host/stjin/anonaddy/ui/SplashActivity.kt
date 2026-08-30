@@ -8,24 +8,28 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.components.ErrorScreen
+import host.stjin.anonaddy.ServiceLocator
+import host.stjin.anonaddy.ui.components.ErrorScreen
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
-import host.stjin.anonaddy.ui.alias.AliasActivity
+import host.stjin.anonaddy.ui.aliases.AliasesActivity
 import host.stjin.anonaddy_shared.AddyIo.API_BASE_URL
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.utils.NetworkUtils
 import kotlinx.coroutines.launch
 
+import host.stjin.anonaddy.ui.base.BaseComponentActivity
+
 @SuppressLint("CustomSplashScreen")
-class SplashActivity : ComponentActivity() {
+class SplashActivity : BaseComponentActivity() {
+
+    override fun requiresSetup(): Boolean = false
 
     private var localNetworkPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
@@ -65,7 +69,7 @@ class SplashActivity : ComponentActivity() {
         // This is prone to fail when users have restored the app data from any restore app as the
         // encryption key has changed. So we catch this once in the app and that's at launch
         val encryptedSettingsManager = try {
-            SettingsManager(true, this)
+            ServiceLocator.encryptedSettingsManager
         } catch (e: Exception) {
             null
         }
@@ -77,7 +81,7 @@ class SplashActivity : ComponentActivity() {
             }
             Handler(Looper.getMainLooper()).postDelayed({
                 // Clear settings
-                SettingsManager(false, this).clearSettingsAndCloseApp()
+                ServiceLocator.settingsManager.clearSettingsAndCloseApp()
             }, 15000)
             return
         }
@@ -111,7 +115,7 @@ class SplashActivity : ComponentActivity() {
         // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
         BackgroundWorkerHelper(this).scheduleBackgroundWorker()
 
-        val intent = Intent(this, AliasActivity::class.java)
+        val intent = Intent(this, AliasesActivity::class.java)
         startActivity(intent)
         finish()
     }
