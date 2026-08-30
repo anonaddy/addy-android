@@ -2,19 +2,19 @@ package host.stjin.anonaddy.ui.appsettings.features
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.CompoundButton
 import androidx.lifecycle.lifecycleScope
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
-import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.InsetUtil
+import host.stjin.anonaddy.utils.InsetUtils
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
-import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.network.NetworkResult
+import host.stjin.anonaddy_shared.repositories.UserRepository
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
@@ -25,21 +25,21 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
 
     private var forceSwitch = false
 
-    private lateinit var networkHelper: NetworkHelper
+    private lateinit var userRepository: UserRepository
 
     private lateinit var binding: ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding.inflate(layoutInflater)
-        InsetUtil.applyBottomInset(binding.activityAppSettingsFeaturesNotifySubscriptionExpiryNSVLL)
+        InsetUtils.applyBottomInset(binding.activityAppSettingsFeaturesNotifySubscriptionExpiryNSVLL)
 
         val view = binding.root
         setContentView(view)
 
 
-        settingsManager = SettingsManager(false, this)
-        networkHelper = NetworkHelper(this)
+        settingsManager = ServiceLocator.settingsManager
+        userRepository = ServiceLocator.userRepository
         setupToolbar(
             R.string.feature_subscription_expiry_notification,
             binding.activityAppSettingsFeaturesNotifySubscriptionExpiryNSV,
@@ -62,18 +62,17 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
     }
 
     private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.getSwitchChecked())
-            }
-        })
+        binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.getSwitchChecked())
+        }
     }
 
     private fun checkSubscriptionExpiry() {
         lifecycleScope.launch {
-            networkHelper.getUserResource { user: UserResource?, _: String? ->
-                setSubscriptionInfoText(user)
+            when (val result = userRepository.getUserResource()) {
+                is NetworkResult.Success -> setSubscriptionInfoText(result.data)
+                is NetworkResult.Error -> {}
             }
         }
     }
@@ -114,16 +113,13 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
     }
 
     private fun setOnSwitchListeners() {
-        binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed || forceSwitch) {
-                    settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, checked)
+        binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed || forceSwitch) {
+                settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, checked)
 
-                    // Since API token expiry should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
-                    BackgroundWorkerHelper(this@AppSettingsFeaturesNotifySubscriptionExpiryActivity).scheduleBackgroundWorker()
-                }
+                // Since API token expiry should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(this@AppSettingsFeaturesNotifySubscriptionExpiryActivity).scheduleBackgroundWorker()
             }
-        })
+        }
     }
 }

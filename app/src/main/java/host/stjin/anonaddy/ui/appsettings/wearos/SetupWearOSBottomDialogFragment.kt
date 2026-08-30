@@ -1,6 +1,6 @@
 package host.stjin.anonaddy.ui.appsettings.wearos
+import host.stjin.anonaddy_shared.utils.GsonTools
 
-import android.app.Activity
 import android.app.Dialog
 import android.app.NotificationManager
 import android.content.Context
@@ -14,9 +14,9 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.wearable.Wearable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.gson.Gson
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.BottomsheetSetupWearosBinding
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.utils.WearOSHelper
@@ -25,16 +25,27 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.launch
 
 
-class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, private val nodeId: String?, private val nodeDisplayName: String?) :
+class SetupWearOSBottomDialogFragment :
     BaseBottomSheetDialogFragment(),
     View.OnClickListener {
-    private lateinit var listener: AddSetupWearOSBottomDialogListener
+    private var nodeId: String? = null
+    private var nodeDisplayName: String? = null
+
+    private var listener: AddSetupWearOSBottomDialogListener? = null
 
     private var _binding: BottomsheetSetupWearosBinding? = null
 
     // This property is only valid between onCreateView and
-// onDestroyView.
+    // onDestroyView.
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            nodeId = it.getString(ARG_NODE_ID)
+            nodeDisplayName = it.getString(ARG_NODE_DISPLAY_NAME)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,15 +59,15 @@ class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, priv
             binding.bsSetupWearosDesc.text = this.resources.getString(
                 R.string.setup_wearable_app_desc,
                 nodeDisplayName,
-                (activity?.application as AddyIoApp).userResource.username
+                (activity?.application as? AddyIoApp)?.userResourceOrNull?.username ?: ""
             )
 
-            listener = activity as AddSetupWearOSBottomDialogListener
+            listener = (parentFragment as? AddSetupWearOSBottomDialogListener) ?: (activity as? AddSetupWearOSBottomDialogListener)
             binding.bsSetupWearosConfirmButton.setOnClickListener(this)
             binding.bsSetupWearosNegativeButton.setOnClickListener(this)
         } else {
             Toast.makeText(context, this.resources.getString(R.string.wearable_device_invalid), Toast.LENGTH_SHORT).show()
-            listener.onDismissed()
+            listener?.onDismissed()
         }
         return root
 
@@ -81,9 +92,9 @@ class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, priv
                 }
 
                 R.id.bs_setup_wearos_negative_button -> {
-                    context?.let { SettingsManager(false, it).putSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG, true) }
+                    context?.let { ServiceLocator.settingsManager.putSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG, true) }
                     Toast.makeText(context, this.resources.getString(R.string.wearable_setup_skip_setup), Toast.LENGTH_SHORT).show()
-                    listener.onDismissed()
+                    listener?.onDismissed()
                 }
             }
         }
@@ -91,7 +102,7 @@ class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, priv
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        listener.onDismissed()
+        listener?.onDismissed()
     }
 
     private fun setupWearableDevice() {
@@ -101,17 +112,18 @@ class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, priv
          * Protect this part
          */
         if (nodeId != null) {
-            lifecycleScope.launch {
-                (activity as SetupWearOSBottomSheetActivity).isAuthenticated(shouldFinishOnError = false) { isAuthenticated ->
+            val wearActivity = activity as? SetupWearOSBottomSheetActivity ?: return
+            viewLifecycleOwner.lifecycleScope.launch {
+                wearActivity.isAuthenticated(shouldFinishOnError = false) { isAuthenticated ->
                     if (isAuthenticated) {
                         val notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
                         binding.bsSetupWearosErrorMessage.visibility = View.INVISIBLE
                         binding.bsSetupWearosConfirmButton.startAnimation()
 
-                        val configuration = Gson().toJson(WearOSHelper(parentActivity).createWearOSConfiguration())
-                        Wearable.getMessageClient(activity as SetupWearOSBottomSheetActivity).sendMessage(
-                            nodeId,
+                        val configuration = GsonTools.gson.toJson(WearOSHelper.createWearOSConfiguration())
+                        Wearable.getMessageClient(wearActivity).sendMessage(
+                            nodeId!!,
                             "/setup",
                             configuration.toByteArray()
                         ).addOnSuccessListener {
@@ -121,7 +133,7 @@ class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, priv
                                 this@SetupWearOSBottomDialogFragment.resources.getString(R.string.wearable_setup_success),
                                 Toast.LENGTH_SHORT
                             ).show()
-                            listener.onDismissed()
+                            listener?.onDismissed()
                         }.addOnCanceledListener {
                             binding.bsSetupWearosErrorMessage.visibility = View.VISIBLE
                             binding.bsSetupWearosErrorMessage.text =
@@ -146,8 +158,16 @@ class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, priv
     }
 
     companion object {
-        fun newInstance(parentActivity: Activity, nodeId: String?, nodeDisplayName: String?): SetupWearOSBottomDialogFragment {
-            return SetupWearOSBottomDialogFragment(parentActivity, nodeId, nodeDisplayName)
+        private const val ARG_NODE_ID = "arg_node_id"
+        private const val ARG_NODE_DISPLAY_NAME = "arg_node_display_name"
+
+        fun newInstance(nodeId: String?, nodeDisplayName: String?): SetupWearOSBottomDialogFragment {
+            return SetupWearOSBottomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_NODE_ID, nodeId)
+                    putString(ARG_NODE_DISPLAY_NAME, nodeDisplayName)
+                }
+            }
         }
     }
 }

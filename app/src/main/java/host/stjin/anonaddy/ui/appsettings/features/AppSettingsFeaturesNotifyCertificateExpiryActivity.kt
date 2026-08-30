@@ -4,17 +4,15 @@ import android.os.Bundle
 import android.security.KeyChain
 import android.security.KeyChainAliasCallback
 import android.view.View
-import android.widget.CompoundButton
 import androidx.lifecycle.lifecycleScope
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifyCertificateExpiryBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
-import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.InsetUtil
+import host.stjin.anonaddy.utils.InsetUtils
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.managers.SettingsManager.PREFS
 import kotlinx.coroutines.Dispatchers
@@ -30,21 +28,18 @@ class AppSettingsFeaturesNotifyCertificateExpiryActivity : BaseActivity() {
 
     private var forceSwitch = false
 
-    private lateinit var networkHelper: NetworkHelper
-
     private lateinit var binding: ActivityAppSettingsFeaturesNotifyCertificateExpiryBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifyCertificateExpiryBinding.inflate(layoutInflater)
-        InsetUtil.applyBottomInset(binding.activityAppSettingsFeaturesNotifyCertificateExpiryNSVLL)
+        InsetUtils.applyBottomInset(binding.activityAppSettingsFeaturesNotifyCertificateExpiryNSVLL)
 
         val view = binding.root
         setContentView(view)
 
-        settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
-        networkHelper = NetworkHelper(this)
+        settingsManager = ServiceLocator.settingsManager
+        encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         setupToolbar(
             R.string.feature_api_token_expiry_notification,
             binding.activityAppSettingsFeaturesNotifyCertificateExpiryNSV,
@@ -66,24 +61,12 @@ class AppSettingsFeaturesNotifyCertificateExpiryActivity : BaseActivity() {
     }
 
     private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.getSwitchChecked())
-            }
-        })
-        binding.activityAppSettingsFeaturesNotifyCertificateExpiryChangeCertificate.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                selectCertificate()
-            }
-        })
-        binding.activityAppSettingsFeaturesNotifyCertificateExpiryRemoveCertificate.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                deleteCertificatePrompt()
-            }
-        })
+        binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.getSwitchChecked())
+        }
+        binding.activityAppSettingsFeaturesNotifyCertificateExpiryChangeCertificate.setOnLayoutClickedListener { selectCertificate() }
+        binding.activityAppSettingsFeaturesNotifyCertificateExpiryRemoveCertificate.setOnLayoutClickedListener { deleteCertificatePrompt() }
     }
 
     private fun checkCertificateExpiry() {
@@ -135,17 +118,14 @@ class AppSettingsFeaturesNotifyCertificateExpiryActivity : BaseActivity() {
     }
 
     private fun setOnSwitchListeners() {
-        binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed || forceSwitch) {
-                    settingsManager.putSettingsBool(PREFS.NOTIFY_CERTIFICATE_EXPIRY, checked)
+        binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed || forceSwitch) {
+                settingsManager.putSettingsBool(PREFS.NOTIFY_CERTIFICATE_EXPIRY, checked)
 
-                    // Since certificate expiry should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
-                    BackgroundWorkerHelper(this@AppSettingsFeaturesNotifyCertificateExpiryActivity).scheduleBackgroundWorker()
-                }
+                // Since certificate expiry should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(this@AppSettingsFeaturesNotifyCertificateExpiryActivity).scheduleBackgroundWorker()
             }
-        })
+        }
     }
 
     private fun deleteCertificatePrompt() {

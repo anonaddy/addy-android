@@ -1,48 +1,47 @@
 package host.stjin.anonaddy.ui.recipients
 
 import android.app.Activity
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.widget.NestedScrollView
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.adapter.RecipientAdapter
 import host.stjin.anonaddy.databinding.FragmentRecipientsBinding
 import host.stjin.anonaddy.interfaces.Refreshable
-import host.stjin.anonaddy.ui.MainActivity
-import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
+import host.stjin.anonaddy.ui.base.BaseFragment
+import host.stjin.anonaddy.ui.base.SharedScrollViewModel
+import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
-import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.Recipients
-import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.network.NetworkResult
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
-class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecipientBottomDialogListener, Refreshable {
+class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddRecipientBottomDialogListener, Refreshable {
 
-    private var recipients: ArrayList<Recipients>? = null
-    private var networkHelper: NetworkHelper? = null
+    // 1. Properties
+    private val recipientsViewModel: RecipientsViewModel by viewModels()
+    private val sharedScrollViewModel: SharedScrollViewModel by activityViewModels()
+
     private var encryptedSettingsManager: SettingsManager? = null
     private var oneTimeRecyclerViewActions: Boolean = true
 
@@ -50,24 +49,21 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
     private var _binding: FragmentRecipientsBinding? = null
     private val binding get() = _binding!!
 
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
             if (data?.getBooleanExtra("shouldRefresh", false) == true) {
-                getDataFromWeb(null)
+                getDataFromWeb(null, showShimmer = false)
             }
-        }
-    }
-
-    private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            binding.recipientsNSV.post { binding.recipientsNSV.smoothScrollTo(0, 0) }
         }
     }
 
     private lateinit var recipientAdapter: RecipientAdapter
     private lateinit var deleteRecipientSnackbar: Snackbar
 
+    private var isSilentRefresh = false
+
+    // 2. Lifecycle Methods
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -76,13 +72,14 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
         _binding = FragmentRecipientsBinding.inflate(inflater, container, false)
 
         val root = binding.root
-        encryptedSettingsManager = SettingsManager(true, requireContext())
-        networkHelper = NetworkHelper(requireContext())
+        encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
 
         setStats()
         setOnClickListener()
         setNsvListener()
         setRecipientRecyclerView()
+        observeViewModel()
+
         getDataFromWeb(savedInstanceState)
 
         return root
@@ -91,30 +88,17 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
     override fun onResume() {
         super.onResume()
         setHasReachedTopOfNsv()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"), Context.RECEIVER_EXPORTED)
-        } else {
-            activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        activity?.unregisterReceiver(mScrollUpBroadcastReceiver)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val gson = Gson()
-        val json = gson.toJson(recipients)
-        outState.putString("recipients", json)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        if (::deleteRecipientSnackbar.isInitialized && deleteRecipientSnackbar.isShown) {
+            deleteRecipientSnackbar.dismiss()
+        }
         _binding = null
     }
 
+    // 3. View Setup
     private fun setOnClickListener() {
         binding.recipientsAddRecipients.setOnClickListener {
             if (!addRecipientsFragment.isAdded) {
@@ -127,11 +111,40 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
     }
 
     private fun setNsvListener() {
-        binding.recipientsNSV.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, _, _, _ -> setHasReachedTopOfNsv() })
+        setupNsvScrollListener(binding.recipientsNSV)
     }
 
     private fun setRecipientRecyclerView() {
+        recipientAdapter = RecipientAdapter()
+        recipientAdapter.setClickListener(object : RecipientAdapter.ClickListener {
+            override fun onClickSettings(pos: Int, view: View) {
+                val currentList = recipientAdapter.currentList
+                if (pos in currentList.indices) {
+                    val intent = Intent(context, ManageRecipientActivity::class.java)
+                    intent.putExtra("recipient_id", currentList[pos].id)
+                    resultLauncher.launch(intent)
+                }
+            }
+
+            override fun onClickResend(pos: Int, view: View) {
+                val currentList = recipientAdapter.currentList
+                if (pos in currentList.indices) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        resendConfirmationMailRecipient(currentList[pos].id)
+                    }
+                }
+            }
+
+            override fun onClickDelete(pos: Int, view: View) {
+                val currentList = recipientAdapter.currentList
+                if (pos in currentList.indices) {
+                    deleteRecipient(currentList[pos].id, requireContext())
+                }
+            }
+        })
+
         binding.recipientsAllRecipientsRecyclerview.apply {
+            adapter = recipientAdapter
             if (oneTimeRecyclerViewActions) {
                 oneTimeRecyclerViewActions = false
 
@@ -147,9 +160,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
 
                 binding.recipientsChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
                     if (checkedIds.isNotEmpty()) {
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            getAllRecipients()
-                        }
+                        getDataFromWeb(null, showShimmer = false)
                     }
                 }
             }
@@ -160,7 +171,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
         binding.recipientsCount.apply {
             val total = list.size
             if (total > 0) {
-                text = total.toString()
+                text = String.format(java.util.Locale.getDefault(), "%d", total)
                 visibility = View.VISIBLE
             } else {
                 visibility = View.GONE
@@ -168,54 +179,45 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
         }
 
         binding.recipientsAllRecipientsRecyclerview.apply {
-            recipients = list
-
             encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, list.size)
-
-            recipientAdapter = RecipientAdapter(list)
-            recipientAdapter.setClickListener(object : RecipientAdapter.ClickListener {
-
-                override fun onClickSettings(pos: Int, aView: View) {
-                    val intent = Intent(context, ManageRecipientsActivity::class.java)
-                    intent.putExtra("recipient_id", list[pos].id)
-                    resultLauncher.launch(intent)
-                }
-
-                override fun onClickResend(pos: Int, aView: View) {
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        resendConfirmationMailRecipient(list[pos].id, context)
-                    }
-                }
-
-                override fun onClickDelete(pos: Int, aView: View) {
-                    deleteRecipient(list[pos].id, context)
-                }
-
-            })
+            recipientAdapter.submitList(list.toList())
             hideShimmer()
-            adapter = recipientAdapter
         }
     }
 
-    fun getDataFromWeb(savedInstanceState: Bundle?) {
+    // 4. Observers
+    private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            if (savedInstanceState != null) {
-                setStats()
-                val recipientsJson = savedInstanceState.getString("recipients")
-                if (!recipientsJson.isNullOrEmpty() && recipientsJson != "null") {
-                    val gson = Gson()
-                    val myType = object : TypeToken<ArrayList<Recipients>>() {}.type
-                    val list = gson.fromJson<ArrayList<Recipients>>(recipientsJson, myType)
-                    setRecipientAdapter(list)
-                } else {
-                    getUserResource()
-                    getAllRecipients()
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    recipientsViewModel.recipientsState.collect { state ->
+                        handleUiState(
+                            state,
+                            shimmer = if (!isSilentRefresh) binding.recipientsAllRecipientsRecyclerview else null,
+                            progress = if (isSilentRefresh) binding.recipientsProgress else null,
+                            titleProgress = if (isSilentRefresh) binding.recipientsTitleProgress else null,
+                            errorStringRes = R.string.error_obtaining_recipients
+                        ) { data ->
+                            setRecipientAdapter(ArrayList(data))
+                            setStats()
+                        }
+                    }
                 }
-            } else {
-                getUserResource()
-                getAllRecipients()
+                launch {
+                    sharedScrollViewModel.scrollEvents.collect {
+                        _binding?.recipientsNSV?.smoothScrollTo(0, 0)
+                    }
+                }
             }
         }
+    }
+
+    // 5. Private Helpers / Public Methods
+    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true) {
+        isSilentRefresh = !showShimmer
+        setStats()
+        viewLifecycleOwner.lifecycleScope.launch { getUserResource() }
+        recipientsViewModel.loadRecipients(forceRefresh = (savedInstanceState == null), verifiedOnly = getSelectedFilter())
     }
 
     private fun getSelectedFilter(): Boolean {
@@ -223,150 +225,53 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
     }
 
     private fun setHasReachedTopOfNsv() {
-        (activity as MainActivity).hasReachedTopOfNsv = !binding.recipientsNSV.canScrollVertically(-1)
+        updateHasReachedTopOfNsv(binding.recipientsNSV)
     }
 
     private fun setStats() {
+        val app = activity?.application as? AddyIoApp ?: return
+        val userResource = app.userResourceOrNull ?: return
         binding.activityRecipientSettingsLLCount.text = requireContext().resources.getString(
             R.string.you_ve_used_d_out_of_d_recipients,
-            (activity?.application as AddyIoApp).userResource.recipient_count,
-            if ((activity?.application as AddyIoApp).userResource.subscription != null) (activity?.application as AddyIoApp).userResource.recipient_limit else this.resources.getString(
+            userResource.recipient_count,
+            if (userResource.subscription != null) userResource.recipient_limit else this.resources.getString(
                 R.string.unlimited
             )
         )
 
-        if ((activity?.application as AddyIoApp).userResource.subscription != null) {
+        if (userResource.subscription != null) {
             binding.recipientsAddRecipients.isEnabled =
-                (activity?.application as AddyIoApp).userResource.recipient_count < (activity?.application as AddyIoApp).userResource.recipient_limit!!
+                userResource.recipient_count < (userResource.recipient_limit ?: Int.MAX_VALUE)
         } else {
             binding.recipientsAddRecipients.isEnabled = true
         }
     }
 
     private suspend fun getUserResource() {
-        networkHelper?.getUserResource { user: UserResource?, result: String? ->
-            if (user != null) {
-                (activity?.application as AddyIoApp).userResource = user
+        when (val result = recipientsViewModel.refreshUserResource()) {
+            is NetworkResult.Success -> {
+                if (!isAdded) return
                 setStats()
-            } else {
-                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                    SnackbarHelper.createSnackbar(
-                        requireContext(),
-                        requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
-                        LoggingHelper.LOGFILES.DEFAULT
-                    ).show()
-                } else {
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                            it,
-                            LoggingHelper.LOGFILES.DEFAULT
-                        )
-                            .apply {
-                                anchorView = bottomNavView
-                            }.show()
-                    }
-                }
+            }
+            is NetworkResult.Error -> {
+                if (!isAdded) return
+                showError(result.error, R.string.error_obtaining_user)
             }
         }
     }
 
-    private suspend fun getAllRecipients() {
-        binding.recipientsAllRecipientsRecyclerview.showShimmer()
-
-        if (!getSelectedFilter()) {
-            binding.recipientsAllRecipientsTitle.text = getString(R.string.recipients)
+    private suspend fun resendConfirmationMailRecipient(id: String) {
+        val result = recipientsViewModel.resendVerificationEmail(id)
+        if (result is NetworkResult.Success && result.data == "200") {
+            verificationEmailSentSnackbar()
         } else {
-            binding.recipientsAllRecipientsTitle.text = getString(R.string.recipients_filtered)
+            val error = result.errorOrNull() ?: ""
+            showError(error, R.string.error_resend_verification, showLog = null)
         }
-
-        networkHelper?.getRecipients({ list, result ->
-            if (::recipientAdapter.isInitialized && list == recipientAdapter.getList()) {
-                binding.recipientsAllRecipientsRecyclerview.hideShimmer()
-                return@getRecipients
-            }
-
-            if (list != null) {
-                setRecipientAdapter(list)
-            } else {
-                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                    SnackbarHelper.createSnackbar(
-                        requireContext(),
-                        requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + result,
-                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
-                        LoggingHelper.LOGFILES.DEFAULT
-                    ).show()
-                } else {
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + result,
-                            it,
-                            LoggingHelper.LOGFILES.DEFAULT
-                        )
-                            .apply {
-                                anchorView = bottomNavView
-                            }.show()
-                    }
-                }
-            }
-        }, verifiedOnly = getSelectedFilter())
     }
 
-    private suspend fun resendConfirmationMailRecipient(id: String, context: Context) {
-        networkHelper?.resendVerificationEmail({ result ->
-            if (result == "200") {
-                verificationEmailSentSnackbar(context)
-            } else {
-                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                    SnackbarHelper.createSnackbar(
-                        context,
-                        context.resources.getString(R.string.error_resend_verification) + "\n" + result,
-                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
-                        LoggingHelper.LOGFILES.DEFAULT
-                    ).show()
-                } else {
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-
-                    bottomNavView?.let {
-                        SnackbarHelper.createSnackbar(
-                            context,
-                            context.resources.getString(R.string.error_resend_verification) + "\n" + result,
-                            it,
-                            LoggingHelper.LOGFILES.DEFAULT
-                        )
-                            .apply {
-                                anchorView = bottomNavView
-                            }.show()
-                    }
-                }
-            }
-        }, id)
-    }
-
-    private fun verificationEmailSentSnackbar(context: Context) {
-        if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-            SnackbarHelper.createSnackbar(
-                context,
-                context.resources.getString(R.string.verification_email_has_been_sent),
-                (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView()
-            ).show()
-        } else {
-            val bottomNavView: BottomNavigationView? =
-                activity?.findViewById(R.id.nav_view)
-            bottomNavView?.let {
-                SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.verification_email_has_been_sent), it).apply {
-                    anchorView = bottomNavView
-                }.show()
-            }
-        }
+    private fun verificationEmailSentSnackbar() {
+        showError(null, R.string.verification_email_has_been_sent)
     }
 
     private fun deleteRecipient(id: String, context: Context) {
@@ -378,89 +283,51 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
             neutralButtonText = resources.getString(R.string.cancel),
             positiveButtonText = resources.getString(R.string.delete),
             positiveButtonAction = {
-                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                    deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
-                        context,
-                        this.resources.getString(R.string.deleting_recipient),
-                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
-                        length = Snackbar.LENGTH_INDEFINITE
-                    )
-                    deleteRecipientSnackbar.show()
-                } else {
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
-                        deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
-                            context,
-                            this.resources.getString(R.string.deleting_recipient),
-                            it,
-                            length = Snackbar.LENGTH_INDEFINITE
-                        ).apply {
-                            anchorView = bottomNavView
-                        }
-                        deleteRecipientSnackbar.show()
-                    }
-                }
+                deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
+                    requireContext(),
+                    this.resources.getString(R.string.deleting_recipient),
+                    getSnackbarContainer(),
+                    length = Snackbar.LENGTH_INDEFINITE
+                )
+                deleteRecipientSnackbar.show()
 
-                lifecycleScope.launch {
-                    deleteRecipientHttpRequest(id, context)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    deleteRecipientHttpRequest(id)
                 }
             }
         ).show()
     }
 
-    private suspend fun deleteRecipientHttpRequest(id: String, context: Context) {
-        networkHelper?.deleteRecipient({ result ->
-            if (result == "204") {
-                deleteRecipientSnackbar.dismiss()
-                getDataFromWeb(null)
-            } else {
-                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                    deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
-                        context,
-                        context.resources.getString(
-                            R.string.s_s,
-                            context.resources.getString(R.string.error_deleting_recipient), result
-                        ),
-                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
-                        LoggingHelper.LOGFILES.DEFAULT
-                    )
-                    deleteRecipientSnackbar.show()
-                } else {
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
-                        deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
-                            context,
-                            context.resources.getString(
-                                R.string.s_s,
-                                context.resources.getString(R.string.error_deleting_recipient), result
-                            ),
-                            it,
-                            LoggingHelper.LOGFILES.DEFAULT
-                        ).apply {
-                            anchorView = bottomNavView
-                        }
-                        deleteRecipientSnackbar.show()
-                    }
-                }
-            }
-        }, id)
+    private suspend fun deleteRecipientHttpRequest(id: String) {
+        val result = recipientsViewModel.deleteRecipient(id)
+        if (result is NetworkResult.Success && result.data == "204") {
+            deleteRecipientSnackbar.dismiss()
+            getDataFromWeb(null, showShimmer = false)
+        } else {
+            val error = result.errorOrNull() ?: ""
+            showError(error, R.string.error_deleting_recipient)
+        }
     }
 
     override fun onAdded() {
         addRecipientsFragment.dismissAllowingStateLoss()
-        verificationEmailSentSnackbar(requireContext())
-        getDataFromWeb(null)
+        verificationEmailSentSnackbar()
+        getDataFromWeb(null, showShimmer = false)
     }
 
-    override fun onRefreshData() {
-        if (!isAdded) return
+    override suspend fun onRefreshData() {
+        if (!isAdded) {
+            return
+        }
         try {
-            viewLifecycleOwner.lifecycleScope.launch {
-                getDataFromWeb(null)
+            isSilentRefresh = true
+            kotlinx.coroutines.coroutineScope {
+                val userJob = launch { getUserResource() }
+                val recipientsJob = recipientsViewModel.loadRecipients(forceRefresh = true, verifiedOnly = getSelectedFilter())
+                userJob.join()
+                recipientsJob.join()
             }
-        } catch (e: IllegalStateException) {
+        } catch (e: Exception) {
             LoggingHelper(requireContext()).addLog(
                 LOGIMPORTANCE.CRITICAL.int,
                 "Failed to refresh data, view lifecycle not available. $e",

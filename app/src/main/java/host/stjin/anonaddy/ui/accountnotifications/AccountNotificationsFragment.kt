@@ -1,117 +1,101 @@
 package host.stjin.anonaddy.ui.accountnotifications
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import androidx.core.net.toUri
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.adapter.AccountNotificationsAdapter
 import host.stjin.anonaddy.databinding.FragmentAccountNotificationsBinding
-import host.stjin.anonaddy.ui.MainActivity
-import host.stjin.anonaddy.utils.InsetUtil
+import host.stjin.anonaddy.interfaces.Refreshable
+import host.stjin.anonaddy.ui.base.BaseFragment
+import host.stjin.anonaddy.utils.InsetUtils
 import host.stjin.anonaddy.utils.MarginItemDecoration
-import host.stjin.anonaddy.utils.ScreenSizeUtils
-import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.AccountNotifications
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
-class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBottomDialogFragment.AddAccountNotificationsBottomDialogListener {
+class AccountNotificationsFragment : BaseFragment(),
+    AccountNotificationsDetailsBottomDialogFragment.AddAccountNotificationsBottomDialogListener, Refreshable {
+
+    // 1. Properties
+    private val notificationsViewModel: AccountNotificationsViewModel by viewModels()
+
     private var accountNotifications: ArrayList<AccountNotifications>? = null
-
-    private var networkHelper: NetworkHelper? = null
-
     private var encryptedSettingsManager: SettingsManager? = null
-
     private var oneTimeRecyclerViewActions: Boolean = true
 
     private var accountNotificationsDetailsBottomDialogFragment: AccountNotificationsDetailsBottomDialogFragment? = null
 
     private var _binding: FragmentAccountNotificationsBinding? = null
-
-    // This property is only valid between onCreateView and
-// onDestroyView.
     private val binding get() = _binding!!
 
     private lateinit var accountNotificationsAdapter: AccountNotificationsAdapter
 
+    private var isSilentRefresh = false
+
+    // 2. Lifecycle Methods
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAccountNotificationsBinding.inflate(inflater, container, false)
-        InsetUtil.applyBottomInset(binding.fragmentAccountNotificationsLL1)
+        InsetUtils.applyBottomInset(binding.fragmentAccountNotificationsLL1)
         val root = binding.root
 
-        encryptedSettingsManager = SettingsManager(true, requireContext())
-        networkHelper = NetworkHelper(requireContext())
+        encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
 
         setAccountNotificationsRecyclerView()
+        observeViewModel()
         getDataFromWeb(savedInstanceState)
 
         return root
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val gson = Gson()
-        val json = gson.toJson(accountNotifications)
-        outState.putString("accountNotifications", json)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
-    fun getDataFromWeb(savedInstanceState: Bundle?, callback: () -> Unit? = {}) {
-        // Get the latest data in the background, and update the values when loaded
-        lifecycleScope.launch {
-            if (savedInstanceState != null) {
-
-                val accountNotificationsJson = savedInstanceState.getString("accountNotifications")
-                if (accountNotificationsJson!!.isNotEmpty() && accountNotificationsJson != "null") {
-                    val gson = Gson()
-
-                    val myType = object : TypeToken<ArrayList<AccountNotifications>>() {}.type
-                    val list = gson.fromJson<ArrayList<AccountNotifications>>(accountNotificationsJson, myType)
-                    setAccountNotificationsAdapter(list)
-                } else {
-                    // accountNotificationsJson could be null when an embedded activity is opened instantly
-                    getAllAccountNotificationsAndSetRecyclerview()
-                }
-
-            } else {
-                getAllAccountNotificationsAndSetRecyclerview()
-            }
-            callback()
-        }
-    }
-
-    override fun onOpenUrl(url: String?) {
-        if (url != null) {
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = url.toUri()
-            startActivity(i)
-        }
-
-        accountNotificationsDetailsBottomDialogFragment?.dismissAllowingStateLoss()
-    }
-
+    // 3. View Setup
     private fun setAccountNotificationsRecyclerView() {
+        accountNotificationsAdapter = AccountNotificationsAdapter()
+        accountNotificationsAdapter.setClickListener(object : AccountNotificationsAdapter.ClickListener {
+            override fun onClickDetails(pos: Int, view: View) {
+                accountNotifications?.getOrNull(pos)?.let {
+                    accountNotificationsDetailsBottomDialogFragment = AccountNotificationsDetailsBottomDialogFragment.newInstance(
+                        it.created_at,
+                        it.title,
+                        it.text,
+                        it.link_text,
+                        it.link
+                    )
+                    accountNotificationsDetailsBottomDialogFragment!!.show(
+                        childFragmentManager,
+                        "accountNotificationsDetailsBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
         binding.fragmentAccountNotificationsAllAccountNotificationsRecyclerview.apply {
+            adapter = accountNotificationsAdapter
             if (oneTimeRecyclerViewActions) {
                 oneTimeRecyclerViewActions = false
                 shimmerItemCount =
                     encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT, 2) ?: 2
-                shimmerLayoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
-                layoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
+
+                layoutManager = LinearLayoutManager(requireContext())
 
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
@@ -124,97 +108,79 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
         }
     }
 
-    private suspend fun getAllAccountNotificationsAndSetRecyclerview() {
-        binding.fragmentAccountNotificationsAllAccountNotificationsRecyclerview.apply {
-            networkHelper?.getAllAccountNotifications { list, error ->
-                // Sorted by created_at automatically
-                //list?.sortByDescending { it.emails_forwarded }
-
-                // Check if there are new account notifications since the latest list
-                // If the list is the same, just return and don't bother re-init the layoutmanager
-                if (::accountNotificationsAdapter.isInitialized && list == accountNotificationsAdapter.getList()) {
-                    return@getAllAccountNotifications
-                }
-
-                if (list != null) {
-                    setAccountNotificationsAdapter(list)
-                } else {
-                    if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.something_went_wrong_retrieving_account_notifications) + "\n" + error,
-                            (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
-                            LoggingHelper.LOGFILES.DEFAULT
-                        ).show()
-                    } else {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.something_went_wrong_retrieving_account_notifications) + "\n" + error,
-                            (activity as AccountNotificationsActivity).findViewById(R.id.activity_account_notifications_settings_CL),
-                            LoggingHelper.LOGFILES.DEFAULT
-                        ).show()
-                    }
-
-                    // Show error animations
-                    binding.fragmentAccountNotificationsLL1.visibility = View.GONE
-                    binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
-
-
-                }
-                hideShimmer()
-            }
-
-        }
-
-    }
-
-    private fun fragmentShown() {
-        if (::accountNotificationsAdapter.isInitialized) {
-            // Set the count of account notifications so that the shimmerview looks better next time AND so that we can use it for the backgroundservice AND mark this a read for the badge
-            encryptedSettingsManager?.putSettingsInt(
-                SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT,
-                accountNotificationsAdapter.itemCount
-            )
-        }
-    }
-
     private fun setAccountNotificationsAdapter(list: ArrayList<AccountNotifications>) {
         binding.fragmentAccountNotificationsAllAccountNotificationsRecyclerview.apply {
             accountNotifications = list
+
             if (list.isNotEmpty()) {
                 binding.fragmentAccountNotificationsNoAccountNotifications.visibility = View.GONE
             } else {
                 binding.fragmentAccountNotificationsNoAccountNotifications.visibility = View.VISIBLE
             }
 
+            accountNotificationsAdapter.submitList(list.toList())
 
-            accountNotificationsAdapter = AccountNotificationsAdapter(list)
-            accountNotificationsAdapter.setClickListener(object : AccountNotificationsAdapter.ClickListener {
-
-                override fun onClickDetails(pos: Int, aView: View) {
-                    accountNotificationsDetailsBottomDialogFragment = AccountNotificationsDetailsBottomDialogFragment(
-                        list[pos].created_at,
-                        list[pos].title,
-                        list[pos].text,
-                        list[pos].link_text,
-                        list[pos].link
-                    )
-                    accountNotificationsDetailsBottomDialogFragment!!.show(
-                        childFragmentManager,
-                        "accountNotificationsDetailsBottomDialogFragment"
-                    )
-                }
-
-            })
-            adapter = accountNotificationsAdapter
-
-
-            // Since this activity is always in foreground (no fragments in the MainActivity, always update the cache data
-            fragmentShown()
-
+            if (!isTablet) {
+                fragmentShown()
+            }
 
             binding.animationFragment.stopAnimation()
-            //binding.activityAccountNotificationsNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
+        }
+    }
+
+    // 4. Observers
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                notificationsViewModel.notificationsState.collect { state ->
+                    handleUiState(
+                        state,
+                        shimmer = if (!isSilentRefresh) binding.fragmentAccountNotificationsAllAccountNotificationsRecyclerview else null,
+                        progress = if (isSilentRefresh) binding.notificationsProgress else null,
+                        titleProgress = if (isSilentRefresh) binding.notificationsTitleProgress else null,
+                        errorStringRes = R.string.something_went_wrong_retrieving_account_notifications
+                    ) { data ->
+                        setAccountNotificationsAdapter(ArrayList(data))
+                    }
+                }
+            }
+        }
+    }
+
+    // 5. Private Helpers / Public Methods
+    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true) {
+        isSilentRefresh = !showShimmer
+        notificationsViewModel.loadNotifications(forceRefresh = (savedInstanceState == null))
+    }
+
+    override suspend fun onRefreshData() {
+        if (!isAdded) {
+            return
+        }
+        try {
+            isSilentRefresh = true
+            notificationsViewModel.loadNotifications(forceRefresh = true).join()
+        } catch (e: Exception) {
+            LoggingHelper(requireContext()).addLog(
+                LOGIMPORTANCE.CRITICAL.int,
+                "Failed to refresh data, view lifecycle not available. $e",
+                "AccountNotificationsFragment",
+                null
+            )
+        }
+    }
+
+    override fun onOpenUrl(url: String?) {
+        val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url))
+        startActivity(intent)
+    }
+
+    fun fragmentShown() {
+        if (::accountNotificationsAdapter.isInitialized) {
+            encryptedSettingsManager?.putSettingsInt(
+                SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT,
+                accountNotificationsAdapter.itemCount
+            )
         }
     }
 

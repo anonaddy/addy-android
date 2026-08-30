@@ -2,38 +2,43 @@ package host.stjin.anonaddy.ui.domains.manage
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditFromNameDomainBinding
-import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy_shared.models.Domains
+import host.stjin.anonaddy_shared.network.NetworkResult
 import kotlinx.coroutines.launch
 
 
-class EditDomainFromNameBottomDialogFragment(
-    private val domainId: String?,
-    private val domain: String?,
-    private val fromName: String?
-) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddEditDomainFromNameBottomDialogListener
+class EditDomainFromNameBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+    private val viewModel: ManageDomainViewModel by activityViewModels()
+    private var domainId: String? = null
+    private var domain: String? = null
+    private var fromName: String? = null
+
+    private var listener: AddEditDomainFromNameBottomDialogListener? = null
 
     private var _binding: BottomsheetEditFromNameDomainBinding? = null
 
-    // This property is only valid between onCreateView and
-// onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(null, null, null)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            domainId = it.getString(ARG_DOMAIN_ID)
+            domain = it.getString(ARG_DOMAIN)
+            fromName = it.getString(ARG_FROM_NAME)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,21 +48,17 @@ class EditDomainFromNameBottomDialogFragment(
         _binding = BottomsheetEditFromNameDomainBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        // Check if domainId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (domainId != null) {
-            listener = activity as AddEditDomainFromNameBottomDialogListener
+            listener = (parentFragment as? AddEditDomainFromNameBottomDialogListener) ?: (activity as? AddEditDomainFromNameBottomDialogListener)
 
             // Set button listeners and current description
             binding.bsEditFromNameDomainSaveButton.setOnClickListener(this)
             binding.bsEditFromNameDomainFromNameTiet.setText(fromName)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                binding.bsEditFromNameDomainDesc.text =
-                    (Html.fromHtml(requireContext().resources.getString(R.string.edit_from_name_domain_desc, domain), Html.FROM_HTML_MODE_COMPACT))
-            } else {
-                binding.bsEditFromNameDomainDesc.text =
-                    (Html.fromHtml(requireContext().resources.getString(R.string.edit_from_name_domain_desc, domain)))
-            }
+            binding.bsEditFromNameDomainDesc.text = androidx.core.text.HtmlCompat.fromHtml(
+                requireContext().resources.getString(R.string.edit_from_name_domain_desc, domain),
+                androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
+            )
         } else {
             dismiss()
         }
@@ -92,27 +93,22 @@ class EditDomainFromNameBottomDialogFragment(
         // Animate the button to progress
         binding.bsEditFromNameDomainSaveButton.startAnimation()
 
-
         viewLifecycleOwner.lifecycleScope.launch {
             editFromNameHttp(context, description)
         }
     }
 
     private suspend fun editFromNameHttp(context: Context, description: String) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.updateFromNameSpecificDomain({ domain, error ->
-            if (domain != null) {
-                listener.fromNameEdited(domain)
-            } else {
-
-                // Revert the button to normal
-                binding.bsEditFromNameDomainSaveButton.revertAnimation()
-
-                binding.bsEditFromNameDomainFromNameTil.error =
-                    context.resources.getString(R.string.error_edit_from_name) + "\n" + error
+        when (val result = viewModel.updateFromNameDomain(domainId!!, description)) {
+            is NetworkResult.Success -> {
+                listener?.fromNameEdited(result.data)
             }
-            // domainId is never null at this point, hence the !!
-        }, domainId!!, description)
+            is NetworkResult.Error -> {
+                binding.bsEditFromNameDomainSaveButton.revertAnimation()
+                binding.bsEditFromNameDomainFromNameTil.error =
+                    context.resources.getString(R.string.error_edit_from_name) + "\n" + (result.errorOrNull() ?: "")
+            }
+        }
     }
 
     // 1. Defines the listener interface with a method passing back data result.
@@ -121,8 +117,18 @@ class EditDomainFromNameBottomDialogFragment(
     }
 
     companion object {
-        fun newInstance(id: String, domain: String, description: String?): EditDomainFromNameBottomDialogFragment {
-            return EditDomainFromNameBottomDialogFragment(id, domain, description)
+        private const val ARG_DOMAIN_ID = "arg_domain_id"
+        private const val ARG_DOMAIN = "arg_domain"
+        private const val ARG_FROM_NAME = "arg_from_name"
+
+        fun newInstance(id: String?, domain: String?, description: String?): EditDomainFromNameBottomDialogFragment {
+            return EditDomainFromNameBottomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_DOMAIN_ID, id)
+                    putString(ARG_DOMAIN, domain)
+                    putString(ARG_FROM_NAME, description)
+                }
+            }
         }
     }
 }

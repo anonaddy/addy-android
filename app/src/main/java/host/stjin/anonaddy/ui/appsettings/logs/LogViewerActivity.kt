@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.LogsAdapter
 import host.stjin.anonaddy.databinding.ActivityLogViewerBinding
-import host.stjin.anonaddy.utils.InsetUtil
+import host.stjin.anonaddy.utils.InsetUtils
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -26,7 +26,7 @@ class LogViewerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLogViewerBinding.inflate(layoutInflater)
-        InsetUtil.applyBottomInset(binding.appsettingsLogviewerCL)
+        InsetUtils.applyBottomInset(binding.appsettingsLogviewerCL)
 
         val view = binding.root
         setContentView(view)
@@ -75,42 +75,32 @@ class LogViewerActivity : BaseActivity() {
             }
 
             //Retrieve the values
-            //Retrieve the values
             val list = loggingHelper.getLogs()
-            list?.reverse()
+            list.reverse()
 
-            if (list != null) {
-                if (list.isNotEmpty()) {
-                    binding.appsettingsLogviewerNoLogs.visibility = View.GONE
-                } else {
-                    binding.appsettingsLogviewerNoLogs.visibility = View.VISIBLE
-                }
-
-
-                logsAdapter = LogsAdapter(list)
-                logsAdapter.setClickListener(object : LogsAdapter.ClickListener {
-
-                    override fun onClickDetails(pos: Int, aView: View) {
-                        val sendIntent: Intent = Intent().apply {
-                            action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, list[pos].message + "\n" + list[pos].method + "\n" + list[pos].extra)
-                            type = "text/plain"
-                        }
-                        val shareIntent = Intent.createChooser(sendIntent, null)
-                        startActivity(shareIntent)
-                    }
-
-                })
-                adapter = logsAdapter
-
+            if (list.isNotEmpty()) {
+                binding.appsettingsLogviewerNoLogs.visibility = View.GONE
             } else {
-                binding.appsettingsLogviewerRecyclerview.visibility = View.GONE
                 binding.appsettingsLogviewerNoLogs.visibility = View.VISIBLE
             }
 
-            binding.appsettingsLogviewerSwiperefresh.isRefreshing = false
+            logsAdapter = LogsAdapter(list)
+            logsAdapter.setClickListener(object : LogsAdapter.ClickListener {
 
+                override fun onClickDetails(pos: Int, view: View) {
+                    val sendIntent: Intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, list[pos].message + "\n" + list[pos].method + "\n" + list[pos].extra)
+                        type = "text/plain"
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    startActivity(shareIntent)
+                }
+
+            })
+            adapter = logsAdapter
         }
 
+        binding.appsettingsLogviewerSwiperefresh.isRefreshing = false
     }
 }

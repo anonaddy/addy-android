@@ -7,30 +7,35 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditGpgKeyRecipientBinding
-import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy_shared.models.Recipients
+import host.stjin.anonaddy_shared.network.NetworkResult
 import kotlinx.coroutines.launch
 
 
-class AddRecipientPublicGpgKeyBottomDialogFragment(
-    private val recipientId: String?
-) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddEditGpgKeyBottomDialogListener
+class AddRecipientPublicGpgKeyBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+    private val viewModel: ManageRecipientViewModel by activityViewModels()
+    private var recipientId: String? = null
+
+    private var listener: AddEditGpgKeyBottomDialogListener? = null
 
     private var _binding: BottomsheetEditGpgKeyRecipientBinding? = null
 
-    // This property is only valid between onCreateView and
-// onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(null)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            recipientId = it.getString(ARG_RECIPIENT_ID)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,9 +45,8 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
         _binding = BottomsheetEditGpgKeyRecipientBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        // Check if aliasId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (recipientId != null) {
-            listener = activity as ManageRecipientsActivity
+            listener = (parentFragment as? AddEditGpgKeyBottomDialogListener) ?: (activity as? AddEditGpgKeyBottomDialogListener)
 
             // Set button listeners and current description
             binding.bsEditRecipientGpgKeySaveButton.setOnClickListener(this)
@@ -55,6 +59,7 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
                 }
                 return@setOnTouchListener false
             }
+
         } else {
             dismiss()
         }
@@ -89,27 +94,24 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
         // Animate the button to progress
         binding.bsEditRecipientGpgKeySaveButton.startAnimation()
 
-
         viewLifecycleOwner.lifecycleScope.launch {
             addGpgKeyHttp(context, description)
         }
     }
 
     private suspend fun addGpgKeyHttp(context: Context, publicPgpKey: String) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.addEncryptionKeyRecipient({ recipient, error ->
-            if (recipient != null) {
-                listener.onKeyAdded(recipient)
-            } else {
-
+        when (val result = viewModel.addEncryptionKeyRecipient(recipientId!!, publicPgpKey)) {
+            is NetworkResult.Success -> {
+                listener?.onKeyAdded(result.data)
+            }
+            is NetworkResult.Error -> {
                 // Revert the button to normal
                 binding.bsEditRecipientGpgKeySaveButton.revertAnimation()
 
                 binding.bsEditRecipientGpgKeyTil.error =
-                    context.resources.getString(R.string.error_add_gpg_key) + "\n" + error
+                    context.resources.getString(R.string.error_add_gpg_key) + "\n" + result.error
             }
-            // aliasId is never null at this point, hence the !!
-        }, recipientId!!, publicPgpKey)
+        }
     }
 
     // 1. Defines the listener interface with a method passing back data result.
@@ -118,8 +120,14 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
     }
 
     companion object {
-        fun newInstance(id: String): AddRecipientPublicGpgKeyBottomDialogFragment {
-            return AddRecipientPublicGpgKeyBottomDialogFragment(id)
+        private const val ARG_RECIPIENT_ID = "arg_recipient_id"
+
+        fun newInstance(id: String?): AddRecipientPublicGpgKeyBottomDialogFragment {
+            return AddRecipientPublicGpgKeyBottomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_RECIPIENT_ID, id)
+                }
+            }
         }
     }
 }

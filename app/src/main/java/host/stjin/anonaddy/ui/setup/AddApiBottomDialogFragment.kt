@@ -26,30 +26,32 @@ import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.BottomsheetApiBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AddyIoApp
-import host.stjin.anonaddy_shared.NetworkHelper
-import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.managers.SettingsManager.PREFS
 import host.stjin.anonaddy_shared.models.LoginMfaRequired
+import host.stjin.anonaddy_shared.network.NetworkResult
+import host.stjin.anonaddy_shared.repositories.LoginResult
+import host.stjin.anonaddy_shared.repositories.UserRepository
 import host.stjin.anonaddy_shared.utils.NetworkUtils
 import kotlinx.coroutines.launch
 
-class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSheetDialogFragment(), View.OnClickListener {
+class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+    private var apiBaseUrl: String? = null
     private var codeScanner: CodeScanner? = null
 
-    private lateinit var listener: AddApiBottomDialogListener
-
-    private lateinit var networkHelper: NetworkHelper
+    private var listener: AddApiBottomDialogListener? = null
+    private lateinit var userRepository: UserRepository
 
     private var _binding: BottomsheetApiBinding? = null
 
     // This property is only valid between onCreateView and
-// onDestroyView.
+    // onDestroyView.
     private val binding get() = _binding!!
 
     private var expirationOptions: List<String> = listOf()
@@ -57,6 +59,11 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
     private var expirationOptionNames: List<String> = listOf()
 
     private var otpMfaObject: LoginMfaRequired? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        apiBaseUrl = arguments?.getString(ARG_API_BASE_URL)
+    }
 
     private var resultLauncher: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
         when (result) {
@@ -92,8 +99,8 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         _binding = BottomsheetApiBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        listener = activity as AddApiBottomDialogListener
-        networkHelper = NetworkHelper(requireContext())
+        listener = (parentFragment as? AddApiBottomDialogListener) ?: (activity as? AddApiBottomDialogListener)
+        userRepository = ServiceLocator.userRepository
 
 
         // Check that the device will let you use the camera
@@ -109,7 +116,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
             binding.bsSetupInstanceTiet.isEnabled = false
             binding.bsSetupInstanceTil.isEnabled = false
 
-            binding.bsSetupApikeyUsernameTiet.setText((activity?.application as AddyIoApp).userResource.username)
+            binding.bsSetupApikeyUsernameTiet.setText((activity?.application as? AddyIoApp)?.userResourceOrNull?.username ?: "")
             binding.bsSetupApikeyUsernameTiet.isEnabled = false
             binding.bsSetupApikeyUsernameTil.isEnabled = false
         }
@@ -180,7 +187,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                 }
 
                 R.id.bs_setup_apikey_select_cert -> {
-                    val encryptedSettingsManager = SettingsManager(true, requireContext())
+                    val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
                     val alias = encryptedSettingsManager.getSettingsString(PREFS.CERTIFICATE_ALIAS)
                     if (alias == null) {
                         selectCertificate()
@@ -189,9 +196,6 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                         Toast.makeText(requireContext(), requireContext().resources.getString(R.string.certificate_removed), Toast.LENGTH_SHORT)
                             .show()
                         checkForCertificate()
-
-                        // Re-init as an alias was removed
-                        networkHelper = NetworkHelper(requireContext())
                     }
                 }
             }
@@ -199,7 +203,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
     }
 
     private fun checkForCertificate() {
-        val encryptedSettingsManager = SettingsManager(true, requireContext())
+        val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         val alias = encryptedSettingsManager.getSettingsString(PREFS.CERTIFICATE_ALIAS)
 
         if (alias != null) {
@@ -351,47 +355,57 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                 }
 
                 binding.bsSetupApikeySignInButton.startAnimation()
-                networkHelper.loginMfa(
-                    { login, error ->
-                        if (login != null) {
-                            listener.onClickSave(baseUrl, login.api_key)
-                        } else {
-                            this.otpMfaObject = null
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val mfaResult = userRepository.loginMfa(
+                        baseUrl = baseUrl,
+                        mfaKey = otpMfaObject!!.mfa_key,
+                        otp = binding.bsSetupApikeyOtpTiet.text.toString(),
+                        apiExpiration = expirationOption,
+                        cookies = otpMfaObject!!.cookie
+                    )
+                    when (mfaResult) {
+                        is NetworkResult.Success -> {
+                            listener?.onClickSave(baseUrl, mfaResult.data.api_key)
+                        }
+                        is NetworkResult.Error -> {
+                            this@AddApiBottomDialogFragment.otpMfaObject = null
                             binding.bsSetupApikeyOtpTil.visibility = View.GONE
                             binding.bsSetupApikeyOtpTiet.text = null
 
                             MaterialDialogHelper.showMaterialDialog(
                                 context = requireContext(),
                                 title = resources.getString(R.string.login),
-                                message = error,
+                                message = mfaResult.error,
                                 icon = R.drawable.ic_key,
                                 neutralButtonText = resources.getString(R.string.close)
                             ).show()
                             binding.bsSetupApikeySignInButton.revertAnimation()
                         }
-                    },
-                    baseUrl = baseUrl,
-                    mfaKey = otpMfaObject!!.mfa_key,
-                    otp = binding.bsSetupApikeyOtpTiet.text.toString(),
-                    apiExpiration = expirationOption,
-                    cookies = otpMfaObject!!.cookie
-                )
+                    }
+                }
 
             } else {
                 binding.bsSetupApikeySignInButton.startAnimation()
-                networkHelper.login(
-                    { login, loginMfaRequired, error ->
-                        if (login != null) {
-                            listener.onClickSave(baseUrl, login.api_key)
-                        } else if (loginMfaRequired != null) {
-                            this.otpMfaObject = loginMfaRequired
+                viewLifecycleOwner.lifecycleScope.launch {
+                    when (val loginResult = userRepository.login(
+                        baseUrl = baseUrl,
+                        username = binding.bsSetupApikeyUsernameTiet.text.toString(),
+                        password = binding.bsSetupApikeyPasswordTiet.text.toString(),
+                        apiExpiration = expirationOption
+                    )) {
+                        is LoginResult.Success -> {
+                            listener?.onClickSave(baseUrl, loginResult.login.api_key)
+                        }
+                        is LoginResult.MfaRequired -> {
+                            this@AddApiBottomDialogFragment.otpMfaObject = loginResult.mfa
                             binding.bsSetupApikeyOtpTil.visibility = View.VISIBLE
                             binding.bsSetupApikeySignInButton.revertAnimation()
-                        } else {
-                            val displayError = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
-                                (error ?: "") + "\n\n" + resources.getString(R.string.local_network_permission_rationale)
+                        }
+                        is LoginResult.Error -> {
+                            val displayError = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
+                                (loginResult.error ?: "") + "\n\n" + resources.getString(R.string.local_network_permission_rationale)
                             } else {
-                                error
+                                loginResult.error
                             }
 
                             MaterialDialogHelper.showMaterialDialog(
@@ -403,12 +417,8 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                             ).show()
                             binding.bsSetupApikeySignInButton.revertAnimation()
                         }
-                    },
-                    baseUrl = baseUrl,
-                    username = binding.bsSetupApikeyUsernameTiet.text.toString(),
-                    password = binding.bsSetupApikeyPasswordTiet.text.toString(),
-                    apiExpiration = expirationOption
-                )
+                    }
+                }
             }
 
         }
@@ -418,18 +428,15 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
 
     private fun verifyApiKey(context: Context, apiKey: String, baseUrl: String) {
         viewLifecycleOwner.lifecycleScope.launch {
-            networkHelper.verifyApiKey(baseUrl, apiKey) { result, error ->
-                if (result != null) {
-                    // APIKey is verified if the API_KEY is currently null (aka empty)
-                    // Or
-                    // UserResource ids are the same
-                    if (SettingsManager(true, context).getSettingsString(PREFS.API_KEY) == null ||
-                        (activity?.application as AddyIoApp).userResource.id == result.id
+            when (val verifyResult = userRepository.verifyApiKey(baseUrl, apiKey)) {
+                is NetworkResult.Success -> {
+                    val result = verifyResult.data
+                    if (ServiceLocator.encryptedSettingsManager.getSettingsString(PREFS.API_KEY) == null ||
+                        (activity?.application as? AddyIoApp)?.userResourceOrNull?.id == result.id
                     ) {
-                        listener.onClickSave(baseUrl, apiKey)
+                        listener?.onClickSave(baseUrl, apiKey)
                     } else {
                         binding.bsSetupApikeyGetButton.isEnabled = true
-                        // Revert the button to normal
                         binding.bsSetupApikeySignInButton.revertAnimation()
 
                         binding.bsSetupApikeyTil.error =
@@ -437,23 +444,21 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
 
                         toggleQrCodeScanning()
                     }
-                } else {
+                }
+                is NetworkResult.Error -> {
                     binding.bsSetupApikeyGetButton.isEnabled = true
-
-                    // Revert the button to normal
                     binding.bsSetupApikeySignInButton.revertAnimation()
 
-                    val displayError = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
-                        (error ?: "") + "\n\n" + resources.getString(R.string.local_network_permission_rationale)
+                    val displayError = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
+                        (verifyResult.error ?: "") + "\n\n" + resources.getString(R.string.local_network_permission_rationale)
                     } else {
-                        error
+                        verifyResult.error
                     }
 
                     binding.bsSetupApikeyTil.error =
                         context.resources.getString(R.string.api_invalid) + "\n" + displayError
 
                     toggleQrCodeScanning()
-
                 }
             }
         }
@@ -467,8 +472,8 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                     return
                 }
 
-                SettingsManager(true, requireContext()).putSettingsString(PREFS.CERTIFICATE_ALIAS, alias)
-                SettingsManager(false, requireContext()).putSettingsBool(
+                ServiceLocator.encryptedSettingsManager.putSettingsString(PREFS.CERTIFICATE_ALIAS, alias)
+                ServiceLocator.settingsManager.putSettingsBool(
                     PREFS.NOTIFY_CERTIFICATE_EXPIRY,
                     true
                 ) // Enable by default when a certificate has been selected
@@ -477,7 +482,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                 BackgroundWorkerHelper(requireContext()).scheduleBackgroundWorker()
 
                 // Re-init as an alias was added
-                networkHelper = NetworkHelper(requireContext())
+                userRepository = ServiceLocator.userRepository
 
                 requireActivity().runOnUiThread {
                     Toast.makeText(requireContext(), requireContext().resources.getString(R.string.certificate_selected), Toast.LENGTH_SHORT).show()
@@ -515,8 +520,14 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
     }
 
     companion object {
+        private const val ARG_API_BASE_URL = "arg_api_base_url"
+
         fun newInstance(apiBaseUrl: String? = null): AddApiBottomDialogFragment {
-            return AddApiBottomDialogFragment(apiBaseUrl)
+            return AddApiBottomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_API_BASE_URL, apiBaseUrl)
+                }
+            }
         }
     }
 }

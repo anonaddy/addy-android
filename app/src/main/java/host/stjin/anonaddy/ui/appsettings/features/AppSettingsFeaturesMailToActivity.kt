@@ -2,16 +2,15 @@ package host.stjin.anonaddy.ui.appsettings.features
 
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
-import android.widget.CompoundButton
 import android.widget.Toast
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesMailtoBinding
-import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.ComponentUtils.getComponentState
 import host.stjin.anonaddy.utils.ComponentUtils.setComponentState
-import host.stjin.anonaddy.utils.InsetUtil
+import host.stjin.anonaddy.utils.InsetUtils
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
@@ -25,13 +24,13 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesMailtoBinding.inflate(layoutInflater)
-        InsetUtil.applyBottomInset(binding.activityAppSettingsFeaturesMailtoNSVLL)
+        InsetUtils.applyBottomInset(binding.activityAppSettingsFeaturesMailtoNSVLL)
 
         val view = binding.root
         setContentView(view)
 
 
-        settingsManager = SettingsManager(false, this)
+        settingsManager = ServiceLocator.settingsManager
         setupToolbar(
             R.string.integration_mailto_alias,
             binding.activityAppSettingsFeaturesMailtoNSV,
@@ -52,20 +51,15 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
     }
 
     private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.setSwitchChecked(!binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.getSwitchChecked())
-            }
-        })
+        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.setSwitchChecked(!binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.getSwitchChecked())
+        }
 
-        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setSwitchChecked(!binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.getSwitchChecked())
-            }
-        })
+        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setSwitchChecked(!binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.getSwitchChecked())
+        }
     }
 
     private fun loadSettings() {
@@ -82,29 +76,24 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
     }
 
     private fun setOnSwitchListeners() {
-        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed || forceSwitch) {
-                    setComponentState(
-                        this@AppSettingsFeaturesMailToActivity,
-                        BuildConfig.APPLICATION_ID,
-                        AppSettingsFeaturesActivity.COMPONENTS.MAILTO.componentClassName,
-                        checked
-                    )
-                }
+        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed || forceSwitch) {
+                forceSwitch = false
+                setComponentState(
+                    this@AppSettingsFeaturesMailToActivity,
+                    BuildConfig.APPLICATION_ID,
+                    AppSettingsFeaturesActivity.COMPONENTS.MAILTO.componentClassName,
+                    checked
+                )
             }
-        })
+        }
 
-        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed || forceSwitch) {
-                    forceSwitch = false
-                    settingsManager.putSettingsBool(SettingsManager.PREFS.MAILTO_ACTIVITY_SHOW_SUGGESTIONS, checked)
-                }
+        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed || forceSwitch) {
+                forceSwitch = false
+                settingsManager.putSettingsBool(SettingsManager.PREFS.MAILTO_ACTIVITY_SHOW_SUGGESTIONS, checked)
             }
-        })
+        }
     }
 
     private fun setOnLongClickListeners() {

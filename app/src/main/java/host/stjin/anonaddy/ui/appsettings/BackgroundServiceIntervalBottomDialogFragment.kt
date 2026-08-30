@@ -7,14 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.BottomsheetBackgroundserviceintervalBinding
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class BackgroundServiceIntervalBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddBackgroundServiceIntervalBottomDialogListener
+    private var listener: AddBackgroundServiceIntervalBottomDialogListener? = null
 
     private var _binding: BottomsheetBackgroundserviceintervalBinding? = null
 
@@ -29,7 +30,7 @@ class BackgroundServiceIntervalBottomDialogFragment : BaseBottomSheetDialogFragm
     ): View {
         _binding = BottomsheetBackgroundserviceintervalBinding.inflate(inflater, container, false)
         val root = binding.root
-        listener = activity as AddBackgroundServiceIntervalBottomDialogListener
+        listener = (parentFragment as? AddBackgroundServiceIntervalBottomDialogListener) ?: (activity as? AddBackgroundServiceIntervalBottomDialogListener)
 
         binding.bsBackgroundserviceintervalSetIntervalButton.setOnClickListener(this)
 
@@ -42,7 +43,7 @@ class BackgroundServiceIntervalBottomDialogFragment : BaseBottomSheetDialogFragm
     override fun onResume() {
         super.onResume()
 
-        val settingsManager = SettingsManager(false, requireContext())
+        val settingsManager = ServiceLocator.settingsManager
         when (settingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30)) {
             15 -> {
                 binding.bsBackgroundserviceinterval15.isChecked = true
@@ -81,19 +82,19 @@ class BackgroundServiceIntervalBottomDialogFragment : BaseBottomSheetDialogFragm
                 R.id.bs_backgroundserviceinterval_set_interval_button -> {
                     when {
                         binding.bsBackgroundserviceinterval15.isChecked -> {
-                            listener.setInterval(15)
+                            listener?.setInterval(15)
                         }
 
                         binding.bsBackgroundserviceinterval30.isChecked -> {
-                            listener.setInterval(30)
+                            listener?.setInterval(30)
                         }
 
                         binding.bsBackgroundserviceinterval60.isChecked -> {
-                            listener.setInterval(60)
+                            listener?.setInterval(60)
                         }
 
                         binding.bsBackgroundserviceinterval120.isChecked -> {
-                            listener.setInterval(120)
+                            listener?.setInterval(120)
                         }
                     }
                 }

@@ -11,8 +11,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.adapter.EmailClientAdapter
 import host.stjin.anonaddy.databinding.BottomsheetPreferredEmailClientBinding
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -30,9 +31,7 @@ class PreferredEmailClientBottomDialogFragment : BaseBottomSheetDialogFragment()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is PreferredEmailClientBottomDialogListener) {
-            listener = context
-        }
+        listener = (parentFragment as? PreferredEmailClientBottomDialogListener) ?: (context as? PreferredEmailClientBottomDialogListener) ?: (activity as? PreferredEmailClientBottomDialogListener)
     }
 
     override fun onCreateView(
@@ -41,7 +40,7 @@ class PreferredEmailClientBottomDialogFragment : BaseBottomSheetDialogFragment()
         savedInstanceState: Bundle?
     ): View {
         _binding = BottomsheetPreferredEmailClientBinding.inflate(inflater, container, false)
-        settingsManager = SettingsManager(true, requireContext())
+        settingsManager = ServiceLocator.encryptedSettingsManager
         setupList()
         return binding.root
     }
@@ -102,11 +101,17 @@ class PreferredEmailClientBottomDialogFragment : BaseBottomSheetDialogFragment()
             }
         }
 
-        binding.bsPreferredEmailClientRecyclerview.adapter = EmailClientAdapter(context, items, showSelection = true) { selectedItem ->
+        binding.bsPreferredEmailClientRecyclerview.adapter = EmailClientAdapter(items, showSelection = true) { selectedItem ->
             val pkgToSave = selectedItem.packageName ?: ""
             settingsManager.putSettingsString(SettingsManager.PREFS.DEFAULT_EMAIL_CLIENT, pkgToSave)
             listener?.onPreferredEmailClientSelected(selectedItem.packageName, selectedItem.name)
             dismissAllowingStateLoss()
+        }
+    }
+
+    companion object {
+        fun newInstance(): PreferredEmailClientBottomDialogFragment {
+            return PreferredEmailClientBottomDialogFragment()
         }
     }
 }

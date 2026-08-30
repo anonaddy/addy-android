@@ -8,23 +8,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetProfileBinding
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
-import host.stjin.anonaddy.ui.blocklist.ManageBlocklistActivity
-import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
-import host.stjin.anonaddy.ui.labels.ManageLabelsActivity
-import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
-import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
+import host.stjin.anonaddy.ui.blocklist.BlocklistActivity
+import host.stjin.anonaddy.ui.domains.DomainsActivity
+import host.stjin.anonaddy.ui.labels.LabelsActivity
+import host.stjin.anonaddy.ui.rules.RulesActivity
+import host.stjin.anonaddy.ui.usernames.UsernamesActivity
 import host.stjin.anonaddy.utils.AttributeHelper
 import host.stjin.anonaddy.utils.ReviewHelper
 import host.stjin.anonaddy_shared.AddyIo
@@ -34,17 +33,37 @@ import java.util.Locale
 
 
 class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
-    var updateAvailable: Boolean = false
+    private var updateAvailable: Boolean = false
 
-    var permissionsRequired: Boolean = false
+    private var permissionsRequired: Boolean = false
 
-    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            if (data?.getBooleanExtra("hasNewSubscription", false) == true) {
+                setInfo()
+                (activity as? MainActivity)?.refreshAllData()
+
+                // User has switched or purchased a subscription, this is usually a sign of a satisfied user, let's ask the user to review the app
+                activity?.let { ReviewHelper().launchReviewFlow(it) }
+            }
+        }
+    }
 
     private var _binding: BottomsheetProfileBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            updateAvailable = it.getBoolean(ARG_UPDATE_AVAILABLE)
+            permissionsRequired = it.getBoolean(ARG_PERMISSIONS_REQUIRED)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,20 +76,6 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
         setInfo()
         setOnClickListeners()
-
-        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                // There are no request codes
-                val data: Intent? = result.data
-                if (data?.getBooleanExtra("hasNewSubscription", false) == true) {
-                    setInfo()
-                    (activity as MainActivity).refreshAllData()
-
-                    // User has switched or purchased a subscription, this is usually a sign of a satisfied user, let's ask the user to review the app
-                    activity?.let { ReviewHelper().launchReviewFlow(it) }
-                }
-            }
-        }
 
         return root
 
@@ -107,27 +112,27 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         }
 
         binding.mainProfileSelectDialogDomainSettings.setOnClickListener {
-            val intent = Intent(activity, DomainSettingsActivity::class.java)
+            val intent = Intent(activity, DomainsActivity::class.java)
             startActivity(intent)
         }
 
         binding.mainProfileSelectDialogRules.setOnClickListener {
-            val intent = Intent(activity, RulesSettingsActivity::class.java)
+            val intent = Intent(activity, RulesActivity::class.java)
             startActivity(intent)
         }
 
         binding.mainProfileSelectDialogUsernameSettings.setOnClickListener {
-            val intent = Intent(activity, UsernamesSettingsActivity::class.java)
+            val intent = Intent(activity, UsernamesActivity::class.java)
             startActivity(intent)
         }
 
         binding.mainProfileSelectDialogBlocklistSettings.setOnClickListener {
-            val intent = Intent(activity, ManageBlocklistActivity::class.java)
+            val intent = Intent(activity, BlocklistActivity::class.java)
             startActivity(intent)
         }
 
         binding.mainProfileSelectDialogLabelsSettings.setOnClickListener {
-            val intent = Intent(activity, ManageLabelsActivity::class.java)
+            val intent = Intent(activity, LabelsActivity::class.java)
             startActivity(intent)
         }
 
@@ -207,7 +212,8 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun setInfo() {
-        val usernameInitials = (activity?.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
+        val userResource = (activity?.application as? AddyIoApp)?.userResourceOrNull
+        val usernameInitials = userResource?.username?.take(2)?.uppercase(Locale.getDefault()) ?: ""
         binding.mainProfileSelectDialogUsernameInitials.text = usernameInitials
 
         binding.mainProfileSelectDialogAnonaddyVersion.text =
@@ -216,7 +222,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
                 AddyIo.VERSIONSTRING
             )
 
-        binding.mainProfileSelectDialogCardAccountname.text = (activity?.application as AddyIoApp).userResource.username
+        binding.mainProfileSelectDialogCardAccountname.text = userResource?.username ?: ""
 
         setSubscriptionText()
 
@@ -224,8 +230,8 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun setSubscriptionText() {
-        val userResource = (activity?.application as AddyIoApp).userResource
-        if (userResource.subscription != null) {
+        val userResource = (activity?.application as? AddyIoApp)?.userResourceOrNull
+        if (userResource?.subscription != null) {
             binding.mainProfileSelectDialogCardLL.visibility = View.VISIBLE
             binding.mainProfileSelectDialogCardSubscription.text =
                 resources.getString(R.string.subscription_user, userResource.subscription)
@@ -239,7 +245,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
             binding.mainProfileSelectDialogCardLL.visibility = View.GONE
         }
 
-        if (userResource.subscription_ends_at != null) {
+        if (userResource?.subscription_ends_at != null) {
             binding.mainProfileSelectDialogCardSubscriptionUntil.visibility = View.VISIBLE
             binding.mainProfileSelectDialogCardSubscriptionUntil.text =
                 resources.getString(
@@ -254,8 +260,16 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     companion object {
-        fun newInstance(): ProfileBottomDialogFragment {
-            return ProfileBottomDialogFragment()
+        private const val ARG_UPDATE_AVAILABLE = "update_available"
+        private const val ARG_PERMISSIONS_REQUIRED = "permissions_required"
+
+        fun newInstance(updateAvailable: Boolean = false, permissionsRequired: Boolean = false): ProfileBottomDialogFragment {
+            return ProfileBottomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(ARG_UPDATE_AVAILABLE, updateAvailable)
+                    putBoolean(ARG_PERMISSIONS_REQUIRED, permissionsRequired)
+                }
+            }
         }
     }
 }

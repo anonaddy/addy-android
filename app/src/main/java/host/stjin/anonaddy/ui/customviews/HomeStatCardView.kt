@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.DecelerateInterpolator
-import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -76,11 +75,11 @@ class HomeStatCardView @JvmOverloads constructor(context: Context?, attrs: Attri
                     setButtonText(getString(R.styleable.HomeStatCardView_StatCardViewButtonText))
 
 
-                    // Set icons
-                    setImageResourceIcons(
-                        getResourceId(R.styleable.HomeStatCardView_StatCardViewIcon, 0),
-                        null
-                    )
+                    // Set icon
+                    val iconRes = getResourceId(R.styleable.HomeStatCardView_StatCardViewIcon, 0)
+                    if (iconRes != 0) {
+                        setIconResource(iconRes)
+                    }
 
                     // Set elevation (if set)
                     if (getBoolean(R.styleable.HomeStatCardView_StatCardViewShowButton, false)) {
@@ -148,24 +147,13 @@ class HomeStatCardView @JvmOverloads constructor(context: Context?, attrs: Attri
         animation.start()
     }
 
-    private fun setImageResourceIcons(startIcon: Int?, endIcon: Int?) {
-        if (startIcon != null) {
-            icon?.setImageResource(startIcon)
-        }
-        if (endIcon != null) {
-            icon?.setImageResource(endIcon)
+    fun setIconResource(iconRes: Int?) {
+        if (iconRes != null && iconRes != 0) {
+            icon?.setImageResource(iconRes)
         }
     }
 
-    interface OnSwitchCheckedChangedListener {
-        fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean)
-    }
-
-    interface OnLayoutClickedListener {
+    fun interface OnLayoutClickedListener {
         fun onClick()
-    }
-
-    interface OnLayoutLongClickedListener {
-        fun onLongClick()
     }
 }

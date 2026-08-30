@@ -1,20 +1,19 @@
 package host.stjin.anonaddy.ui.appsettings.wearos
+import host.stjin.anonaddy_shared.utils.GsonTools
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.CompoundButton
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
-import com.google.gson.Gson
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.ActivityAppSettingsWearosBinding
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
-import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.InsetUtil
+import host.stjin.anonaddy.utils.InsetUtils
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.WearOSHelper
@@ -37,12 +36,12 @@ class AppSettingsWearOSActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsWearosBinding.inflate(layoutInflater)
-        InsetUtil.applyBottomInset(binding.appsettingsWearosNSVLL)
+        InsetUtils.applyBottomInset(binding.appsettingsWearosNSVLL)
 
         val view = binding.root
         setContentView(view)
 
-        settingsManager = SettingsManager(false, this)
+        settingsManager = ServiceLocator.settingsManager
 
         setupToolbar(
             R.string.addyio_for_wearables,
@@ -69,72 +68,54 @@ class AppSettingsWearOSActivity : BaseActivity() {
     }
 
     private fun setOnClickListeners() {
-        binding.activityAppSettingsWearosSectionSelectDevice.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val nodeListItems = arrayListOf<CharSequence>()
-                listOfNodes.forEach { nodeListItems.add(it.displayName) }
-                val nodeListItemsCS: Array<CharSequence> = nodeListItems.toArray(arrayOfNulls<CharSequence>(nodeListItems.size))
+        binding.activityAppSettingsWearosSectionSelectDevice.setOnLayoutClickedListener {
+            val nodeListItems = arrayListOf<CharSequence>()
+            listOfNodes.forEach { nodeListItems.add(it.displayName) }
+            val nodeListItemsCS: Array<CharSequence> = nodeListItems.toArray(arrayOfNulls<CharSequence>(nodeListItems.size))
 
 
-                val materialDialog = MaterialDialogHelper.showMaterialDialog(
-                    context = this@AppSettingsWearOSActivity,
-                    title = resources.getString(R.string.select_wearable_device),
-                    icon = R.drawable.ic_device_watch,
-                    neutralButtonText = resources.getString(R.string.cancel),
-                )
+            val materialDialog = MaterialDialogHelper.showMaterialDialog(
+                context = this@AppSettingsWearOSActivity,
+                title = resources.getString(R.string.select_wearable_device),
+                icon = R.drawable.ic_device_watch,
+                neutralButtonText = resources.getString(R.string.cancel),
+            )
 
-                if (listOfNodes.any()) {
-                    materialDialog.setSingleChoiceItems(
-                        nodeListItemsCS,
-                        listOfNodes.indexOfFirst { it.id == settingsManager.getSettingsString(SettingsManager.PREFS.SELECTED_WEAROS_DEVICE) }
-                    ) { dialog, which ->
-                        settingsManager.putSettingsString(SettingsManager.PREFS.SELECTED_WEAROS_DEVICE, listOfNodes[which].id)
-                        loadNodes()
-                        dialog.dismiss()
-                    }
-                } else {
-                    materialDialog.setMessage(this@AppSettingsWearOSActivity.resources.getString(R.string.no_wearable_devices_available))
+            if (listOfNodes.any()) {
+                materialDialog.setSingleChoiceItems(
+                    nodeListItemsCS,
+                    listOfNodes.indexOfFirst { it.id == settingsManager.getSettingsString(SettingsManager.PREFS.SELECTED_WEAROS_DEVICE) }
+                ) { dialog, which ->
+                    settingsManager.putSettingsString(SettingsManager.PREFS.SELECTED_WEAROS_DEVICE, listOfNodes[which].id)
+                    loadNodes()
+                    dialog.dismiss()
                 }
-                materialDialog.show()
+            } else {
+                materialDialog.setMessage(this@AppSettingsWearOSActivity.resources.getString(R.string.no_wearable_devices_available))
             }
-        })
+            materialDialog.show()
+        }
 
-        binding.activityAppSettingsWearosSectionStart.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                startAppOnWearable()
-            }
-        })
+        binding.activityAppSettingsWearosSectionStart.setOnLayoutClickedListener { startAppOnWearable() }
 
-        binding.activityAppSettingsWearosSectionShowLogs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsWearOSActivity, LogViewerActivity::class.java)
-                intent.putExtra("logfile", LoggingHelper.LOGFILES.WEAROS_LOGS.filename)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsWearosSectionShowLogs.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsWearOSActivity, LogViewerActivity::class.java)
+            intent.putExtra("logfile", LoggingHelper.LOGFILES.WEAROS_LOGS.filename)
+            startActivity(intent)
+        }
 
-        binding.activityAppSettingsWearosSectionReset.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                resetAppOnWearable()
-            }
-        })
+        binding.activityAppSettingsWearosSectionReset.setOnLayoutClickedListener { resetAppOnWearable() }
 
-        binding.activityAppSettingsWearosSectionSetup.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                setupAppOnWearable()
-            }
-        })
+        binding.activityAppSettingsWearosSectionSetup.setOnLayoutClickedListener { setupAppOnWearable() }
 
-        binding.activityAppSettingsWearosSectionQuickSetup.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsWearosSectionQuickSetup.setSwitchChecked(!binding.activityAppSettingsWearosSectionQuickSetup.getSwitchChecked())
-            }
-        })
+        binding.activityAppSettingsWearosSectionQuickSetup.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.activityAppSettingsWearosSectionQuickSetup.setSwitchChecked(!binding.activityAppSettingsWearosSectionQuickSetup.getSwitchChecked())
+        }
     }
 
     private fun checkForCertificate() {
-        val alias = SettingsManager(true, this).getSettingsString(SettingsManager.PREFS.CERTIFICATE_ALIAS)
+        val alias = ServiceLocator.encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.CERTIFICATE_ALIAS)
         if (alias != null) {
             binding.activityAppSettingsWearosSectionCertificateWarning.visibility = View.VISIBLE
         } else {
@@ -200,15 +181,12 @@ class AppSettingsWearOSActivity : BaseActivity() {
     }
 
     private fun setOnSwitchListeners() {
-        binding.activityAppSettingsWearosSectionQuickSetup.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-                if (compoundButton.isPressed || forceSwitch) {
-                    forceSwitch = false
-                    settingsManager.putSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG, !checked)
-                }
+        binding.activityAppSettingsWearosSectionQuickSetup.setOnSwitchCheckedChangedListener { compoundButton, checked -> // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            if (compoundButton.isPressed || forceSwitch) {
+                forceSwitch = false
+                settingsManager.putSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG, !checked)
             }
-        })
+        }
     }
 
     private fun loadSettings() {
@@ -316,7 +294,7 @@ class AppSettingsWearOSActivity : BaseActivity() {
         val node = settingsManager.getSettingsString(SettingsManager.PREFS.SELECTED_WEAROS_DEVICE)
 
         if (node != null) {
-            val configuration = Gson().toJson(WearOSHelper(this).createWearOSConfiguration())
+            val configuration = GsonTools.gson.toJson(WearOSHelper.createWearOSConfiguration())
             Wearable.getMessageClient(this).sendMessage(
                 node,
                 "/setup",

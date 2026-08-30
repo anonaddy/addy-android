@@ -3,17 +3,16 @@ package host.stjin.anonaddy.ui.appsettings.backup
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.CompoundButton
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.ActivityAppSettingsBackupBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.service.BackupHelper
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
-import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.InsetUtil
+import host.stjin.anonaddy.utils.InsetUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
@@ -48,7 +47,7 @@ class AppSettingsBackupActivity : BaseActivity(),
                 applicationContext.contentResolver
                     .takePersistableUriPermission(sourceTreeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
-                result?.data?.also { uri ->
+                result.data?.also { uri ->
                     uri.data?.toString()?.let {
                         settingsManager.putSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION, it)
                         SnackbarHelper.createSnackbar(this, this.resources.getString(R.string.backup_location_set), binding.appsettingsBackupCL)
@@ -68,14 +67,14 @@ class AppSettingsBackupActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsBackupBinding.inflate(layoutInflater)
-        InsetUtil.applyBottomInset(binding.activityAppSettingsBackupNSVLL)
+        InsetUtils.applyBottomInset(binding.activityAppSettingsBackupNSVLL)
 
         val view = binding.root
         setContentView(view)
 
 
-        settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
+        settingsManager = ServiceLocator.settingsManager
+        encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         backupHelper = BackupHelper(this)
         setupToolbar(
             R.string.addyio_backup,
@@ -96,60 +95,46 @@ class AppSettingsBackupActivity : BaseActivity(),
     }
 
     private fun setOnClickListeners() {
-        binding.activityAppSettingsBackupSectionPeriodicBackups.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsBackupSectionPeriodicBackups.setSwitchChecked(!binding.activityAppSettingsBackupSectionPeriodicBackups.getSwitchChecked())
-                // Schedule the background worker (this will cancel if already scheduled)
-                BackgroundWorkerHelper(this@AppSettingsBackupActivity).scheduleBackgroundWorker()
+        binding.activityAppSettingsBackupSectionPeriodicBackups.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.activityAppSettingsBackupSectionPeriodicBackups.setSwitchChecked(!binding.activityAppSettingsBackupSectionPeriodicBackups.getSwitchChecked())
+            // Schedule the background worker (this will cancel if already scheduled)
+            BackgroundWorkerHelper(this@AppSettingsBackupActivity).scheduleBackgroundWorker()
+        }
 
+        binding.activityAppSettingsBackupSectionBackupNow.setOnLayoutClickedListener {
+            if (backupHelper.createBackup()) {
+                SnackbarHelper.createSnackbar(
+                    this@AppSettingsBackupActivity,
+                    this@AppSettingsBackupActivity.resources.getString(R.string.backup_completed),
+                    binding.appsettingsBackupCL
+                ).show()
+                figureOutLastBackup()
+            } else {
+                SnackbarHelper.createSnackbar(
+                    this@AppSettingsBackupActivity,
+                    this@AppSettingsBackupActivity.resources.getString(R.string.backup_failed),
+                    binding.appsettingsBackupCL, LoggingHelper.LOGFILES.BACKUP_LOGS
+                ).show()
             }
-        })
+        }
 
-        binding.activityAppSettingsBackupSectionBackupNow.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (backupHelper.createBackup()) {
-                    SnackbarHelper.createSnackbar(
-                        this@AppSettingsBackupActivity,
-                        this@AppSettingsBackupActivity.resources.getString(R.string.backup_completed),
-                        binding.appsettingsBackupCL
-                    ).show()
-                    figureOutLastBackup()
-                } else {
-                    SnackbarHelper.createSnackbar(
-                        this@AppSettingsBackupActivity,
-                        this@AppSettingsBackupActivity.resources.getString(R.string.backup_failed),
-                        binding.appsettingsBackupCL, LoggingHelper.LOGFILES.BACKUP_LOGS
-                    ).show()
-                }
+        binding.activityAppSettingsBackupSectionBackupLocation.setOnLayoutClickedListener { openDirectory() }
+
+        binding.activityAppSettingsBackupSectionBackupPassword.setOnLayoutClickedListener {
+            if (!backupSetPasswordBottomDialogFragment.isAdded) {
+                backupSetPasswordBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "backupSetPasswordBottomDialogFragment"
+                )
             }
-        })
+        }
 
-        binding.activityAppSettingsBackupSectionBackupLocation.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                openDirectory()
-            }
-        })
-
-        binding.activityAppSettingsBackupSectionBackupPassword.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!backupSetPasswordBottomDialogFragment.isAdded) {
-                    backupSetPasswordBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "backupSetPasswordBottomDialogFragment"
-                    )
-                }
-
-            }
-        })
-
-        binding.activityAppSettingsBackupSectionBackupLog.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsBackupActivity, LogViewerActivity::class.java)
-                intent.putExtra("logfile", LoggingHelper.LOGFILES.BACKUP_LOGS.filename)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsBackupSectionBackupLog.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsBackupActivity, LogViewerActivity::class.java)
+            intent.putExtra("logfile", LoggingHelper.LOGFILES.BACKUP_LOGS.filename)
+            startActivity(intent)
+        }
     }
 
     fun openDirectory() {
@@ -200,19 +185,16 @@ class AppSettingsBackupActivity : BaseActivity(),
     }
 
     private fun setOnSwitchListeners() {
-        binding.activityAppSettingsBackupSectionPeriodicBackups.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-                if (compoundButton.isPressed || forceSwitch) {
-                    forceSwitch = false
-                    settingsManager.putSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS, checked)
+        binding.activityAppSettingsBackupSectionPeriodicBackups.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            if (compoundButton.isPressed || forceSwitch) {
+                forceSwitch = false
+                settingsManager.putSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS, checked)
 
-                    // Schedule the background worker (this will cancel if already scheduled)
-                    BackgroundWorkerHelper(this@AppSettingsBackupActivity).scheduleBackgroundWorker()
-                }
+                // Schedule the background worker (this will cancel if already scheduled)
+                BackgroundWorkerHelper(this@AppSettingsBackupActivity).scheduleBackgroundWorker()
             }
-        })
+        }
     }
 
     private fun loadSettings() {

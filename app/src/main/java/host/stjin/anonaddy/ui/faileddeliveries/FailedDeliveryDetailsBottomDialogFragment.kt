@@ -1,27 +1,27 @@
 package host.stjin.anonaddy.ui.faileddeliveries
+import host.stjin.anonaddy_shared.utils.GsonTools
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetFailedDeliveryDetailBinding
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AddyIoApp
-import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.FailedDeliveries
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.NewBlocklistEntry
+import host.stjin.anonaddy_shared.network.NetworkResult
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.Dispatchers
@@ -29,18 +29,33 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
+import android.os.Environment
 
 
-class FailedDeliveryDetailsBottomDialogFragment(
-    private val failedDelivery: FailedDeliveries?
-) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddFailedDeliveryBottomDialogListener
+
+class FailedDeliveryDetailsBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+    private val viewModel: FailedDeliveriesViewModel by activityViewModels()
+    private var failedDelivery: FailedDeliveries? = null
+
+    private var listener: AddFailedDeliveryBottomDialogListener? = null
 
     private var _binding: BottomsheetFailedDeliveryDetailBinding? = null
 
     private val binding get() = _binding!!
 
     private var fileToSave: File? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.getString(ARG_FAILED_DELIVERY_JSON)?.let { json ->
+            failedDelivery = try {
+                GsonTools.gson.fromJson(json, FailedDeliveries::class.java)
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
 
     private val saveFileResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("message/rfc822")) { uri ->
         if (uri != null) {
@@ -74,72 +89,52 @@ class FailedDeliveryDetailsBottomDialogFragment(
         _binding = BottomsheetFailedDeliveryDetailBinding.inflate(inflater, container, false)
         val root = binding.root
 
-
-        // Check if failedDeliveryId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-        if (failedDelivery != null) {
+        val delivery = failedDelivery
+        if (delivery != null) {
 
             // Could be opened from searchactivity
-            if (parentFragment != null) {
-                listener = parentFragment as AddFailedDeliveryBottomDialogListener
-            } else if (activity != null) {
-                listener = activity as AddFailedDeliveryBottomDialogListener
-            }
+            listener = (parentFragment as? AddFailedDeliveryBottomDialogListener) ?: (activity as? AddFailedDeliveryBottomDialogListener)
 
             binding.bsFailedDeliveriesDeleteButton.setOnClickListener(this)
 
 
-            if (failedDelivery.is_stored && !failedDelivery.quarantined && !failedDelivery.resent && failedDelivery.email_type == "F") {
+            if (delivery.is_stored && !delivery.quarantined && !delivery.resent && delivery.email_type == "F") {
                 binding.bsFailedDeliveriesResendButton.visibility = View.VISIBLE
                 binding.bsFailedDeliveriesResendButton.setOnClickListener(this)
             } else {
                 binding.bsFailedDeliveriesResendButton.visibility = View.GONE
             }
 
-            if (failedDelivery.is_stored) {
+            if (delivery.is_stored) {
                 binding.bsFailedDeliveriesDownloadButton.visibility = View.VISIBLE
                 binding.bsFailedDeliveriesDownloadButton.setOnClickListener(this)
             } else {
                 binding.bsFailedDeliveriesDownloadButton.visibility = View.GONE
             }
 
-            if (failedDelivery.sender != null && !((activity?.application as AddyIoApp).userResource.hasUserFreeSubscription)) {
+            val hasFreeSub = (activity?.application as? AddyIoApp)?.userResourceOrNull?.hasUserFreeSubscription ?: false
+            if (delivery.sender != null && !hasFreeSub) {
                 binding.bsFailedDeliveriesBlockSenderButton.visibility = View.VISIBLE
                 binding.bsFailedDeliveriesBlockSenderButton.setOnClickListener(this)
             } else {
                 binding.bsFailedDeliveriesBlockSenderButton.visibility = View.GONE
             }
 
-            binding.bsFailedDeliveriesTextviewType.text = failedDelivery.email_type_text
+            binding.bsFailedDeliveriesTextviewType.text = delivery.email_type_text
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                binding.bsFailedDeliveriesTextview.text = Html.fromHtml(
-                    context?.resources?.getString(
-                        R.string.failed_delivery_details_text,
-                        DateTimeUtils.convertStringToLocalTimeZoneString(failedDelivery.created_at),
-                        failedDelivery.destination ?: "",
-                        failedDelivery.alias_email ?: "",
-                        failedDelivery.sender ?: "",
-                        failedDelivery.remote_mta,
-                        DateTimeUtils.convertStringToLocalTimeZoneString(failedDelivery.attempted_at),
-                        failedDelivery.code
-                    ),
-                    Html.FROM_HTML_MODE_LEGACY
-                )
-            } else {
-                binding.bsFailedDeliveriesTextview.text =
-                    Html.fromHtml(
-                        context?.resources?.getString(
-                            R.string.failed_delivery_details_text,
-                            DateTimeUtils.convertStringToLocalTimeZoneString(failedDelivery.created_at),
-                            failedDelivery.destination ?: "",
-                            failedDelivery.alias_email ?: "",
-                            failedDelivery.sender ?: "",
-                            failedDelivery.remote_mta,
-                            DateTimeUtils.convertStringToLocalTimeZoneString(failedDelivery.attempted_at),
-                            failedDelivery.code
-                        )
-                    )
-            }
+            binding.bsFailedDeliveriesTextview.text = androidx.core.text.HtmlCompat.fromHtml(
+                requireContext().resources.getString(
+                    R.string.failed_delivery_details_text,
+                    DateTimeUtils.convertStringToLocalTimeZoneString(delivery.created_at),
+                    delivery.destination ?: "",
+                    delivery.alias_email ?: "",
+                    delivery.sender ?: "",
+                    delivery.remote_mta,
+                    DateTimeUtils.convertStringToLocalTimeZoneString(delivery.attempted_at),
+                    delivery.code
+                ),
+                androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
 
 
         } else {
@@ -216,56 +211,49 @@ class FailedDeliveryDetailsBottomDialogFragment(
     }
 
     private suspend fun resendFailedDeliveryHttp(context: Context) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.resendFailedDelivery({ result ->
-            if (result == "204") {
-                // Animate the button to progress
-                binding.bsFailedDeliveriesResendButton.revertAnimation()
+        val result = viewModel.resendFailedDelivery(failedDelivery!!.id)
+        if (result is NetworkResult.Success) {
+            // Animate the button to progress
+            binding.bsFailedDeliveriesResendButton.revertAnimation()
 
-                MaterialDialogHelper.showMaterialDialog(
-                    context = requireContext(),
-                    title = resources.getString(R.string.resend_failed_delivery),
-                    message = context.resources.getString(R.string.failed_delivery_resend_success),
-                    icon = R.drawable.ic_mail_error,
-                    neutralButtonText = resources.getString(R.string.close)
-                ).show()
-            } else {
-                // Animate the button to progress
-                binding.bsFailedDeliveriesResendButton.revertAnimation()
+            MaterialDialogHelper.showMaterialDialog(
+                context = requireContext(),
+                title = resources.getString(R.string.resend_failed_delivery),
+                message = context.resources.getString(R.string.failed_delivery_resend_success),
+                icon = R.drawable.ic_mail_error,
+                neutralButtonText = resources.getString(R.string.close)
+            ).show()
+        } else {
+            // Animate the button to progress
+            binding.bsFailedDeliveriesResendButton.revertAnimation()
 
-                MaterialDialogHelper.showMaterialDialog(
-                    context = requireContext(),
-                    title = resources.getString(R.string.resend_failed_delivery),
-                    message = context.resources.getString(R.string.error_resending_failed_delivery) + "\n" + result,
-                    icon = R.drawable.ic_mail_error,
-                    neutralButtonText = resources.getString(R.string.close)
-                ).show()
-
-            }
-            // aliasId is never null at this point, hence the !!
-        }, failedDelivery!!.id)
+            MaterialDialogHelper.showMaterialDialog(
+                context = requireContext(),
+                title = resources.getString(R.string.resend_failed_delivery),
+                message = context.resources.getString(R.string.error_resending_failed_delivery) + "\n" + (result.errorOrNull() ?: ""),
+                icon = R.drawable.ic_mail_error,
+                neutralButtonText = resources.getString(R.string.close)
+            ).show()
+        }
     }
 
     private suspend fun deleteFailedDeliveryHttp(context: Context) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.deleteFailedDelivery({ result ->
-            if (result == "204") {
-                listener.onDeleted(failedDelivery!!.id)
-            } else {
-                // Animate the button to progress
-                binding.bsFailedDeliveriesDeleteButton.revertAnimation()
+        val currentFailedDelivery = failedDelivery ?: return
+        val result = viewModel.deleteFailedDelivery(currentFailedDelivery.id)
+        if (result is NetworkResult.Success && result.data == "204") {
+            listener?.onDeleted(currentFailedDelivery.id)
+        } else {
+            // Animate the button to progress
+            binding.bsFailedDeliveriesDeleteButton.revertAnimation()
 
-                MaterialDialogHelper.showMaterialDialog(
-                    context = requireContext(),
-                    title = resources.getString(R.string.delete_failed_delivery),
-                    message = context.resources.getString(R.string.error_delete_failed_delivery) + "\n" + result,
-                    icon = R.drawable.ic_mail_error,
-                    neutralButtonText = resources.getString(R.string.close)
-                ).show()
-
-            }
-            // aliasId is never null at this point, hence the !!
-        }, failedDelivery!!.id)
+            MaterialDialogHelper.showMaterialDialog(
+                context = requireContext(),
+                title = resources.getString(R.string.delete_failed_delivery),
+                message = context.resources.getString(R.string.error_delete_failed_delivery) + "\n" + (result.errorOrNull() ?: ""),
+                icon = R.drawable.ic_mail_error,
+                neutralButtonText = resources.getString(R.string.close)
+            ).show()
+        }
     }
 
     private fun downloadFailedDelivery(context: Context) {
@@ -278,28 +266,37 @@ class FailedDeliveryDetailsBottomDialogFragment(
     }
 
     private suspend fun downloadFailedDeliveryHttp(context: Context) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.downloadSpecificFailedDelivery(context, { result, error ->
-            if (result != null) {
-                saveFileToUserLocation(result)
-                binding.bsFailedDeliveriesDownloadButton.revertAnimation()
-
-            } else {
-                // Animate the button to progress
-                binding.bsFailedDeliveriesDownloadButton.revertAnimation()
-
-
+        val currentFailedDelivery = failedDelivery ?: return
+        val result = viewModel.downloadSpecificFailedDelivery(currentFailedDelivery.id)
+        if (result is NetworkResult.Success) {
+            val directory = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+            val file = File(directory, "${currentFailedDelivery.id}.eml")
+            try {
+                withContext(Dispatchers.IO) {
+                    FileOutputStream(file).use { it.write(result.data) }
+                }
+                saveFileToUserLocation(file)
+            } catch (e: Exception) {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
                     title = resources.getString(R.string.download_failed_delivery),
-                    message = context.resources.getString(R.string.error_downloading_failed_delivery) + "\n" + result,
+                    message = context.resources.getString(R.string.error_downloading_failed_delivery) + "\n" + e.message,
                     icon = R.drawable.ic_mail_error,
                     neutralButtonText = resources.getString(R.string.close)
                 ).show()
-
             }
-            // aliasId is never null at this point, hence the !!
-        }, failedDelivery!!.id)
+            binding.bsFailedDeliveriesDownloadButton.revertAnimation()
+        } else {
+            binding.bsFailedDeliveriesDownloadButton.revertAnimation()
+
+            MaterialDialogHelper.showMaterialDialog(
+                context = requireContext(),
+                title = resources.getString(R.string.download_failed_delivery),
+                message = context.resources.getString(R.string.error_downloading_failed_delivery) + "\n" + (result.errorOrNull() ?: ""),
+                icon = R.drawable.ic_mail_error,
+                neutralButtonText = resources.getString(R.string.close)
+            ).show()
+        }
     }
 
     private fun blockSender(context: Context) {
@@ -351,10 +348,10 @@ class FailedDeliveryDetailsBottomDialogFragment(
     }
 
     private suspend fun blockSenderHttp(context: Context, type: String, value: String) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.addBlocklistEntry({ result, error ->
-            if (result != null) {
-                binding.bsFailedDeliveriesBlockSenderButton.revertAnimation()
+        val result = viewModel.addBlocklistEntry(NewBlocklistEntry(type, value))
+        binding.bsFailedDeliveriesBlockSenderButton.revertAnimation()
+        when (result) {
+            is NetworkResult.Success -> {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
                     title = resources.getString(R.string.blocklist_add),
@@ -366,17 +363,17 @@ class FailedDeliveryDetailsBottomDialogFragment(
                     icon = R.drawable.ic_forbid,
                     neutralButtonText = resources.getString(R.string.close)
                 ).show()
-            } else {
-                binding.bsFailedDeliveriesBlockSenderButton.revertAnimation()
+            }
+            is NetworkResult.Error -> {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
                     title = resources.getString(R.string.blocklist_add),
-                    message = context.resources.getString(R.string.error_adding_blocklist_entry) + "\n" + error,
+                    message = context.resources.getString(R.string.error_adding_blocklist_entry) + "\n" + result.error,
                     icon = R.drawable.ic_forbid,
                     neutralButtonText = resources.getString(R.string.close)
                 ).show()
             }
-        }, NewBlocklistEntry(type, value))
+        }
     }
 
     interface AddFailedDeliveryBottomDialogListener {
@@ -384,10 +381,16 @@ class FailedDeliveryDetailsBottomDialogFragment(
     }
 
     companion object {
+        private const val ARG_FAILED_DELIVERY_JSON = "arg_failed_delivery_json"
+
         fun newInstance(
             failedDelivery: FailedDeliveries
         ): FailedDeliveryDetailsBottomDialogFragment {
-            return FailedDeliveryDetailsBottomDialogFragment(failedDelivery)
+            return FailedDeliveryDetailsBottomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_FAILED_DELIVERY_JSON, GsonTools.gson.toJson(failedDelivery))
+                }
+            }
         }
     }
 }

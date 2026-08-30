@@ -1,0 +1,676 @@
+package host.stjin.anonaddy.ui.usernames.manage
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
+import host.stjin.anonaddy.ui.base.BaseActivity
+import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
+import host.stjin.anonaddy.databinding.ActivityManageUsernameBinding
+import host.stjin.anonaddy.utils.InsetUtils
+import host.stjin.anonaddy.utils.MaterialDialogHelper
+import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.AddyIoApp
+import host.stjin.anonaddy_shared.models.AliasSortFilter
+import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.models.PaginatedResponse
+import host.stjin.anonaddy_shared.models.Usernames
+import host.stjin.anonaddy_shared.network.NetworkResult
+import host.stjin.anonaddy_shared.repositories.AliasRepository
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
+import host.stjin.anonaddy_shared.utils.LoggingHelper
+import kotlinx.coroutines.launch
+
+
+import androidx.activity.viewModels
+
+class ManageUsernameActivity : BaseActivity(),
+    EditUsernameDescriptionBottomDialogFragment.AddEditUsernameDescriptionBottomDialogListener,
+    EditUsernameFromNameBottomDialogFragment.AddEditUsernameFromNameBottomDialogListener,
+    EditUsernameRecipientBottomDialogFragment.AddEditUsernameRecipientBottomDialogListener,
+    EditUsernameAutoCreateRegexBottomDialogFragment.AddEditUsernameAutoCreateRegexBottomDialogListener {
+
+    private lateinit var binding: ActivityManageUsernameBinding
+    private val viewModel: ManageUsernameViewModel by viewModels()
+    private lateinit var aliasRepository: AliasRepository
+
+    private var shouldRefreshOnFinish = false
+
+    private lateinit var editUsernameDescriptionBottomDialogFragment: EditUsernameDescriptionBottomDialogFragment
+    private lateinit var editUsernameRecipientBottomDialogFragment: EditUsernameRecipientBottomDialogFragment
+    private lateinit var editUsernameFromNameBottomDialogFragment: EditUsernameFromNameBottomDialogFragment
+    private lateinit var editUsernameAutoCreateRegexBottomDialogFragment: EditUsernameAutoCreateRegexBottomDialogFragment
+
+    private var username: Usernames? = null
+        set(value) {
+            field = value
+            value?.let { updateUi(it) }
+        }
+
+    private var aliasList: PaginatedResponse<Aliases>? = null
+        set(value) {
+            field = value
+            value?.let { username?.let { username -> updateUi(username, it) } }
+        }
+
+    private var workingAliasList: PaginatedResponse<Aliases>? = null
+    private var isAliasesExpanded = false
+    private var forceSwitch = false
+    private var aliasesEmailList: ArrayList<String> = arrayListOf()
+
+    private lateinit var deleteUsernameSnackbar: Snackbar
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityManageUsernameBinding.inflate(layoutInflater)
+        InsetUtils.applyBottomInset(binding.activityManageUsernameLL1)
+        val view = binding.root
+        setContentView(view)
+
+        setupToolbar(
+            R.string.edit_username,
+            binding.activityManageUsernameNSV,
+            binding.activityManageUsernameToolbar
+        )
+        aliasRepository = ServiceLocator.aliasRepository
+        setRefreshLayout()
+
+        val b = intent.extras
+        val usernameId = b?.getString("username_id")
+
+        if (usernameId == null) {
+            finish()
+            return
+        }
+        setPage(usernameId)
+    }
+
+    private fun setOnClickListeners() {
+        binding.activityManageUsernameActiveSwitchLayout.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(!binding.activityManageUsernameActiveSwitchLayout.getSwitchChecked())
+        }
+
+        binding.activityManageUsernameCatchAllSwitchLayout.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(!binding.activityManageUsernameCatchAllSwitchLayout.getSwitchChecked())
+        }
+
+        binding.activityManageUsernameCanLoginSwitchLayout.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.activityManageUsernameCanLoginSwitchLayout.setSwitchChecked(!binding.activityManageUsernameCanLoginSwitchLayout.getSwitchChecked())
+        }
+
+        binding.activityManageUsernameDescEdit.setOnLayoutClickedListener {
+            if (!editUsernameDescriptionBottomDialogFragment.isAdded) {
+                editUsernameDescriptionBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "editUsernameDescriptionBottomDialogFragment"
+                )
+            }
+        }
+
+
+        binding.activityManageUsernameRecipientsEdit.setOnLayoutClickedListener {
+            if (!editUsernameRecipientBottomDialogFragment.isAdded) {
+                editUsernameRecipientBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "editUsernameRecipientsBottomDialogFragment"
+                )
+            }
+        }
+        binding.activityManageUsernameFromNameEdit.setOnLayoutClickedListener {
+            if (!editUsernameFromNameBottomDialogFragment.isAdded) {
+                editUsernameFromNameBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "editUsernameFromNameBottomDialogFragment"
+                )
+            }
+        }
+
+        binding.activityManageUsernameAutoCreateRegexEdit.setOnLayoutClickedListener {
+            if (!editUsernameAutoCreateRegexBottomDialogFragment.isAdded) {
+                editUsernameAutoCreateRegexBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "editUsernameAutoCreateRegexBottomDialogFragment"
+                )
+            }
+        }
+
+
+        binding.activityManageUsernameDelete.setOnLayoutClickedListener { deleteUsername(this@ManageUsernameActivity.username!!.id) }
+        binding.activityManageUsernameAliasesShowMoreLessButton.setOnClickListener {
+            isAliasesExpanded = !isAliasesExpanded
+            updateAliasesView()
+        }
+    }
+
+    override fun finish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
+        setResult(RESULT_OK, resultIntent)
+        super.finish()
+    }
+
+    override fun descriptionEdited(username: Usernames) {
+        editUsernameDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+        shouldRefreshOnFinish = true
+
+        // Do this last, will trigger updateUI as well as re-init editUsernameDescriptionBottomDialogFragment
+        this.username = username
+    }
+
+    override fun recipientEdited(username: Usernames) {
+        editUsernameRecipientBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editUsernameRecipientBottomDialogFragment
+        this.username = username
+    }
+
+    override fun fromNameEdited(username: Usernames) {
+        editUsernameFromNameBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editUsernameFromNameBottomDialogFragment
+        this.username = username
+    }
+
+    override fun autoCreateRegexEdited(username: Usernames) {
+        editUsernameAutoCreateRegexBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editUsernameAutoCreateRegexBottomDialogFragment
+        this.username = username
+    }
+
+    private fun setRefreshLayout() {
+        binding.activityManageUsernameSwiperefresh.setOnRefreshListener {
+            binding.activityManageUsernameSwiperefresh.isRefreshing = true
+
+            username?.let { setPage(it.id) }
+        }
+    }
+
+    private fun setPage(usernameId: String) {
+        // Get the username
+        lifecycleScope.launch {
+            getUsernameInfo(usernameId)
+        }
+    }
+
+    private fun setOnSwitchChangeListeners() {
+        binding.activityManageUsernameActiveSwitchLayout.setOnSwitchCheckedChangedListener { compoundButton, checked -> // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            if (compoundButton.isPressed || forceSwitch) {
+                binding.activityManageUsernameActiveSwitchLayout.showProgressBar(true)
+                forceSwitch = false
+                if (checked) {
+                    lifecycleScope.launch {
+                        activateUsername()
+                    }
+                } else {
+                    lifecycleScope.launch {
+                        deactivateUsername()
+                    }
+                }
+            }
+        }
+
+        binding.activityManageUsernameCatchAllSwitchLayout.setOnSwitchCheckedChangedListener { compoundButton, checked -> // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            if (compoundButton.isPressed || forceSwitch) {
+                binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(true)
+                forceSwitch = false
+                if (checked) {
+                    lifecycleScope.launch {
+                        enableCatchAll()
+                    }
+                } else {
+                    lifecycleScope.launch {
+                        disableCatchAll()
+                    }
+                }
+            }
+        }
+
+        binding.activityManageUsernameCanLoginSwitchLayout.setOnSwitchCheckedChangedListener { compoundButton, checked -> // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            if (compoundButton.isPressed || forceSwitch) {
+                binding.activityManageUsernameCanLoginSwitchLayout.showProgressBar(true)
+                forceSwitch = false
+                if (checked) {
+                    lifecycleScope.launch {
+                        enableCanLogin()
+                    }
+                } else {
+                    lifecycleScope.launch {
+                        disableCanLogin()
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun disableCanLogin() {
+        val result = viewModel.disableCanLoginUsername(this.username!!.id)
+        binding.activityManageUsernameCanLoginSwitchLayout.showProgressBar(false)
+        if (result is NetworkResult.Success && result.data == "204") {
+            this.username!!.can_login = false
+            shouldRefreshOnFinish = true
+            updateUi(this.username!!)
+        } else {
+            binding.activityManageUsernameCanLoginSwitchLayout.setSwitchChecked(true)
+            SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.error_edit_can_login) + "\n" + (result.errorOrNull() ?: ""),
+                binding.activityManageUsernameCL,
+                LoggingHelper.LOGFILES.DEFAULT
+            ).show()
+        }
+    }
+
+    private suspend fun enableCanLogin() {
+        val result = viewModel.enableCanLoginUsername(this.username!!.id)
+        binding.activityManageUsernameCanLoginSwitchLayout.showProgressBar(false)
+        if (result is NetworkResult.Success) {
+            this.username = result.data
+            shouldRefreshOnFinish = true
+        } else {
+            binding.activityManageUsernameCanLoginSwitchLayout.setSwitchChecked(false)
+            SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.error_edit_can_login) + "\n" + (result.errorOrNull() ?: ""),
+                binding.activityManageUsernameCL,
+                LoggingHelper.LOGFILES.DEFAULT
+            ).show()
+        }
+    }
+
+    private suspend fun disableCatchAll() {
+        val result = viewModel.disableCatchAllUsername(this.username!!.id)
+        binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(false)
+        if (result is NetworkResult.Success && result.data == "204") {
+            this.username!!.catch_all = false
+            shouldRefreshOnFinish = true
+            updateUi(this.username!!)
+        } else {
+            binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(true)
+            SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.error_edit_catch_all) + "\n" + (result.errorOrNull() ?: ""),
+                binding.activityManageUsernameCL,
+                LoggingHelper.LOGFILES.DEFAULT
+            ).show()
+        }
+    }
+
+    private suspend fun enableCatchAll() {
+        val result = viewModel.enableCatchAllUsername(this.username!!.id)
+        binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(false)
+        if (result is NetworkResult.Success) {
+            this.username = result.data
+            shouldRefreshOnFinish = true
+        } else {
+            binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(false)
+            SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.error_edit_catch_all) + "\n" + (result.errorOrNull() ?: ""),
+                binding.activityManageUsernameCL,
+                LoggingHelper.LOGFILES.DEFAULT
+            ).show()
+        }
+    }
+
+    private suspend fun deactivateUsername() {
+        val result = viewModel.deactivateUsername(this.username!!.id)
+        binding.activityManageUsernameActiveSwitchLayout.showProgressBar(false)
+        if (result is NetworkResult.Success && result.data == "204") {
+            this.username!!.active = false
+            shouldRefreshOnFinish = true
+            updateUi(this.username!!)
+        } else {
+            binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(true)
+            SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.error_edit_active) + "\n" + (result.errorOrNull() ?: ""),
+                binding.activityManageUsernameCL,
+                LoggingHelper.LOGFILES.DEFAULT
+            ).show()
+        }
+    }
+
+    private suspend fun activateUsername() {
+        val result = viewModel.activateUsername(this.username!!.id)
+        binding.activityManageUsernameActiveSwitchLayout.showProgressBar(false)
+        if (result is NetworkResult.Success) {
+            this.username = result.data
+            shouldRefreshOnFinish = true
+        } else {
+            binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(false)
+            SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.error_edit_active) + "\n" + (result.errorOrNull() ?: ""),
+                binding.activityManageUsernameCL,
+                LoggingHelper.LOGFILES.DEFAULT
+            ).show()
+        }
+    }
+
+    private fun deleteUsername(id: String) {
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.delete_username),
+            message = resources.getString(R.string.delete_username_desc_confirm),
+            icon = R.drawable.ic_trash,
+            neutralButtonText = resources.getString(R.string.cancel),
+            positiveButtonText = resources.getString(R.string.delete),
+            positiveButtonAction = {
+                deleteUsernameSnackbar = SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.deleting_username),
+                    binding.activityManageUsernameCL,
+                    length = Snackbar.LENGTH_INDEFINITE
+                )
+                deleteUsernameSnackbar.show()
+                lifecycleScope.launch {
+                    deleteUsernameHttpRequest(id, this@ManageUsernameActivity)
+                }
+            }
+        ).show()
+    }
+
+    private suspend fun deleteUsernameHttpRequest(id: String, context: Context) {
+        val result = viewModel.deleteUsername(id)
+        if (result is NetworkResult.Success && result.data == "204") {
+            deleteUsernameSnackbar.dismiss()
+            shouldRefreshOnFinish = true
+            finish()
+        } else {
+            SnackbarHelper.createSnackbar(
+                this,
+                context.resources.getString(
+                    R.string.s_s,
+                    context.resources.getString(R.string.error_deleting_username), result.errorOrNull() ?: ""
+                ),
+                binding.activityManageUsernameCL,
+                LoggingHelper.LOGFILES.DEFAULT
+            ).show()
+        }
+    }
+
+    private suspend fun getUsernameInfo(id: String) {
+        val result = viewModel.getUsername(id)
+        if (result is NetworkResult.Success) {
+            val username = result.data
+            // Triggers updateUi
+            this.username = username
+
+            // Now that we have the username, obtain the aliases separately
+            lifecycleScope.launch {
+                getAliasesAndAddThemToList(username)
+            }
+        } else {
+            SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.error_obtaining_username) + "\n" + (result.errorOrNull() ?: ""),
+                binding.activityManageUsernameCL
+            ).show()
+
+            // Show error animations
+            binding.activityManageUsernameLL1.visibility = View.GONE
+            binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
+        }
+        binding.activityManageUsernameSwiperefresh.isRefreshing = false
+    }
+
+    private fun updateUi(username: Usernames, aliasesArray: PaginatedResponse<Aliases>? = null) {
+        /**
+         *  SWITCH STATUS
+         */
+
+        binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(username.active)
+        binding.activityManageUsernameActiveSwitchLayout.setTitle(
+            if (username.active) resources.getString(R.string.username_activated) else resources.getString(R.string.username_deactivated)
+        )
+
+        binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(username.catch_all)
+        binding.activityManageUsernameCatchAllSwitchLayout.setTitle(
+            if (username.catch_all) resources.getString(R.string.catch_all_enabled) else resources.getString(R.string.catch_all_disabled)
+        )
+
+        binding.activityManageUsernameCanLoginSwitchLayout.setSwitchChecked(username.can_login)
+        binding.activityManageUsernameCanLoginSwitchLayout.setTitle(
+            if (username.can_login) resources.getString(R.string.can_login_enabled) else resources.getString(R.string.can_login_disabled)
+        )
+
+        /**
+         * TEXT
+         */
+
+        var totalForwarded = 0
+        var totalBlocked = 0
+        var totalReplies = 0
+        var totalSent = 0
+
+        if (aliasesArray != null) {
+            binding.activityManageUsernameAliasesCountTextview.apply {
+                val total = aliasesArray.meta?.total ?: aliasesArray.data.size
+                if (total > 0) {
+                    text = String.format(java.util.Locale.getDefault(), "%d", total)
+                    visibility = View.VISIBLE
+                } else {
+                    visibility = View.GONE
+                }
+            }
+
+            val emails = mutableListOf<String>()
+            aliasesArray.data = ArrayList(aliasesArray.data.sortedBy { it.email })
+            for (alias in aliasesArray.data) {
+                totalForwarded += alias.emails_forwarded
+                totalBlocked += alias.emails_blocked
+                totalReplies += alias.emails_replied
+                totalSent += alias.emails_sent
+                emails.add(alias.email)
+            }
+            aliasesEmailList = ArrayList(emails)
+            updateAliasesView()
+            binding.activityManageUsernameAliasesShimmerframelayout.hideShimmer()
+            binding.activityManageUsernameBasicShimmerframelayout.hideShimmer() // Stop shimmer only after this info is loaded
+
+        }
+
+        binding.activityManageUsernameBasicTextview.text = resources.getString(
+            R.string.manage_username_basic_info,
+            username.username,
+            DateTimeUtils.convertStringToLocalTimeZoneString(username.created_at),
+            DateTimeUtils.convertStringToLocalTimeZoneString(username.updated_at),
+            totalForwarded, totalBlocked, totalReplies, totalSent
+        )
+
+
+        /**
+         * RECIPIENTS
+         */
+
+        // Set recipient
+        val recipients: String = username.default_recipient?.email ?: this.resources.getString(
+            R.string.default_recipient_s, (this.application as AddyIoApp).userResourceExtended.default_recipient_email
+        )
+
+        binding.activityManageUsernameRecipientsEdit.setDescription(recipients)
+
+
+        // Set this value as it now includes the default email
+        editUsernameRecipientBottomDialogFragment =
+            EditUsernameRecipientBottomDialogFragment.newInstance(this.username!!.id, username.default_recipient?.email)
+
+
+        /**
+         * DESCRIPTION
+         */
+
+        // Set description and initialise the bottomDialogFragment
+        if (username.description != null) {
+            binding.activityManageUsernameDescEdit.setDescription(username.description)
+        } else {
+            binding.activityManageUsernameDescEdit.setDescription(
+                this.resources.getString(
+                    R.string.username_no_description
+                )
+            )
+        }
+
+        // Set this value as it now includes the description
+        editUsernameDescriptionBottomDialogFragment = EditUsernameDescriptionBottomDialogFragment.newInstance(
+            this.username!!.id,
+            username.description
+        )
+
+        /**
+         * FROM NAME
+         */
+
+
+        // Not available for free subscriptions
+        if ((this.application as? AddyIoApp)?.userResourceOrNull?.hasUserFreeSubscription == true) {
+            binding.activityManageUsernameFromNameEdit.setLayoutEnabled(false)
+            binding.activityManageUsernameFromNameEdit.setDescription(
+                this.resources.getString(
+                    R.string.feature_not_available_subscription
+                )
+            )
+        } else {
+            // Set description and initialise the bottomDialogFragment
+            if (username.from_name != null) {
+                binding.activityManageUsernameFromNameEdit.setDescription(username.from_name)
+            } else {
+                binding.activityManageUsernameFromNameEdit.setDescription(
+                    this.resources.getString(
+                        R.string.username_no_from_name
+                    )
+                )
+            }
+
+            // reset this value as it now includes the description
+            editUsernameFromNameBottomDialogFragment = EditUsernameFromNameBottomDialogFragment.newInstance(
+                username.id,
+                username.username,
+                username.from_name
+            )
+
+
+        }
+
+        /**
+         * AUTO CREATE REGEX
+         */
+
+
+        // Not available for free subscriptions
+        if ((this.application as? AddyIoApp)?.userResourceOrNull?.hasUserFreeSubscription == true) {
+            binding.activityManageUsernameAutoCreateRegexEdit.setLayoutEnabled(false)
+            binding.activityManageUsernameAutoCreateRegexEdit.setDescription(
+                this.resources.getString(
+                    R.string.feature_not_available_subscription
+                )
+            )
+        } else {
+            // Set description and initialise the bottomDialogFragment
+            if (username.auto_create_regex != null) {
+                binding.activityManageUsernameAutoCreateRegexEdit.setDescription(username.auto_create_regex)
+            } else {
+                binding.activityManageUsernameAutoCreateRegexEdit.setDescription(
+                    this.resources.getString(
+                        R.string.username_no_auto_create_regex
+                    )
+                )
+            }
+
+            // reset this value as it now includes the description
+            editUsernameAutoCreateRegexBottomDialogFragment = EditUsernameAutoCreateRegexBottomDialogFragment.newInstance(
+                username.id,
+                username.auto_create_regex,
+            )
+
+
+        }
+
+
+        binding.animationFragment.stopAnimation()
+        binding.activityManageUsernameNSV.animate().alpha(1.0f)
+        setOnSwitchChangeListeners()
+        setOnClickListeners()
+    }
+
+
+    private fun updateAliasesView() {
+        if (aliasesEmailList.size > 10) {
+            binding.activityManageUsernameAliasesShowMoreLessButton.visibility = View.VISIBLE
+            if (isAliasesExpanded) {
+                binding.activityManageUsernameAliasesTextview.text = aliasesEmailList.joinToString("\n")
+                binding.activityManageUsernameAliasesShowMoreLessButton.text = getString(R.string.show_less)
+            } else {
+                binding.activityManageUsernameAliasesTextview.text = aliasesEmailList.take(10).joinToString("\n")
+                binding.activityManageUsernameAliasesShowMoreLessButton.text = getString(R.string.show_more)
+            }
+        } else {
+            binding.activityManageUsernameAliasesShowMoreLessButton.visibility = View.GONE
+            binding.activityManageUsernameAliasesTextview.text = aliasesEmailList.joinToString("\n")
+        }
+    }
+    
+    private suspend fun getAliasesAndAddThemToList(username: Usernames) {
+        binding.activityManageUsernameAliasesShimmerframelayout.startShimmer()
+
+        val result = aliasRepository.getAliases(
+            aliasSortFilter = AliasSortFilter(
+                onlyActiveAliases = false,
+                onlyDeletedAliases = false,
+                onlyInactiveAliases = false,
+                onlyWatchedAliases = false,
+                onlyPinnedAliases = false,
+                sort = null,
+                sortDesc = false,
+                filter = null
+            ),
+            page = (workingAliasList?.meta?.current_page ?: 0) + 1,
+            size = 100,
+            username = username.id
+        )
+
+        when (result) {
+            is NetworkResult.Success -> {
+                addAliasesToList(username, result.data)
+            }
+            is NetworkResult.Error -> {
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_obtaining_aliases) + "\n" + result.error,
+                    binding.activityManageUsernameCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }
+    }
+
+    private suspend fun addAliasesToList(username: Usernames, aliasesArray: PaginatedResponse<Aliases>) {
+        // If the aliasList is null, completely set it
+        if (workingAliasList == null) {
+            workingAliasList = aliasesArray
+        } else {
+            // If not, update meta,links and append aliases
+            workingAliasList?.meta = aliasesArray.meta
+            workingAliasList?.links = aliasesArray.links
+            workingAliasList?.data?.addAll(aliasesArray.data)
+        }
+
+        // Check if there are more aliases to obtain (are there more pages)
+        // If so, repeat.
+        if ((workingAliasList?.meta?.current_page ?: 0) < (workingAliasList?.meta?.last_page ?: 0)) {
+            getAliasesAndAddThemToList(username)
+        } else {
+            // Else, set aliasList to call updateUi()
+            this.aliasList = workingAliasList
+            // Clear workingAliasList to free up space
+            workingAliasList = null
+        }
+    }
+}

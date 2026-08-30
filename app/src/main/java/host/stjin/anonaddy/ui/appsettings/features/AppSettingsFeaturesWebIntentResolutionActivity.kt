@@ -1,13 +1,12 @@
 package host.stjin.anonaddy.ui.appsettings.features
 
 import android.os.Bundle
-import android.widget.CompoundButton
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesWebintentResolutionBinding
-import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.InsetUtil
-import host.stjin.anonaddy.utils.WebIntentManager
+import host.stjin.anonaddy.utils.InsetUtils
+import host.stjin.anonaddy.utils.WebIntentHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
@@ -21,12 +20,12 @@ class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesWebintentResolutionBinding.inflate(layoutInflater)
-        InsetUtil.applyBottomInset(binding.appsettingsFeaturesWebintentResolutionNSVLL)
+        InsetUtils.applyBottomInset(binding.appsettingsFeaturesWebintentResolutionNSVLL)
 
         val view = binding.root
         setContentView(view)
 
-        settingsManager = SettingsManager(false, this)
+        settingsManager = ServiceLocator.settingsManager
         setupToolbar(
             R.string.integration_webintent_resolution,
             binding.appsettingsFeaturesWebintentResolutionNSV,
@@ -46,30 +45,24 @@ class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {
     }
 
     private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.setSwitchChecked(!binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.getSwitchChecked())
-            }
-        })
+        binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.setSwitchChecked(!binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.getSwitchChecked())
+        }
     }
 
     private fun loadSettings() {
         binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.setSwitchChecked(
-            WebIntentManager(this).isCurrentDomainAssociated()
+            WebIntentHelper(this).isCurrentDomainAssociated()
         )
     }
 
     private fun setOnSwitchListeners() {
-        binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed || forceSwitch) {
-                    forceSwitch = false
-                    WebIntentManager(this@AppSettingsFeaturesWebIntentResolutionActivity).requestSupportedLinks(checked)
-                }
+        binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed || forceSwitch) {
+                forceSwitch = false
+                WebIntentHelper(this@AppSettingsFeaturesWebIntentResolutionActivity).requestSupportedLinks(checked)
             }
-        })
+        }
     }
 }

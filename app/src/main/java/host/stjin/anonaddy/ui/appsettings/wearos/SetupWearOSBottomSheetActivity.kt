@@ -1,7 +1,7 @@
 package host.stjin.anonaddy.ui.appsettings.wearos
 
 import android.os.Bundle
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 
 class SetupWearOSBottomSheetActivity : BaseActivity(), SetupWearOSBottomDialogFragment.AddSetupWearOSBottomDialogListener {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -10,7 +10,7 @@ class SetupWearOSBottomSheetActivity : BaseActivity(), SetupWearOSBottomDialogFr
         val nodeId = intent.getStringExtra("nodeId")
         val nodeDisplayName = intent.getStringExtra("nodeDisplayName")
         val setupWearOSBottomDialogFragment: SetupWearOSBottomDialogFragment =
-            SetupWearOSBottomDialogFragment.newInstance(this, nodeId, nodeDisplayName)
+            SetupWearOSBottomDialogFragment.newInstance(nodeId, nodeDisplayName)
 
         if (!setupWearOSBottomDialogFragment.isAdded) {
             setupWearOSBottomDialogFragment.show(

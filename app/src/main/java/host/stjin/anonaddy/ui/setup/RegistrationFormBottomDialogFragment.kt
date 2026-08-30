@@ -12,16 +12,17 @@ import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.BottomsheetRegistrationFormBinding
 import host.stjin.anonaddy.utils.CustomPatterns
 import host.stjin.anonaddy.utils.MaterialDialogHelper
-import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.network.NetworkResult
 import kotlinx.coroutines.launch
 
 class RegistrationFormBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddRegistrationFormBottomDialogFragmentListener
+    private var listener: AddRegistrationFormBottomDialogFragmentListener? = null
 
     private var _binding: BottomsheetRegistrationFormBinding? = null
 
@@ -40,7 +41,7 @@ class RegistrationFormBottomDialogFragment : BaseBottomSheetDialogFragment(), Vi
     ): View {
         _binding = BottomsheetRegistrationFormBinding.inflate(inflater, container, false)
         val root = binding.root
-        listener = parentFragment as AddRegistrationFormBottomDialogFragmentListener
+        listener = (parentFragment as? AddRegistrationFormBottomDialogFragmentListener) ?: (activity as? AddRegistrationFormBottomDialogFragmentListener)
 
         binding.bsRegistrationFormRegisterButton.setOnClickListener(this)
         binding.bsRegistrationFormPrivacyPolicyButton.setOnClickListener(this)
@@ -164,10 +165,16 @@ class RegistrationFormBottomDialogFragment : BaseBottomSheetDialogFragment(), Vi
         val expirationOption = expirationOptions[expirationOptionNames.indexOf(binding.bsRegistrationFormExpirationMact.text.toString())]
 
         binding.bsRegistrationFormRegisterButton.startAnimation()
-        val networkHelper = NetworkHelper(requireContext())
-        networkHelper.registration(
-            { result ->
-                if (result == "204") {
+        val userRepository = ServiceLocator.userRepository
+        val result = userRepository.registration(
+            username = binding.bsRegistrationFormUsernameTiet.text.toString(),
+            email = binding.bsRegistrationFormEmailTiet.text.toString(),
+            password = binding.bsRegistrationFormPasswordTiet.text.toString(),
+            apiExpiration = expirationOption
+        )
+        when (result) {
+            is NetworkResult.Success -> {
+                if (result.data == "204") {
                     MaterialDialogHelper.showMaterialDialog(
                         context = requireContext(),
                         title = resources.getString(R.string.registration_register),
@@ -175,27 +182,24 @@ class RegistrationFormBottomDialogFragment : BaseBottomSheetDialogFragment(), Vi
                         icon = R.drawable.ic_mdi_hand_wave_outline,
                         positiveButtonText = resources.getString(R.string.understood),
                         positiveButtonAction = {
-                            listener.onRegistered()
+                            listener?.onRegistered()
                             dismiss()
                         }
                     ).show()
-                } else {
-                    binding.bsRegistrationFormRegisterButton.revertAnimation()
-
-                    MaterialDialogHelper.showMaterialDialog(
-                        context = requireContext(),
-                        title = resources.getString(R.string.registration_register),
-                        message = result,
-                        icon = R.drawable.ic_mdi_hand_wave_outline,
-                        neutralButtonText = resources.getString(R.string.close)
-                    ).show()
                 }
-            },
-            username = binding.bsRegistrationFormUsernameTiet.text.toString(),
-            email = binding.bsRegistrationFormEmailTiet.text.toString(),
-            password = binding.bsRegistrationFormPasswordTiet.text.toString(),
-            apiExpiration = expirationOption
-        )
+            }
+            is NetworkResult.Error -> {
+                binding.bsRegistrationFormRegisterButton.revertAnimation()
+
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = resources.getString(R.string.registration_register),
+                    message = result.error,
+                    icon = R.drawable.ic_mdi_hand_wave_outline,
+                    neutralButtonText = resources.getString(R.string.close)
+                ).show()
+            }
+        }
     }
 
     // 1. Defines the listener interface with a method passing back data result.

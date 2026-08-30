@@ -1,11 +1,10 @@
 package host.stjin.anonaddy.ui
+import host.stjin.anonaddy_shared.utils.GsonTools
 
 import android.app.NotificationManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.security.KeyChain
 import android.security.KeyChainAliasCallback
 import android.util.TypedValue
@@ -13,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
@@ -23,45 +23,40 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.wearable.Wearable
 import com.google.android.material.button.MaterialButton
-import com.google.gson.Gson
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.Updater
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.ActivityMainBinding
-import host.stjin.anonaddy.databinding.ActivityMainBinding.inflate
 import host.stjin.anonaddy.interfaces.Refreshable
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.accountnotifications.AccountNotificationsActivity
-import host.stjin.anonaddy.ui.alias.AliasFragment
+import host.stjin.anonaddy.ui.aliases.AliasesFragment
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
-import host.stjin.anonaddy.ui.blocklist.ManageBlocklistFragment
+import host.stjin.anonaddy.ui.base.SharedScrollViewModel
+import host.stjin.anonaddy.ui.blocklist.BlocklistFragment
 import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
-import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
-import host.stjin.anonaddy.ui.domains.DomainSettingsFragment
+import host.stjin.anonaddy.ui.domains.DomainsFragment
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesFragment
 import host.stjin.anonaddy.ui.home.HomeFragment
 import host.stjin.anonaddy.ui.recipients.RecipientsFragment
-import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
-import host.stjin.anonaddy.ui.rules.RulesSettingsFragment
+import host.stjin.anonaddy.ui.rules.RulesFragment
 import host.stjin.anonaddy.ui.setup.AddApiBottomDialogFragment
-import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
-import host.stjin.anonaddy.ui.usernames.UsernamesSettingsFragment
+import host.stjin.anonaddy.ui.usernames.UsernamesFragment
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.WearOSHelper
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
-import host.stjin.anonaddy_shared.NetworkHelper
-import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.managers.SettingsManager.PREFS
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
-import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.network.NetworkResult
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.ocpsoft.prettytime.PrettyTime
@@ -70,8 +65,7 @@ import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
 
-
-object MainActivityTimeClass {
+private object MainActivityTimeClass {
     private var lastGeneralRefresh = Date()
 
     fun updateLastGeneralRefresh() {
@@ -86,15 +80,9 @@ object MainActivityTimeClass {
 
 class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener {
 
-    private val profileBottomDialogFragment: ProfileBottomDialogFragment =
-
-        ProfileBottomDialogFragment.newInstance()
-
-    private var addApiBottomDialogFragment: AddApiBottomDialogFragment =
-
-        AddApiBottomDialogFragment.newInstance()
-
-    private lateinit var networkHelper: NetworkHelper
+    private val sharedScrollViewModel: SharedScrollViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
+    private lateinit var navigator: MainNavigator
 
     lateinit var viewPager: ViewPager2
 
@@ -110,116 +98,41 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
         }
     }
 
-    private var mUpdateAvailable = false
+    private var isUpdateAvailable = false
 
-    private var mPermissionsRequired = false
-
-    /*
-        This method checks if there are new failed deliveries
-        It does this by getting the current failed delivery count, if that count is bigger than the failed deliveries in the cache that means there are new failed
-        deliveries.
-
-        As BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT is only updated in the service and in the FailedDeliveriesActivity that means that the red
-        indicator is only visible if:
-
-        - The activity has not been opened since there were new items.
-        - There are more failed deliveries than the server cached last time (in which case the user should have got a notification)
-         */
-    private suspend fun checkForNewFailedDeliveries() {
-        val encryptedSettingsManager = SettingsManager(true, this)
-
-        networkHelper.getAllFailedDeliveries { result, _ ->
-            val previousFailedDeliveryId =
-                encryptedSettingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID)
-
-            var newDeliveriesCount = 0
-            if (result != null && result.data.isNotEmpty()) {
-                val currentFailedDeliveryId = result.data.firstOrNull()?.id
-                if (!currentFailedDeliveryId.isNullOrEmpty()) {
-                    if (previousFailedDeliveryId == null) {
-                        // On a new installation, the previous ID is null, so consider all fetched items as new
-                        newDeliveriesCount = result.meta?.total ?: result.data.size
-                    } else if (currentFailedDeliveryId != previousFailedDeliveryId) {
-                        for (delivery in result.data) {
-                            if (delivery.id == previousFailedDeliveryId) break
-                            newDeliveriesCount++
-                        }
-                        if (newDeliveriesCount <= 0) newDeliveriesCount = 1
-                    }
-                }
-            }
-
-            if (newDeliveriesCount > 0) {
-                if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                    setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesIcon, true)
-                } else {
-                    val badge = binding.navRail!!.getOrCreateBadge(R.id.navigation_failed_deliveries)
-                    badge.isVisible = true
-                    // An icon only badge will be displayed unless a number or text is set:
-                    badge.number = newDeliveriesCount  // or badge.text = "New"
-                }
-            } else {
-                hideFailedDeliveriesBadge()
-            }
-        }
-    }
-
-    /*
-         This method checks if there are new account notifications
-         It does this by getting the current account notifications count, if that count is bigger than the account notifications in the cache that means there are new notifications
-
-         As BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT is only updated in the service and in the AccountNotificationsActivity that means that the red
-         indicator is only visible if:
-
-         - The activity has not been opened since there were new items.
-         - There are more account notifications than the server cached last time (in which case the user should have got a notification)
-         */
-    private suspend fun checkForNewAccountNotifications() {
-        val encryptedSettingsManager = SettingsManager(true, this)
-        networkHelper.getAllAccountNotifications { result, _ ->
-            val currentAccountNotifications =
-                encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)
-            if ((result?.size ?: 0) > currentAccountNotifications) {
-                if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                    setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIcon, true)
-                } else {
-                    setButtonAccentColor(binding.navRail!!.headerView?.findViewById(R.id.navigation_rail_fab_account_notifications)!!, true)
-                }
-            } else {
-                hideAccountNotificationsBadge()
-            }
-
-        }
-    }
+    private var isPermissionsRequired = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
+        navigator = MainNavigator(this)
 
+        lifecycleScope.launch {
+            viewModel.updateAvailable.collect { available ->
+                isUpdateAvailable = available
+                setAlertIconToProfile(updateAvailable = available)
+            }
+        }
 
-        networkHelper = NetworkHelper(this@MainActivity)
+        requireAuthentication {
+            lifecycleScope.launch {
+                loadMainActivity()
+                // No need to check for updates on recreation of the activity
+                if (savedInstanceState == null) {
+                    checkForUpdates()
+                    checkForApiExpiration()
+                    checkForCertificateExpiration()
+                    checkForSubscriptionExpiration()
+                    checkForNewFailedDeliveries()
+                    checkForNewAccountNotifications()
 
-        isAuthenticated { isAuthenticated ->
-            if (isAuthenticated) {
-                lifecycleScope.launch {
-                    loadMainActivity()
-                    // No need to check for updates on recreation of the activity
-                    if (savedInstanceState == null) {
-                        checkForUpdates()
-                        checkForApiExpiration()
-                        checkForCertificateExpiration()
-                        checkForSubscriptionExpiration()
-                        checkForNewFailedDeliveries()
-                        checkForNewAccountNotifications()
+                    // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
+                    BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
 
-                        // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
-                        BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
-
-                    }
                 }
             }
         }
@@ -291,116 +204,52 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
     }
 
-    fun refreshAllData() {
+    fun refreshAllData(onFinished: (() -> Unit)? = null) {
         // Refresh all data in child fragments
 
-        // Get all fragments currently managed by the ViewPager's adapter
-        val allFragments = (viewPager.adapter as MainViewpagerAdapter).getAllFragments()
+        // Get all fragments currently attached to MainActivity
+        val activeFragments = supportFragmentManager.fragments
 
-        // Loop through the fragments and refresh only those that implement the Refreshable interface
-        for (fragment in allFragments) {
-            if (fragment is Refreshable) {
-                // Call the interface method. It's now the fragment's own responsibility
-                // to handle this call safely.
-                fragment.onRefreshData()
-            }
-        }
-
-//        val homeFragment: HomeFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("HomeFragment") as HomeFragment?
-//        val aliasFragment: AliasFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment?
-//        val recipientsFragment: RecipientsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RecipientsFragment") as RecipientsFragment?
-//        homeFragment?.getDataFromWeb(null)
-//        aliasFragment?.getDataFromWeb(null)
-//        recipientsFragment?.getDataFromWeb(null)
-//
-//
-//        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-//            val usernamesSettingsFragment: UsernamesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("UsernamesSettingsFragment") as UsernamesSettingsFragment?
-//            usernamesSettingsFragment?.getDataFromWeb(null)
-//
-//            val domainSettingsFragment: DomainSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("DomainSettingsFragment") as DomainSettingsFragment?
-//            domainSettingsFragment?.getDataFromWeb(null)
-//
-//            val rulesSettingsFragment: RulesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RulesSettingsFragment") as RulesSettingsFragment?
-//            rulesSettingsFragment?.getDataFromWeb(null)
-//
-//            val failedDeliveriesFragment: FailedDeliveriesFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("FailedDeliveriesFragment") as FailedDeliveriesFragment?
-//            failedDeliveriesFragment?.getDataFromWeb(null)
-//        }
-
-        // Check for updates and check API expiration key
         lifecycleScope.launch {
-            checkForUpdates()
-            checkForApiExpiration()
-            checkForCertificateExpiration()
-            checkForSubscriptionExpiration()
-            checkForNewFailedDeliveries()
-            checkForNewAccountNotifications()
+            coroutineScope {
+                // Loop through the fragments and refresh only those that implement the Refreshable interface
+                for (fragment in activeFragments) {
+                    if (fragment is Refreshable && fragment.isAdded) {
+                        launch {
+                            fragment.onRefreshData()
+                        }
+                    }
+                }
+
+                // Check for updates and check API expiration key
+                launch {
+                    checkForUpdates()
+                    checkForApiExpiration()
+                    checkForCertificateExpiration()
+                    checkForSubscriptionExpiration()
+                    checkForNewFailedDeliveries()
+                    checkForNewAccountNotifications()
+                }
+            }
+
+            MainActivityTimeClass.updateLastGeneralRefresh()
+            onFinished?.invoke()
         }
-
-        MainActivityTimeClass.updateLastGeneralRefresh()
-
     }
 
     fun navigateTo(fragment: Int) {
-        when (fragment) {
-            R.id.navigation_home -> viewPager.currentItem = 0
-            R.id.navigation_alias -> viewPager.currentItem = 1
-            R.id.navigation_recipients -> viewPager.currentItem = 2
-            R.id.navigation_usernames -> {  // Only SW600DP>
-                if (this.resources.getBoolean(R.bool.isTablet)) {
-                    viewPager.currentItem = 3
-                } else {
-                    val intent = Intent(this, UsernamesSettingsActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-
-            R.id.navigation_domains -> {  // Only SW600DP>
-                if (this.resources.getBoolean(R.bool.isTablet)) {
-                    viewPager.currentItem = 4
-                } else {
-                    val intent = Intent(this, DomainSettingsActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-
-            R.id.navigation_rules -> {  // Only SW600DP>
-                if (this.resources.getBoolean(R.bool.isTablet)) {
-                    viewPager.currentItem = 5
-                } else {
-                    val intent = Intent(this, RulesSettingsActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-
-            R.id.navigation_failed_deliveries -> {  // Only SW600DP>
-
-                // Tell the fragment it is shown so it can mark the failed deliveries as read by updating the count in cache
-                val failedDeliveriesFragment: FailedDeliveriesFragment? =
-                    (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("FailedDeliveriesFragment") as FailedDeliveriesFragment?
-                failedDeliveriesFragment?.fragmentShown()
-                hideFailedDeliveriesBadge()
-
-                if (this.resources.getBoolean(R.bool.isTablet)) {
-                    viewPager.currentItem = 7
-                } else {
-                    val intent = Intent(this, FailedDeliveriesActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-        }
+        navigator.navigateTo(fragment)
     }
 
     override fun onClickSave(baseUrl: String, apiKey: String) {
-        addApiBottomDialogFragment.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("addApiBottomDialogFragment") as? AddApiBottomDialogFragment)?.dismissAllowingStateLoss()
         updateKey(apiKey)
 
         // Send the new configuration to all the connected Wear devices
         try {
             Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
                 for (node in nodes) {
-                    val configuration = Gson().toJson(WearOSHelper(this).createWearOSConfiguration())
+                    val configuration = GsonTools.gson.toJson(WearOSHelper.createWearOSConfiguration())
                     Wearable.getMessageClient(this).sendMessage(
                         node.id,
                         "/setup",
@@ -421,13 +270,14 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
             if (AddyIo.isUsingHostedInstance) this.resources.getString(R.string.hosted) else AddyIo.VERSIONSTRING
         binding.navRail!!.headerView?.findViewById<TextView>(R.id.navigation_rail_fab_version)!!.text = railVersionText
 
-        val usernameInitials = (this.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
+        val usernameInitials = (this.application as? AddyIoApp)?.userResourceOrNull?.username?.take(2)?.uppercase(Locale.getDefault()) ?: ""
         binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.main_top_bar_user_initials)!!.text = usernameInitials
 
     }
 
     private fun setOnBigScreenClickListener() {
         binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.main_top_bar_user_initials)!!.setOnClickListener {
+            val profileBottomDialogFragment = ProfileBottomDialogFragment.newInstance(isUpdateAvailable, isPermissionsRequired)
             if (!profileBottomDialogFragment.isAdded) {
                 profileBottomDialogFragment.show(
                     supportFragmentManager,
@@ -454,14 +304,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                     )
                     shimmerTopBarSubTitle(binding.mainAppBarInclude!!.mainTopBarSubtitleShimmerframelayout, true)
 
-                    refreshAllData()
-
-
-                    // Since a bunch of different calls are being made, it is very hard to keep progress of everything.
-                    // Just hide the refresh text after 2 seconds.
-                    // TODO Any way to keep track of all this?
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        // Unauthenticated, clear settings
+                    refreshAllData {
                         binding.refreshLayout?.finishRefreshing()
                         shimmerTopBarSubTitle(binding.mainAppBarInclude!!.mainTopBarSubtitleShimmerframelayout, true)
                         changeTopBarSubTitle(
@@ -469,7 +312,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                             binding.mainAppBarInclude!!.mainTopBarTitle,
                             null
                         )
-                    }, 2000)
+                    }
 
                 }
 
@@ -511,11 +354,9 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                 !this@MainActivity.hasReachedTopOfNsv
             }
             binding.swipeRefreshLayoutSw600dp?.setOnRefreshListener {
-                refreshAllData()
-
-                Handler(Looper.getMainLooper()).postDelayed({
+                refreshAllData {
                     binding.swipeRefreshLayoutSw600dp?.isRefreshing = false
-                }, 2000)
+                }
             }
         }
     }
@@ -534,18 +375,18 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
         val fragmentList: ArrayList<Fragment> = if (resources.getBoolean(R.bool.isTablet)) {
             arrayListOf(
                 HomeFragment.newInstance(),
-                AliasFragment.newInstance(),
+                AliasesFragment.newInstance(),
                 RecipientsFragment.newInstance(),
-                UsernamesSettingsFragment.newInstance(),
-                DomainSettingsFragment.newInstance(),
-                RulesSettingsFragment.newInstance(),
-                ManageBlocklistFragment.newInstance(),
+                UsernamesFragment.newInstance(),
+                DomainsFragment.newInstance(),
+                RulesFragment.newInstance(),
+                BlocklistFragment.newInstance(),
                 FailedDeliveriesFragment.newInstance()
             )
         } else {
             arrayListOf(
                 HomeFragment.newInstance(),
-                AliasFragment.newInstance(),
+                AliasesFragment.newInstance(),
                 RecipientsFragment.newInstance()
             )
         }
@@ -643,8 +484,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             binding.mainAppBarInclude!!.toolbar.setOnClickListener {
-                val intent = Intent("scroll_up")
-                sendBroadcast(intent)
+                sharedScrollViewModel.triggerScrollUp()
                 binding.mainAppBarInclude!!.appBar.setExpanded(true, true)
             }
         }
@@ -653,7 +493,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     }
 
     private fun checkForStartupPage() {
-        val startupPageValue = SettingsManager(false, this).getSettingsString(PREFS.STARTUP_PAGE, "home")
+        val startupPageValue = ServiceLocator.settingsManager.getSettingsString(PREFS.STARTUP_PAGE, "home")
         val startupPageOptions = this.resources.getStringArray(R.array.startup_page_options).toList()
 
         // Check if the value exists in the array, default (but dont reset) to home if not (this could occur if eg. a tablet backup (which has more options) gets restored on mobile)
@@ -676,7 +516,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     private fun showChangeLog() {
         // Check the version code in the sharedpreferences, if the one in the preferences is older than the current one, the app got updated.
         // Show the changelog
-        val settingsManager = SettingsManager(false, this)
+        val settingsManager = ServiceLocator.settingsManager
         if (settingsManager.getSettingsInt(PREFS.VERSION_CODE) < BuildConfig.VERSION_CODE) {
             val addChangelogBottomDialogFragment: ChangelogBottomDialogFragment =
                 ChangelogBottomDialogFragment.newInstance()
@@ -702,10 +542,11 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     // Only gets calls on mobile (not tablet)
     private fun initialiseMainAppBar() {
         // Figure out the from name initials
-        val usernameInitials = (this.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
+        val usernameInitials = (this.application as? AddyIoApp)?.userResourceOrNull?.username?.take(2)?.uppercase(Locale.getDefault()) ?: ""
         binding.mainAppBarInclude!!.mainTopBarUserInitials.text = usernameInitials
 
         binding.mainAppBarInclude!!.mainTopBarUserInitials.setOnClickListener {
+            val profileBottomDialogFragment = ProfileBottomDialogFragment.newInstance(isUpdateAvailable, isPermissionsRequired)
             if (!profileBottomDialogFragment.isAdded) {
                 profileBottomDialogFragment.show(
                     supportFragmentManager,
@@ -732,30 +573,18 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
         // Notification permission check
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !notificationManager.areNotificationsEnabled()) {
-            profileBottomDialogFragment.permissionsRequired = true
             setAlertIconToProfile(permissionsRequired = true)
         } else {
-            profileBottomDialogFragment.permissionsRequired = false
             setAlertIconToProfile(permissionsRequired = false)
         }
     }
 
-    private suspend fun checkForUpdates() {
-        val settingsManager = SettingsManager(false, this)
-        if (settingsManager.getSettingsBool(PREFS.NOTIFY_UPDATES)) {
-            Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean, _: String? ->
-
-                // Set the update status in profileBottomDialogFragment
-                profileBottomDialogFragment.updateAvailable = updateAvailable
-
-                // An update is available, set the update  profile bottomdialog fragment
-                setAlertIconToProfile(updateAvailable = updateAvailable)
-            }, this)
-        }
+    private fun checkForUpdates() {
+        viewModel.checkForUpdates()
     }
 
     private fun checkForCertificateExpiration() {
-        val encryptedSettingsManager = SettingsManager(true, this)
+        val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         val alias = encryptedSettingsManager.getSettingsString(PREFS.CERTIFICATE_ALIAS)
 
         if (alias != null) {
@@ -799,87 +628,128 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     }
 
     private suspend fun checkForApiExpiration() {
-        networkHelper.getApiTokenDetails { apiTokenDetails, error ->
-            if (apiTokenDetails?.expires_at != null) {
+        val result = ServiceLocator.userRepository.getApiTokenDetails()
+        if (result is NetworkResult.Success && result.data.expires_at != null) {
+            val apiTokenDetails = result.data
+            val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(apiTokenDetails.expires_at) // Get the expiry date
+            val currentDateTime = LocalDateTime.now() // Get the current date
+            val deadLineDate = expiryDate?.minusDays(5) // Subtract 5 days from the expiry date
+            if (currentDateTime.isAfter(deadLineDate)) {
+                // The current date is suddenly after the deadline date. It will expire within 5 days
+                // Show the api is about to expire card
+                val text = PrettyTime().format(expiryDate)
+                MaterialDialogHelper.showMaterialDialog(
+                    context = this@MainActivity,
+                    title = this@MainActivity.resources.getString(R.string.api_token_about_to_expire),
+                    message = this@MainActivity.resources.getString(R.string.api_token_about_to_expire_desc, text),
+                    icon = R.drawable.ic_letters_case,
+                    neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
+                    positiveButtonText = this@MainActivity.resources.getString(R.string.api_token_about_to_expire_option_1),
+                    positiveButtonAction = {
+                        verifyNewApiToken()
+                    },
 
-                val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(apiTokenDetails.expires_at) // Get the expiry date
-                val currentDateTime = LocalDateTime.now() // Get the current date
-                val deadLineDate = expiryDate?.minusDays(5) // Subtract 5 days from the expiry date
-                if (currentDateTime.isAfter(deadLineDate)) {
-                    // The current date is suddenly after the deadline date. It will expire within 5 days
-                    // Show the api is about to expire card
-                    val text = PrettyTime().format(expiryDate)
-                    MaterialDialogHelper.showMaterialDialog(
-                        context = this@MainActivity,
-                        title = this@MainActivity.resources.getString(R.string.api_token_about_to_expire),
-                        message = this@MainActivity.resources.getString(R.string.api_token_about_to_expire_desc, text),
-                        icon = R.drawable.ic_letters_case,
-                        neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
-                        positiveButtonText = this@MainActivity.resources.getString(R.string.api_token_about_to_expire_option_1),
-                        positiveButtonAction = {
-                            verifyNewApiToken()
-                        },
+                    ).show()
 
-                        ).show()
-
-                } else {
-                    // The current date is not yet before the deadline date. It will expire within 5 days
-                }
+            } else {
+                // The current date is not yet before the deadline date. It will expire within 5 days
             }
-            // If expires_at is null it will never expire
-
         }
-
     }
 
     private fun checkForSubscriptionExpiration() {
         // Only check on hosted instance
         if (AddyIo.isUsingHostedInstance) {
             lifecycleScope.launch {
-                networkHelper.getUserResource { user: UserResource?, _: String? ->
-                    if (user?.subscription_ends_at != null) {
-                        val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(user.subscription_ends_at) // Get the expiry date
-                        val currentDateTime = LocalDateTime.now() // Get the current date
-                        val deadLineDate = expiryDate?.minusDays(7) // Subtract 7 days from the expiry date
-                        if (currentDateTime.isAfter(deadLineDate)) {
-                            // The current date is suddenly after the deadline date. It will expire within 7 days
-                            val text = PrettyTime().format(expiryDate)
-                            val dialog = MaterialDialogHelper.showMaterialDialog(
-                                context = this@MainActivity,
-                                title = this@MainActivity.resources.getString(R.string.subscription_about_to_expire),
-                                message = this@MainActivity.resources.getString(R.string.subscription_about_to_expire_desc, text),
-                                icon = R.drawable.ic_credit_card,
-                                neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
-                            )
-                            // Only show the renew button when not-google play version
-                            // https://support.google.com/googleplay/android-developer/answer/13321562
-                            dialog.setPositiveButton(
-                                this@MainActivity.resources.getString(R.string.subscription_about_to_expire_option_1)
-                            ) { _, _ ->
-                                if (BuildConfig.FLAVOR == "gplay") {
-                                    val intent = Intent(this@MainActivity, ManageSubscriptionActivity::class.java)
-                                    subscriptionResultLauncher.launch(intent)
-                                } else {
-                                    val url = "${AddyIo.API_BASE_URL}/settings/subscription"
-                                    val i = Intent(Intent.ACTION_VIEW)
-                                    i.data = url.toUri()
-                                    startActivity(i)
-                                }
-
-
+                val result = ServiceLocator.userRepository.getUserResource()
+                if (result is NetworkResult.Success && result.data.subscription_ends_at != null) {
+                    val user = result.data
+                    val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(user.subscription_ends_at) // Get the expiry date
+                    val currentDateTime = LocalDateTime.now() // Get the current date
+                    val deadLineDate = expiryDate?.minusDays(7) // Subtract 7 days from the expiry date
+                    if (currentDateTime.isAfter(deadLineDate)) {
+                        // The current date is suddenly after the deadline date. It will expire within 7 days
+                        val text = PrettyTime().format(expiryDate)
+                        val dialog = MaterialDialogHelper.showMaterialDialog(
+                            context = this@MainActivity,
+                            title = this@MainActivity.resources.getString(R.string.subscription_about_to_expire),
+                            message = this@MainActivity.resources.getString(R.string.subscription_about_to_expire_desc, text),
+                            icon = R.drawable.ic_credit_card,
+                            neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
+                        )
+                        // Only show the renew button when not-google play version
+                        // https://support.google.com/googleplay/android-developer/answer/13321562
+                        dialog.setPositiveButton(
+                            this@MainActivity.resources.getString(R.string.subscription_about_to_expire_option_1)
+                        ) { _, _ ->
+                            if (BuildConfig.FLAVOR == "gplay") {
+                                val intent = Intent(this@MainActivity, ManageSubscriptionActivity::class.java)
+                                subscriptionResultLauncher.launch(intent)
+                            } else {
+                                val url = "${AddyIo.API_BASE_URL}/settings/subscription"
+                                val i = Intent(Intent.ACTION_VIEW)
+                                i.data = url.toUri()
+                                startActivity(i)
                             }
-
-                            dialog.show()
                         }
+
+                        dialog.show()
                     }
                 }
             }
         }
+    }
 
+    /*
+        This method checks if there are new failed deliveries.
+        As BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT is only updated in the service and in the FailedDeliveriesActivity that means that the red
+        indicator is only visible if:
+
+        - The activity has not been opened since there were new items.
+        - There are more failed deliveries than the server cached last time (in which case the user should have got a notification)
+    */
+    private suspend fun checkForNewFailedDeliveries() {
+        val newDeliveriesCount = viewModel.getFailedDeliveriesCount()
+
+        if (newDeliveriesCount > 0) {
+            if (!isTablet) {
+                setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesIcon, true)
+            } else {
+                val badge = binding.navRail!!.getOrCreateBadge(R.id.navigation_failed_deliveries)
+                badge.isVisible = true
+                // An icon only badge will be displayed unless a number or text is set:
+                badge.number = newDeliveriesCount  // or badge.text = "New"
+            }
+        } else {
+            hideFailedDeliveriesBadge()
+        }
+    }
+
+    /*
+        This method checks if there are new account notifications
+        It does this by getting the current account notifications count, if that count is bigger than the account notifications in the cache that means there are new notifications
+
+        As BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT is only updated in the service and in the AccountNotificationsActivity that means that the red
+        indicator is only visible if:
+
+        - The activity has not been opened since there were new items.
+        - There are more account notifications than the server cached last time (in which case the user should have got a notification)
+    */
+    private suspend fun checkForNewAccountNotifications() {
+        val newNotificationsCount = viewModel.getNewAccountNotificationsCount()
+        if (newNotificationsCount > 0) {
+            if (!isTablet) {
+                setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIcon, true)
+            } else {
+                setButtonAccentColor(binding.navRail!!.headerView?.findViewById(R.id.navigation_rail_fab_account_notifications)!!, true)
+            }
+        } else {
+            hideAccountNotificationsBadge()
+        }
     }
 
     private fun verifyNewApiToken() {
-        addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AddyIo.API_BASE_URL)
+        val addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AddyIo.API_BASE_URL)
         if (!addApiBottomDialogFragment.isAdded) {
             addApiBottomDialogFragment.show(
                 supportFragmentManager,
@@ -896,8 +766,8 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                     return
                 }
 
-                SettingsManager(true, this@MainActivity).putSettingsString(PREFS.CERTIFICATE_ALIAS, alias)
-                SettingsManager(false, this@MainActivity).putSettingsBool(
+                ServiceLocator.encryptedSettingsManager.putSettingsString(PREFS.CERTIFICATE_ALIAS, alias)
+                ServiceLocator.settingsManager.putSettingsBool(
                     PREFS.NOTIFY_CERTIFICATE_EXPIRY,
                     true
                 ) // Enable by default when a certificate has been selected
@@ -907,7 +777,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
                 val notificationManager = this@MainActivity.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-                if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+                if (isTablet) {
                     SnackbarHelper.createSnackbar(
                         this@MainActivity,
                         this@MainActivity.resources.getString(R.string.certificate_updated),
@@ -933,13 +803,13 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     private fun setAlertIconToProfile(updateAvailable: Boolean? = null, permissionsRequired: Boolean? = null) {
         // Store the bools for comparison next time this method gets called
         if (updateAvailable != null) {
-            mUpdateAvailable = updateAvailable
+            isUpdateAvailable = updateAvailable
         }
         if (permissionsRequired != null) {
-            mPermissionsRequired = permissionsRequired
+            isPermissionsRequired = permissionsRequired
         }
 
-        val shouldShowDot = mUpdateAvailable || mPermissionsRequired
+        val shouldShowDot = isUpdateAvailable || isPermissionsRequired
 
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             // If there is an update available or there are permissions required, show the dot
@@ -961,7 +831,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     private fun setButtonAccentColor(button: MaterialButton, shouldAccent: Boolean) {
         if (shouldAccent) {
             button.setTextColor(ContextCompat.getColor(this, R.color.softRed))
-            button.icon?.setColorFilter(ContextCompat.getColor(this, R.color.softRed), android.graphics.PorterDuff.Mode.SRC_IN)
+            button.icon?.colorFilter = android.graphics.PorterDuffColorFilter(ContextCompat.getColor(this, R.color.softRed), android.graphics.PorterDuff.Mode.SRC_IN)
         } else {
             val typedValue = TypedValue()
             theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
@@ -993,52 +863,29 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
             }
 
             ActivityTargets.DOMAINS.activity -> {
-                if (resources.getBoolean(R.bool.isTablet)) {
-                    navigateTo(R.id.navigation_domains)
-                } else {
-                    val intent = Intent(this, DomainSettingsActivity::class.java)
-                    startActivity(intent)
-                }
+                navigateTo(R.id.navigation_domains)
             }
 
             ActivityTargets.USERNAMES.activity -> {
-                if (resources.getBoolean(R.bool.isTablet)) {
-                    navigateTo(R.id.navigation_usernames)
-                } else {
-                    val intent = Intent(this, UsernamesSettingsActivity::class.java)
-                    startActivity(intent)
-                }
+                navigateTo(R.id.navigation_usernames)
             }
 
             ActivityTargets.RULES.activity -> {
-                if (resources.getBoolean(R.bool.isTablet)) {
-                    navigateTo(R.id.navigation_rules)
-                } else {
-                    val intent = Intent(this, RulesSettingsActivity::class.java)
-                    startActivity(intent)
-                }
-
+                navigateTo(R.id.navigation_rules)
             }
 
             ActivityTargets.FAILED_DELIVERIES.activity -> {
-                if (resources.getBoolean(R.bool.isTablet)) {
-                    navigateTo(R.id.navigation_failed_deliveries)
-                } else {
-                    hideFailedDeliveriesBadge()
-                    val intent = Intent(this, FailedDeliveriesActivity::class.java)
-                    startActivity(intent)
-                }
-
+                navigateTo(R.id.navigation_failed_deliveries)
             }
         }
     }
 
     private fun updateKey(apiKey: String) {
-        val encryptedSettingsManager = SettingsManager(true, this)
+        val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         encryptedSettingsManager.putSettingsString(PREFS.API_KEY, apiKey)
         val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+        if (isTablet) {
             SnackbarHelper.createSnackbar(
                 this,
                 this.resources.getString(R.string.api_key_updated),

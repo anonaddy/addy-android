@@ -242,10 +242,12 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     }
 
     fun setSectionAlert(boolean: Boolean) {
-        if (boolean) {
-            ImageViewCompat.setImageTintList(iconStart!!, ContextCompat.getColorStateList(context, R.color.softRed))
-        } else {
-            ImageViewCompat.setImageTintList(iconStart!!, ColorStateList.valueOf(AttributeHelper.getValueByAttr(context, R.attr.colorControlNormal)))
+        iconStart?.let { icon ->
+            if (boolean) {
+                ImageViewCompat.setImageTintList(icon, ContextCompat.getColorStateList(context, R.color.softRed))
+            } else {
+                ImageViewCompat.setImageTintList(icon, ColorStateList.valueOf(AttributeHelper.getValueByAttr(context, R.attr.colorControlNormal)))
+            }
         }
     }
 
@@ -265,24 +267,22 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     @SuppressLint("ClickableViewAccessibility")
     private fun setSwitchVibrationEffects() {
         materialSwitch?.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                materialSwitch!!.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-            } else if (event.action == MotionEvent.ACTION_UP) {
-                materialSwitch!!.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            if (event.action == MotionEvent.ACTION_DOWN || event.action == MotionEvent.ACTION_UP) {
+                materialSwitch?.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
             }
             false
         }
     }
 
-    interface OnSwitchCheckedChangedListener {
+    fun interface OnSwitchCheckedChangedListener {
         fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean)
     }
 
-    interface OnLayoutClickedListener {
+    fun interface OnLayoutClickedListener {
         fun onClick()
     }
 
-    interface OnLayoutLongClickedListener {
+    fun interface OnLayoutLongClickedListener {
         fun onLongClick()
     }
 }

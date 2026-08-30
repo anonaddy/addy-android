@@ -1,90 +1,86 @@
 package host.stjin.anonaddy.ui.home
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.NestedScrollView.OnScrollChangeListener
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.lifecycle.repeatOnLifecycle
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.FragmentHomeBinding
 import host.stjin.anonaddy.interfaces.Refreshable
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.MainActivity
-import host.stjin.anonaddy.ui.MainViewpagerAdapter
-import host.stjin.anonaddy.ui.alias.AliasFragment
-import host.stjin.anonaddy.ui.customviews.HomeStatCardView
+import host.stjin.anonaddy.ui.aliases.SharedFilterViewModel
+import host.stjin.anonaddy.ui.base.BaseFragment
+import host.stjin.anonaddy.ui.base.SharedScrollViewModel
+import host.stjin.anonaddy_shared.models.UiState
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
-import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
-import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), Refreshable {
+class HomeFragment : BaseFragment(), Refreshable {
 
-    // 1. Properties
-    private var networkHelper: NetworkHelper? = null
+    private val homeViewModel: HomeViewModel by viewModels()
+    private val sharedFilterViewModel: SharedFilterViewModel by activityViewModels()
+    private val sharedScrollViewModel: SharedScrollViewModel by activityViewModels()
+
     private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
-    private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            binding.homeStatisticsNSV.post { binding.homeStatisticsNSV.smoothScrollTo(0, 0) }
-        }
-    }
-
-    // 2. Lifecycle Methods
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        //InsetUtil.applyBottomInset(binding.homeStatisticsLL) Not necessary, MainActivity elevated the viewpager for the fab
-
         val root = binding.root
-        networkHelper = NetworkHelper(requireContext())
 
-        // load values from local to make the app look quick and snappy!
         setOnClickListeners()
-        setStatistics()
         setNsvListener()
+        observeViewModel()
 
-        // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
-        // API calls, user should swipe to refresh starting from v4.5.0
-        getDataFromWeb(savedInstanceState)
+        homeViewModel.loadUserResource(forceRefresh = savedInstanceState == null)
 
         return root
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    homeViewModel.userResourceState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                setStatistics(state.data)
+                            }
+                            is UiState.Error -> {
+                                showError(state.message, R.string.error_obtaining_user)
+                            }
+                            is UiState.Loading -> {}
+                        }
+                    }
+                }
+                launch {
+                    sharedScrollViewModel.scrollEvents.collect {
+                        _binding?.homeStatisticsNSV?.smoothScrollTo(0, 0)
+                    }
+                }
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
         setHasReachedTopOfNsv()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"), Context.RECEIVER_EXPORTED)
-        } else {
-            activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        activity?.unregisterReceiver(mScrollUpBroadcastReceiver)
     }
 
     override fun onDestroyView() {
@@ -92,297 +88,187 @@ class HomeFragment : Fragment(), Refreshable {
         _binding = null
     }
 
-    // 3. View Setup
     private fun setOnClickListeners() {
+        binding.homeStatCardTotalAliases.setOnLayoutClickedListener {
+            MaterialDialogHelper.showMaterialDialog(
+                context = requireContext(),
+                title = requireContext().resources.getString(R.string.apply_filter),
+                message = requireContext().resources.getString(R.string.apply_filter_desc),
+                icon = R.drawable.ic_filter,
+                neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                positiveButtonAction = {
+                    sharedFilterViewModel.applyFilter(
+                        AliasSortFilter(
+                            onlyActiveAliases = false,
+                            onlyDeletedAliases = false,
+                            onlyInactiveAliases = false,
+                            onlyWatchedAliases = false,
+                            onlyPinnedAliases = false,
+                            sort = null,
+                            sortDesc = false,
+                            filter = null
+                        )
+                    )
+                    (activity as? MainActivity)?.navigateTo(R.id.navigation_alias)
+                }
+            ).show()
+        }
 
-        binding.homeStatCardTotalAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                MaterialDialogHelper.showMaterialDialog(
-                    context = requireContext(),
-                    title = requireContext().resources.getString(R.string.apply_filter),
-                    message = requireContext().resources.getString(R.string.apply_filter_desc),
-                    icon = R.drawable.ic_filter,
-                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
-                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
-                    positiveButtonAction = {
-                        val aliasFragment: AliasFragment =
-                            ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
-                        aliasFragment.setFilterAndSortingSettings(
+        binding.homeStatCardActiveAliases.setOnLayoutClickedListener {
+            MaterialDialogHelper.showMaterialDialog(
+                context = requireContext(),
+                title = requireContext().resources.getString(R.string.apply_filter),
+                message = requireContext().resources.getString(R.string.apply_filter_desc),
+                icon = R.drawable.ic_filter,
+                neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                positiveButtonAction = {
+                    sharedFilterViewModel.applyFilter(
+                        AliasSortFilter(
+                            onlyActiveAliases = true,
+                            onlyDeletedAliases = false,
+                            onlyInactiveAliases = false,
+                            onlyWatchedAliases = false,
+                            onlyPinnedAliases = false,
+                            sort = null,
+                            sortDesc = false,
+                            filter = null
+                        )
+                    )
+                    (activity as? MainActivity)?.navigateTo(R.id.navigation_alias)
+                }
+            ).show()
+        }
+
+        binding.homeStatCardInactiveAliases.setOnLayoutClickedListener {
+            MaterialDialogHelper.showMaterialDialog(
+                context = requireContext(),
+                title = requireContext().resources.getString(R.string.apply_filter),
+                message = requireContext().resources.getString(R.string.apply_filter_desc),
+                icon = R.drawable.ic_filter,
+                neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                positiveButtonAction = {
+                    sharedFilterViewModel.applyFilter(
+                        AliasSortFilter(
+                            onlyActiveAliases = false,
+                            onlyDeletedAliases = false,
+                            onlyInactiveAliases = true,
+                            onlyWatchedAliases = false,
+                            onlyPinnedAliases = false,
+                            sort = null,
+                            sortDesc = false,
+                            filter = null
+                        )
+                    )
+                    (activity as? MainActivity)?.navigateTo(R.id.navigation_alias)
+                }
+            ).show()
+        }
+
+        binding.homeStatCardDeletedAliases.setOnLayoutClickedListener {
+            MaterialDialogHelper.showMaterialDialog(
+                context = requireContext(),
+                title = requireContext().resources.getString(R.string.apply_filter),
+                message = requireContext().resources.getString(R.string.apply_filter_desc),
+                icon = R.drawable.ic_filter,
+                neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                positiveButtonAction = {
+                    sharedFilterViewModel.applyFilter(
+                        AliasSortFilter(
+                            onlyActiveAliases = false,
+                            onlyDeletedAliases = true,
+                            onlyInactiveAliases = false,
+                            onlyWatchedAliases = false,
+                            onlyPinnedAliases = false,
+                            sort = null,
+                            sortDesc = false,
+                            filter = null
+                        )
+                    )
+                    (activity as? MainActivity)?.navigateTo(R.id.navigation_alias)
+                }
+            ).show()
+        }
+
+        binding.homeStatPinnedAliases.setOnLayoutClickedListener {
+            MaterialDialogHelper.showMaterialDialog(
+                context = requireContext(),
+                title = requireContext().resources.getString(R.string.apply_filter),
+                message = requireContext().resources.getString(R.string.apply_filter_desc),
+                icon = R.drawable.ic_filter,
+                neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                positiveButtonAction = {
+                    sharedFilterViewModel.applyFilter(
+                        AliasSortFilter(
+                            onlyActiveAliases = false,
+                            onlyDeletedAliases = false,
+                            onlyInactiveAliases = false,
+                            onlyWatchedAliases = false,
+                            onlyPinnedAliases = true,
+                            sort = null,
+                            sortDesc = false,
+                            filter = null
+                        )
+                    )
+                    (activity as? MainActivity)?.navigateTo(R.id.navigation_alias)
+                }
+            ).show()
+        }
+
+        binding.homeStatWatchedAliases.setOnLayoutClickedListener {
+            MaterialDialogHelper.showMaterialDialog(
+                context = requireContext(),
+                title = requireContext().resources.getString(R.string.apply_filter),
+                message = requireContext().resources.getString(R.string.apply_filter_desc),
+                icon = R.drawable.ic_filter,
+                neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                positiveButtonAction = {
+                    val aliasWatcher = AliasWatcher(requireContext())
+                    val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
+                    if (aliasesToWatch.isNotEmpty()) {
+                        sharedFilterViewModel.applyFilter(
                             AliasSortFilter(
                                 onlyActiveAliases = false,
                                 onlyDeletedAliases = false,
                                 onlyInactiveAliases = false,
-                                onlyWatchedAliases = false,
+                                onlyWatchedAliases = true,
                                 onlyPinnedAliases = false,
                                 sort = null,
                                 sortDesc = false,
                                 filter = null
                             )
                         )
-                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
                     }
-                ).show()
-            }
+                    (activity as? MainActivity)?.navigateTo(R.id.navigation_alias)
+                }
+            ).show()
+        }
 
-        })
-
-        binding.homeStatCardActiveAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                MaterialDialogHelper.showMaterialDialog(
-                    context = requireContext(),
-                    title = requireContext().resources.getString(R.string.apply_filter),
-                    message = requireContext().resources.getString(R.string.apply_filter_desc),
-                    icon = R.drawable.ic_filter,
-                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
-                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
-                    positiveButtonAction = {
-                        val aliasFragment: AliasFragment =
-                            ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
-                        aliasFragment.setFilterAndSortingSettings(
-                            AliasSortFilter(
-                                onlyActiveAliases = true,
-                                onlyDeletedAliases = false,
-                                onlyInactiveAliases = false,
-                                onlyWatchedAliases = false,
-                                onlyPinnedAliases = false,
-                                sort = null,
-                                sortDesc = false,
-                                filter = null
-                            )
-                        )
-                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
-                    }
-                ).show()
-            }
-
-        })
-
-        binding.homeStatCardInactiveAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                MaterialDialogHelper.showMaterialDialog(
-                    context = requireContext(),
-                    title = requireContext().resources.getString(R.string.apply_filter),
-                    message = requireContext().resources.getString(R.string.apply_filter_desc),
-                    icon = R.drawable.ic_filter,
-                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
-                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
-                    positiveButtonAction = {
-                        val aliasFragment: AliasFragment =
-                            ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
-                        aliasFragment.setFilterAndSortingSettings(
-                            AliasSortFilter(
-                                onlyActiveAliases = false,
-                                onlyDeletedAliases = false,
-                                onlyInactiveAliases = true,
-                                onlyWatchedAliases = false,
-                                onlyPinnedAliases = false,
-                                sort = null,
-                                sortDesc = false,
-                                filter = null
-                            )
-                        )
-                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
-                    }
-                ).show()
-            }
-
-        })
-
-
-        binding.homeStatCardDeletedAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                MaterialDialogHelper.showMaterialDialog(
-                    context = requireContext(),
-                    title = requireContext().resources.getString(R.string.apply_filter),
-                    message = requireContext().resources.getString(R.string.apply_filter_desc),
-                    icon = R.drawable.ic_filter,
-                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
-                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
-                    positiveButtonAction = {
-                        val aliasFragment: AliasFragment =
-                            ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
-                        aliasFragment.setFilterAndSortingSettings(
-                            AliasSortFilter(
-                                onlyActiveAliases = false,
-                                onlyDeletedAliases = true,
-                                onlyInactiveAliases = false,
-                                onlyWatchedAliases = false,
-                                onlyPinnedAliases = false,
-                                sort = null,
-                                sortDesc = false,
-                                filter = null
-                            )
-                        )
-                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
-                    }
-                ).show()
-            }
-
-        })
-
-        binding.homeStatPinnedAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                MaterialDialogHelper.showMaterialDialog(
-                    context = requireContext(),
-                    title = requireContext().resources.getString(R.string.apply_filter),
-                    message = requireContext().resources.getString(R.string.apply_filter_desc),
-                    icon = R.drawable.ic_filter,
-                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
-                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
-                    positiveButtonAction = {
-                        val aliasFragment: AliasFragment =
-                            ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
-                        aliasFragment.setFilterAndSortingSettings(
-                            AliasSortFilter(
-                                onlyActiveAliases = false,
-                                onlyDeletedAliases = false,
-                                onlyInactiveAliases = false,
-                                onlyWatchedAliases = false,
-                                onlyPinnedAliases = true,
-                                sort = null,
-                                sortDesc = false,
-                                filter = null
-                            )
-                        )
-                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
-                    }
-                ).show()
-            }
-
-        })
-
-        binding.homeStatWatchedAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                MaterialDialogHelper.showMaterialDialog(
-                    context = requireContext(),
-                    title = requireContext().resources.getString(R.string.apply_filter),
-                    message = requireContext().resources.getString(R.string.apply_filter_desc),
-                    icon = R.drawable.ic_filter,
-                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
-                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
-                    positiveButtonAction = {
-                        val aliasWatcher = AliasWatcher(requireContext())
-                        val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
-                        if (aliasesToWatch.isNotEmpty()) {
-                            val aliasFragment: AliasFragment =
-                                ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
-                            aliasFragment.setFilterAndSortingSettings(
-                                AliasSortFilter(
-                                    onlyActiveAliases = false,
-                                    onlyDeletedAliases = false,
-                                    onlyInactiveAliases = false,
-                                    onlyWatchedAliases = true,
-                                    onlyPinnedAliases = false,
-                                    sort = null,
-                                    sortDesc = false,
-                                    filter = null
-                                )
-                            )
-                        }
-
-
-                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
-                    }
-                ).show()
-            }
-
-        })
-
-        binding.homeStatCardTotalRecipients.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                (activity as MainActivity).navigateTo(R.id.navigation_recipients)
-            }
-
-        })
-
+        binding.homeStatCardTotalRecipients.setOnLayoutClickedListener { (activity as? MainActivity)?.navigateTo(R.id.navigation_recipients) }
     }
 
     private fun setNsvListener() {
-        binding.homeStatisticsNSV.setOnScrollChangeListener(OnScrollChangeListener { _, _, _, _, _ -> setHasReachedTopOfNsv() })
+        setupNsvScrollListener(binding.homeStatisticsNSV)
     }
 
-    // 4. Observers (None)
-
-    // 5. Private Helpers / Public Methods
     private fun setHasReachedTopOfNsv() {
-        (activity as MainActivity).hasReachedTopOfNsv = !binding.homeStatisticsNSV.canScrollVertically(-1)
+        updateHasReachedTopOfNsv(binding.homeStatisticsNSV)
     }
 
-    fun getDataFromWeb(savedInstanceState: Bundle?) {
-        // Get the latest data in the background, and update the values when loaded
-        viewLifecycleOwner.lifecycleScope.launch {
+    private fun setStatistics(userResource: UserResource = (activity?.application as AddyIoApp).userResource) {
+        val currMonthlyBandwidth = userResource.bandwidth.toDouble() / 1024 / 1024
+        val maxMonthlyBandwidth = (userResource.bandwidth_limit ?: 0) / 1024 / 1024
 
-            // Check if savedInstanceState is null, or not
-            // On activity recreations (orientationchanges, sizing of the app) savedInstanceState will be filled using onSaveInstanceState
-            // This way we can instantly set the values without another API call.
-            if (savedInstanceState != null) {
-                getWebStatistics()
-                // (activity?.application as AddyIoApp).userResource is not being cleared upon activity-creation,
-                // no need to obtain this from savedInstanceState
-                setStatistics()
-            } else {
-                getWebStatistics()
-            }
-        }
-    }
+        binding.homeStatCardForwarded.setDescription(userResource.total_emails_forwarded.toString())
+        binding.homeStatCardBlocked.setDescription(userResource.total_emails_blocked.toString())
+        binding.homeStatCardReplies.setDescription(userResource.total_emails_replied.toString())
+        binding.homeStatCardSent.setDescription(userResource.total_emails_sent.toString())
 
-    private suspend fun getWebStatistics() {
-        networkHelper?.getUserResource { user: UserResource?, result: String? ->
-            if (user != null) {
-                (activity?.application as AddyIoApp).userResource = user
-                setStatistics()
-            } else {
-                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                    SnackbarHelper.createSnackbar(
-                        requireContext(),
-                        requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        (activity as? MainActivity)?.findViewById(R.id.main_container) ?: requireView(),
-                        LoggingHelper.LOGFILES.DEFAULT
-                    ).show()
-                } else {
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                            it,
-                            LoggingHelper.LOGFILES.DEFAULT
-                        )
-                            .apply {
-                                anchorView = bottomNavView
-                            }.show()
-                    }
-                }
-
-            }
-        }
-    }
-
-    private fun setStatistics() {
-        //  / 1024 / 1024 because api returns bytes
-        val currMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth.toDouble() / 1024 / 1024
-        val maxMonthlyBandwidth = ((activity?.application as AddyIoApp).userResource.bandwidth_limit ?: 0) / 1024 / 1024
-
-
-        binding.homeStatCardForwarded.setDescription(
-            (activity?.application as AddyIoApp).userResource.total_emails_forwarded.toString()
-        )
-
-        binding.homeStatCardBlocked.setDescription(
-            (activity?.application as AddyIoApp).userResource.total_emails_blocked.toString()
-        )
-
-        binding.homeStatCardReplies.setDescription(
-            (activity?.application as AddyIoApp).userResource.total_emails_replied.toString()
-        )
-
-        binding.homeStatCardSent.setDescription(
-            (activity?.application as AddyIoApp).userResource.total_emails_sent.toString()
-        )
-
-
-        // Bandwidth could be unlimited
         val bandwidthText = if (maxMonthlyBandwidth.compareTo(0) == 0) {
             this.resources.getString(R.string.home_bandwidth_text, roundOffDecimal(currMonthlyBandwidth).toString(), "∞")
         } else {
@@ -395,14 +281,12 @@ class HomeFragment : Fragment(), Refreshable {
             binding.homeStatCardBandwidth.setProgress(currMonthlyBandwidth.toFloat() / maxMonthlyBandwidth.toFloat() * 100)
         }
 
-
-        binding.homeStatCardTotalAliases.setDescription((activity?.application as AddyIoApp).userResource.total_aliases.toString())
-        binding.homeStatCardActiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_active_aliases.toString())
-        binding.homeStatCardInactiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_inactive_aliases.toString())
-        binding.homeStatCardDeletedAliases.setDescription((activity?.application as AddyIoApp).userResource.total_deleted_aliases.toString())
-        binding.homeStatPinnedAliases.setDescription((activity?.application as AddyIoApp).userResource.total_pinned_aliases.toString())
-        binding.homeStatCardTotalRecipients.setDescription((activity?.application as AddyIoApp).userResource.recipient_count.toString())
-
+        binding.homeStatCardTotalAliases.setDescription(userResource.total_aliases.toString())
+        binding.homeStatCardActiveAliases.setDescription(userResource.total_active_aliases.toString())
+        binding.homeStatCardInactiveAliases.setDescription(userResource.total_inactive_aliases.toString())
+        binding.homeStatCardDeletedAliases.setDescription(userResource.total_deleted_aliases.toString())
+        binding.homeStatPinnedAliases.setDescription(userResource.total_pinned_aliases.toString())
+        binding.homeStatCardTotalRecipients.setDescription(userResource.recipient_count.toString())
 
         val aliasWatcher = AliasWatcher(requireContext())
         val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
@@ -415,19 +299,11 @@ class HomeFragment : Fragment(), Refreshable {
         }
     }
 
-    override fun onRefreshData() {
-        // The key is to check if the view is created before proceeding.
-        // `viewLifecycleOwner` can be used as a proxy for this check.
+    override suspend fun onRefreshData() {
         if (!isAdded) return
-
-        // Use a try-catch as an ultimate safeguard against rare lifecycle race conditions.
         try {
-            // This ensures the coroutine is launched only when the view's lifecycle is active.
-            viewLifecycleOwner.lifecycleScope.launch {
-                getDataFromWeb(null)
-            }
-        } catch (e: IllegalStateException) {
-            // Log the error if the lifecycle state was somehow invalid despite the check.
+            homeViewModel.loadUserResource(forceRefresh = true).join()
+        } catch (e: Exception) {
             LoggingHelper(requireContext()).addLog(
                 LOGIMPORTANCE.CRITICAL.int,
                 "Failed to refresh data, view lifecycle not available. $e",
@@ -437,7 +313,6 @@ class HomeFragment : Fragment(), Refreshable {
         }
     }
 
-    // 6. Companion Object
     companion object {
         fun newInstance() = HomeFragment()
     }

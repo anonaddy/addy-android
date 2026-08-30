@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
@@ -22,33 +21,36 @@ import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.ActivitySplashBinding
 import host.stjin.anonaddy.ui.setup.SetupActivity
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIo.API_BASE_URL
 import host.stjin.anonaddy_shared.AddyIoApp
-import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.network.NetworkResult
+import host.stjin.anonaddy_shared.repositories.AppMaintenanceRepository
+import host.stjin.anonaddy_shared.repositories.RecipientRepository
+import host.stjin.anonaddy_shared.repositories.UserRepository
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.models.UserResourceExtended
 import host.stjin.anonaddy_shared.utils.NetworkUtils
 import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.UnsupportedBottomDialogListener {
-    lateinit var networkHelper: NetworkHelper
+    override val requiresAuthentication: Boolean = false
+
+    private lateinit var userRepository: UserRepository
+    private lateinit var recipientRepository: RecipientRepository
+    private lateinit var appMaintenanceRepository: AppMaintenanceRepository
 
     private val unsupportedBottomDialogFragment: UnsupportedBottomDialogFragment =
 
         UnsupportedBottomDialogFragment.newInstance()
-
-    // True if there is UI stuff to be done, this var is used for Android 12 devices to keep showing the splashscreen until the app is done loading
-    // Pre Android 12 devices will see a progressbar
-    private var loadingDone = false
 
     private lateinit var binding: ActivitySplashBinding
 
@@ -76,6 +78,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         val view = binding.root
 
         LauncherIconController(this).tryFixLauncherIconIfNeeded()
+        host.stjin.anonaddy.notifications.NotificationHelper(this).setupAllNotificationChannels()
 
         // Set dark mode on the splashactivity to prevent Main- and later activities from restarting and repeating calls
         checkForDarkModeAndSetFlags()
@@ -113,7 +116,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         // This is prone to fail when users have restored the app data from any restore app as the
         // encryption key has changed. So we catch this once in the app and that's at launch
         val settingsManager = try {
-            SettingsManager(true, this)
+            ServiceLocator.encryptedSettingsManager
         } catch (e: Exception) {
             null
         }
@@ -122,19 +125,20 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             showErrorScreen(this.resources.getString(R.string.app_data_corrupted))
             Handler(Looper.getMainLooper()).postDelayed({
                 // Clear settings
-                SettingsManager(false, this).clearSettingsAndCloseApp()
+                ServiceLocator.settingsManager.clearSettingsAndCloseApp()
             }, 15000)
             return
         }
 
 
-        // This helper inits the BASE_URL var
-        networkHelper = NetworkHelper(this)
+        // Initialize repositories
+        userRepository = ServiceLocator.userRepository
+        recipientRepository = ServiceLocator.recipientRepository
+        appMaintenanceRepository = ServiceLocator.appMaintenanceRepository
 
 
         // Open setup
         if (settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
-            loadingDone = true
             val intent = Intent(this, SetupActivity::class.java)
             startActivity(intent)
             finish()
@@ -217,8 +221,9 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                 loadUserResourceIntoMemory()
             }
         } else {
-            networkHelper.getAddyIoInstanceVersion { version, error ->
-                if (version != null) {
+            when (val versionResult = appMaintenanceRepository.getAddyIoInstanceVersion()) {
+                is NetworkResult.Success -> {
+                    val version = versionResult.data
                     AddyIo.VERSIONMAJOR = version.major
                     AddyIo.VERSIONMINOR = version.minor
                     AddyIo.VERSIONPATCH = version.patch
@@ -228,7 +233,6 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                             loadUserResourceIntoMemory()
                         }
                     } else {
-                        loadingDone = true
                         if (!unsupportedBottomDialogFragment.isAdded) {
                             unsupportedBottomDialogFragment.show(
                                 supportFragmentManager,
@@ -236,8 +240,9 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                             )
                         }
                     }
-                } else {
-                    showErrorScreen(error)
+                }
+                is NetworkResult.Error -> {
+                    showErrorScreen(versionResult.error)
                 }
             }
         }
@@ -259,38 +264,39 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     private suspend fun loadUserResourceIntoMemory() {
-        networkHelper.getUserResource { user: UserResource?, error: String? ->
-            if (user != null) {
+        when (val userResult = userRepository.getUserResource()) {
+            is NetworkResult.Success -> {
+                val user = userResult.data
                 (this.application as AddyIoApp).userResource = user
                 lifecycleScope.launch {
                     getDefaultRecipientAddress(user.default_recipient_id)
                 }
-            } else {
-                showErrorScreen(error)
+            }
+            is NetworkResult.Error -> {
+                showErrorScreen(userResult.error)
             }
         }
     }
 
     private suspend fun getDefaultRecipientAddress(recipientId: String) {
-        networkHelper.getSpecificRecipient({ recipient, error ->
-            if (recipient != null) {
+        when (val recipientResult = recipientRepository.getSpecificRecipient(recipientId)) {
+            is NetworkResult.Success -> {
+                val recipient = recipientResult.data
                 (this.application as AddyIoApp).userResourceExtended = UserResourceExtended(recipient.email)
-                loadingDone = true
                 val intent = Intent(this, MainActivity::class.java)
                 // Widgets pass a target to splashActivity, so always pass a target to MainActivity (onCreate will check if there are any pending targets)
                 intent.putExtra("target", this.intent.getStringExtra("target"))
                 startActivity(intent)
                 finish()
-            } else {
-                showErrorScreen(error)
             }
-        }, recipientId)
+            is NetworkResult.Error -> {
+                showErrorScreen(recipientResult.error)
+            }
+        }
     }
 
     private fun showErrorScreen(error: String?) {
-        loadingDone = true
-
-        val displayError = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM && NetworkUtils.isLocalAddress(API_BASE_URL) &&
+        val displayError = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN && NetworkUtils.isLocalAddress(API_BASE_URL) &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED
         ) {
             (error ?: "") + "\n\n" + resources.getString(R.string.local_network_permission_rationale)
@@ -309,7 +315,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             finish()
         }
         binding.activitySplashErrorResetApp.setOnClickListener {
-            SettingsManager(true, this).clearSettingsAndCloseApp()
+            ServiceLocator.encryptedSettingsManager.clearSettingsAndCloseApp()
         }
 
         binding.activitySplashErrorMessage.setOnClickListener {

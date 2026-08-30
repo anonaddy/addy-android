@@ -2,32 +2,38 @@ package host.stjin.anonaddy.ui.usernames
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAddusernameBinding
-import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.network.NetworkResult
 import kotlinx.coroutines.launch
 
 
-class AddUsernameBottomDialogFragment(private val usernameLimit: Int) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddUsernameBottomDialogListener
+class AddUsernameBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+    private val viewModel: UsernamesViewModel by activityViewModels()
+    private var usernameLimit: Int = 0
+    private var listener: AddUsernameBottomDialogListener? = null
 
     private var _binding: BottomsheetAddusernameBinding? = null
 
     // This property is only valid between onCreateView and
-// onDestroyView.
+    // onDestroyView.
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        usernameLimit = arguments?.getInt(ARG_USERNAME_LIMIT) ?: 0
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,16 +42,13 @@ class AddUsernameBottomDialogFragment(private val usernameLimit: Int) : BaseBott
     ): View {
         _binding = BottomsheetAddusernameBinding.inflate(inflater, container, false)
         val root = binding.root
-        listener = parentFragment as AddUsernameBottomDialogListener
+        listener = (parentFragment as? AddUsernameBottomDialogListener) ?: (activity as? AddUsernameBottomDialogListener)
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding.bsAddusernameUsernameDesc.text =
-                (Html.fromHtml(requireContext().resources.getString(R.string.add_username_desc, usernameLimit), Html.FROM_HTML_MODE_COMPACT))
-        } else {
-            binding.bsAddusernameUsernameDesc.text =
-                (Html.fromHtml(requireContext().resources.getString(R.string.add_username_desc, usernameLimit)))
-        }
+        binding.bsAddusernameUsernameDesc.text = androidx.core.text.HtmlCompat.fromHtml(
+            requireContext().resources.getString(R.string.add_username_desc, usernameLimit),
+            androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
+        )
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
         binding.bsAddusernameUsernameAddUsernameButton.setOnClickListener(this)
@@ -100,18 +103,16 @@ class AddUsernameBottomDialogFragment(private val usernameLimit: Int) : BaseBott
         context: Context,
         address: String
     ) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.addUsername({ username, error ->
-            if (username != null) {
-                listener.onAdded()
-            } else {
-                // Revert the button to normal
-                binding.bsAddusernameUsernameAddUsernameButton.revertAnimation()
-
-                binding.bsAddusernameUsernameTil.error =
-                    context.resources.getString(R.string.error_adding_username) + "\n" + error
+        when (val result = viewModel.addUsername(address)) {
+            is NetworkResult.Success -> {
+                listener?.onAdded()
             }
-        }, address)
+            is NetworkResult.Error -> {
+                binding.bsAddusernameUsernameAddUsernameButton.revertAnimation()
+                binding.bsAddusernameUsernameTil.error =
+                    context.resources.getString(R.string.error_adding_username) + "\n" + (result.errorOrNull() ?: "")
+            }
+        }
     }
 
     // 1. Defines the listener interface with a method passing back data result.
@@ -120,8 +121,14 @@ class AddUsernameBottomDialogFragment(private val usernameLimit: Int) : BaseBott
     }
 
     companion object {
+        private const val ARG_USERNAME_LIMIT = "arg_username_limit"
+
         fun newInstance(usernameLimit: Int): AddUsernameBottomDialogFragment {
-            return AddUsernameBottomDialogFragment(usernameLimit)
+            return AddUsernameBottomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_USERNAME_LIMIT, usernameLimit)
+                }
+            }
         }
     }
 }
