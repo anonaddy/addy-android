@@ -1,0 +1,10 @@
+What's new in addy.io for Android 6.6.0
+Highlights
+- Major under-the-hood rewrite of the codebase for better performance and stability
+- Added pagination and loading indicators when scrolling through aliases, blocklist, and failed deliveries
+- Long-pressing to select multiple aliases is now enabled by default
+- Reordering rules is now smoother and only syncs when you let go
+Fixed/Improved
+- Improved widget scaling and theming across different launcher grid sizes
+- Fixed UI padding and button clipping across various screens
+- Performance improvements and other things to make the app even smoother

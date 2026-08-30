@@ -1,5 +1,30 @@
 # Changelog
 
+## [v6.6.0-beta01] - 2026-08-30
+
+### addy.io
+
+##### Highlights
+
+- Major under-the-hood rewrite of the codebase for better performance and stability
+- Added pagination and loading indicators when scrolling through aliases, blocklist entries, and failed deliveries
+- Long-pressing to select multiple aliases is now enabled by default
+- Reordering rules is now smoother and only syncs to the server when you let go
+
+##### Fixed/Improved
+
+- Improved widget scaling across different launcher grid sizes and fixed widget theming
+- Fixed UI padding and button clipping issues across several screens
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.7.0)_
+
+##### Fixed/Improved
+
+- Migrated to MVVM architecture with dedicated ViewModels for smoother performance
+- Fixed activity navigation loops and improved sync reliability with the phone app
+- Performance improvements and other things to make the app even smoother
+
 ## [v6.5.0] - 2026-08-16
 
 ### addy.io

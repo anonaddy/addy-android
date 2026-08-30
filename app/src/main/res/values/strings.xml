@@ -68,13 +68,15 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 6.5.0</h3>
-<h4>Added</h4>
-<p>- Support for Family Plans: You can now share custom domains with family plan members</p>
-<p>- Added new rule conditions and actions (display from, header checks, spam status, attachment checks, label management, alias actions, and more)</p>
+<h3>What\'s new in addy.io for Android 6.6.0</h3>
+<h4>Highlights</h4>
+<p>- Major under-the-hood rewrite of the codebase for better performance and stability<br />- Added pagination and loading indicators when scrolling through aliases, blocklist, and failed deliveries<br />- Long-pressing to select multiple aliases is now enabled by default<br />- Reordering rules is now smoother and only syncs when you let go</p>
 <h4>Fixed/Improved</h4>
-<p>- Bumped minimum instance version to 1.7.2</p>
-<p>- Performance improvements and other things to make the app even smoother</p>
+<p>- Improved widget scaling and theming across different launcher grid sizes<br />- Fixed UI padding and button clipping across various screens<br />- Performance improvements and other things to make the app even smoother</p>
+<h4> </h4>
+<h3>What\'s new in addy.io for Android Wearables 1.7.0</h3>
+<h4>Fixed/Improved</h4>
+<p>- Modernized the watch architecture and ViewModels for smoother performance<br />- Fixed navigation loops and improved sync between the watch and phone app<br />- Performance improvements and other things to make the app even smoother</p>
 ]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>

@@ -28,9 +28,9 @@ configure<ApplicationExtension> {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 37 + v1.6.7 + release 01 + 01 (for wearos)
-        versionCode = 371670101
-        versionName = "1.6.7"
+        // SDK 37 + v1.7.0 + release 01 + 01 (for wearos)
+        versionCode = 371700101
+        versionName = "1.7.0"
         vectorDrawables {
             useSupportLibrary = true
         }
