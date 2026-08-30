@@ -1,17 +1,6 @@
 package host.stjin.anonaddy_shared.models
 
-
-data class FailedDeliveriesArray(
-    var `data`: ArrayList<FailedDeliveries>,
-    var links: Links?,
-    var meta: Meta?
-)
-
-data class SingleFailedDelivery(
-    val `data`: FailedDeliveries
-)
-
-@Suppress("PropertyName", "PropertyName")
+@Suppress("PropertyName")
 data class FailedDeliveries(
     val id: String,
     val user_id: String,

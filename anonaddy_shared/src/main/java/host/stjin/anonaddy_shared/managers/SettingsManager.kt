@@ -19,13 +19,12 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BOOLEAN,
         STRING,
         INT,
-        FLOAT,
         STRINGSET
     }
 
     enum class PREFS(val encrypted: Boolean, val type: PREFTYPES, val key: String) {
         //region Not encrypted
-        DARK_MODE(false, PREFTYPES.BOOLEAN, "dark_mode"),
+        DARK_MODE(false, PREFTYPES.INT, "dark_mode"),
         DYNAMIC_COLORS(false, PREFTYPES.BOOLEAN, "dynamic_colors"),
         STORE_LOGS(false, PREFTYPES.BOOLEAN, "store_logs"),
         VERSION_CODE(false, PREFTYPES.INT, "version_code"),
@@ -37,7 +36,6 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         NOTIFY_FAILED_DELIVERIES(false, PREFTYPES.BOOLEAN, "notify_failed_deliveries"),
         NOTIFY_FAILED_DELIVERIES_TYPE(false, PREFTYPES.STRING, "notify_failed_deliveries_type"),
         NOTIFY_ACCOUNT_NOTIFICATIONS(false, PREFTYPES.BOOLEAN, "notify_account_notifications"),
-        MANAGE_MULTIPLE_ALIASES(false, PREFTYPES.BOOLEAN, "manage_multiple_aliases"),
         NOTIFY_API_TOKEN_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_api_token_expiry"),
         NOTIFY_CERTIFICATE_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_certificate_expiry"),
         NOTIFY_DOMAIN_ERROR(false, PREFTYPES.BOOLEAN, "notify_domain_error"),
@@ -46,7 +44,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         TIMES_THE_APP_HAS_BEEN_OPENED(false, PREFTYPES.INT, "times_the_app_has_been_opened"),
         STARTUP_PAGE(false, PREFTYPES.STRING, "startup_page"),
 
-        // Sorting and Filtering for aliasFragment
+        // Sorting and Filtering for aliasesFragment
         ALIAS_SORT_FILTER(false, PREFTYPES.STRING, "alias_sort_filter"),
         //endregion
 
@@ -68,11 +66,8 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
         //region Wear OS
         WEAROS_SKIP_ALIAS_CREATE_GUIDE(false, PREFTYPES.BOOLEAN, "wearos_skip_alias_create_guide"),
-        WEAROS_FAVORITE_ALIASES(true, PREFTYPES.STRINGSET, "wearos_favorite_aliases"),
-        DISABLE_WEAROS_QUICK_SETUP_DIALOG(false, PREFTYPES.STRING, "disable_wearos_quick_setup_dialog"),
+        DISABLE_WEAROS_QUICK_SETUP_DIALOG(false, PREFTYPES.BOOLEAN, "disable_wearos_quick_setup_dialog"),
         SELECTED_WEAROS_DEVICE(false, PREFTYPES.STRING, "selected_wearos_device"),
-
-        //BACKGROUND_SERVICE_CACHE_FAVORITE_ALIASES_DATA(true, PREFTYPES.STRING, "cache_favorite_aliases_data"),
         BACKGROUND_SERVICE_CACHE_PINNED_ALIASES_DATA(true, PREFTYPES.STRING, "cache_pinned_aliases_data"),
         //endregion
 
@@ -121,33 +116,55 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
      */
     private val user = 1
     val prefs: SharedPreferences = if (!encrypt) {
-        PreferenceManager.getDefaultSharedPreferences(context)
+        getDefaultPrefs(context)
     } else {
-        val masterKeyAlias = getMasterKey()
-        EncryptedSharedPreferences.create(
-            context,
-            "host.stjin.anonaddy_enc_user$user",
-            masterKeyAlias,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
+        getEncryptedPrefs(context, user)
     }
 
+    companion object {
+        @Volatile
+        private var defaultPrefsInstance: SharedPreferences? = null
 
-    private fun getMasterKey(): MasterKey {
-        // this is equivalent to using deprecated MasterKeys.AES256_GCM_SPEC
-        val spec = KeyGenParameterSpec.Builder(
-            DEFAULT_MASTER_KEY_ALIAS,
-            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-        )
-            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-            .setKeySize(DEFAULT_AES_GCM_MASTER_KEY_SIZE)
-            .build()
+        @Volatile
+        private var encryptedPrefsInstance: SharedPreferences? = null
 
-        return MasterKey.Builder(context)
-            .setKeyGenParameterSpec(spec)
-            .build()
+        private fun getDefaultPrefs(context: Context): SharedPreferences {
+            return defaultPrefsInstance ?: synchronized(this) {
+                defaultPrefsInstance ?: PreferenceManager.getDefaultSharedPreferences(context.applicationContext).also {
+                    defaultPrefsInstance = it
+                }
+            }
+        }
+
+        private fun getEncryptedPrefs(context: Context, user: Int): SharedPreferences {
+            return encryptedPrefsInstance ?: synchronized(this) {
+                encryptedPrefsInstance ?: run {
+                    val appContext = context.applicationContext
+                    val spec = KeyGenParameterSpec.Builder(
+                        DEFAULT_MASTER_KEY_ALIAS,
+                        KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+                    )
+                        .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                        .setKeySize(DEFAULT_AES_GCM_MASTER_KEY_SIZE)
+                        .build()
+
+                    val masterKeyAlias = MasterKey.Builder(appContext)
+                        .setKeyGenParameterSpec(spec)
+                        .build()
+
+                    EncryptedSharedPreferences.create(
+                        appContext,
+                        "host.stjin.anonaddy_enc_user$user",
+                        masterKeyAlias,
+                        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                    ).also {
+                        encryptedPrefsInstance = it
+                    }
+                }
+            }
+        }
     }
 
     fun putSettingsBool(key: PREFS, boolean: Boolean) {
@@ -174,17 +191,12 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         return prefs.getInt(key.key, default)
     }
 
-    fun putSettingsFloat(key: PREFS, float: Float) {
-        prefs.edit { putFloat(key.key, float) }
-    }
-
-    fun getSettingsFloat(key: PREFS): Float {
-        return prefs.getFloat(key.key, 0f)
-    }
 
     fun putStringSet(key: PREFS, mutableset: MutableSet<String>) {
-        prefs.edit { remove(key.key) }
-        prefs.edit { putStringSet(key.key, mutableset) }
+        prefs.edit {
+            remove(key.key)
+            putStringSet(key.key, mutableset)
+        }
     }
 
     fun getStringSet(key: PREFS): MutableSet<String>? {
@@ -194,11 +206,6 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
     fun removeSetting(value: PREFS) {
         prefs.edit { remove(value.key) }
-    }
-
-    fun clearAllData() {
-        SettingsManager(true, context).prefs.edit { clear() }
-        SettingsManager(false, context).prefs.edit { clear() }
     }
 
 

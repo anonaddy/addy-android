@@ -1,7 +1,7 @@
 package host.stjin.anonaddy_shared.models
 
 
-@Suppress("PropertyName", "PropertyName")
+@Suppress("PropertyName")
 // Login data class representing the successful login response
 data class Login(
     val api_key: String,
@@ -10,7 +10,7 @@ data class Login(
     val expires_at: String?
 )
 
-@Suppress("PropertyName", "PropertyName")
+@Suppress("PropertyName")
 // LoginMfaRequired data class for when MFA is required
 data class LoginMfaRequired(
     val message: String,

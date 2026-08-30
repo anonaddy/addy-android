@@ -1,14 +1,12 @@
 package host.stjin.anonaddy_shared.models
 
-data class RecipientsArray(
-    val `data`: List<Recipients>
-)
+
 
 data class SingleRecipient(
     val `data`: Recipients
 )
 
-@Suppress("PropertyName", "PropertyName")
+@Suppress("PropertyName")
 data class Recipients(
     val id: String,
     val user_id: String,

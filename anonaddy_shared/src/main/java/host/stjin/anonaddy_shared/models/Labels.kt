@@ -6,9 +6,6 @@ data class SingleLabel(
     val `data`: Labels
 )
 
-data class LabelsArray(
-    val `data`: List<Labels>
-)
 
 data class Labels(
     val id: String,

@@ -17,11 +17,8 @@ data class SingleRule(
     val `data`: Rules
 )
 
-data class RulesArray(
-    val `data`: List<Rules>
-)
 
-@Suppress("PropertyName", "PropertyName")
+@Suppress("PropertyName")
 data class Rules(
     val id: String,
     val user_id: String,

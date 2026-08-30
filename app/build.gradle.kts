@@ -82,116 +82,57 @@ kotlin {
 }
 
 dependencies {
-    modules {
-        module("org.jetbrains.kotlin:kotlin-stdlib-jdk7") {
-            replacedBy("org.jetbrains.kotlin:kotlin-stdlib", "kotlin-stdlib-jdk7 is now part of kotlin-stdlib")
-        }
-        module("org.jetbrains.kotlin:kotlin-stdlib-jdk8") {
-            replacedBy("org.jetbrains.kotlin:kotlin-stdlib", "kotlin-stdlib-jdk8 is now part of kotlin-stdlib")
-        }
-    }
-}
+    implementation(project(":anonaddy_shared"))
 
-
-dependencies {
-    implementation(project(mapOf("path" to ":anonaddy_shared")))
-}
-
-dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation("androidx.core:core-ktx:1.19.0")
     implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("com.google.android.material:material:1.14.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.2")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.9.8")
-    implementation("androidx.navigation:navigation-ui-ktx:2.9.8")
-    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.11.0")
+    implementation("androidx.fragment:fragment-ktx:1.9.0")
+    implementation("androidx.activity:activity-ktx:1.13.0")
+
+    // Core library desugaring for pre-oreo java.time
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+
+    // Shimmer
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
+    implementation("com.github.omtodkar:ShimmerRecyclerView:v0.4.1")
+
+    // Securing app
+    implementation("androidx.biometric:biometric:1.1.0")
+
+    // Scanning QR codes
+    implementation("com.github.yuriy-budiyev:code-scanner:2.3.2")
+
+    // WorkManager for background worker
+    implementation("androidx.work:work-runtime-ktx:2.11.2")
+
+    // Charts / Donut
+    implementation("app.futured.donut:donut:2.3.0")
+
+    // Loading button
+    implementation("com.github.Stjin:LoadingButtonAndroid:3.0.2")
+
+    // PrettyTime
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
+
+    // Activity Embedding & App Startup
+    implementation("androidx.window:window:1.5.1")
+    implementation("androidx.startup:startup-runtime:1.2.0")
+
+    // File support & UI Layouts
+    implementation("androidx.documentfile:documentfile:1.1.0")
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
-}
-
-//https://developer.android.com/studio/write/java8-support#library-desugaring
-// For using java.time pre-oreo
-dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
-}
-
-
-// Shimmer
-dependencies {
-    implementation("com.facebook.shimmer:shimmer:0.5.0")
-    implementation("com.github.omtodkar:ShimmerRecyclerView:v0.4.1")
-}
-
-// Securing app
-dependencies {
-    implementation("androidx.biometric:biometric:1.1.0")
-}
-
-// Apache for extracting strings ManageAliasActivity
-dependencies {
-    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    implementation("org.apache.commons:commons-lang3:3.20.0")
-}
-
-// Scanning QR codes
-dependencies {
-    implementation("com.github.yuriy-budiyev:code-scanner:2.3.2")
-}
-
-// For updating widgets and caching data
-dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.11.2")
-}
-
-// For the donut in the aliasview
-dependencies {
-    implementation("app.futured.donut:donut:2.3.0") // FIXME: https://github.com/futuredapp/donut/pull/96
-}
-
-// Loading spinners when execution actions from e.g. bottom sheets
-dependencies {
-    implementation("com.github.Stjin:LoadingButtonAndroid:3.0.2")
-}
-
-// Backup manager
-dependencies {
-    implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
-    implementation("androidx.activity:activity-ktx:1.13.0")
-}
-
-// Communication with Wear OS device
-// Only implement GPlay in the gplay version
-
-// Because the app has a gplayless flavor define a gplayImplementation
-val gplayImplementation = configurations.getByName("gplayImplementation")
-dependencies {
-    gplayImplementation("com.google.android.gms:play-services-wearable:20.0.1")
-    gplayImplementation("com.android.billingclient:billing-ktx:9.1.0")
-    gplayImplementation("com.google.android.play:review-ktx:2.0.2")
-}
-
-// Backgroundworker
-dependencies {
-    implementation("com.google.code.gson:gson:2.14.0")
-}
-
-// Built-in updater
-dependencies {
-    implementation("com.github.einmalfel:Earl:1.2.0")
-}
-
-// Activity Embedding
-dependencies {
-    implementation("androidx.window:window:1.5.1")
-    implementation("androidx.startup:startup-runtime:1.2.0")
-}
-
-// Edge-To-Edge
-dependencies {
-    implementation("androidx.documentfile:documentfile:1.1.0")
-    implementation("com.google.android.flexbox:flexbox:3.0.0")
+    // Communication with Wear OS device / Google Play flavor
+    "gplayImplementation"("com.google.android.gms:play-services-wearable:20.0.1")
+    "gplayImplementation"("com.android.billingclient:billing-ktx:9.1.0")
+    "gplayImplementation"("com.google.android.play:review-ktx:2.0.2")
 }

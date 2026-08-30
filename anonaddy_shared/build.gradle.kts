@@ -1,15 +1,8 @@
 import com.android.build.api.dsl.LibraryExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val compose_version = rootProject.extra["compose_version"]
-val compose_compiler_version = rootProject.extra["compose_compiler_version"]
-val compose_material_version = rootProject.extra["compose_material_version"]
-val wear_compose_version = rootProject.extra["wear_compose_version"]
-
-
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.10" // this version matches your Kotlin version
 }
 
 configure<LibraryExtension> {
@@ -22,7 +15,6 @@ configure<LibraryExtension> {
     }
 
     buildFeatures {
-        compose = true
         buildConfig = true
     }
 
@@ -34,18 +26,15 @@ configure<LibraryExtension> {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "$compose_compiler_version"
     }
 }
 
 kotlin {
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_17  // Replace "17" with your target, e.g., JVM_11, JVM_21
+        jvmTarget = JvmTarget.JVM_17
     }
 }
 
@@ -53,36 +42,24 @@ dependencies {
     implementation("androidx.core:core-ktx:1.19.0")
     implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("com.google.android.material:material:1.14.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.3.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
-}
 
-dependencies {
+    // Core library desugaring for pre-oreo java.time
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+
     // Preferences for storing settings (and crypto settings)
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.security:security-crypto-ktx:1.1.0")
-}
 
-// Compose
-dependencies {
-    implementation("androidx.compose.ui:ui-text:$compose_version")
-    implementation("androidx.compose.ui:ui-graphics:$compose_version")
-    implementation("androidx.compose.material3:material3:$compose_material_version")
-    // Compose for Wear OS Dependencies
-    implementation("androidx.wear.compose:compose-material:$wear_compose_version")
-}
-
-// Fuel, network requests
-dependencies {
+    // Fuel, network requests
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
-    implementation("com.google.code.gson:gson:2.14.0")
+    api("com.google.code.gson:gson:2.14.0")
     implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
-}
 
+    // Built-in updater
+    api("com.github.einmalfel:Earl:1.2.0")
 
-// Built-in updater
-dependencies {
-    implementation("com.github.einmalfel:Earl:1.2.0")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 }

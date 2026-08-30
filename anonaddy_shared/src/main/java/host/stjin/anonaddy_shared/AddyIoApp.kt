@@ -2,48 +2,74 @@ package host.stjin.anonaddy_shared
 
 import android.app.Application
 import com.google.android.material.color.DynamicColors
-import com.google.gson.Gson
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.UserAgent
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.models.UserResourceExtended
 
-class AddyIoApp : Application() {
+import host.stjin.anonaddy_shared.utils.GsonTools
 
-    private lateinit var encryptedSettingsManager: SettingsManager
+open class AddyIoApp : Application() {
 
-    // Not nullable, the app should crash if these values are not set. That means something is definitely wrong.
+    protected val serviceLocator: ServiceLocator by lazy {
+        ServiceLocator().apply { init(this@AddyIoApp) }
+    }
+
+    private val encryptedSettingsManager: SettingsManager by lazy { serviceLocator.encryptedSettingsManager }
+    private val settingsManager: SettingsManager by lazy { serviceLocator.settingsManager }
+
+    private var cachedUserResource: UserResource? = null
+    private var cachedUserResourceExtended: UserResourceExtended? = null
+    private val gson = GsonTools.gson
+
+    val userResourceOrNull: UserResource?
+        get() {
+            if (cachedUserResource == null) {
+                val json = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.USER_RESOURCE)
+                cachedUserResource = if (!json.isNullOrEmpty()) gson.fromJson(json, UserResource::class.java) else null
+            }
+            return cachedUserResource
+        }
+
+    val userResourceExtendedOrNull: UserResourceExtended?
+        get() {
+            if (cachedUserResourceExtended == null) {
+                val json = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.USER_RESOURCE_EXTENDED)
+                cachedUserResourceExtended = if (!json.isNullOrEmpty()) gson.fromJson(json, UserResourceExtended::class.java) else null
+            }
+            return cachedUserResourceExtended
+        }
+
+    // Retained for backward compatibility
     var userResource: UserResource
         get() {
-            return Gson().fromJson(encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.USER_RESOURCE), UserResource::class.java)
+            return userResourceOrNull ?: throw IllegalStateException("UserResource is not initialized yet")
         }
         set(value) {
-            encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.USER_RESOURCE, Gson().toJson(value))
+            cachedUserResource = value
+            encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.USER_RESOURCE, gson.toJson(value))
         }
+
     var userResourceExtended: UserResourceExtended
         get() {
-            return Gson().fromJson(
-                encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.USER_RESOURCE_EXTENDED),
-                UserResourceExtended::class.java
-            )
+            return userResourceExtendedOrNull ?: throw IllegalStateException("UserResourceExtended is not initialized yet")
         }
         set(value) {
-            encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.USER_RESOURCE_EXTENDED, Gson().toJson(value))
+            cachedUserResourceExtended = value
+            encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.USER_RESOURCE_EXTENDED, gson.toJson(value))
         }
 
     lateinit var userAgent: UserAgent
 
     override fun onCreate() {
         super.onCreate()
-        val settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
-
 
         // set userAgent by default (in case splashActivity has not set it yet)
         // This would happen on direct (eg. widget) actions where splashActivity gets skipped
-        val packageName = applicationContext.packageName // need to put this line
-        val version = applicationContext.packageManager.getPackageInfo(packageName, 0).versionName
-        val versionCode = applicationContext.packageManager.getPackageInfo(packageName, 0).versionCode
+        val packageName = applicationContext.packageName
+        val packageInfo = applicationContext.packageManager.getPackageInfo(packageName, 0)
+        val version = packageInfo.versionName
+        val versionCode = androidx.core.content.pm.PackageInfoCompat.getLongVersionCode(packageInfo).toInt()
 
         userAgent = UserAgent(
             userAgentApplicationID = packageName,

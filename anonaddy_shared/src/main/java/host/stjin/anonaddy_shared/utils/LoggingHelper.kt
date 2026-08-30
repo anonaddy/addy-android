@@ -2,21 +2,21 @@ package host.stjin.anonaddy_shared.utils
 
 import android.content.Context
 import androidx.core.content.edit
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import host.stjin.anonaddy_shared.R
+import host.stjin.anonaddy_shared.ServiceLocator
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.Logs
 import java.lang.reflect.Type
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class LoggingHelper(private val context: Context, sharedPreference: LOGFILES = LOGFILES.DEFAULT) {
     private val prefs = context.getSharedPreferences(sharedPreference.filename, 0)
-    private val settingsManager = SettingsManager(false, context)
+    private val settingsManager = ServiceLocator().apply { init(context) }.settingsManager
+
+    companion object {
+        private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    }
 
     enum class LOGFILES(val filename: String) {
         DEFAULT("host.stjin.anonaddy_logs"),
@@ -24,43 +24,37 @@ class LoggingHelper(private val context: Context, sharedPreference: LOGFILES = L
         WEAROS_LOGS("host.stjin.anonaddy_logs_wearos")
     }
 
-    private fun <Logs> setList(list: ArrayList<Logs>?) {
-        val gson = Gson()
+    private fun setList(list: ArrayList<Logs>?) {
         // Only save the 100 last results on saving to prevent more than 100 logs to be stored
-        val json = gson.toJson(list?.takeLast(100))
+        val json = GsonTools.gson.toJson(list?.takeLast(100))
         set("logs", json)
     }
 
     operator fun set(key: String?, value: String?) {
-        prefs?.edit {
+        prefs.edit {
             putString(key, value)
         }
     }
 
-    fun getLogs(): ArrayList<Logs>? {
-        if (prefs != null) {
-            try {
-                val gson = Gson()
-                var logsList: ArrayList<Logs> = arrayListOf()
-                val string: String? = prefs.getString("logs", null)
-                val type: Type = object : TypeToken<ArrayList<Logs?>?>() {}.type
-                if (string != null) {
-                    logsList = gson.fromJson(string, type)
-                }
-                return logsList
-            } catch (e: Exception) {
-                clearLogs()
-                addLog(LOGIMPORTANCE.WARNING.int, context.resources.getString(R.string.logs_reset_due_to_error), "getLogs()", null)
+    fun getLogs(): ArrayList<Logs> {
+        return try {
+            val string: String? = prefs.getString("logs", null)
+            val type: Type = object : TypeToken<ArrayList<Logs>>() {}.type
+            var logsList: ArrayList<Logs> = arrayListOf()
+            if (string != null) {
+                logsList = GsonTools.gson.fromJson(string, type)
             }
-
+            logsList
+        } catch (_: Exception) {
+            prefs.edit { clear() }
+            arrayListOf()
         }
-        return null
     }
 
     fun addLog(importance: Int, error: String, method: String, extra: String?) {
         if (settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
             val logs = getLogs()
-            logs?.add(
+            logs.add(
                 Logs(
                     importance = importance,
                     dateTime = getDateTime(),
@@ -73,16 +67,11 @@ class LoggingHelper(private val context: Context, sharedPreference: LOGFILES = L
         }
     }
 
-
     fun clearLogs() {
         prefs.edit { clear() }
-        addLog(LOGIMPORTANCE.INFO.int, context.resources.getString(R.string.logs_cleared), "getLogs()", null)
     }
-
 
     private fun getDateTime(): String {
-        return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+        return LocalDateTime.now().format(DATE_TIME_FORMATTER)
     }
-
-
 }

@@ -1,14 +1,12 @@
 package host.stjin.anonaddy_shared.models
 
-data class DomainsArray(
-    val `data`: List<Domains>
-)
+
 
 data class SingleDomain(
     val `data`: Domains
 )
 
-@Suppress("PropertyName", "PropertyName")
+@Suppress("PropertyName")
 data class Domains(
     val id: String,
     val user_id: String,
