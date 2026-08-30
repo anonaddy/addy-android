@@ -8,12 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.databinding.BottomsheetIntentBinding
 
 
 class IntentBottomDialogFragment : BaseBottomSheetDialogFragment() {
-    private lateinit var listener: IntentBottomDialogListener
+    private var listener: IntentBottomDialogListener? = null
 
     private var _binding: BottomsheetIntentBinding? = null
 
@@ -27,7 +27,7 @@ class IntentBottomDialogFragment : BaseBottomSheetDialogFragment() {
         _binding = BottomsheetIntentBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        listener = activity as IntentBottomDialogListener
+        listener = (parentFragment as? IntentBottomDialogListener) ?: (activity as? IntentBottomDialogListener)
 
         return root
     }
@@ -38,7 +38,7 @@ class IntentBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        listener.onClose()
+        listener?.onClose()
         super.onCancel(dialog)
     }
 

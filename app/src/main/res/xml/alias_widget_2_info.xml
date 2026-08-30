@@ -5,6 +5,8 @@
     android:initialLayout="@layout/widget_2_alias"
     android:minWidth="110dp"
     android:minHeight="40dp"
+    android:minResizeWidth="110dp"
+    android:minResizeHeight="40dp"
     android:previewImage="@drawable/alias_widget_2_preview"
     android:previewLayout="@layout/widget_2_alias"
     android:resizeMode="horizontal|vertical"

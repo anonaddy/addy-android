@@ -9,6 +9,8 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.models.Labels
+import androidx.core.graphics.toColorInt
+import androidx.core.view.isVisible
 
 object LabelUtils {
 
@@ -31,7 +33,7 @@ object LabelUtils {
             chip.isChecked = checkedLabelIds.contains(label.id)
 
             try {
-                val colorInt = Color.parseColor(label.colour)
+                val colorInt = label.colour.toColorInt()
                 val alphaColor = Color.argb(
                     (0.2 * 255).toInt(),
                     Color.red(colorInt),
@@ -45,10 +47,10 @@ object LabelUtils {
                 Color.colorToHSV(colorInt, hsv)
                 if (isDarkMode) {
                     hsv[2] = 1.0f
-                    hsv[1] = Math.max(0f, hsv[1] - 0.2f)
+                    hsv[1] = maxOf(0f, hsv[1] - 0.2f)
                 } else {
-                    hsv[2] = Math.min(1f, hsv[2] * 0.7f)
-                    hsv[1] = Math.min(1f, hsv[1] * 1.2f)
+                    hsv[2] = minOf(1f, hsv[2] * 0.7f)
+                    hsv[1] = minOf(1f, hsv[1] * 1.2f)
                 }
                 val textColorInt = Color.HSVToColor(hsv)
 
@@ -84,7 +86,7 @@ object LabelUtils {
 
     fun setupCollapsibleHeader(header: View, chipGroup: View, arrow: View) {
         header.setOnClickListener {
-            if (chipGroup.visibility == View.VISIBLE) {
+            if (chipGroup.isVisible) {
                 chipGroup.visibility = View.GONE
                 arrow.animate().rotation(0f).start()
             } else {

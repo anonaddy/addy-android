@@ -6,6 +6,7 @@ import android.view.View
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -28,7 +29,7 @@ object SnackbarHelper {
         if (!allowSwipeDismiss) {
             snackbar.behavior = NoSwipeBehavior()
         }
-        if (showLogs != null && SettingsManager(false, context).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
+        if (showLogs != null && ServiceLocator.settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
             snackbar.setAction(R.string.logs) {
                 val intent = Intent(context, LogViewerActivity::class.java)
                 intent.putExtra("logfile", showLogs.filename)

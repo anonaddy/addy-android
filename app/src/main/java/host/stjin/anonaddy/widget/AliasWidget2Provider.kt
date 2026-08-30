@@ -12,14 +12,13 @@ import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.net.toUri
-import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.ActivityTargets
 import host.stjin.anonaddy.ui.SplashActivity
-import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
+import host.stjin.anonaddy.ui.aliases.manage.ManageAliasActivity
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.NAVIGATE
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP_ADD_ALIAS_SHEET
@@ -58,17 +57,12 @@ class AliasWidget2Provider : AppWidgetProvider() {
         super.onEnabled(context)
 
         // Set widgets to 1 (onEnabled gets called if this is the first widget) to allow the backgroundworker to be scheduled
-        context?.let { SettingsManager(false, it).putSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE, 1) }
+        context?.let { ServiceLocator.settingsManager.putSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE, 1) }
         // Since a widget was added, call scheduleBackgroundWorker. This method will Schedule if its still required
         context?.let { BackgroundWorkerHelper(it).scheduleBackgroundWorker() }
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-
-        if (BuildConfig.DEBUG) {
-            println("onUpdate() called")
-        }
-
         // There may be multiple widgets active, so update all of them
         var amountOfWidgets = 0
         for (appWidgetId in appWidgetIds) {
@@ -77,7 +71,7 @@ class AliasWidget2Provider : AppWidgetProvider() {
         }
 
         // Store the amount of widgets
-        SettingsManager(false, context).putSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE, amountOfWidgets)
+        ServiceLocator.settingsManager.putSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE, amountOfWidgets)
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -86,23 +80,26 @@ class AliasWidget2Provider : AppWidgetProvider() {
         if (context != null && intent != null) {
             when (intent.action) {
                 OPEN_APP -> {
-                    val mainIntent = Intent(context, SplashActivity::class.java)
-                    mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(context, mainIntent, null)
+                    val mainIntent = Intent(context, SplashActivity::class.java).apply {
+                        addFlags(FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    context.startActivity(mainIntent)
                 }
 
                 OPEN_APP_ADD_ALIAS_SHEET -> {
-                    val mainIntent = Intent(context, AliasWidget2BottomSheetAddActivity::class.java)
-                    mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
-                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                    startActivity(context, mainIntent, null)
+                    val mainIntent = Intent(context, AliasWidget2BottomSheetAddActivity::class.java).apply {
+                        addFlags(FLAG_ACTIVITY_NEW_TASK)
+                        addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    }
+                    context.startActivity(mainIntent)
                 }
 
                 OPEN_APP_TARGET -> {
-                    val mainIntent = Intent(context, SplashActivity::class.java)
-                    mainIntent.putExtra("target", intent.getStringExtra(OPEN_APP_TARGET))
-                    mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(context, mainIntent, null)
+                    val mainIntent = Intent(context, SplashActivity::class.java).apply {
+                        putExtra("target", intent.getStringExtra(OPEN_APP_TARGET))
+                        addFlags(FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    context.startActivity(mainIntent)
                 }
 
                 NAVIGATE -> {
@@ -114,14 +111,16 @@ class AliasWidget2Provider : AppWidgetProvider() {
                         clipboard.setPrimaryClip(clip)
                         Toast.makeText(context, context.resources.getString(R.string.copied_alias), Toast.LENGTH_LONG).show()
                     } else if (intent.hasExtra(AliasWidget2Values.OPEN_ACTION)) {
-                        val manageAliasIntent = Intent(context, ManageAliasActivity::class.java)
-                        manageAliasIntent.putExtra("alias_id", intent.getStringExtra(AliasWidget2Values.OPEN_ACTION))
-                        manageAliasIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(context, manageAliasIntent, null)
+                        val manageAliasIntent = Intent(context, ManageAliasActivity::class.java).apply {
+                            putExtra("alias_id", intent.getStringExtra(AliasWidget2Values.OPEN_ACTION))
+                            addFlags(FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        context.startActivity(manageAliasIntent)
                     } else if (intent.hasExtra(OPEN_APP)) {
-                        val mainIntent = Intent(context, SplashActivity::class.java)
-                        mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(context, mainIntent, null)
+                        val mainIntent = Intent(context, SplashActivity::class.java).apply {
+                            addFlags(FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        context.startActivity(mainIntent)
                     }
                 }
             }
@@ -139,148 +138,152 @@ class AliasWidget2Provider : AppWidgetProvider() {
 
 
 private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle? = null) {
-
     val userResource = CacheHelper.getBackgroundServiceCacheUserResource(context)
+    val isSetup = ServiceLocator.encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) != null
 
-    // Count the stats from the cache
-
-    // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.widget_2_alias)
 
-    // Widget got resized or moved
+    if (!isSetup) {
+        views.setViewVisibility(R.id.widget_2_layout_1, View.GONE)
+        views.setViewVisibility(R.id.widget_2_layout_2, View.GONE)
+        views.setViewVisibility(R.id.widget_2_layout_3, View.GONE)
+        views.setViewVisibility(R.id.widget_2_layout_not_setup, View.VISIBLE)
+        views.setOnClickPendingIntent(android.R.id.background, getPendingSelfIntent(context, OPEN_APP))
+        appWidgetManager.updateAppWidget(appWidgetId, views)
+        return
+    }
 
-    /*
-    Time to decide how the widget looks
-    doing this by first checking the height, and then deciding if additional should be added
-     */
+    views.setViewVisibility(R.id.widget_2_layout_not_setup, View.GONE)
 
-    if (newOptions != null) {
+    val options = newOptions ?: appWidgetManager.getAppWidgetOptions(appWidgetId)
+    val minWidth = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)?.takeIf { it > 0 } ?: 160
+    val minHeight = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)?.takeIf { it > 0 } ?: 100
 
-        if (SettingsManager(true, context).getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
+    val isSmallHeight = minHeight < 100
+    val isLargeWidget = minHeight >= 180 && minWidth >= 180
+
+    when {
+        isSmallHeight -> {
+            // Layout 2 (Compact bar, e.g. 1 row: 2x1, 3x1, 4x1, 5x1)
+            views.setViewVisibility(R.id.widget_2_layout_2, View.VISIBLE)
+            views.setViewVisibility(R.id.widget_2_layout_1, View.GONE)
+            views.setViewVisibility(R.id.widget_2_layout_3, View.GONE)
+
+            views.setTextViewText(
+                R.id.widget_2_layout_2_aliases_statistics_forwarded_count,
+                (userResource?.total_emails_forwarded ?: 0).toString()
+            )
+
+            // If wide enough (>= 220dp, typically 4+ columns)
+            if (minWidth >= 220) {
+                views.setViewVisibility(R.id.widget_2_layout_2_additional, View.VISIBLE)
+                views.setTextViewText(
+                    R.id.widget_2_layout_2_aliases_statistics_blocked_count,
+                    (userResource?.total_emails_blocked ?: 0).toString()
+                )
+                views.setTextViewText(
+                    R.id.widget_2_layout_2_aliases_statistics_sent_count,
+                    (userResource?.total_emails_sent ?: 0).toString()
+                )
+                views.setTextViewText(
+                    R.id.widget_2_layout_2_aliases_statistics_replied_count,
+                    (userResource?.total_emails_replied ?: 0).toString()
+                )
+            } else {
+                views.setViewVisibility(R.id.widget_2_layout_2_additional, View.GONE)
+            }
+            views.setOnClickPendingIntent(android.R.id.background, getPendingSelfIntent(context, OPEN_APP))
+        }
+        isLargeWidget -> {
+            // Layout 3 (Expanded list and actions: 3x3+, 4x3+, 4x4+, 5x4+)
+            views.setViewVisibility(R.id.widget_2_layout_3, View.VISIBLE)
             views.setViewVisibility(R.id.widget_2_layout_1, View.GONE)
             views.setViewVisibility(R.id.widget_2_layout_2, View.GONE)
-            views.setViewVisibility(R.id.widget_2_layout_3, View.GONE)
-            views.setViewVisibility(R.id.widget_2_layout_not_setup, View.VISIBLE)
-        } else {
-            views.setViewVisibility(R.id.widget_2_layout_not_setup, View.GONE)
 
-            // Layout 2 (the small height one) - if less than 2 rows
-            if (getCellsForSize(newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)) < 2) {
-                views.setViewVisibility(R.id.widget_2_layout_2, View.VISIBLE)
-                views.setViewVisibility(R.id.widget_2_layout_1, View.GONE)
-                views.setViewVisibility(R.id.widget_2_layout_3, View.GONE)
+            views.setOnClickPendingIntent(R.id.widget_2_layout_3_aliases_add, getPendingSelfIntent(context, OPEN_APP_ADD_ALIAS_SHEET))
+            views.setOnClickPendingIntent(
+                R.id.widget_2_layout_3_aliases_aliases,
+                getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.ALIASES.activity)
+            )
+            views.setOnClickPendingIntent(
+                R.id.widget_2_layout_3_aliases_recipients,
+                getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.RECIPIENTS.activity)
+            )
+            views.setOnClickPendingIntent(
+                R.id.widget_2_layout_3_aliases_domains,
+                getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.DOMAINS.activity)
+            )
+            views.setOnClickPendingIntent(
+                R.id.widget_2_layout_3_aliases_rules,
+                getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.RULES.activity)
+            )
+            views.setOnClickPendingIntent(
+                R.id.widget_2_layout_3_aliases_usernames,
+                getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.USERNAMES.activity)
+            )
 
-                views.setTextViewText(R.id.widget_2_layout_2_aliases_statistics_forwarded_count, userResource?.total_emails_forwarded.toString())
+            val intent = Intent(context, AliasWidget2RemoteViewsService::class.java)
+            views.setRemoteAdapter(R.id.widget_2_layout_3_aliases_listview, intent)
 
-                // if more than 2 columns
-                if (getCellsForSize(newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)) > 3) {
-                    views.setViewVisibility(R.id.widget_2_layout_2_additional, View.VISIBLE)
-                    views.setTextViewText(R.id.widget_2_layout_2_aliases_statistics_blocked_count, userResource?.total_emails_blocked.toString())
-                    views.setTextViewText(R.id.widget_2_layout_2_aliases_statistics_sent_count, userResource?.total_emails_sent.toString())
-                    views.setTextViewText(R.id.widget_2_layout_2_aliases_statistics_replied_count, userResource?.total_emails_replied.toString())
-                } else {
-                    views.setViewVisibility(R.id.widget_2_layout_2_additional, View.GONE)
-                }
-                views.setOnClickPendingIntent(android.R.id.background, getPendingSelfIntent(context, OPEN_APP))
-                // Layout 3 (the BIG one) - if more than 3 rows and if more than 2 columns
-            } else if (getCellsForSize(newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)) > 3 && getCellsForSize(
-                    newOptions.getInt(
-                        AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH
-                    )
-                ) > 3
-            ) {
-                views.setViewVisibility(R.id.widget_2_layout_3, View.VISIBLE)
-                views.setViewVisibility(R.id.widget_2_layout_1, View.GONE)
-                views.setViewVisibility(R.id.widget_2_layout_2, View.GONE)
-
-                views.setOnClickPendingIntent(R.id.widget_2_layout_3_aliases_add, getPendingSelfIntent(context, OPEN_APP_ADD_ALIAS_SHEET))
-                views.setOnClickPendingIntent(
-                    R.id.widget_2_layout_3_aliases_aliases,
-                    getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.ALIASES.activity)
-                )
-                views.setOnClickPendingIntent(
-                    R.id.widget_2_layout_3_aliases_recipients,
-                    getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.RECIPIENTS.activity)
-                )
-                views.setOnClickPendingIntent(
-                    R.id.widget_2_layout_3_aliases_domains,
-                    getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.DOMAINS.activity)
-                )
-                views.setOnClickPendingIntent(
-                    R.id.widget_2_layout_3_aliases_rules,
-                    getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.RULES.activity)
-                )
-                views.setOnClickPendingIntent(
-                    R.id.widget_2_layout_3_aliases_usernames,
-                    getPendingSelfIntent(context, OPEN_APP_TARGET, ActivityTargets.USERNAMES.activity)
-                )
-
-
-                val intent = Intent(context, AliasWidget2RemoteViewsService::class.java)
-                views.setRemoteAdapter(R.id.widget_2_layout_3_aliases_listview, intent)
-
-
-                val clickIntent = Intent(context, AliasWidget2Provider::class.java)
-                clickIntent.action = NAVIGATE
-                clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                clickIntent.data = clickIntent.toUri(Intent.URI_INTENT_SCHEME).toUri()
-
-                val onClickPendingIntent = PendingIntent
-                    .getBroadcast(
-                        context, appWidgetId, clickIntent,
-                        PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                    )
-
-                views.setPendingIntentTemplate(R.id.widget_2_layout_3_aliases_listview, onClickPendingIntent)
-
-                // Tell every widget there is new data for the listview
-                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_2_layout_3_aliases_listview)
-
-                // Layout 1 - 2 > rows
-            } else {
-                views.setViewVisibility(R.id.widget_2_layout_1, View.VISIBLE)
-                views.setViewVisibility(R.id.widget_2_layout_2, View.GONE)
-                views.setViewVisibility(R.id.widget_2_layout_3, View.GONE)
-
-                views.setTextViewText(R.id.widget_2_layout_1_aliases_statistics_forwarded_count, userResource?.total_emails_forwarded.toString())
-
-                // if more than 2 columns
-                if (getCellsForSize(newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)) > 3) {
-                    views.setViewVisibility(R.id.widget_2_layout_1_additional, View.VISIBLE)
-
-                    views.setTextViewText(R.id.widget_2_layout_1_aliases_statistics_blocked_count, userResource?.total_emails_blocked.toString())
-                    views.setTextViewText(R.id.widget_2_layout_1_aliases_statistics_sent_count, userResource?.total_emails_sent.toString())
-                    views.setTextViewText(R.id.widget_2_layout_1_aliases_statistics_replied_count, userResource?.total_emails_replied.toString())
-                } else {
-                    views.setViewVisibility(R.id.widget_2_layout_1_additional, View.GONE)
-                }
-                views.setOnClickPendingIntent(android.R.id.background, getPendingSelfIntent(context, OPEN_APP))
+            val clickIntent = Intent(context, AliasWidget2Provider::class.java).apply {
+                action = NAVIGATE
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                data = toUri(Intent.URI_INTENT_SCHEME).toUri()
             }
+
+            val onClickPendingIntent = PendingIntent.getBroadcast(
+                context, appWidgetId, clickIntent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+            views.setPendingIntentTemplate(R.id.widget_2_layout_3_aliases_listview, onClickPendingIntent)
+            appWidgetManager.notifyAppWidgetViewDataChanged(intArrayOf(appWidgetId), R.id.widget_2_layout_3_aliases_listview)
+        }
+        else -> {
+            // Layout 1 (Medium overview card: 2x2, 3x2, 4x2, 2x3, etc.)
+            views.setViewVisibility(R.id.widget_2_layout_1, View.VISIBLE)
+            views.setViewVisibility(R.id.widget_2_layout_2, View.GONE)
+            views.setViewVisibility(R.id.widget_2_layout_3, View.GONE)
+
+            views.setTextViewText(
+                R.id.widget_2_layout_1_aliases_statistics_forwarded_count,
+                (userResource?.total_emails_forwarded ?: 0).toString()
+            )
+
+            // If wide enough (>= 200dp, typically 3+ columns)
+            if (minWidth >= 200) {
+                views.setViewVisibility(R.id.widget_2_layout_1_additional, View.VISIBLE)
+                views.setTextViewText(
+                    R.id.widget_2_layout_1_aliases_statistics_blocked_count,
+                    (userResource?.total_emails_blocked ?: 0).toString()
+                )
+                views.setTextViewText(
+                    R.id.widget_2_layout_1_aliases_statistics_sent_count,
+                    (userResource?.total_emails_sent ?: 0).toString()
+                )
+                views.setTextViewText(
+                    R.id.widget_2_layout_1_aliases_statistics_replied_count,
+                    (userResource?.total_emails_replied ?: 0).toString()
+                )
+            } else {
+                views.setViewVisibility(R.id.widget_2_layout_1_additional, View.GONE)
+            }
+            views.setOnClickPendingIntent(android.R.id.background, getPendingSelfIntent(context, OPEN_APP))
         }
     }
 
-
-    // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
 
 private fun getPendingSelfIntent(context: Context, action: String, target: String? = null): PendingIntent {
-    val intent = Intent(context, AliasWidget2Provider::class.java)
-    intent.action = action
-    intent.putExtra(OPEN_APP_TARGET, target)
-    return PendingIntent.getBroadcast(context, Random.nextInt(0, 999), intent, PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-}
-
-/**
- * Returns number of cells needed for given size of the widget.
- *
- * @param size Widget size in dp.
- * @return Size in number of cells.
- */
-private fun getCellsForSize(size: Int): Int {
-    var n = 2
-    while (70 * n - 30 < size) {
-        ++n
+    val intent = Intent(context, AliasWidget2Provider::class.java).apply {
+        this.action = action
+        putExtra(OPEN_APP_TARGET, target)
     }
-    return n - 1
+    return PendingIntent.getBroadcast(
+        context,
+        Random.nextInt(0, 999),
+        intent,
+        PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+    )
 }

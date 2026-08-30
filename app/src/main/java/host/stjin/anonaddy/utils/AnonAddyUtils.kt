@@ -6,11 +6,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import androidx.annotation.Nullable
 import androidx.fragment.app.FragmentManager
-import host.stjin.anonaddy.ui.alias.manage.SendMailAppChooserBottomDialogFragment
+import host.stjin.anonaddy.ServiceLocator
+import host.stjin.anonaddy.ui.aliases.manage.SendMailAppChooserBottomDialogFragment
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
+import androidx.core.net.toUri
 
 object AnonAddyUtils {
     fun buildEmailIntent(
@@ -45,7 +46,7 @@ object AnonAddyUtils {
             uriString.append("?").append(queryParams.joinToString("&"))
         }
 
-        val uri = Uri.parse(uriString.toString())
+        val uri = uriString.toString().toUri()
         return Intent(Intent.ACTION_SENDTO, uri).apply {
             if (toList.isNotEmpty()) {
                 putExtra(Intent.EXTRA_EMAIL, toList.toTypedArray())
@@ -86,9 +87,9 @@ object AnonAddyUtils {
         intent: Intent,
         chooserTitle: String,
         fragmentManager: FragmentManager? = null
-    ) {
+    ): Boolean {
         val packageManager = context.packageManager
-        val encryptedSettingsManager = SettingsManager(true, context)
+        val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         val preferredPackage = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.DEFAULT_EMAIL_CLIENT)
 
         // Find available packages handling this intent (excluding own app)
@@ -109,7 +110,7 @@ object AnonAddyUtils {
                     setPackage(preferredPackage)
                 }
                 context.startActivity(directIntent)
-                return
+                return true
             } else {
                 // Fallback: The preferred app was uninstalled or no longer handles mailto.
                 // Clear the stale preference so the user is prompted again.
@@ -123,18 +124,19 @@ object AnonAddyUtils {
                 setPackage(possiblePackages[0])
             }
             context.startActivity(directIntent)
-            return
+            return true
         }
 
         // 3. If fragmentManager is provided, show custom BottomSheet chooser with "Always use this app" checkbox
         if (fragmentManager != null) {
             val chooserDialog = SendMailAppChooserBottomDialogFragment.newInstance(intent)
             chooserDialog.show(fragmentManager, "SendMailAppChooserBottomDialogFragment")
-            return
+            return false
         }
 
         // 4. Fallback to standard share sheet
         startShareSheetActivityExcludingOwnApp(context, intent, chooserTitle)
+        return true
     }
 
     fun getAppNameFromPackage(context: Context, packageName: String): String? {
@@ -147,7 +149,7 @@ object AnonAddyUtils {
                 packageManager.getApplicationInfo(packageName, 0)
             }
             packageManager.getApplicationLabel(appInfo).toString()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
@@ -165,7 +167,7 @@ object AnonAddyUtils {
                 possibleIntents.add(possibleIntent)
             }
         }
-        @Nullable val defaultResolveInfo = packageManager.resolveActivity(intent, 0)
+        val defaultResolveInfo = packageManager.resolveActivity(intent, 0)
         if (defaultResolveInfo == null || possiblePackageNames.isEmpty()) {
             throw ActivityNotFoundException()
         }

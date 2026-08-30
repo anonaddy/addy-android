@@ -6,10 +6,10 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 
+object GooglePlayUtils {
+    private const val GOOGLE_PLAY = "com.android.vending"
+    private const val FDROID = "org.fdroid.fdroid"
 
-object YDGooglePlayUtils {
-    private var GOOGLE_PLAY = "com.android.vending"
-    private var FDROID = "org.fdroid.fdroid"
     fun isInstalledViaGooglePlay(ctx: Context): Boolean {
         return isInstalledVia(ctx, GOOGLE_PLAY)
     }
@@ -47,7 +47,6 @@ object YDGooglePlayUtils {
         }
         return (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else packageName) as String
     }
-
 
     private fun PackageManager.getPackageInfoCompat(packageName: String, flags: Int = 0): PackageInfo =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

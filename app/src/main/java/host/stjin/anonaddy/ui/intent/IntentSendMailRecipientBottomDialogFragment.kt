@@ -21,26 +21,27 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.BottomsheetSendMailFromIntentAliasBinding
 import host.stjin.anonaddy.utils.CustomPatterns
-import host.stjin.anonaddy_shared.NetworkHelper
-import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.network.NetworkResult
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.launch
 import java.util.stream.Collectors
 
-class IntentSendMailRecipientBottomDialogFragment(
-    private val recipientEmails: ArrayList<String>,
-    private val recipientCcEmails: ArrayList<String>,
-    private val recipientBccEmails: ArrayList<String>,
-    private val domainOptions: List<String>
-) : BaseBottomSheetDialogFragment(), View.OnClickListener {
+class IntentSendMailRecipientBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+    private var recipientEmails: ArrayList<String> = arrayListOf()
+    private var recipientCcEmails: ArrayList<String> = arrayListOf()
+    private var recipientBccEmails: ArrayList<String> = arrayListOf()
+    private var domainOptions: List<String> = listOf()
+
     private lateinit var settingsManager: SettingsManager
 
-    private lateinit var listener: AddIntentSendMailRecipientBottomDialogListener
+    private var listener: AddIntentSendMailRecipientBottomDialogListener? = null
 
     // True if the bottomsheet succeeded it's action and the DialogFragment should stay up after this sheet closes
     // False if bottomsheet was closed by user, thus the other sheet should close as well
@@ -65,7 +66,15 @@ class IntentSendMailRecipientBottomDialogFragment(
         setAdapterData(binding.bsSendMailFromIntentAliasesMact.text.toString())
     }
 
-    constructor() : this(arrayListOf(), arrayListOf(), arrayListOf(), listOf())
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            recipientEmails = it.getStringArrayList(ARG_RECIPIENT_EMAILS) ?: arrayListOf()
+            recipientCcEmails = it.getStringArrayList(ARG_RECIPIENT_CC_EMAILS) ?: arrayListOf()
+            recipientBccEmails = it.getStringArrayList(ARG_RECIPIENT_BCC_EMAILS) ?: arrayListOf()
+            domainOptions = it.getStringArrayList(ARG_DOMAIN_OPTIONS) ?: listOf()
+        }
+    }
 
     override fun onPause() {
         super.onPause()
@@ -80,8 +89,8 @@ class IntentSendMailRecipientBottomDialogFragment(
         _binding = BottomsheetSendMailFromIntentAliasBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        listener = activity as AddIntentSendMailRecipientBottomDialogListener
-        settingsManager = SettingsManager(false, requireContext())
+        listener = (parentFragment as? AddIntentSendMailRecipientBottomDialogListener) ?: (activity as? AddIntentSendMailRecipientBottomDialogListener)
+        settingsManager = ServiceLocator.settingsManager
 
         val progressDrawable = context?.getProgressBarDrawable()
 
@@ -124,7 +133,7 @@ class IntentSendMailRecipientBottomDialogFragment(
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        listener.onClose(bottomSheetResult)
+        listener?.onClose(bottomSheetResult)
         super.onCancel(dialog)
     }
 
@@ -157,19 +166,7 @@ class IntentSendMailRecipientBottomDialogFragment(
         if (searchQuery.count() >= 3) {
             binding.bsSendMailFromIntentAliasesTil.hint = context?.resources?.getString(R.string.alias)
             lifecycleScope.launch {
-                NetworkHelper(requireContext()).getAliases(
-                    { list, _ ->
-                        if (list != null) {
-                            aliases = list.data
-                            setAliasesAdapter(searchQuery.substringBefore("@"))
-                            binding.bsSendMailFromIntentAliasesMact.showDropDown()
-                        } else {
-                            binding.bsSendMailFromIntentAliasesTil.error =
-                                requireContext().resources.getString(R.string.something_went_wrong_retrieving_aliases)
-                        }
-
-                        binding.bsSendMailFromIntentAliasesTil.endIconDrawable = null
-                    },
+                val result = ServiceLocator.aliasRepository.getAliases(
                     aliasSortFilter = AliasSortFilter(
                         onlyActiveAliases = false,
                         onlyDeletedAliases = false,
@@ -182,6 +179,17 @@ class IntentSendMailRecipientBottomDialogFragment(
                     ),
                     size = 100
                 )
+
+                if (result is NetworkResult.Success) {
+                    aliases = result.data.data
+                    setAliasesAdapter(searchQuery.substringBefore("@"))
+                    binding.bsSendMailFromIntentAliasesMact.showDropDown()
+                } else {
+                    binding.bsSendMailFromIntentAliasesTil.error =
+                        requireContext().resources.getString(R.string.something_went_wrong_retrieving_aliases)
+                }
+
+                binding.bsSendMailFromIntentAliasesTil.endIconDrawable = null
             }
         } else {
             binding.bsSendMailFromIntentAliasesTil.endIconDrawable = null
@@ -233,7 +241,7 @@ class IntentSendMailRecipientBottomDialogFragment(
         // Check if alias is empty, if alias is empty just forward the recipient to the default mail app without generating an alias
         if (binding.bsSendMailFromIntentAliasesMact.text.toString().isEmpty()) {
             viewLifecycleOwner.lifecycleScope.launch {
-                listener.onPressSend(
+                listener?.onPressSend(
                     binding.bsSendMailFromIntentAliasesMact.text.toString(),
                     aliases.firstOrNull { it.email == binding.bsSendMailFromIntentAliasesMact.text.toString() },
                     binding.bsSendMailFromIntentAliasRecipientTiet.text.toString(),
@@ -261,7 +269,7 @@ class IntentSendMailRecipientBottomDialogFragment(
                 // Get the first alias that matched the email address with the one entered in the adapter
                 viewLifecycleOwner.lifecycleScope.launch {
                     bottomSheetResult = true
-                    listener.onPressSend(
+                    listener?.onPressSend(
                         binding.bsSendMailFromIntentAliasesMact.text.toString(),
                         aliases.firstOrNull { it.email == binding.bsSendMailFromIntentAliasesMact.text.toString() },
                         binding.bsSendMailFromIntentAliasRecipientTiet.text.toString(),
@@ -294,13 +302,25 @@ class IntentSendMailRecipientBottomDialogFragment(
     }
 
     companion object {
+        private const val ARG_RECIPIENT_EMAILS = "arg_recipient_emails"
+        private const val ARG_RECIPIENT_CC_EMAILS = "arg_recipient_cc_emails"
+        private const val ARG_RECIPIENT_BCC_EMAILS = "arg_recipient_bcc_emails"
+        private const val ARG_DOMAIN_OPTIONS = "arg_domain_options"
+
         fun newInstance(
             recipientEmail: ArrayList<String>,
             recipientCcEmail: ArrayList<String>,
             recipientBccEmail: ArrayList<String>,
             domainOptions: List<String>
         ): IntentSendMailRecipientBottomDialogFragment {
-            return IntentSendMailRecipientBottomDialogFragment(recipientEmail, recipientCcEmail, recipientBccEmail, domainOptions)
+            return IntentSendMailRecipientBottomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putStringArrayList(ARG_RECIPIENT_EMAILS, recipientEmail)
+                    putStringArrayList(ARG_RECIPIENT_CC_EMAILS, recipientCcEmail)
+                    putStringArrayList(ARG_RECIPIENT_BCC_EMAILS, recipientBccEmail)
+                    putStringArrayList(ARG_DOMAIN_OPTIONS, ArrayList(domainOptions))
+                }
+            }
         }
     }
 }
