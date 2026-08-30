@@ -4,102 +4,103 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.DomainsRecyclerviewListItemBinding
 import host.stjin.anonaddy_shared.models.Domains
 
-class DomainAdapter(
-    private val listWithDomains: ArrayList<Domains>
-) :
-    RecyclerView.Adapter<DomainAdapter.ViewHolder>() {
+class DomainDiffCallback : DiffUtil.ItemCallback<Domains>() {
+    override fun areItemsTheSame(oldItem: Domains, newItem: Domains): Boolean {
+        return oldItem.id == newItem.id
+    }
 
-    lateinit var onDomainClicker: ClickListener
+    override fun areContentsTheSame(oldItem: Domains, newItem: Domains): Boolean {
+        return oldItem == newItem
+    }
+}
+
+class DomainAdapter(
+    listWithDomains: List<Domains> = emptyList(),
+    private var onDomainClicker: ClickListener? = null
+) : ListAdapter<Domains, DomainAdapter.ViewHolder>(DomainDiffCallback()) {
+
+    init {
+        if (listWithDomains.isNotEmpty()) {
+            submitList(listWithDomains)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.domains_recyclerview_list_item, parent, false)
+        val binding = DomainsRecyclerviewListItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.mTitle.text = listWithDomains[position].domain
+        val item = getItem(position)
+        holder.binding.domainsRecyclerviewListTitle.text = item.domain
 
-
-        when (listWithDomains[position].domain_sending_verified_at) {
+        when (item.domain_sending_verified_at) {
             null -> {
-                holder.mDescription.text = holder.mDescription.context.resources.getString(
+                holder.binding.domainsRecyclerviewListDescription.text = holder.itemView.context.resources.getString(
                     R.string.configuration_error
                 )
-                holder.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_alert_circle)
+                holder.binding.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_alert_circle)
             }
 
             else -> {
-                if (listWithDomains[position].description != null) {
-                    holder.mDescription.text = listWithDomains[position].description
+                if (item.description != null) {
+                    holder.binding.domainsRecyclerviewListDescription.text = item.description
                 } else {
-                    holder.mDescription.text = holder.mDescription.context.resources.getString(
+                    holder.binding.domainsRecyclerviewListDescription.text = holder.itemView.context.resources.getString(
                         R.string.domains_list_description,
-                        listWithDomains[position].aliases_count
+                        item.aliases_count
                     )
                 }
-                holder.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_dns)
+                holder.binding.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_dns)
             }
+        }
+
+        if (!holder.itemView.context.resources.getBoolean(R.bool.isTablet)) {
+            holder.binding.domainsRecyclerviewListOptionLL.visibility = View.GONE
+            holder.binding.domainsRecyclerviewListExpandOptions.rotation = 0f
         }
     }
 
-    override fun getItemCount(): Int = listWithDomains.size
-
-
-    fun setClickListener(aClickListener: ClickListener) {
-        onDomainClicker = aClickListener
+    fun setClickListener(listener: ClickListener) {
+        onDomainClicker = listener
     }
 
-    fun getList(): ArrayList<Domains> {
-        return listWithDomains
-    }
 
 
     interface ClickListener {
-        fun onClickSettings(pos: Int, aView: View)
-        fun onClickDelete(pos: Int, aView: View)
+        fun onClickSettings(pos: Int, view: View)
+        fun onClickDelete(pos: Int, view: View)
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
+    inner class ViewHolder(val binding: DomainsRecyclerviewListItemBinding) : RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
 
-        private var mCV: MaterialCardView = view.findViewById(R.id.domains_recyclerview_list_CV)
-        private var domainsRecyclerviewListOptionLl: LinearLayout =
-            view.findViewById(R.id.domains_recyclerview_list_option_LL)
-        private var mOptionsButton: LinearLayout =
-            view.findViewById(R.id.domains_recyclerview_list_expand_options)
-        var mTitle: TextView = view.findViewById(R.id.domains_recyclerview_list_title)
-        var mDescription: TextView =
-            view.findViewById(R.id.domains_recyclerview_list_description)
-        var domainsRecyclerviewListIcon: ImageView =
-            view.findViewById(R.id.domains_recyclerview_list_icon)
-        private var domainsRecyclerviewListSettingsButton: MaterialButton =
-            view.findViewById(R.id.domains_recyclerview_list_settings_button)
-        private var domainsRecyclerviewListDeleteButton: MaterialButton =
-            view.findViewById(R.id.domains_recyclerview_list_delete_button)
-
         init {
-            mOptionsButton.setOnClickListener(this)
-            mCV.setOnClickListener(this)
-            domainsRecyclerviewListSettingsButton.setOnClickListener(this)
-            domainsRecyclerviewListDeleteButton.setOnClickListener(this)
+            binding.domainsRecyclerviewListExpandOptions.setOnClickListener(this)
+            binding.domainsRecyclerviewListCV.setOnClickListener(this)
+            binding.domainsRecyclerviewListSettingsButton.setOnClickListener(this)
+            binding.domainsRecyclerviewListDeleteButton.setOnClickListener(this)
 
-            checkForTabletLayout(domainsRecyclerviewListDeleteButton.context)
+            checkForTabletLayout(binding.domainsRecyclerviewListDeleteButton.context)
         }
 
-        override fun onClick(p0: View) {
-            when (p0.id) {
+        override fun onClick(v: View) {
+            val pos = bindingAdapterPosition
+            if (pos == RecyclerView.NO_POSITION) return
+
+            when (v.id) {
                 R.id.domains_recyclerview_list_CV -> {
                     expandOptions()
                 }
@@ -109,35 +110,32 @@ class DomainAdapter(
                 }
 
                 R.id.domains_recyclerview_list_settings_button -> {
-                    onDomainClicker.onClickSettings(adapterPosition, p0)
+                    onDomainClicker?.onClickSettings(pos, v)
                 }
 
                 R.id.domains_recyclerview_list_delete_button -> {
-                    onDomainClicker.onClickDelete(adapterPosition, p0)
+                    onDomainClicker?.onClickDelete(pos, v)
                 }
             }
         }
 
         private fun expandOptions() {
-            if (!domainsRecyclerviewListOptionLl.context.resources.getBoolean(R.bool.isTablet)) {
-                if (domainsRecyclerviewListOptionLl.isVisible) {
-                    domainsRecyclerviewListOptionLl.visibility = View.GONE
-                    mOptionsButton.rotation = 0f
+            if (!binding.domainsRecyclerviewListOptionLL.context.resources.getBoolean(R.bool.isTablet)) {
+                if (binding.domainsRecyclerviewListOptionLL.isVisible) {
+                    binding.domainsRecyclerviewListOptionLL.visibility = View.GONE
+                    binding.domainsRecyclerviewListExpandOptions.rotation = 0f
                 } else {
-                    mOptionsButton.rotation = 180f
-                    domainsRecyclerviewListOptionLl.visibility = View.VISIBLE
+                    binding.domainsRecyclerviewListExpandOptions.rotation = 180f
+                    binding.domainsRecyclerviewListOptionLL.visibility = View.VISIBLE
                 }
             }
         }
 
         private fun checkForTabletLayout(context: Context) {
             if (context.resources.getBoolean(R.bool.isTablet)) {
-                mOptionsButton.visibility = View.GONE
-                domainsRecyclerviewListOptionLl.visibility = View.VISIBLE
+                binding.domainsRecyclerviewListExpandOptions.visibility = View.GONE
+                binding.domainsRecyclerviewListOptionLL.visibility = View.VISIBLE
             }
         }
     }
-
-
 }
-

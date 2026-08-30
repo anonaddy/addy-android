@@ -4,8 +4,9 @@ import android.content.Intent
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.notifications.NotificationHelper
-import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
+import host.stjin.anonaddy.ui.aliases.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
@@ -24,10 +25,10 @@ class WearableListener : WearableListenerService() {
             )
 
 
-            if (!SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG)) {
+            if (!ServiceLocator.settingsManager.getSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG)) {
                 val notificationHelper = NotificationHelper(this)
 
-                if (SettingsManager(true, this).getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
+                if (ServiceLocator.encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
                     // The paired-app has not been setup, let the user know the main app needs to be setup first
                     notificationHelper.createSetupAppFirstNotification()
                 } else {

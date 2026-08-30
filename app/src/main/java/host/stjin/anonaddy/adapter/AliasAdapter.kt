@@ -1,48 +1,96 @@
 package host.stjin.anonaddy.adapter
 
 import android.content.Context
-import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.os.Build
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ImageSpan
+import android.util.LruCache
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.toColorInt
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import app.futured.donut.DonutProgressView
 import app.futured.donut.DonutSection
-import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.AliasesRecyclerviewListItemBinding
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import org.ocpsoft.prettytime.PrettyTime
 
+class AliasDiffCallback : DiffUtil.ItemCallback<Aliases>() {
+    override fun areItemsTheSame(oldItem: Aliases, newItem: Aliases): Boolean {
+        return oldItem.id == newItem.id
+    }
 
-class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context, private val supportMultipleSelection: Boolean = false) :
-    RecyclerView.Adapter<AliasAdapter.ViewHolder>() {
+    override fun areContentsTheSame(oldItem: Aliases, newItem: Aliases): Boolean {
+        return oldItem == newItem
+    }
+}
 
-    lateinit var onAliasAliasInterface: AliasInterface
-    private val aliasesToWatch = AliasWatcher(context).getAliasesToWatch()
+class AliasAdapter(
+    listWithAliases: List<Aliases> = emptyList(),
+    context: Context
+) : ListAdapter<Aliases, AliasAdapter.ViewHolder>(AliasDiffCallback()) {
+
+    companion object {
+        private val badgeBitmapCache = LruCache<String, Bitmap>(100)
+    }
+
+    var onAliasClickListener: AliasInterface? = null
+    private val aliasWatcher = AliasWatcher(context)
+    private var aliasesToWatch: Set<String> = aliasWatcher.getAliasesToWatch()
     private var selectedAliases: ArrayList<Aliases> = arrayListOf()
 
+    fun updateWatchedAliases() {
+        aliasesToWatch = aliasWatcher.getAliasesToWatch()
+        notifyItemRangeChanged(0, itemCount)
+    }
+
+    override fun submitList(list: List<Aliases>?) {
+        aliasesToWatch = aliasWatcher.getAliasesToWatch()
+        super.submitList(list)
+    }
+
+    override fun submitList(list: List<Aliases>?, commitCallback: Runnable?) {
+        aliasesToWatch = aliasWatcher.getAliasesToWatch()
+        super.submitList(list, commitCallback)
+    }
+
+    init {
+        if (listWithAliases.isNotEmpty()) {
+            submitList(listWithAliases)
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.aliases_recyclerview_list_item, parent, false)
+        val binding = AliasesRecyclerviewListItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         applySelectedOverlay(holder, position)
 
-        val alias = listWithAliases[position]
-        holder.mTitle.text = alias.email
+        val alias = getItem(position)
+        holder.binding.aliasesRecyclerviewListTitle.text = alias.email
 
-        val context = holder.mDesc.context
+        val context = holder.binding.aliasesRecyclerviewListDescription.context
         val prettyTime = PrettyTime()
         val descriptionParts = mutableListOf<String>()
 
@@ -81,78 +129,81 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
             )
         }
 
-        holder.mDesc.text = descriptionParts.joinToString("\n")
+        holder.binding.aliasesRecyclerviewListDescription.text = descriptionParts.joinToString("\n")
 
         /*
         Labels using ImageSpan for text ellipsizing
          */
         if (!alias.labels.isNullOrEmpty()) {
-            holder.mLabelsTV.visibility = View.VISIBLE
-            val ssb = android.text.SpannableStringBuilder()
+            holder.binding.aliasesRecyclerviewListLabelsTv.visibility = View.VISIBLE
+            val ssb = SpannableStringBuilder()
+            val isDarkMode =
+                (context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
 
             for (label in alias.labels!!) {
-                val badgeView = LayoutInflater.from(context).inflate(R.layout.layout_label_badge, null)
-                val text = badgeView.findViewById<TextView>(R.id.label_badge_text)
-                text.text = label.name
+                val cacheKey = "${label.id}_${label.name}_${label.colour}_$isDarkMode"
+                val bitmap = badgeBitmapCache.get(cacheKey) ?: run {
+                    val badgeView = LayoutInflater.from(context).inflate(R.layout.layout_label_badge, holder.binding.root, false)
+                    val text = badgeView.findViewById<TextView>(R.id.label_badge_text)
+                    text.text = label.name
 
-                try {
-                    val colorInt = android.graphics.Color.parseColor(label.colour)
+                    try {
+                        val colorInt = label.colour.toColorInt()
+                        val hsv = FloatArray(3)
+                        Color.colorToHSV(colorInt, hsv)
+                        if (isDarkMode) {
+                            hsv[2] = 1.0f
+                            hsv[1] = 0f.coerceAtLeast(hsv[1] - 0.2f)
+                        } else {
+                            hsv[2] = 1f.coerceAtMost(hsv[2] * 0.7f)
+                            hsv[1] = 1f.coerceAtMost(hsv[1] * 1.2f)
+                        }
+                        val textColorInt = Color.HSVToColor(hsv)
 
-                    val isDarkMode =
-                        (context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
-                    val hsv = FloatArray(3)
-                    android.graphics.Color.colorToHSV(colorInt, hsv)
-                    if (isDarkMode) {
-                        hsv[2] = 1.0f
-                        hsv[1] = Math.max(0f, hsv[1] - 0.2f)
-                    } else {
-                        hsv[2] = Math.min(1f, hsv[2] * 0.7f)
-                        hsv[1] = Math.min(1f, hsv[1] * 1.2f)
+                        // Background
+                        val bgDrawable = GradientDrawable()
+                        bgDrawable.shape = GradientDrawable.RECTANGLE
+                        bgDrawable.cornerRadius = 100f // Large radius for rounded capsule
+                        val alphaColor = Color.argb(
+                            (0.2 * 255).toInt(),
+                            Color.red(colorInt),
+                            Color.green(colorInt),
+                            Color.blue(colorInt)
+                        )
+                        bgDrawable.setColor(alphaColor)
+                        badgeView.background = bgDrawable
+                        text.setTextColor(textColorInt)
+
+                    } catch (_: Exception) {
+                        // Fallback
                     }
-                    val textColorInt = android.graphics.Color.HSVToColor(hsv)
 
-                    // Background
-                    val bgDrawable = android.graphics.drawable.GradientDrawable()
-                    bgDrawable.shape = android.graphics.drawable.GradientDrawable.RECTANGLE
-                    bgDrawable.cornerRadius = 100f // Large radius for rounded capsule
-                    val alphaColor = android.graphics.Color.argb(
-                        (0.2 * 255).toInt(),
-                        android.graphics.Color.red(colorInt),
-                        android.graphics.Color.green(colorInt),
-                        android.graphics.Color.blue(colorInt)
-                    )
-                    bgDrawable.setColor(alphaColor)
-                    badgeView.background = bgDrawable
-                    text.setTextColor(textColorInt)
+                    // Measure and layout badgeView
+                    val spec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                    badgeView.measure(spec, spec)
+                    badgeView.layout(0, 0, badgeView.measuredWidth, badgeView.measuredHeight)
 
-                } catch (e: Exception) {
-                    // Fallback
+                    val bmp = createBitmap(badgeView.measuredWidth, badgeView.measuredHeight)
+                    val canvas = Canvas(bmp)
+                    badgeView.draw(canvas)
+                    badgeBitmapCache.put(cacheKey, bmp)
+                    bmp
                 }
 
-                badgeView.measure(
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                )
-                badgeView.layout(0, 0, badgeView.measuredWidth, badgeView.measuredHeight)
-
-                val bitmap =
-                    android.graphics.Bitmap.createBitmap(badgeView.measuredWidth, badgeView.measuredHeight, android.graphics.Bitmap.Config.ARGB_8888)
-                val canvas = android.graphics.Canvas(bitmap)
-                badgeView.draw(canvas)
-
                 ssb.append(" ")
-                val span = android.text.style.ImageSpan(context, bitmap, android.text.style.ImageSpan.ALIGN_CENTER)
-                ssb.setSpan(span, ssb.length - 1, ssb.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val alignment = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ImageSpan.ALIGN_CENTER else ImageSpan.ALIGN_BASELINE
+                val span = ImageSpan(context, bitmap, alignment)
+                ssb.setSpan(span, ssb.length - 1, ssb.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 ssb.append(" ") // small gap
             }
-            holder.mLabelsTV.text = ssb
+            holder.binding.aliasesRecyclerviewListLabelsTv.text = ssb
         } else {
-            holder.mLabelsTV.visibility = View.GONE
+            holder.binding.aliasesRecyclerviewListLabelsTv.visibility = View.GONE
         }
+
         /*
         CHART
          */
-
         val forwarded = alias.emails_forwarded.toFloat()
         val replied = alias.emails_replied.toFloat()
         val sent = alias.emails_sent.toFloat()
@@ -163,10 +214,9 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
         val color3 = if (alias.active) R.color.easternBlue else R.color.md_grey_700
         val color4 = if (alias.active) R.color.softRed else R.color.md_grey_800
 
-
         val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
 
-        // If there are no statistics, sent the emptyDonut value to 1 so that a donut can be drawn
+        // If there are no statistics, set the emptyDonut value to 1 so that a donut can be drawn
         val emptyDonut = if (alias.emails_forwarded == 0 &&
             alias.emails_replied == 0 &&
             alias.emails_sent == 0 &&
@@ -175,8 +225,8 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
 
         // DONUT
         val section1 = DonutSection(
-            name = holder.mChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
-            color = ContextCompat.getColor(holder.mChart.context, color1),
+            name = holder.binding.aliasesRecyclerviewListChart.context.resources.getQuantityString(R.plurals.d_forwarded, forwarded.toInt(), forwarded.toInt()),
+            color = ContextCompat.getColor(holder.binding.aliasesRecyclerviewListChart.context, color1),
             amount = forwarded + emptyDonut
         )
         // Always show section 1
@@ -184,8 +234,8 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
 
         if (replied > 0) {
             val section2 = DonutSection(
-                name = holder.mChart.context.resources.getString(R.string.d_replied, replied.toInt()),
-                color = ContextCompat.getColor(holder.mChart.context, color2),
+                name = holder.binding.aliasesRecyclerviewListChart.context.resources.getQuantityString(R.plurals.d_replied, replied.toInt(), replied.toInt()),
+                color = ContextCompat.getColor(holder.binding.aliasesRecyclerviewListChart.context, color2),
                 amount = replied
             )
             listOfDonutSection.add(section2)
@@ -193,8 +243,8 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
 
         if (sent > 0) {
             val section3 = DonutSection(
-                name = holder.mChart.context.resources.getString(R.string.d_sent, sent.toInt()),
-                color = ContextCompat.getColor(holder.mChart.context, color3),
+                name = holder.binding.aliasesRecyclerviewListChart.context.resources.getQuantityString(R.plurals.d_sent, sent.toInt(), sent.toInt()),
+                color = ContextCompat.getColor(holder.binding.aliasesRecyclerviewListChart.context, color3),
                 amount = sent
             )
             listOfDonutSection.add(section3)
@@ -202,137 +252,117 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
 
         if (blocked > 0) {
             val section4 = DonutSection(
-                name = holder.mChart.context.resources.getString(R.string.d_blocked, blocked.toInt()),
-                color = ContextCompat.getColor(holder.mChart.context, color4),
+                name = holder.binding.aliasesRecyclerviewListChart.context.resources.getQuantityString(R.plurals.d_blocked, blocked.toInt(), blocked.toInt()),
+                color = ContextCompat.getColor(holder.binding.aliasesRecyclerviewListChart.context, color4),
                 amount = blocked
             )
             listOfDonutSection.add(section4)
         }
 
-        holder.mChart.cap = listOfDonutSection.sumOf { it.amount.toInt() }.toFloat()
+        holder.binding.aliasesRecyclerviewListChart.cap = listOfDonutSection.sumOf { it.amount.toInt() }.toFloat()
         // Sort the list by amount so that the biggest number will fill the whole ring
-        holder.mChart.submitData(listOfDonutSection.sortedBy { it.amount })
+        holder.binding.aliasesRecyclerviewListChart.submitData(listOfDonutSection.sortedBy { it.amount })
         // DONUT
 
-        holder.mWatchedTextView.visibility =
+        holder.binding.aliasesRecyclerviewListWatchedIcon.visibility =
             if (aliasesToWatch.contains(alias.id)) View.VISIBLE else View.GONE
 
-        holder.mPinned.visibility = if (alias.pinned) View.VISIBLE else View.GONE
+        holder.binding.aliasesRecyclerviewListPinned.visibility = if (alias.pinned) View.VISIBLE else View.GONE
     }
 
     private fun applySelectedOverlay(holder: ViewHolder, position: Int) {
         // Check if the item is selected
-        if (selectedAliases.contains(listWithAliases[position])) {
-            holder.mCV.cardElevation = 0f
-            holder.mLL0.setBackgroundColor(ContextCompat.getColor(holder.mLL0.context, R.color.selected_background_color))
-            holder.mWatchAliasLL.setBackgroundColor(ContextCompat.getColor(holder.mWatchAliasLL.context, R.color.selected_background_color_darker))
-            holder.mAction.setImageDrawable(ContextCompat.getDrawable(holder.mAction.context, R.drawable.ic_check))
+        if (selectedAliases.contains(getItem(position))) {
+            holder.binding.recyclerviewListCV.cardElevation = 0f
+            holder.binding.aliasesRecyclerviewListLL0.setBackgroundColor(ContextCompat.getColor(holder.binding.aliasesRecyclerviewListLL0.context, R.color.selected_background_color))
+            holder.binding.aliasesRecyclerviewListCopy.setImageDrawable(ContextCompat.getDrawable(holder.binding.aliasesRecyclerviewListCopy.context, R.drawable.ic_check))
         } else {
-            holder.mCV.cardElevation = holder.mCV.context.resources.getDimension(R.dimen.cardview_default_elevation)
-            holder.mLL0.setBackgroundColor(0)
-            holder.mWatchAliasLL.setBackgroundColor(0)
-            holder.mAction.setImageDrawable(ContextCompat.getDrawable(holder.mAction.context, R.drawable.ic_copy))
+            holder.binding.recyclerviewListCV.cardElevation = holder.binding.recyclerviewListCV.context.resources.getDimension(R.dimen.cardview_default_elevation)
+            holder.binding.aliasesRecyclerviewListLL0.setBackgroundColor(0)
+            holder.binding.aliasesRecyclerviewListCopy.setImageDrawable(ContextCompat.getDrawable(holder.binding.aliasesRecyclerviewListCopy.context, R.drawable.ic_copy))
         }
     }
 
-    override fun getItemCount(): Int = listWithAliases.size
 
-    fun getList(): List<Aliases> {
-        return listWithAliases
-    }
 
-    fun setClickOnAliasClickListener(aAliasInterface: AliasInterface) {
-        onAliasAliasInterface = aAliasInterface
+    fun setClickOnAliasClickListener(listener: AliasInterface) {
+        onAliasClickListener = listener
     }
 
     fun unselectAliases() {
         for (alias in selectedAliases) {
-            val findAliasPosition = listWithAliases.indexOfFirst { it == alias }
+            val findAliasPosition = currentList.indexOfFirst { it == alias }
             if (findAliasPosition > -1) {
                 notifyItemChanged(findAliasPosition)
             }
-
         }
         selectedAliases.clear()
     }
 
     interface AliasInterface {
         fun onClick(pos: Int)
-        fun onClickCopy(pos: Int, aView: View)
+        fun onClickCopy(pos: Int, view: View)
         fun onSelectionMode(selectionMode: Boolean, selectedAliases: ArrayList<Aliases>) { /* By default, don't implement */
         }
     }
 
-
-    var originalCardviewColor: ColorStateList? = null
-
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
+    inner class ViewHolder(val binding: AliasesRecyclerviewListItemBinding) : RecyclerView.ViewHolder(binding.root),
         View.OnClickListener, View.OnLongClickListener {
 
-        var mCV: MaterialCardView = view.findViewById(R.id.recyclerview_list_CV)
-        var mTitle: TextView = view.findViewById(R.id.aliases_recyclerview_list_title)
-        var mDesc: TextView =
-            view.findViewById(R.id.aliases_recyclerview_list_description)
-        var mLabelsTV: TextView = view.findViewById(R.id.aliases_recyclerview_list_labels_tv)
-        var mWatchedTextView: TextView = view.findViewById(R.id.aliases_recyclerview_list_watched_textview)
-        var mAction: ImageView = view.findViewById(R.id.aliases_recyclerview_list_copy)
-        var mChart: DonutProgressView = view.findViewById(R.id.aliases_recyclerview_list_chart)
-        var mLL0: LinearLayout = view.findViewById(R.id.aliases_recyclerview_list_LL0)
-        var mWatchAliasLL: LinearLayout = view.findViewById(R.id.aliases_recyclerview_list_LL5)
-        var mPinned: ImageView = view.findViewById(R.id.aliases_recyclerview_list_pinned)
-
         init {
-            mAction.setOnClickListener(this)
-            mCV.setOnClickListener(this)
-
-            if (supportMultipleSelection) {
-                mCV.setOnLongClickListener(this)
-            }
-
-            if (adapterPosition == 0 && originalCardviewColor != null) {
-                originalCardviewColor = mCV.cardBackgroundColor
-            }
+            binding.aliasesRecyclerviewListCopy.setOnClickListener(this)
+            binding.recyclerviewListCV.setOnClickListener(this)
+            binding.recyclerviewListCV.setOnLongClickListener(this)
         }
 
-        override fun onClick(p0: View) {
-            if (p0.id == R.id.recyclerview_list_CV) {
+        override fun onClick(v: View) {
+            val pos = bindingAdapterPosition
+            if (pos == RecyclerView.NO_POSITION) return
+
+            if (v.id == binding.recyclerviewListCV.id) {
                 if (selectedAliases.any()) {
-                    selectItem(adapterPosition)
+                    selectItem(pos)
                 } else {
-                    onAliasAliasInterface.onClick(adapterPosition)
+                    onAliasClickListener?.onClick(pos)
                 }
-            } else if (p0.id == R.id.aliases_recyclerview_list_copy) {
-                onAliasAliasInterface.onClickCopy(adapterPosition, p0)
+            } else if (v.id == binding.aliasesRecyclerviewListCopy.id) {
+                onAliasClickListener?.onClickCopy(pos, v)
             }
         }
 
-        override fun onLongClick(p0: View): Boolean {
-            if (p0.id == R.id.recyclerview_list_CV) {
-                selectItem(adapterPosition)
+        override fun onLongClick(v: View): Boolean {
+            val pos = bindingAdapterPosition
+            if (pos == RecyclerView.NO_POSITION) return false
+
+            if (v.id == binding.recyclerviewListCV.id) {
+                selectItem(pos)
             }
             return true
         }
 
         private fun selectItem(adapterPosition: Int) {
-            mCV.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-            if (selectedAliases.contains(listWithAliases[adapterPosition])) {
-                selectedAliases.remove(listWithAliases[adapterPosition])
+            binding.recyclerviewListCV.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            val item = getItem(adapterPosition)
+            if (selectedAliases.contains(item)) {
+                selectedAliases.remove(item)
             } else {
                 if (selectedAliases.count() < 25) {
-                    selectedAliases.add(listWithAliases[adapterPosition])
+                    selectedAliases.add(item)
                 } else {
-                    Toast.makeText(mCV.context, mCV.context.resources.getString(R.string.alias_multiple_selection_max_reached), Toast.LENGTH_LONG)
-                        .show()
+                    Toast.makeText(
+                        binding.recyclerviewListCV.context,
+                        binding.recyclerviewListCV.context.resources.getString(R.string.alias_multiple_selection_max_reached),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
 
-            onAliasAliasInterface.onSelectionMode(
-                selectionMode = selectedAliases.any(),
+            onAliasClickListener?.onSelectionMode(
+                selectionMode = selectedAliases.isNotEmpty(),
                 selectedAliases = selectedAliases
             )
 
             notifyItemChanged(adapterPosition)
         }
-
     }
 }

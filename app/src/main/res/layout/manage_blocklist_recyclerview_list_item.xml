@@ -62,7 +62,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="4dp"
                     android:alpha="0.5"
-                    android:text="•" />
+                    android:text="•"
+                    tools:ignore="HardcodedText" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"

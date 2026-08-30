@@ -29,7 +29,7 @@
     </queries>
 
     <application
-        android:name="host.stjin.anonaddy_shared.AddyIoApp"
+        android:name=".AddyIoAppImpl"
         android:allowBackup="false"
         android:enableOnBackInvokedCallback="true"
         android:exported="true"
@@ -100,7 +100,9 @@
             android:noHistory="true"
             android:theme="@style/AppTheme.Transparent" /> <!-- Widget 2 -->
         <!-- Notification -->
-        <receiver android:name=".notifications.ActionReceiver" />
+        <receiver
+            android:name=".notifications.ActionReceiver"
+            android:exported="false" />
 
         <activity
             android:name=".ui.SplashActivity"
@@ -186,7 +188,7 @@
         </activity-alias>
 
         <activity
-            android:name=".ui.alias.manage.ManageAliasActivity"
+            android:name=".ui.aliases.manage.ManageAliasActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar">
@@ -202,7 +204,7 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
 
-                <!-- If new URLS are added here, also add them to the webintentmanager -->
+                <!-- If new URLS are added here, also add them to the WebIntentHelper -->
 
                 <!-- END -->
 
@@ -252,7 +254,7 @@
             android:name=".ui.faileddeliveries.FailedDeliveriesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.alias.manage.ManageAliasNATOActivity"
+            android:name=".ui.aliases.manage.ManageAliasNATOActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.accountnotifications.AccountNotificationsActivity"
@@ -261,25 +263,25 @@
             android:name=".ui.appsettings.logs.LogViewerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.rules.CreateRuleActivity"
+            android:name=".ui.rules.manage.CreateRuleActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.rules.RulesSettingsActivity"
+            android:name=".ui.rules.RulesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.domains.DomainSettingsActivity"
+            android:name=".ui.domains.DomainsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.usernames.UsernamesSettingsActivity"
+            android:name=".ui.usernames.UsernamesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.recipients.manage.ManageRecipientsActivity"
+            android:name=".ui.recipients.manage.ManageRecipientActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.domains.manage.ManageDomainsActivity"
+            android:name=".ui.domains.manage.ManageDomainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.usernames.manage.ManageUsernamesActivity"
+            android:name=".ui.usernames.manage.ManageUsernameActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.AppSettingsActivity"
@@ -297,19 +299,16 @@
             android:name=".ui.appsettings.features.AppSettingsFeaturesMailToActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.appsettings.features.AppSettingsFeaturesManageMultipleAliasesActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyFailedDeliveriesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyAccountNotificationsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.blocklist.ManageBlocklistActivity"
+            android:name=".ui.blocklist.BlocklistActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.labels.ManageLabelsActivity"
+            android:name=".ui.labels.LabelsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyApiTokenExpiryActivity"
@@ -351,7 +350,7 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
 
-                <!-- If new URLS are added here, also add them to the webintentmanager -->
+                <!-- If new URLS are added here, also add them to the WebIntentHelper -->
 
                 <!-- END -->
 

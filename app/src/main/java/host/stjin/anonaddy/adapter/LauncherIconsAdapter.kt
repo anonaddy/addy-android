@@ -5,39 +5,33 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
-import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.AppearanceIconsListItemBinding
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 
+class LauncherIconsAdapter(private val context: Context) : RecyclerView.Adapter<LauncherIconsAdapter.ViewHolder>() {
 
-class LauncherIconsAdapter(var context: Context) : RecyclerView.Adapter<LauncherIconsAdapter.ViewHolder>() {
-
-    lateinit var onIconClickListener: ClickListener
+    var onIconClickListener: ClickListener? = null
+    private val launcherIconController = LauncherIconController(context)
 
     var launcherIcons = LauncherIconController.LauncherIcon.entries.toTypedArray()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // infalte the item Layout
-        val v: View = LayoutInflater.from(parent.context).inflate(R.layout.appearance_icons_list_item, parent, false)
-        // set the view's size, margins, paddings and layout parameters
-        return ViewHolder(v)
+        val binding = AppearanceIconsListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     interface ClickListener {
-        fun onClick(pos: Int, aView: View)
+        fun onClick(pos: Int, view: View)
     }
 
-    fun setClickListener(aClickListener: ClickListener) {
-        onIconClickListener = aClickListener
+    fun setClickListener(listener: ClickListener) {
+        onIconClickListener = listener
     }
-
 
     override fun getItemCount(): Int = launcherIcons.size
 
@@ -51,28 +45,20 @@ class LauncherIconsAdapter(var context: Context) : RecyclerView.Adapter<Launcher
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // set the data in items
-        holder.name.text = context.resources.getString(launcherIcons[position].title)
+        holder.binding.appearanceIconListItemName.text = context.resources.getString(launcherIcons[position].title)
 
-        val launcherIconController = LauncherIconController(context)
-
-
-        /*
-        I noticed some MIUI devices crash when loading the resources for Launchericons. Hence the try-catch and hiding the icon
-         */
         try {
             if (isColorResource(launcherIcons[position].background)) {
-                holder.icon.setBackgroundColor(ContextCompat.getColor(context, launcherIcons[position].background))
+                holder.binding.appearanceIconListItemIcon.setBackgroundColor(ContextCompat.getColor(context, launcherIcons[position].background))
             } else {
-                holder.icon.setBackgroundResource(launcherIcons[position].background)
+                holder.binding.appearanceIconListItemIcon.setBackgroundResource(launcherIcons[position].background)
             }
         } catch (e: Exception) {
-            holder.iconLl.visibility = View.GONE
+            holder.binding.appearanceIconListItemIconLL.visibility = View.GONE
             LoggingHelper(context).addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "LauncherIconsAdapter;onBindViewHolder", null)
         }
 
-        holder.icon.setImageResource(launcherIcons[position].foreground)
-
+        holder.binding.appearanceIconListItemIcon.setImageResource(launcherIcons[position].foreground)
         holder.animateImage(launcherIconController.isEnabled(launcherIcons[position]))
     }
 
@@ -80,36 +66,27 @@ class LauncherIconsAdapter(var context: Context) : RecyclerView.Adapter<Launcher
         return launcherIcons[pos]
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        // init the item view's
-        // get the reference of item view's
-        var iconLl: LinearLayout = itemView.findViewById<View>(R.id.appearance_icon_list_item_icon_LL) as LinearLayout
-        var icon: ImageFilterView = itemView.findViewById<View>(R.id.appearance_icon_list_item_icon) as ImageFilterView
-        var name: TextView = itemView.findViewById<View>(R.id.appearance_icon_list_item_name) as TextView
-        private var iconMotionLayout: MotionLayout = itemView.findViewById<View>(R.id.appearance_icon_list_item_icon_ML) as MotionLayout
+    inner class ViewHolder(val binding: AppearanceIconsListItemBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         init {
-
-            icon.setOnClickListener(this)
+            binding.appearanceIconListItemIcon.setOnClickListener(this)
         }
-
 
         fun animateImage(enabled: Boolean) {
             if (enabled) {
-                iconMotionLayout.transitionToEnd()
+                binding.appearanceIconListItemIconML.transitionToEnd()
             } else {
-                iconMotionLayout.transitionToStart()
+                binding.appearanceIconListItemIconML.transitionToStart()
             }
         }
 
-        override fun onClick(p0: View) {
-            when (p0.id) {
-                R.id.appearance_icon_list_item_icon -> {
-                    onIconClickListener.onClick(adapterPosition, p0)
-                    LauncherIconController(context).setIcon(launcherIcons[adapterPosition])
-                }
+        override fun onClick(v: View) {
+            if (v.id == binding.appearanceIconListItemIcon.id) {
+                val pos = bindingAdapterPosition
+                if (pos == RecyclerView.NO_POSITION) return
+                onIconClickListener?.onClick(pos, v)
+                launcherIconController.setIcon(launcherIcons[pos])
             }
         }
     }
-
 }

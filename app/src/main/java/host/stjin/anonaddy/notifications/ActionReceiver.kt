@@ -4,9 +4,9 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.content.ContextCompat
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.service.AliasWatcher
-import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
+import host.stjin.anonaddy.ui.aliases.manage.ManageAliasActivity
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
@@ -48,56 +48,62 @@ class ActionReceiver : BroadcastReceiver() {
                     manageAliasIntent.putExtra("alias_id", it)
                     manageAliasIntent.putExtra("shouldDeactivateThisAlias", true)
                     manageAliasIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    ContextCompat.startActivity(context, manageAliasIntent, null)
+                    context.startActivity(manageAliasIntent)
                     // Dismiss notification
                     notificationManager.cancel(notificationID)
                 }
             }
 
             NOTIFICATIONACTIONS.STOP_UPDATE_CHECK -> {
-                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES, false)
+                ServiceLocator.settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES, false)
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.UPDATER_NOTIFICATION_ID)
             }
 
             NOTIFICATIONACTIONS.STOP_FAILED_DELIVERY_CHECK -> {
-                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES, false)
+                ServiceLocator.settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES, false)
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.FAILED_DELIVERIES_NOTIFICATION_ID)
             }
 
             NOTIFICATIONACTIONS.STOP_API_EXPIRY_CHECK -> {
-                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, false)
+                ServiceLocator.settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, false)
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
             }
 
             NOTIFICATIONACTIONS.STOP_CERTIFICATE_CHECK -> {
-                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, false)
+                ServiceLocator.settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_CERTIFICATE_EXPIRY, false)
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.CERTIFICATE_EXPIRE_NOTIFICATION_ID)
             }
 
+            NOTIFICATIONACTIONS.STOP_ACCOUNT_NOTIFICATIONS_CHECK -> {
+                ServiceLocator.settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS, false)
+                // Dismiss notification
+                notificationManager.cancel(NotificationHelper.ACCOUNT_NOTIFICATIONS_NOTIFICATION_ID)
+            }
+
             NOTIFICATIONACTIONS.STOP_DOMAIN_ERROR_CHECK -> {
-                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.NOTIFY_DOMAIN_ERROR, false)
+                ServiceLocator.settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_DOMAIN_ERROR, false)
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.DOMAIN_ERROR_NOTIFICATION_ID)
             }
 
             NOTIFICATIONACTIONS.STOP_SUBSCRIPTION_EXPIRY_CHECK -> {
-                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, false)
+                ServiceLocator.settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, false)
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.SUBSCRIPTION_EXPIRE_NOTIFICATION_ID)
             }
 
             NOTIFICATIONACTIONS.STOP_PERIODIC_BACKUPS -> {
-                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS, false)
+                ServiceLocator.settingsManager.putSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS, false)
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.FAILED_BACKUP_NOTIFICATION_ID)
             }
 
             NOTIFICATIONACTIONS.DISABLE_WEAROS_QUICK_SETUP -> {
-                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG, true)
+                ServiceLocator.settingsManager.putSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG, true)
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID)
             }

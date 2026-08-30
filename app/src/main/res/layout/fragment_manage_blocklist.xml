@@ -19,13 +19,12 @@
         android:visibility="gone" />
 
     <LinearLayout
+        android:id="@+id/fragment_blocklist_content_LL"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:padding="@dimen/layout_padding_top"
         android:paddingStart="@dimen/layout_padding"
         android:paddingEnd="@dimen/layout_padding">
 
@@ -42,13 +41,13 @@
             android:id="@+id/fragment_blocklist_NSV"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:clipToPadding="false">
 
             <LinearLayout
                 android:id="@+id/fragment_blocklist_LL1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical">
@@ -97,24 +96,44 @@
                     </com.google.android.material.chip.ChipGroup>
                 </HorizontalScrollView>
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     style="@style/AddyIoTitleAction"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="0dp"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="0dp">
 
                     <TextView
                         android:id="@+id/fragment_blocklist_all_blocklist_title"
                         style="@style/titleTextView"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/blocklist_entries" />
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:text="@string/blocklist_entries"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/blocklist_title_progress"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/blocklist_title_progress"
+                        style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/blocklist_count"
+                        app:layout_constraintStart_toEndOf="@id/fragment_blocklist_all_blocklist_title"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/blocklist_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/bg_count_capsule"
                         android:paddingHorizontal="8dp"
@@ -122,21 +141,31 @@
                         android:textSize="12sp"
                         android:textStyle="bold"
                         android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/barrier_blocklist"
+                        app:layout_constraintStart_toEndOf="@id/blocklist_title_progress"
+                        app:layout_constraintTop_toTopOf="parent"
                         tools:text="10"
                         tools:visibility="visible" />
 
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <androidx.constraintlayout.widget.Barrier
+                        android:id="@+id/barrier_blocklist"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:barrierDirection="start"
+                        app:constraint_referenced_ids="fragment_blocklist_add_blocklist_entry_button" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/fragment_blocklist_add_blocklist_entry_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/add_blocklist_entry" />
+                        android:layout_marginStart="8dp"
+                        android:text="@string/add_blocklist_entry"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.todkars.shimmer.ShimmerRecyclerView
                     android:id="@+id/fragment_blocklist_all_blocklist_recyclerview"
@@ -195,7 +224,7 @@
     </LinearLayout>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/fragment_blocklist_progress"
+        android:id="@+id/blocklist_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -255,5 +284,4 @@
         </LinearLayout>
 
     </com.google.android.material.search.SearchView>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

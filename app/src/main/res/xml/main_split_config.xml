@@ -14,11 +14,11 @@
         window:splitRatio="0.55">
         <SplitPairFilter
             window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
-            window:secondaryActivityName="host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity" />
+            window:secondaryActivityName="host.stjin.anonaddy.ui.aliases.manage.ManageAliasActivity" />
 
         <SplitPairFilter
             window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
-            window:secondaryActivityName="host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity" />
+            window:secondaryActivityName="host.stjin.anonaddy.ui.recipients.manage.ManageRecipientActivity" />
 
         <SplitPairFilter
             window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
@@ -30,15 +30,35 @@
 
         <SplitPairFilter
             window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
-            window:secondaryActivityName="host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity" />
+            window:secondaryActivityName="host.stjin.anonaddy.ui.domains.manage.ManageDomainActivity" />
 
         <SplitPairFilter
             window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
-            window:secondaryActivityName="host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity" />
+            window:secondaryActivityName="host.stjin.anonaddy.ui.usernames.manage.ManageUsernameActivity" />
 
         <SplitPairFilter
             window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
             window:secondaryActivityName="host.stjin.anonaddy.ui.rules.CreateRuleActivity" />
+
+        <SplitPairFilter
+            window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
+            window:secondaryActivityName="host.stjin.anonaddy.ui.domains.DomainsActivity" />
+
+        <SplitPairFilter
+            window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
+            window:secondaryActivityName="host.stjin.anonaddy.ui.usernames.UsernamesActivity" />
+
+        <SplitPairFilter
+            window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
+            window:secondaryActivityName="host.stjin.anonaddy.ui.rules.RulesActivity" />
+
+        <SplitPairFilter
+            window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
+            window:secondaryActivityName="host.stjin.anonaddy.ui.blocklist.BlocklistActivity" />
+
+        <SplitPairFilter
+            window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
+            window:secondaryActivityName="host.stjin.anonaddy.ui.labels.LabelsActivity" />
     </SplitPairRule>
     <!--endregion-->
 

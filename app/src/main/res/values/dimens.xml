@@ -12,27 +12,21 @@
     <dimen name="corner_radius_widget_2_inner_layout">20dp</dimen>
     <dimen name="corner_radius_cardview">12dp</dimen>
     <dimen name="cardview_default_elevation">2dp</dimen>
-    <dimen name="corner_radius_button">8dp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information
 http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     -->
     <dimen name="widget_1_padding">0dp</dimen>
-    <dimen name="widget_2_padding_layout_1">24dp</dimen>
-    <dimen name="widget_2_padding_layout_2">12dp</dimen>
-    <dimen name="widget_2_padding_layout_2_start_end">24dp</dimen>
-    <dimen name="widget_2_padding_layout_3">16dp</dimen>
-
-
-    <dimen name="widget_2_margin_layout_1">22dp</dimen>
-    <dimen name="widget_2_margin_layout_2">0dp</dimen>
+    <dimen name="widget_2_padding_layout_1">14dp</dimen>
+    <dimen name="widget_2_padding_layout_2">8dp</dimen>
+    <dimen name="widget_2_padding_layout_2_start_end">16dp</dimen>
+    <dimen name="widget_2_padding_layout_3">12dp</dimen>
 
     <dimen name="collapsingtoolbar_subtitle_left_margin">16dp</dimen>
     <dimen name="collapsingtoolbar_title_margin_alt">22dp</dimen>
     <dimen name="collapsingtoolbar_action_margin">17dp</dimen>
     <dimen name="collapsingtoolbar_title_margin">15dp</dimen>
-    <dimen name="collapsingtoolbar_title_small_margin">19.5dp</dimen>
     <dimen name="collapsingtoolbar_subtitle_bottom_margin">2dp</dimen>
     <dimen name="recyclerview_margin">6dp</dimen>
     <dimen name="touch_raise">12dp</dimen>
@@ -43,7 +37,6 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <!-- Because recyclerview seem to add an extra padding to the list items, this attribute is used to perfectly align some elements on pages where
      recyclerview are being shown -->
     <dimen name="cardview_extra_padding">3dp</dimen>
-    <dimen name="collapsed_text_size">24sp</dimen>
     <dimen name="expanded_text_size">32sp</dimen>
     <dimen name="home_cardview_padding">8dp</dimen>
 

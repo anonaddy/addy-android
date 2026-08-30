@@ -1,87 +1,79 @@
 package host.stjin.anonaddy.adapter
 
-import android.os.Build
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.core.text.HtmlCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
-import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.AccountNotificationsRecyclerviewListItemBinding
 import host.stjin.anonaddy_shared.models.AccountNotifications
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
-class AccountNotificationsAdapter(
-    private val listWithAccountNotifications: ArrayList<AccountNotifications>
-) :
-    RecyclerView.Adapter<AccountNotificationsAdapter.ViewHolder>() {
+class AccountNotificationDiffCallback : DiffUtil.ItemCallback<AccountNotifications>() {
+    override fun areItemsTheSame(oldItem: AccountNotifications, newItem: AccountNotifications): Boolean {
+        return oldItem.id == newItem.id
+    }
 
-    lateinit var onAccountNotificationClicker: ClickListener
+    override fun areContentsTheSame(oldItem: AccountNotifications, newItem: AccountNotifications): Boolean {
+        return oldItem == newItem
+    }
+}
+
+class AccountNotificationsAdapter(
+    listWithAccountNotifications: List<AccountNotifications> = emptyList(),
+    private var onAccountNotificationClicker: ClickListener? = null
+) : ListAdapter<AccountNotifications, AccountNotificationsAdapter.ViewHolder>(AccountNotificationDiffCallback()) {
+
+    init {
+        if (listWithAccountNotifications.isNotEmpty()) {
+            submitList(listWithAccountNotifications)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.account_notifications_recyclerview_list_item, parent, false)
+        val binding = AccountNotificationsRecyclerviewListItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.mTitle.text = listWithAccountNotifications[position].title
-        holder.mCreated.text = DateTimeUtils.convertStringToLocalTimeZoneString(listWithAccountNotifications[position].created_at)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            holder.mText.text = Html.fromHtml(
-                listWithAccountNotifications[position].text,
-                Html.FROM_HTML_MODE_LEGACY
-            )
-        } else {
-            holder.mText.text =
-                Html.fromHtml(listWithAccountNotifications[position].text)
-        }
+        val item = getItem(position)
+        holder.binding.accountNotificationsRecyclerviewListTitle.text = item.title
+        holder.binding.accountNotificationsRecyclerviewListCreated.text = DateTimeUtils.convertStringToLocalTimeZoneString(item.created_at)
+        holder.binding.accountNotificationsRecyclerviewListText.text = HtmlCompat.fromHtml(item.text, HtmlCompat.FROM_HTML_MODE_LEGACY)
     }
 
-    override fun getItemCount(): Int = listWithAccountNotifications.size
-
-
-    fun setClickListener(aClickListener: ClickListener) {
-        onAccountNotificationClicker = aClickListener
+    fun setClickListener(listener: ClickListener) {
+        onAccountNotificationClicker = listener
     }
 
-    fun getList(): ArrayList<AccountNotifications> {
-        return listWithAccountNotifications
-    }
 
 
     interface ClickListener {
-        fun onClickDetails(pos: Int, aView: View)
+        fun onClickDetails(pos: Int, view: View)
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
+    inner class ViewHolder(val binding: AccountNotificationsRecyclerviewListItemBinding) : RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
 
-        private var mOptionsButton: MaterialButton =
-            view.findViewById(R.id.account_notifications_recyclerview_list_details_button)
-        var mTitle: TextView = view.findViewById(R.id.account_notifications_recyclerview_list_title)
-        var mText: TextView =
-            view.findViewById(R.id.account_notifications_recyclerview_list_text)
-        var mCreated: TextView =
-            view.findViewById(R.id.account_notifications_recyclerview_list_created)
-
         init {
-            mOptionsButton.setOnClickListener(this)
+            binding.accountNotificationsRecyclerviewListDetailsButton.setOnClickListener(this)
         }
 
-        override fun onClick(p0: View) {
-            when (p0.id) {
-                R.id.account_notifications_recyclerview_list_details_button -> {
-                    onAccountNotificationClicker.onClickDetails(adapterPosition, p0)
-                }
+        override fun onClick(v: View) {
+            val pos = bindingAdapterPosition
+            if (pos == RecyclerView.NO_POSITION) return
 
+            when (v.id) {
+                binding.accountNotificationsRecyclerviewListDetailsButton.id -> {
+                    onAccountNotificationClicker?.onClickDetails(pos, v)
+                }
             }
         }
     }
-
-
 }
-

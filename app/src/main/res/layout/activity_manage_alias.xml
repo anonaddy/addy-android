@@ -31,7 +31,7 @@
             android:alpha="0">
 
             <LinearLayout
-                android:id="@+id/activity_manage_alias_NSV_LL"
+                android:id="@+id/activity_manage_alias_LL1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipChildren="false"
@@ -105,7 +105,7 @@
                                 android:drawablePadding="4dp"
                                 android:gravity="center_vertical"
                                 android:padding="4dp"
-                                android:text="@string/d_forwarded"
+                                tools:text="0 forwarded"
                                 android:textColor="@color/BlackWhite"
                                 app:drawableStartCompat="@drawable/ic_inbox"
                                 app:drawableTint="@color/portalOrange" />
@@ -118,7 +118,7 @@
                                 android:drawablePadding="4dp"
                                 android:gravity="center_vertical"
                                 android:padding="4dp"
-                                android:text="@string/d_replied"
+                                tools:text="0 replied"
                                 android:textColor="@color/BlackWhite"
                                 app:drawableStartCompat="@drawable/ic_arrow_back_up"
                                 app:drawableTint="@color/portalBlue" />
@@ -131,7 +131,7 @@
                                 android:drawablePadding="4dp"
                                 android:gravity="center_vertical"
                                 android:padding="4dp"
-                                android:text="@string/d_sent"
+                                tools:text="0 sent"
                                 android:textColor="@color/BlackWhite"
                                 app:drawableStartCompat="@drawable/ic_mail_forward"
                                 app:drawableTint="@color/easternBlue" />
@@ -144,7 +144,7 @@
                                 android:drawablePadding="4dp"
                                 android:gravity="center_vertical"
                                 android:padding="4dp"
-                                android:text="@string/d_blocked"
+                                tools:text="0 blocked"
                                 android:textColor="@color/BlackWhite"
                                 app:drawableStartCompat="@drawable/ic_forbid"
                                 app:drawableTint="@color/softRed" />

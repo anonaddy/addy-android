@@ -30,10 +30,10 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/addyio_settings"
-            android:text="SV"
             android:textSize="32sp"
             android:textStyle="bold"
-            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium" />
+            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"
+            tools:text="SV" />
 
         <LinearLayout
             android:layout_width="match_parent"

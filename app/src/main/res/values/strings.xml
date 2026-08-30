@@ -25,8 +25,8 @@
     <string name="how_does_it_work">How does it work?</string>
     <string name="setup_how_1_desc">Let\'s say your username is johndoe. You can now use *@johndoe.addy.io (or .me) as your email. Where * denotes any valid local part for an email address.\n\nIf you would like to remain anonymous choose a username that is not linked to your real name or identify and that you haven\'t used anywhere else.\n\nYou can also create aliases at shared domains if you are concerned about others linking alias ownership to you.</string>
     <string name="setup_how_1">1. Register Your Username</string>
-    <string name="setup_how2">2. Create Aliases</string>
-    <string name="setup_how2_desc">Either on the fly or generated beforehand. Next time you are signing up to a website or newsletter, simply make up a new alias and enter that instead of your real email address.\n\nFor example, if you are on vuejs.org and you want to sign up to their newsletter you could simply enter vuejs@johndoe.addy.io (or .me). \n\nWe\'ll automatically create the alias in your dashboard as soon as it receives its first email. You can reply to emails and send from aliases anonymously too!</string>
+    <string name="setup_how_2">2. Create Aliases</string>
+    <string name="setup_how_2_desc">Either on the fly or generated beforehand. Next time you are signing up to a website or newsletter, simply make up a new alias and enter that instead of your real email address.\n\nFor example, if you are on vuejs.org and you want to sign up to their newsletter you could simply enter vuejs@johndoe.addy.io (or .me). \n\nWe\'ll automatically create the alias in your dashboard as soon as it receives its first email. You can reply to emails and send from aliases anonymously too!</string>
     <string name="setup_how_3">3. Manage Aliases</string>
     <string name="setup_how_3_desc">Let\'s say a spammer gets hold of one of your aliases and starts sending unsolicited email to it. You can simply toggle a switch in your dashboard and deactivate that alias.\n\nOur system will then silently discard any further emails and you won\'t be forwarded anything else for that alias.\n\nYou can also delete the alias. Then our system will reject any emails and respond with an error.</string>
     <string name="setup_how_4">4. What do you think?</string>
@@ -197,10 +197,8 @@
     <string name="domains">Domains</string>
     <string name="usernames">Usernames</string>
     <string name="search">Search</string>
-    <string name="search_desc">Search aliases, recipients, usernames and more…</string>
     <string name="recent_searches">Recent searches</string>
     <string name="clear">Clear</string>
-    <string name="searching">Searching…</string>
     <string name="default_username_cannot_change">Default username; cannot change</string>
     <string name="manage_usernames">Manage usernames</string>
     <string name="all_usernames">All usernames</string>
@@ -215,18 +213,17 @@
     <string name="edit_username">Edit username</string>
     <string name="username_status_active">Username active</string>
     <string name="delete_username_desc">This username will not be able to be used again</string>
-    <string name="search_result">Search result</string>
-    <string name="nothing_found">Nothing found</string>
     <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
     <string name="Copy">Copy</string>
     <string name="default_base_url">https://app.addy.io</string>
     <string name="addyio_instance">addy.io instance</string>
     <string name="refreshing_data">Refreshing data…</string>
     <string name="refresh">Refresh</string>
-    <string name="you_ve_used_d_out_of_d_usernames">You’ve used %1$d out of %2$d usernames</string>
-    <string name="you_ve_used_d_out_of_d_active_domains">You’ve used %1$d out of %2$s active domains</string>
-    <string name="you_ve_used_d_out_of_d_recipients">You’ve used %1$d out of %2$s recipients</string>
+    <string name="you_ve_used_d_out_of_d_usernames" tools:ignore="PluralsCandidate">You’ve used %1$d out of %2$d usernames</string>
+    <string name="you_ve_used_d_out_of_d_active_domains" tools:ignore="PluralsCandidate">You’ve used %1$d out of %2$s active domains</string>
+    <string name="you_ve_used_d_out_of_d_recipients" tools:ignore="PluralsCandidate">You’ve used %1$d out of %2$s recipients</string>
     <string name="no_domains">You have no domains, what about creating one?</string>
+    <string name="no_usernames">You have no usernames, what about creating one?</string>
     <string name="catch_all_domain_desc">Enable catch-all for this domain</string>
     <string name="share_domain_with_family">Share domain with family</string>
     <string name="share_domain_with_family_desc">Allow family plan members to create aliases on this domain</string>
@@ -306,7 +303,10 @@
     <string name="watch_alias_desc">Receive a notification when an email is sent to this alias</string>
     <string name="notification_channel_watch_alias_desc">Receive a notification when an email is sent to a watched alias</string>
     <string name="notification_new_emails">New emails forwarded</string>
-    <string name="notification_new_emails_desc">%1$d new email(s) have been forwarded via %2$s</string>
+    <plurals name="notification_new_emails_desc">
+        <item quantity="one">%1$d new email has been forwarded via %2$s</item>
+        <item quantity="other">%1$d new emails have been forwarded via %2$s</item>
+    </plurals>
     <string name="notification_new_update_available_desc">Version %s of the addy.io app is available. Tap here to download it</string>
     <string name="notification_new_failed_delivery">Email delivery failed</string>
     <string name="notification_new_failed_delivery_desc">%s email(s) could not be delivered. Tap here to view the failed deliveries</string>
@@ -328,7 +328,6 @@
     <string name="notification_channel_subscription_expiry_desc">Receive a notification when your subscription is about to expire</string>
     <string name="stop_watching">Stop watching</string>
     <string name="not_verified">Not verified</string>
-    <string name="you_ll_be_notified_if_this_alias_has_activity">You’ll be notified if this alias has activity</string>
     <string name="reset_app_desc">Clear all data and start over</string>
     <string name="send_mail">Send mail</string>
     <string name="send_mail_from_alias_desc">Enter the email addresses (comma separated) of the recipients you’d like to send an email to from %1$s.\n\nThe mail app on your device opens with the correct to addresses entered. Note that you must send this email from one of your verified recipients email address.</string>
@@ -363,7 +362,6 @@
     <string name="enable_feature_always">This feature is always enabled</string>
     <string name="watch_alias_feature_desc">Keep track of emails being forwarded through a specific alias. Open the management page of an alias and enable \"Watch alias\" to be notified of a new forwarded message.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for new forwarded messages.\n\nYou can watch a maximum of 25 aliases.</string>
     <string name="features">Features</string>
-    <string name="search_min_3_char_required">Search term must be at least 3 characters</string>
     <string name="just_like_that">Just like that!</string>
     <string name="select_recipients_for_this_alias">Select recipients for this alias</string>
     <string name="loading_recipients">Loading recipients…</string>
@@ -406,7 +404,6 @@
     <string name="failed_deliveries">Failed deliveries</string>
     <string name="delete_failed_delivery">Delete failed delivery</string>
     <string name="error_delete_failed_delivery">Something went wrong while deleting this failed delivery</string>
-    <string name="error_download_failed_delivery">Something went wrong while downloading this failed delivery</string>
     <string name="notify_failed_deliveries_feature_desc">For an overview of all failed deliveries, go back to main section and tap on the failed deliveries button at the top. (mail with exclamation mark)\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for failed deliveries.</string>
     <string name="feature_notify_failed_deliveries">Failed delivery notifications</string>
     <string name="feature_notify_account_notifications">Account notifications</string>
@@ -427,7 +424,7 @@
     <string name="webintent_manage_default_apps_disable">Disable supported links</string>
     <string name="enable_disable_feature_manual_action_required_desc">Manual actions must be performed</string>
     <string name="addyio_backup">addy.io app backup</string>
-    <string name="addyio_backup_desc">With addy.io app backups you can easily export and import the configuration of the app to another device. These backups include the API key and aliases that are on the watch list, but also other app settings.\n\nTo restore backups, reset the addy.io app and choose \"restore from backup\" in the setup.</string>
+    <string name="addyio_backup_desc">addy.io app backups allow you to export and import your app configuration between devices. Backups include your API key, watch list aliases, and app settings.\n\nTo restore, select \"restore from backup\" during setup. Note: Resetting the app invalidates the API key; when moving a backup to a new device, uninstall the app on the original device without logging out first.</string>
     <string name="backup_now">Backup now</string>
     <string name="last_backup_desc">Last backup was done %s</string>
     <string name="backup_password">Backup password</string>
@@ -443,7 +440,10 @@
     <string name="restore_failed">Unable to restore backup, make sure the password is correct and you have selected a valid file</string>
     <string name="backup_failed">Backup failed, check the backup logs for more information</string>
     <string name="backup_completed">Backup completed</string>
-    <string name="log_backup_completed">Backup completed in %d seconds</string>
+    <plurals name="log_backup_completed">
+        <item quantity="one">Backup completed in %d second</item>
+        <item quantity="other">Backup completed in %d seconds</item>
+    </plurals>
     <string name="set_backup_password">Set backup password</string>
     <string name="set_backup_password_desc">Enter the backup password with which backups are encrypted.\nBackups contain sensitive information so a strong password is recommended.\n\nThe backup cannot be recovered without this password</string>
     <string name="password">Password</string>
@@ -461,12 +461,14 @@
     <string name="no_logs">No logs, make sure to enable storing logs in the app settings</string>
     <string name="log_backup_location_changed">Backup location changed</string>
     <string name="log_backup_password_changed">Backup password changed</string>
-    <string name="log_backup_retention_deleted">%1$d file(s) deleted because they were older than %2$d days</string>
+    <plurals name="log_backup_retention_deleted">
+        <item quantity="one">%1$d file deleted because it was older than %2$d days</item>
+        <item quantity="other">%1$d files deleted because they were older than %2$d days</item>
+    </plurals>
     <string name="app_data_corrupted">The app data can no longer be read. You may have recovered the app data from another device which is not supported because the addy.io app encrypts all the app data with a device specific key. Please use the built-in addy.io app backup feature in the app settings next time. The app will be reset in 15 seconds…</string>
     <string name="use_dynamic_colors">Use dynamic colors</string>
     <string name="use_dynamic_colors_desc">Apply dynamic colors provided by the system. (requires a restart of the app)</string>
     <string name="uiux_interface_desc">Revamp the app\'s appearance and functionality</string>
-    <string name="restart_app_required">Restart the app to apply changes</string>
     <string name="active_aliases">Active aliases</string>
     <string name="inactive_aliases">Inactive aliases</string>
     <string name="greetings_time_traveller">Greetings, time traveller</string>
@@ -571,14 +573,14 @@
     <string name="close">Close</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
     <string name="error_copied_to_clipboard">Error copied to clipboard</string>
-    <string name="multiple_alias_selected">%d alias(es) selected</string>
+    <plurals name="multiple_alias_selected">
+        <item quantity="one">%d alias selected</item>
+        <item quantity="other">%d aliases selected</item>
+    </plurals>
     <string name="multiple_alias_selected_desc">The actions below will be performed on all selected aliases. Pressing cancel will unselect all aliases</string>
     <string name="aliaswatcher_max_reached">You cannot have more than 25 aliases watched</string>
     <string name="alias_multiple_selection_max_reached">You cannot select more than 25 aliases</string>
     <string name="actions">Actions</string>
-    <string name="feature_longpress_desc">Perform quick actions on multiple aliases by long pressing them in the alias overview.\n\nYou can manage a maximum of 25 aliases at the same time.</string>
-    <string name="feature_longpress_enable_desc">Press and hold aliases in the alias overview to enter selection mode (requires a restart of the app)</string>
-    <string name="feature_longpress">Manage multiple aliases</string>
     <string name="something_went_wrong_tap_here_to_see_the_error">Something went wrong, tap here to see the error</string>
     <string name="pgp_inline">PGP/Inline</string>
     <string name="pgp_inline_desc">Use inline (PGP/Inline) instead of PGP/MIME encryption for forwarded messages. Please Note: This will ONLY encrypt and forward the plain text content!</string>
@@ -621,7 +623,7 @@
     <string name="show_suggestions">Show suggestions</string>
     <string name="show_suggestions_desc">When searching for an alias, show suggestions for domains you own</string>
     <string name="statistics">Statistics</string>
-    <string name="you_ve_used_d_out_of_d_rules">You’ve used %1$d out of %2$s rules</string>
+    <string name="you_ve_used_d_out_of_d_rules" tools:ignore="PluralsCandidate">You’ve used %1$d out of %2$s rules</string>
     <string name="from_name">From name</string>
     <string name="alias_no_from_name">This alias has no from name set. Tap here to add one</string>
     <string name="domain_no_from_name">This domain has no from name set. Tap here to add one</string>
@@ -694,7 +696,6 @@
     <string name="auto_create_regex_hint">Regex pattern</string>
     <string name="sort_last_used">Last used</string>
     <string name="account_notifications">Notifications</string>
-    <string name="new_account_notifications">New account notifications</string>
     <string name="all_account_notifications">All notifications</string>
     <string name="no_account_notifications">No notifications</string>
     <string name="something_went_wrong_retrieving_account_notifications">Something went wrong retrieving notifications</string>
@@ -868,7 +869,6 @@
     <string name="outbound">Outbound</string>
     <string name="all">All</string>
     <string name="failed_deliveries_filtered">Failed deliveries (filtered)</string>
-    <string name="recipients_filtered">Recipients (filtered)</string>
     <string name="custom">Custom</string>
     <string name="blocklist_add_confirm_desc">Are you sure you want to block %s?</string>
     <string name="blocklist_add_success">This sender was added to the blocklist</string>
@@ -888,16 +888,16 @@
     <string name="error_deleting_label">Something went wrong while deleting this label</string>
     <string name="error_creating_label">Something went wrong while creating this label</string>
     <string name="cannot_be_empty">Cannot be empty</string>
-    <string name="error_obtaining_labels">@string/could_not_refresh_data</string>
     <string name="delete_label_desc">Are you sure you want to delete this label? It will be removed from all aliases.</string>
     <string name="add_label_description">Select labels for this alias. You can choose up to 10 labels</string>
     <string name="edit_label">Edit label</string>
     <string name="new_label">New label</string>
-    <string name="create">Create</string>
-    <string name="you_ve_used_d_out_of_d_labels">You\'ve created %1$d out of %2$s labels</string>
-    <string name="error_obtaining_data">Error obtaining data</string>
+    <string name="you_ve_used_d_out_of_d_labels" tools:ignore="PluralsCandidate">You\'ve created %1$d out of %2$s labels</string>
     <string name="something_went_wrong_retrieving_labels">Something went wrong retrieving labels</string>
-    <string name="d_aliases">%1$d aliases</string>
+    <plurals name="d_aliases">
+        <item quantity="one">%1$d alias</item>
+        <item quantity="other">%1$d aliases</item>
+    </plurals>
     <string name="none">None</string>
     <string name="show_more">Show more</string>
     <string name="show_less">Show less</string>
@@ -906,5 +906,4 @@
     <string name="always_ask">Always ask</string>
     <string name="always_use_this_app">Always use this app</string>
     <string name="choose_email_app">Choose email app</string>
-    <string name="no_email_app_found">No email app found on this device</string>
 </resources>

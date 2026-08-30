@@ -1,32 +1,31 @@
 package host.stjin.anonaddy.adapter
 
-import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.recyclerview.widget.RecyclerView
 import host.stjin.anonaddy.R
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.toColorInt
+import host.stjin.anonaddy.databinding.LabelColorListItemBinding
 
-class ColorPickerAdapter(var context: Context, private val colors: List<String>) : RecyclerView.Adapter<ColorPickerAdapter.ViewHolder>() {
+class ColorPickerAdapter(private val colors: List<String>) : RecyclerView.Adapter<ColorPickerAdapter.ViewHolder>() {
 
-    lateinit var onColorClickListener: ClickListener
+    var onColorClickListener: ClickListener? = null
     var selectedColor: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v: View = LayoutInflater.from(parent.context).inflate(R.layout.label_color_list_item, parent, false)
-        return ViewHolder(v)
+        val binding = LabelColorListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     interface ClickListener {
         fun onClick(pos: Int, color: String)
     }
 
-    fun setClickListener(aClickListener: ClickListener) {
-        onColorClickListener = aClickListener
+    fun setClickListener(listener: ClickListener) {
+        onColorClickListener = listener
     }
 
     override fun getItemCount(): Int = colors.size
@@ -44,54 +43,52 @@ class ColorPickerAdapter(var context: Context, private val colors: List<String>)
         val colorHex = colors[position]
 
         try {
-            val bitmap = android.graphics.Bitmap.createBitmap(1, 1, android.graphics.Bitmap.Config.ARGB_8888)
-            bitmap.eraseColor(Color.parseColor(colorHex))
-            holder.icon.setImageBitmap(bitmap)
-            holder.icon.setBackgroundColor(Color.TRANSPARENT)
+            val bitmap = createBitmap(1, 1)
+            bitmap.eraseColor(colorHex.toColorInt())
+            holder.binding.labelColorListItemIcon.setImageBitmap(bitmap)
+            holder.binding.labelColorListItemIcon.setBackgroundColor(Color.TRANSPARENT)
         } catch (e: Exception) {
-            holder.iconLl.visibility = View.GONE
+            holder.binding.labelColorListItemIconLL.visibility = View.GONE
         }
 
         // Just set the state instantly if not a payload update
         if (selectedColor == colorHex) {
-            holder.iconMotionLayout.progress = 1f
+            holder.binding.labelColorListItemIconML.progress = 1f
         } else {
-            holder.iconMotionLayout.progress = 0f
+            holder.binding.labelColorListItemIconML.progress = 0f
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        var iconLl: LinearLayout = itemView.findViewById(R.id.label_color_list_item_icon_LL)
-        var icon: ImageFilterView = itemView.findViewById(R.id.label_color_list_item_icon)
-        var iconMotionLayout: MotionLayout = itemView.findViewById(R.id.label_color_list_item_icon_ML)
+    inner class ViewHolder(val binding: LabelColorListItemBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         init {
-            icon.setOnClickListener(this)
+            binding.labelColorListItemIcon.setOnClickListener(this)
         }
 
         fun animateImage(enabled: Boolean) {
             if (enabled) {
-                iconMotionLayout.transitionToEnd()
+                binding.labelColorListItemIconML.transitionToEnd()
             } else {
-                iconMotionLayout.transitionToStart()
+                binding.labelColorListItemIconML.transitionToStart()
             }
         }
 
-        override fun onClick(p0: View) {
-            when (p0.id) {
+        override fun onClick(v: View) {
+            when (v.id) {
                 R.id.label_color_list_item_icon -> {
+                    val pos = bindingAdapterPosition
+                    if (pos == RecyclerView.NO_POSITION) return
                     val prevSelected = selectedColor
-                    selectedColor = colors[adapterPosition]
+                    val newColor = colors[pos]
+                    selectedColor = newColor
 
                     // Trigger re-bind to animate new selection and old selection
                     if (prevSelected != null) {
                         notifyItemChanged(colors.indexOf(prevSelected), true)
                     }
-                    notifyItemChanged(adapterPosition, true)
+                    notifyItemChanged(pos, true)
 
-                    if (::onColorClickListener.isInitialized) {
-                        onColorClickListener.onClick(adapterPosition, selectedColor!!)
-                    }
+                    onColorClickListener?.onClick(pos, newColor)
                 }
             }
         }

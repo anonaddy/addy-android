@@ -24,7 +24,7 @@
             app:defaultMarginsEnabled="false" />
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/fragment_alias_nsv"
+            android:id="@+id/fragment_aliases_nsv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -114,27 +114,44 @@
                 </HorizontalScrollView>
 
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     style="@style/AddyIoTitleAction"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="0dp"
-                    android:orientation="horizontal">
-
+                    android:layout_marginTop="0dp">
 
                     <TextView
                         android:id="@+id/alias_header"
                         style="@style/titleTextView"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:lines="1"
-                        android:text="@string/aliases" />
+                        android:maxLines="1"
+                        android:text="@string/aliases"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/alias_title_progress"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/alias_title_progress"
+                        style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/alias_count"
+                        app:layout_constraintStart_toEndOf="@id/alias_header"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/alias_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/bg_count_capsule"
                         android:paddingHorizontal="8dp"
@@ -142,22 +159,31 @@
                         android:textSize="12sp"
                         android:textStyle="bold"
                         android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/barrier_alias"
+                        app:layout_constraintStart_toEndOf="@id/alias_title_progress"
+                        app:layout_constraintTop_toTopOf="parent"
                         tools:text="10"
                         tools:visibility="visible" />
 
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
-
+                    <androidx.constraintlayout.widget.Barrier
+                        android:id="@+id/barrier_alias"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:barrierDirection="start"
+                        app:constraint_referenced_ids="alias_add_alias" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/alias_add_alias"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/add_alias" />
+                        android:layout_marginStart="8dp"
+                        android:text="@string/add_alias"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                 <com.todkars.shimmer.ShimmerRecyclerView
@@ -208,7 +234,7 @@
         android:id="@+id/alias_search_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:hint="@string/search"
+        android:hint="@string/search_for_aliases"
         app:elevation="8dp"
         app:layout_anchor="@id/alias_search_bar">
 
@@ -257,5 +283,4 @@
         </LinearLayout>
 
     </com.google.android.material.search.SearchView>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

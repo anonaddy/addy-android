@@ -1,22 +1,29 @@
 package host.stjin.anonaddy.adapter
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.EmailClientListItemBinding
+
+class EmailClientDiffCallback : DiffUtil.ItemCallback<EmailClientAdapter.EmailClientItem>() {
+    override fun areItemsTheSame(oldItem: EmailClientAdapter.EmailClientItem, newItem: EmailClientAdapter.EmailClientItem): Boolean {
+        return oldItem.packageName == newItem.packageName && oldItem.name == newItem.name
+    }
+
+    override fun areContentsTheSame(oldItem: EmailClientAdapter.EmailClientItem, newItem: EmailClientAdapter.EmailClientItem): Boolean {
+        return oldItem == newItem
+    }
+}
 
 class EmailClientAdapter(
-    private val context: Context,
-    private val items: List<EmailClientItem>,
+    items: List<EmailClientItem> = emptyList(),
     private val showSelection: Boolean = true,
     private val onItemClick: (EmailClientItem) -> Unit
-) : RecyclerView.Adapter<EmailClientAdapter.ViewHolder>() {
+) : ListAdapter<EmailClientAdapter.EmailClientItem, EmailClientAdapter.ViewHolder>(EmailClientDiffCallback()) {
 
     data class EmailClientItem(
         val packageName: String?,
@@ -25,27 +32,26 @@ class EmailClientAdapter(
         val isSelected: Boolean = false
     )
 
+    init {
+        if (items.isNotEmpty()) {
+            submitList(items)
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.email_client_list_item, parent, false)
-        return ViewHolder(view)
+        val binding = EmailClientListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
-        holder.name.text = item.name
-        holder.icon.setImageDrawable(item.icon)
-        holder.check.isVisible = showSelection && item.isSelected
-        holder.root.setOnClickListener {
+        val item = getItem(position)
+        holder.binding.emailClientItemName.text = item.name
+        holder.binding.emailClientItemIcon.setImageDrawable(item.icon)
+        holder.binding.emailClientItemCheck.isVisible = showSelection && item.isSelected
+        holder.binding.root.setOnClickListener {
             onItemClick(item)
         }
     }
 
-    override fun getItemCount(): Int = items.size
-
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val root: View = view.findViewById(R.id.email_client_item_root)
-        val icon: ImageView = view.findViewById(R.id.email_client_item_icon)
-        val name: TextView = view.findViewById(R.id.email_client_item_name)
-        val check: ImageView = view.findViewById(R.id.email_client_item_check)
-    }
+    class ViewHolder(val binding: EmailClientListItemBinding) : RecyclerView.ViewHolder(binding.root)
 }

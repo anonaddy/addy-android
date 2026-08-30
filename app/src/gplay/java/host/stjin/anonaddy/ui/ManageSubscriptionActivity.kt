@@ -22,15 +22,17 @@ import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
 import com.android.billingclient.api.queryProductDetails
 import com.google.android.material.button.MaterialButton
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.ActivityManageSubscriptionBinding
-import host.stjin.anonaddy.utils.InsetUtil
+import host.stjin.anonaddy.utils.InsetUtils
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AddyIoApp
-import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.network.NetworkResult
+import host.stjin.anonaddy_shared.repositories.UserRepository
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,12 +63,12 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityManageSubscriptionBinding.inflate(layoutInflater)
-        InsetUtil.applyBottomInset(binding.activityManageSubscriptionNSV)
+        InsetUtils.applyBottomInset(binding.activityManageSubscriptionNSV)
         val view = binding.root
         setContentView(view)
 
-        settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
+        settingsManager = ServiceLocator.settingsManager
+        encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         setupToolbar(
             R.string.manage_subscription,
             binding.activityManageSubscriptionNSV,
@@ -78,13 +80,14 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
         updateUi()
 
 
-        if ((application as AddyIoApp).userResource.disabled == true) {
+        val userResource = (application as? AddyIoApp)?.userResourceOrNull
+        if (userResource?.disabled == true) {
             binding.activityManageSubscriptionNSV.visibility = View.GONE
             binding.root.findViewById<View>(R.id.fragment_subscription_other_platform).visibility = View.GONE
             binding.root.findViewById<View>(R.id.fragment_subscription_account_disabled).visibility = View.VISIBLE
         } else {
             binding.root.findViewById<View>(R.id.fragment_subscription_account_disabled).visibility = View.GONE
-            if ((application as AddyIoApp).userResource.subscription_type == "google" || (application as AddyIoApp).userResource.subscription_type == null) {
+            if (userResource?.subscription_type == "google" || userResource?.subscription_type == null) {
                 binding.activityManageSubscriptionNSV.visibility = View.VISIBLE
                 binding.root.findViewById<View>(R.id.fragment_subscription_other_platform).visibility = View.GONE
             } else {
@@ -457,32 +460,30 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
         binding.activityManageSubscriptionNSV.visibility = View.GONE
 
 
-        val networkHelper = NetworkHelper(this)
-        networkHelper.notifyServerForSubscriptionChange({ userResource, _ ->
-            if (userResource != null) {
-                (application as AddyIoApp).userResource = userResource
-                callback(true)
-            } else {
-                binding.root.findViewById<View>(R.id.fragment_subscription_notify_server).visibility = View.GONE
-                binding.activityManageSubscriptionNSV.visibility = View.VISIBLE
+        val userRepository = UserRepository(this)
+        val result = userRepository.notifyServerForSubscriptionChange(purchase.purchaseToken, purchase.products.first())
+        if (result is NetworkResult.Success) {
+            (application as AddyIoApp).userResource = result.data
+            callback(true)
+        } else {
+            binding.root.findViewById<View>(R.id.fragment_subscription_notify_server).visibility = View.GONE
+            binding.activityManageSubscriptionNSV.visibility = View.VISIBLE
 
-                MaterialDialogHelper.showMaterialDialog(
-                    context = this,
-                    title = this.resources.getString(R.string.subscription_processing_failed),
-                    message = this.resources.getString(
-                        R.string.subscription_processing_failed_desc,
-                        (application as AddyIoApp).userResource.id,
-                        purchase.purchaseToken,
-                        purchase.products.first()
-                    ),
-                    icon = R.drawable.ic_credit_card,
-                    positiveButtonText = this.resources.getString(R.string.dismiss)
-                ).setCancelable(false).show()
+            MaterialDialogHelper.showMaterialDialog(
+                context = this,
+                title = this.resources.getString(R.string.subscription_processing_failed),
+                message = this.resources.getString(
+                    R.string.subscription_processing_failed_desc,
+                    (application as? AddyIoApp)?.userResourceOrNull?.id ?: "",
+                    purchase.purchaseToken,
+                    purchase.products.first()
+                ),
+                icon = R.drawable.ic_credit_card,
+                positiveButtonText = this.resources.getString(R.string.dismiss)
+            ).setCancelable(false).show()
 
-
-                callback(false)
-            }
-        }, purchase.purchaseToken, purchase.products.first())
+            callback(false)
+        }
     }
 
     private fun restorePurchases() {

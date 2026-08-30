@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="AppTheme" parent="BaseTheme">
-        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
         <!--
@@ -23,23 +23,13 @@
         <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
         <item name="chipStyle">@style/AddyIoChip</item>
 
-        <item name="android:windowSplashScreenBackground">@color/ic_launcher_background</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_anim</item>
-        <item name="android:windowSplashScreenAnimationDuration">1000</item>
+        <item name="android:windowSplashScreenBackground" tools:targetApi="31">@color/ic_launcher_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="31">@drawable/ic_launcher_anim</item>
+        <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="31">1000</item>
     </style>
 
     <style name="AddyIoCustomCardViewStyleCenter" parent="Widget.Material3.CardView.Elevated">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_center</item>
     </style>
 
-
-    <style name="AddyIoMaterialToggleButtonGroupParentCardView" parent="Widget.Material3.CardView.Elevated">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="cardElevation">12dp</item>
-        <item name="contentPadding">3dp</item>
-        <item name="cardCornerRadius">12dp</item>
-        <item name="contentPaddingLeft">6dp</item>
-        <item name="contentPaddingRight">6dp</item>
-    </style>
 </resources>

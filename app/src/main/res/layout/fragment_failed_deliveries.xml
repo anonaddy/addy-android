@@ -86,24 +86,44 @@
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 style="@style/AddyIoTitleAction"
                 android:layout_width="match_parent"
-                android:layout_marginTop="0dp"
-                android:orientation="horizontal">
+                android:layout_marginTop="0dp">
 
                 <TextView
                     android:id="@+id/fragment_failed_deliveries_all_failed_deliveries_title"
                     style="@style/titleTextView"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/failed_deliveries" />
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:text="@string/failed_deliveries"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/failed_deliveries_title_progress"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/failed_deliveries_title_progress"
+                    style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/failed_deliveries_count"
+                    app:layout_constraintStart_toEndOf="@id/fragment_failed_deliveries_all_failed_deliveries_title"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/failed_deliveries_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/bg_count_capsule"
                     android:paddingHorizontal="8dp"
@@ -111,15 +131,14 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/failed_deliveries_title_progress"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:text="10"
                     tools:visibility="visible" />
 
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.todkars.shimmer.ShimmerRecyclerView
                 android:id="@+id/fragment_failed_deliveries_all_failed_deliveries_recyclerview"
@@ -177,7 +196,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/fragment_failed_deliveries_progress"
+        android:id="@+id/failed_deliveries_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
