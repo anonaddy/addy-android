@@ -122,7 +122,19 @@ class FailedDeliveryDetailsBottomDialogFragment : BaseBottomSheetDialogFragment(
 
             binding.bsFailedDeliveriesTextviewType.text = delivery.email_type_text
 
-            binding.bsFailedDeliveriesTextview.text = androidx.core.text.HtmlCompat.fromHtml(
+            val detailsText = if (!delivery.alias_description.isNullOrEmpty()) {
+                requireContext().resources.getString(
+                    R.string.failed_delivery_details_text_with_alias_description,
+                    DateTimeUtils.convertStringToLocalTimeZoneString(delivery.created_at),
+                    delivery.destination ?: "",
+                    delivery.alias_email ?: "",
+                    delivery.alias_description,
+                    delivery.sender ?: "",
+                    delivery.remote_mta,
+                    DateTimeUtils.convertStringToLocalTimeZoneString(delivery.attempted_at),
+                    delivery.code
+                )
+            } else {
                 requireContext().resources.getString(
                     R.string.failed_delivery_details_text,
                     DateTimeUtils.convertStringToLocalTimeZoneString(delivery.created_at),
@@ -132,7 +144,11 @@ class FailedDeliveryDetailsBottomDialogFragment : BaseBottomSheetDialogFragment(
                     delivery.remote_mta,
                     DateTimeUtils.convertStringToLocalTimeZoneString(delivery.attempted_at),
                     delivery.code
-                ),
+                )
+            }
+
+            binding.bsFailedDeliveriesTextview.text = androidx.core.text.HtmlCompat.fromHtml(
+                detailsText,
                 androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY
             )
 

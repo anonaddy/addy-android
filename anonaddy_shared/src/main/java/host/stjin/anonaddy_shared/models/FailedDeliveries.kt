@@ -8,6 +8,7 @@ data class FailedDeliveries(
     val recipient_email: String?,
     val alias_id: String?,
     val alias_email: String?,
+    val alias_description: String? = null,
     val bounce_type: String,
     val remote_mta: String,
     val sender: String?,

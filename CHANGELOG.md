@@ -13,6 +13,8 @@
 
 ##### Fixed/Improved
 
+- Bumped minimum instance version to 1.7.3
+- Show alias description in failed delivery details
 - Improved widget scaling across different launcher grid sizes and fixed widget theming
 - Fixed UI padding and button clipping issues across several screens
 - Performance improvements and other things to make the app even smoother

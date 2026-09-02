@@ -72,7 +72,7 @@
 <h4>Highlights</h4>
 <p>- Major under-the-hood rewrite of the codebase for better performance and stability<br />- Added pagination and loading indicators when scrolling through aliases, blocklist, and failed deliveries<br />- Long-pressing to select multiple aliases is now enabled by default<br />- Reordering rules is now smoother and only syncs when you let go</p>
 <h4>Fixed/Improved</h4>
-<p>- Improved widget scaling and theming across different launcher grid sizes<br />- Fixed UI padding and button clipping across various screens<br />- Performance improvements and other things to make the app even smoother</p>
+<p>- Bumped minimum instance version to 1.7.3<br />- Show alias description in failed delivery details<br />- Improved widget scaling and theming across different launcher grid sizes<br />- Fixed UI padding and button clipping across various screens<br />- Performance improvements and other things to make the app even smoother</p>
 <h4> </h4>
 <h3>What\'s new in addy.io for Android Wearables 1.7.0</h3>
 <h4>Fixed/Improved</h4>
@@ -393,6 +393,13 @@
 <p><strong>Mail Server</strong><br />%5$s</p>
 <p><strong>First attempted</strong><br />%6$s</p>
 <p><strong>Code</strong><br />%7$s</p>]]></string>
+    <string name="failed_delivery_details_text_with_alias_description"><![CDATA[<p><strong>Created</strong><br />%1$s<br /><br /><strong>Destination</strong><br />%2$s</p>
+<p><strong>Alias</strong><br />%3$s</p>
+<p><strong>Alias description</strong><br />%4$s</p>
+<p><strong>Sender</strong><br />%5$s</p>
+<p><strong>Mail Server</strong><br />%6$s</p>
+<p><strong>First attempted</strong><br />%7$s</p>
+<p><strong>Code</strong><br />%8$s</p>]]></string>
     <string name="code">Code</string>
     <string name="created">Created</string>
     <string name="view_details">View details</string>

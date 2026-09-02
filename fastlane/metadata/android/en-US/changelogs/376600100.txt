@@ -5,6 +5,8 @@ Highlights
 - Long-pressing to select multiple aliases is now enabled by default
 - Reordering rules is now smoother and only syncs when you let go
 Fixed/Improved
+- Bumped minimum instance version to 1.7.3
+- Show alias description in failed delivery details
 - Improved widget scaling and theming across different launcher grid sizes
 - Fixed UI padding and button clipping across various screens
 - Performance improvements and other things to make the app even smoother
