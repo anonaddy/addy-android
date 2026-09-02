@@ -4,13 +4,13 @@ import java.io.Serializable
 
 data class Action(
     val type: String,
-    val value: String
+    val value: String? = null
 ) : Serializable
 
 data class Condition(
     val type: String,
-    val match: String,
-    val values: List<String>
+    val match: String? = null,
+    val values: List<String>? = null
 ) : Serializable
 
 data class SingleRule(

@@ -1,0 +1,6 @@
+What's new in addy.io for Android 6.5.0
+Added
+- Support for Family Plans: Share custom domains with family plan members
+- New rule conditions and actions (display from, headers, spam, attachments, labels, alias management)
+Fixed/Improved
+- Performance improvements and other things to make the app even smoother

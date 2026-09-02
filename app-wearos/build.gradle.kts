@@ -11,7 +11,6 @@ val wear_tiles_version = rootProject.extra["wear_tiles_version"]
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose") version "2.4.10" // this version matches your Kotlin version
-
 }
 
 configure<ApplicationExtension> {

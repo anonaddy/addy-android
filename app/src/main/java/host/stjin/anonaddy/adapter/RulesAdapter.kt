@@ -54,40 +54,56 @@ class RulesAdapter(
             )
 
 
-        val typeText =
-            holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(R.array.conditions_type_name)[holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(
-                R.array.conditions_type
-            )
-                .indexOf(listWithRules[position].conditions[0].type)]
-        val matchText =
-            holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(R.array.conditions_match_name)[holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(
-                R.array.conditions_match
-            )
-                .indexOf(listWithRules[position].conditions[0].match)]
-        val descConditions =
-            "$typeText $matchText ${listWithRules[position].conditions[0].values[0]}"
+        val context = holder.rulesRecyclerviewListActivateButton.context
+        val condition = listWithRules[position].conditions.firstOrNull()
+        val descConditions = if (condition != null) {
+            val typeTypes = context.resources.getStringArray(R.array.conditions_type)
+            val typeNames = context.resources.getStringArray(R.array.conditions_type_name)
+            val typeIndex = typeTypes.indexOf(condition.type)
+            val typeText = if (typeIndex != -1) typeNames[typeIndex] else condition.type
 
-        val actionTypeText =
-            holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(R.array.actions_type_name)[holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(
-                R.array.actions_type
-            ).indexOf(listWithRules[position].actions[0].type)]
+            val matchTypes = context.resources.getStringArray(R.array.conditions_match)
+            val matchNames = context.resources.getStringArray(R.array.conditions_match_name)
+            val matchIndex = if (condition.match != null) matchTypes.indexOf(condition.match) else -1
+            val matchText = if (matchIndex != -1) matchNames[matchIndex] else condition.match
 
-        // If forward_to type resolve the recipient
-        if (listWithRules[position].actions[0].type == "forwardTo" && recipients != null) {
-
-            val recipient = recipients.firstOrNull { it.id == listWithRules[position].actions[0].value }?.email
-                ?: holder.mDescription.context.resources.getString(R.string.unknown)
-
-            val descActions = "$actionTypeText $recipient"
-
-            holder.mDescription.text = holder.mDescription.context.resources.getString(R.string.manage_rules_list_desc, descConditions, descActions)
-
+            val firstValue = condition.values?.firstOrNull() ?: ""
+            if (!matchText.isNullOrEmpty() && firstValue.isNotEmpty()) {
+                "$typeText $matchText $firstValue"
+            } else if (!matchText.isNullOrEmpty()) {
+                "$typeText $matchText"
+            } else {
+                typeText
+            }
         } else {
-            val descActions = "$actionTypeText ${listWithRules[position].actions[0].value}"
-
-            holder.mDescription.text = holder.mDescription.context.resources.getString(R.string.manage_rules_list_desc, descConditions, descActions)
-
+            ""
         }
+
+        val action = listWithRules[position].actions.firstOrNull()
+        val descActions = if (action != null) {
+            val actionTypes = context.resources.getStringArray(R.array.actions_type)
+            val actionNames = context.resources.getStringArray(R.array.actions_type_name)
+            val actionTypeIndex = actionTypes.indexOf(action.type)
+            val actionTypeText = if (actionTypeIndex != -1) actionNames[actionTypeIndex] else action.type
+
+            when (action.type) {
+                "forwardTo" -> {
+                    val recipient = recipients?.firstOrNull { it.id == action.value }?.email
+                        ?: context.resources.getString(R.string.unknown)
+                    "$actionTypeText $recipient"
+                }
+                "block", "encryption", "blocklistSender", "blocklistDomain", "removeAttachments", "deactivateAlias", "deleteAlias" -> {
+                    actionTypeText
+                }
+                else -> {
+                    if (!action.value.isNullOrEmpty()) "$actionTypeText ${action.value}" else actionTypeText
+                }
+            }
+        } else {
+            ""
+        }
+
+        holder.mDescription.text = holder.mDescription.context.resources.getString(R.string.manage_rules_list_desc, descConditions, descActions)
 
 
 

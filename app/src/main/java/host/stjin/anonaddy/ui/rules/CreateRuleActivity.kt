@@ -182,7 +182,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     // Condition
-    override fun onAddedCondition(conditionEditIndex: Int?, type: String, match: String, values: List<String>) {
+    override fun onAddedCondition(conditionEditIndex: Int?, type: String, match: String?, values: List<String>?) {
         conditionBottomDialogFragment.dismissAllowingStateLoss()
 
         val condition = Condition(
@@ -413,31 +413,26 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             val title = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_title)
             val deleteCondition = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_close)
             val cardView = inflatedLayout.findViewById<CardView>(R.id.rules_view_condition_CV)
+            val typeTypes = this.resources.getStringArray(R.array.conditions_type)
+            val typeNames = this.resources.getStringArray(R.array.conditions_type_name)
+            val typeIndex = typeTypes.indexOf(condition.type)
+            val typeText = if (typeIndex != -1) typeNames[typeIndex] else condition.type
 
+            val matchTypes = this.resources.getStringArray(R.array.conditions_match)
+            val matchNames = this.resources.getStringArray(R.array.conditions_match_name)
+            val matchIndex = if (condition.match != null) matchTypes.indexOf(condition.match) else -1
+            val matchText = if (matchIndex != -1) matchNames[matchIndex] else condition.match
 
-            val typeText =
-                this.resources.getStringArray(R.array.conditions_type_name)[this.resources.getStringArray(R.array.conditions_type)
-                    .indexOf(condition.type)]
-
-            val matchText =
-                this.resources.getStringArray(R.array.conditions_match_name)[this.resources.getStringArray(R.array.conditions_match)
-                    .indexOf(condition.match)]
-
-            title.text = this.resources.getString(R.string.rule_if_, "`${typeText}` ${matchText}...")
+            if (matchText.isNullOrEmpty()) {
+                title.text = this.resources.getString(R.string.rule_if_, "`${typeText}`")
+            } else {
+                title.text = this.resources.getString(R.string.rule_if_, "`${typeText}` ${matchText}...")
+            }
 
             val subtitle = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_subtitle)
-            // Loop through all the values
-            var values = ""
-            var firstValue = true
-            for (value in condition.values) {
-                if (firstValue) {
-                    values += value
-                    firstValue = false
-                } else {
-                    values += ", $value"
-                }
-            }
-            subtitle.text = values
+            val valuesText = condition.values?.joinToString(", ") ?: ""
+            subtitle.text = valuesText
+            subtitle.visibility = if (valuesText.isNotEmpty()) View.VISIBLE else View.GONE
 
 
             deleteCondition.setOnClickListener {
@@ -497,19 +492,28 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             val cardView = inflatedLayout.findViewById<MaterialCardView>(R.id.rules_view_condition_CV)
 
 
-            val typeText =
-                this.resources.getStringArray(R.array.actions_type_name)[this.resources.getStringArray(R.array.actions_type).indexOf(action.type)]
+            val actionTypes = this.resources.getStringArray(R.array.actions_type)
+            val actionNames = this.resources.getStringArray(R.array.actions_type_name)
+            val typeIndex = actionTypes.indexOf(action.type)
+            val typeText = if (typeIndex != -1) actionNames[typeIndex] else action.type
             title.text = this.resources.getString(R.string.rule_then_, "`${typeText}`")
 
             val subtitle = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_subtitle)
 
-
-            // If forward_to type resolve the recipient
-            if (action.type == "forwardTo") {
-                val recipient = recipients.firstOrNull { it.id == action.value }
-                subtitle.text = recipient?.email ?: this.resources.getString(R.string.unknown)
-            } else {
-                subtitle.text = action.value
+            when (action.type) {
+                "forwardTo" -> {
+                    val recipient = recipients.firstOrNull { it.id == action.value }
+                    subtitle.text = recipient?.email ?: this.resources.getString(R.string.unknown)
+                    subtitle.visibility = View.VISIBLE
+                }
+                "block", "encryption", "blocklistSender", "blocklistDomain", "removeAttachments", "deactivateAlias", "deleteAlias" -> {
+                    subtitle.text = ""
+                    subtitle.visibility = View.GONE
+                }
+                else -> {
+                    subtitle.text = action.value ?: ""
+                    subtitle.visibility = if (action.value.isNullOrEmpty()) View.GONE else View.VISIBLE
+                }
             }
 
 
@@ -535,7 +539,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         }
 
         val inflatedAddActionLayout: View =
-            inflater.inflate(R.layout.rules_view_condition_action_add, binding.activityRulesCreateLLConditions as ViewGroup?, false)
+            inflater.inflate(R.layout.rules_view_condition_action_add, binding.activityRulesCreateLLActions as ViewGroup?, false)
         inflatedAddActionLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_add).setOnClickListener {
             if (!actionBottomDialogFragment.isAdded) {
                 // Reset the variable to remove the arguments that could be sent with the edit button

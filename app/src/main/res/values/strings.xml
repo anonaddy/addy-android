@@ -68,12 +68,14 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 6.4.1</h3>
+<h3>What\'s new in addy.io for Android 6.5.0</h3>
+<h4>Added</h4>
+<p>- Support for Family Plans: You can now share custom domains with family plan members</p>
+<p>- Added new rule conditions and actions (display from, header checks, spam status, attachment checks, label management, alias actions, and more)</p>
 <h4>Fixed/Improved</h4>
-<p>- Fixed an issue with the new ACCESS_LOCAL_NETWORK permission missing on self-hosted instances</p>
-<h3>What\'s new in addy.io for Android Wearables 1.6.7</h3>
-<h4>Fixed/Improved</h4>
-<p>- Fixed an issue with the new ACCESS_LOCAL_NETWORK permission missing on self-hosted instances</p>]]></string>
+<p>- Bumped minimum instance version to 1.7.2</p>
+<p>- Performance improvements and other things to make the app even smoother</p>
+]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -225,6 +227,9 @@
     <string name="you_ve_used_d_out_of_d_recipients">You’ve used %1$d out of %2$s recipients</string>
     <string name="no_domains">You have no domains, what about creating one?</string>
     <string name="catch_all_domain_desc">Enable catch-all for this domain</string>
+    <string name="share_domain_with_family">Share domain with family</string>
+    <string name="share_domain_with_family_desc">Allow family plan members to create aliases on this domain</string>
+    <string name="error_edit_shared_with_family">An error occurred while changing the domain sharing state</string>
     <string name="catch_all_username_desc">Enable catch-all for this username</string>
     <string name="catch_all_enabled">Catch-All enabled</string>
     <string name="catch_all_disabled">Catch-All disabled</string>
@@ -675,6 +680,7 @@
     <string name="authentication_splash_error_unavailable">The addy.io app is protected using biometrics, but they are currently unavailable. Without biometric authentication, access to the data is restricted. Would you like to reset the app?</string>
     <string name="could_not_check_for_updates">Could not check for updates</string>
     <string name="select_a_recipient">Select a recipient</string>
+    <string name="select_a_label">Select a label</string>
     <string name="intent_app_not_setup">The addy.io app has not been set up on this device yet</string>
     <string name="edit_auto_create_regex">Edit auto create regex</string>
     <string name="edit_auto_create_regex_desc"><![CDATA[<p>If you wish to create aliases on-the-fly but don\'t want to enable catch-all then you can enter a regular expression pattern below. If a new alias\' local part matches the pattern then it will still be created on-the-fly even though catch-all is disabled.</p>

@@ -60,6 +60,7 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_REMOVE_PGP_KEYS_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_REMOVE_PGP_SIGNATURES_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_REORDER_RULES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RULES
+import host.stjin.anonaddy_shared.AddyIo.API_URL_SHARED_WITH_FAMILY_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_USERNAMES
 import host.stjin.anonaddy_shared.AddyIo.GITHUB_TAGS_RSS_FEED
 import host.stjin.anonaddy_shared.AddyIo.lazyMgr
@@ -2787,6 +2788,78 @@ class NetworkHelper(private val context: Context) {
 
             else -> {
                 val errorMessage = handleGenericError(response, result, "enableCatchAllSpecificDomain")
+                callback(
+                    null,
+                    errorMessage
+                )
+            }
+        }
+    }
+
+    suspend fun disableSharedWithFamilySpecificDomain(
+        callback: (String?) -> Unit?,
+        domainId: String
+    ) {
+
+        waitForInitAndLog()
+
+        val (_, response, result) = Fuel.delete("${API_URL_SHARED_WITH_FAMILY_DOMAINS}/$domainId")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+
+            401 -> {
+                handleUnauthorized()
+                callback(null)
+            }
+
+            else -> {
+                val errorMessage = handleGenericError(response, result, "disableSharedWithFamilySpecificDomain")
+                callback(
+                    errorMessage
+                )
+            }
+        }
+    }
+
+    suspend fun enableSharedWithFamilySpecificDomain(
+        callback: (Domains?, String?) -> Unit,
+        domainId: String
+    ) {
+
+        waitForInitAndLog()
+
+        val json = JSONObject()
+        json.put("id", domainId)
+
+        val (_, response, result) = Fuel.post(API_URL_SHARED_WITH_FAMILY_DOMAINS)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+
+                val addyIoData = gson.fromJson(data, SingleDomain::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                handleUnauthorized()
+                callback(null, null)
+            }
+
+            else -> {
+                val errorMessage = handleGenericError(response, result, "enableSharedWithFamilySpecificDomain")
                 callback(
                     null,
                     errorMessage

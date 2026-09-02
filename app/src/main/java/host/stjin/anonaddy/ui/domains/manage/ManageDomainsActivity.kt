@@ -105,6 +105,13 @@ class ManageDomainsActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageDomainSharedWithFamilySwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageDomainSharedWithFamilySwitchLayout.setSwitchChecked(!binding.activityManageDomainSharedWithFamilySwitchLayout.getSwitchChecked())
+            }
+        })
+
         binding.activityManageDomainDescEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 if (!editDomainDescriptionBottomDialogFragment.isAdded) {
@@ -257,6 +264,62 @@ class ManageDomainsActivity : BaseActivity(),
                 }
             }
         })
+
+        binding.activityManageDomainSharedWithFamilySwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageDomainSharedWithFamilySwitchLayout.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        lifecycleScope.launch {
+                            enableSharedWithFamily()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            disableSharedWithFamily()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private suspend fun disableSharedWithFamily() {
+        networkHelper.disableSharedWithFamilySpecificDomain({ result ->
+            binding.activityManageDomainSharedWithFamilySwitchLayout.showProgressBar(false)
+            if (result == "204") {
+                this.domain!!.shared_with_family = false
+                shouldRefreshOnFinish = true
+                updateUi(this.domain!!)
+            } else {
+                binding.activityManageDomainSharedWithFamilySwitchLayout.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_shared_with_family) + "\n" + result,
+                    binding.activityManageDomainCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.domain!!.id)
+    }
+
+    private suspend fun enableSharedWithFamily() {
+        networkHelper.enableSharedWithFamilySpecificDomain({ domain, error ->
+            binding.activityManageDomainSharedWithFamilySwitchLayout.showProgressBar(false)
+            if (domain != null) {
+                this.domain = domain
+                shouldRefreshOnFinish = true
+            } else {
+                binding.activityManageDomainSharedWithFamilySwitchLayout.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_shared_with_family) + "\n" + error,
+                    binding.activityManageDomainCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.domain!!.id)
     }
 
     private suspend fun disableCatchAll() {
@@ -414,6 +477,26 @@ class ManageDomainsActivity : BaseActivity(),
         binding.activityManageDomainCatchAllSwitchLayout.setTitle(
             if (domain.catch_all) resources.getString(R.string.catch_all_enabled) else resources.getString(R.string.catch_all_disabled)
         )
+
+        if (AddyIo.isUsingHostedInstance) {
+            binding.activityManageDomainSharedWithFamilySwitchLayout.visibility = View.VISIBLE
+            binding.activityManageDomainSharedWithFamilySwitchLayout.setSwitchChecked(domain.shared_with_family)
+            val userResource = (this.application as AddyIoApp).userResource
+            val hasFamilyPlanRole = !userResource.family_plan_role.isNullOrEmpty()
+            if (hasFamilyPlanRole) {
+                binding.activityManageDomainSharedWithFamilySwitchLayout.setLayoutEnabled(true)
+                binding.activityManageDomainSharedWithFamilySwitchLayout.setDescription(
+                    this.resources.getString(R.string.share_domain_with_family_desc)
+                )
+            } else {
+                binding.activityManageDomainSharedWithFamilySwitchLayout.setLayoutEnabled(false)
+                binding.activityManageDomainSharedWithFamilySwitchLayout.setDescription(
+                    this.resources.getString(R.string.feature_not_available_subscription)
+                )
+            }
+        } else {
+            binding.activityManageDomainSharedWithFamilySwitchLayout.visibility = View.GONE
+        }
 
         /**
          * TEXT
