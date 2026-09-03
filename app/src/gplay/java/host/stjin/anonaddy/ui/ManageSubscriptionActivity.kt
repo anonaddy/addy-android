@@ -257,11 +257,27 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
         }
         binding.restorePurchasesButton.setOnClickListener { restorePurchases() }
         binding.manageSubscriptionButton.setOnClickListener {
-            val browserIntent = Intent(
-                Intent.ACTION_VIEW,
-                "https://play.google.com/store/account/subscriptions?package=host.stjin.anonaddy".toUri()
-            )
-            startActivity(browserIntent)
+            val sku = currentSubscriptionSku
+            val url = if (!sku.isNullOrEmpty()) {
+                "https://play.google.com/store/account/subscriptions?sku=$sku&package=$packageName"
+            } else {
+                "https://play.google.com/store/account/subscriptions"
+            }
+
+            val playStoreIntent = Intent(Intent.ACTION_VIEW, url.toUri()).apply {
+                setPackage("com.android.vending")
+            }
+
+            try {
+                startActivity(playStoreIntent)
+            } catch (e: ActivityNotFoundException) {
+                // Fallback: open in any browser if Google Play Store app is unavailable
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
+                } catch (e: Exception) {
+                    // Handle scenario where no browser or Play Store is installed
+                }
+            }
         }
         binding.fragmentSubscriptionAccountDisabled.manageSubscriptionButton.setOnClickListener {
             val browserIntent = Intent(
