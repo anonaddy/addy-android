@@ -1,6 +1,6 @@
 # Changelog
 
-## [v6.6.0-beta01] - 2026-08-30
+## [v6.6.0-beta01] - TBD
 
 ### addy.io
 
