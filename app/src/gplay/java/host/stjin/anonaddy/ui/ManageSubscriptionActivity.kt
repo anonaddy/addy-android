@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
