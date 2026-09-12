@@ -85,14 +85,15 @@ class AliasRepository(
 
         if (aliasSortFilter.onlyActiveAliases) {
             parameters.add("filter[active]" to "true")
-        } else if (aliasSortFilter.onlyInactiveAliases) {
+        }
+        if (aliasSortFilter.onlyInactiveAliases) {
             parameters.add("filter[active]" to "false")
-        } else if (aliasSortFilter.onlyDeletedAliases) {
+        }
+        if (aliasSortFilter.onlyDeletedAliases) {
             parameters.add("filter[deleted]" to "only")
-        } else if (aliasSortFilter.onlyPinnedAliases) {
+        }
+        if (aliasSortFilter.onlyPinnedAliases) {
             parameters.add("filter[pinned]" to "true")
-        } else {
-            parameters.add("filter[deleted]" to "with")
         }
 
         if (size != null) {

@@ -40,14 +40,10 @@ class RecipientRepository(
         return handleResponse(response, result, "addRecipient") { gson.fromJson(it, SingleRecipient::class.java).data }
     }
 
-    suspend fun getRecipients(page: Int? = null, size: Int? = 20, verifiedOnly: Boolean = false): NetworkResult<PaginatedResponse<Recipients>> {
+    suspend fun getRecipients(page: Int? = null, size: Int? = null, verifiedOnly: Boolean = false): NetworkResult<PaginatedResponse<Recipients>> {
         waitForInit()
 
-        val parameters = arrayListOf<Pair<String, String>>()
-        if (size != null) parameters.add("page[size]" to size.toString())
-        if (page != null) parameters.add("page[number]" to page.toString())
-
-        val (_, response, result) = Fuel.get(API_URL_RECIPIENTS, parameters)
+        val (_, response, result) = Fuel.get(API_URL_RECIPIENTS)
             .appendHeader(*getHeaders())
             .awaitStringResponseResult()
 

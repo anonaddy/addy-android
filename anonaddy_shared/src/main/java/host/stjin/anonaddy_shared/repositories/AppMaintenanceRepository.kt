@@ -74,14 +74,10 @@ class AppMaintenanceRepository(
         }
     }
 
-    suspend fun getAllAccountNotifications(page: Int? = null, size: Int? = 20): NetworkResult<PaginatedResponse<AccountNotifications>> {
+    suspend fun getAllAccountNotifications(page: Int? = null, size: Int? = null): NetworkResult<PaginatedResponse<AccountNotifications>> {
         waitForInit()
 
-        val parameters = ArrayList<Pair<String, Any>>()
-        if (page != null) parameters.add(Pair("page[number]", page.toString()))
-        if (size != null) parameters.add(Pair("page[size]", size.toString()))
-
-        val (_, response, result) = Fuel.get(API_URL_ACCOUNT_NOTIFICATIONS, parameters)
+        val (_, response, result) = Fuel.get(API_URL_ACCOUNT_NOTIFICATIONS)
             .appendHeader(*getHeaders())
             .awaitStringResponseResult()
 

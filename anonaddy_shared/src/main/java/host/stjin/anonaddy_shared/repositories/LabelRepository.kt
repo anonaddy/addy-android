@@ -20,13 +20,11 @@ class LabelRepository(
     dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : BaseNetworkClient(context, dispatchers) {
 
-    suspend fun getAllLabels(search: String? = null, page: Int? = null, size: Int? = 20): NetworkResult<PaginatedResponse<Labels>> {
+    suspend fun getAllLabels(search: String? = null, page: Int? = null, size: Int? = null): NetworkResult<PaginatedResponse<Labels>> {
         waitForInit()
 
         val parameters = arrayListOf<Pair<String, String>>()
         if (!search.isNullOrEmpty()) parameters.add("filter[search]" to search)
-        if (size != null) parameters.add("page[size]" to size.toString())
-        if (page != null) parameters.add("page[number]" to page.toString())
 
         val (_, response, result) = Fuel.get(API_URL_LABELS, parameters)
             .appendHeader(*getHeaders())
@@ -58,7 +56,6 @@ class LabelRepository(
 
         val json = JSONObject().apply {
             put("name", name)
-            put("color", color)
             put("colour", color)
         }
 
@@ -93,7 +90,6 @@ class LabelRepository(
 
         val json = JSONObject().apply {
             put("name", name)
-            put("color", color)
             put("colour", color)
         }
 

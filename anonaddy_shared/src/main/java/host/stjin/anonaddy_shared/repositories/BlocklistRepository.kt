@@ -22,7 +22,7 @@ class BlocklistRepository(
 
     suspend fun getAllBlocklistEntries(
         page: Int? = 1,
-        size: Int? = 25,
+        size: Int? = 100,
         filter: String? = null,
         search: String? = null
     ): NetworkResult<PaginatedResponse<BlocklistEntries>> {

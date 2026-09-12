@@ -22,14 +22,10 @@ class RuleRepository(
     dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : BaseNetworkClient(context, dispatchers) {
 
-    suspend fun getAllRules(page: Int? = null, size: Int? = 20): NetworkResult<PaginatedResponse<Rules>> {
+    suspend fun getAllRules(page: Int? = null, size: Int? = null): NetworkResult<PaginatedResponse<Rules>> {
         waitForInit()
 
-        val parameters = arrayListOf<Pair<String, String>>()
-        if (size != null) parameters.add("page[size]" to size.toString())
-        if (page != null) parameters.add("page[number]" to page.toString())
-
-        val (_, response, result) = Fuel.get(API_URL_RULES, parameters)
+        val (_, response, result) = Fuel.get(API_URL_RULES)
             .appendHeader(*getHeaders())
             .awaitStringResponseResult()
 

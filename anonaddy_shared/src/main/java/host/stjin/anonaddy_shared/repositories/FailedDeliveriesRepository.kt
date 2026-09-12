@@ -24,7 +24,7 @@ class FailedDeliveriesRepository(
 
     suspend fun getAllFailedDeliveries(
         page: Int? = 1,
-        size: Int? = 25,
+        size: Int? = 100,
         filter: String? = null
     ): NetworkResult<PaginatedResponse<FailedDeliveries>> {
         waitForInit()
