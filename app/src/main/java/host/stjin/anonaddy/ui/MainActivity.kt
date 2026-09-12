@@ -1,5 +1,4 @@
 package host.stjin.anonaddy.ui
-import host.stjin.anonaddy_shared.utils.GsonTools
 
 import android.app.NotificationManager
 import android.content.Intent
@@ -19,7 +18,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.wearable.Wearable
 import com.google.android.material.button.MaterialButton
@@ -52,15 +53,13 @@ import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.managers.SettingsManager.PREFS
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
-import host.stjin.anonaddy_shared.network.NetworkResult
-import host.stjin.anonaddy_shared.utils.DateTimeUtils
+import host.stjin.anonaddy_shared.utils.GsonTools
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.ocpsoft.prettytime.PrettyTime
-import java.time.LocalDateTime
 import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
@@ -112,9 +111,11 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
         navigator = MainNavigator(this)
 
         lifecycleScope.launch {
-            viewModel.updateAvailable.collect { available ->
-                isUpdateAvailable = available
-                setAlertIconToProfile(updateAvailable = available)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.updateAvailable.collect { available ->
+                    isUpdateAvailable = available
+                    setAlertIconToProfile(updateAvailable = available)
+                }
             }
         }
 
@@ -277,13 +278,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
     private fun setOnBigScreenClickListener() {
         binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.main_top_bar_user_initials)!!.setOnClickListener {
-            val profileBottomDialogFragment = ProfileBottomDialogFragment.newInstance(isUpdateAvailable, isPermissionsRequired)
-            if (!profileBottomDialogFragment.isAdded) {
-                profileBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "profileBottomDialogFragment"
-                )
-            }
+            showProfileDialog()
         }
 
         binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)!!.setOnClickListener {
@@ -291,6 +286,16 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
             startActivity(intent)
         }
 
+    }
+
+    private fun showProfileDialog() {
+        if (supportFragmentManager.findFragmentByTag("profileBottomDialogFragment") == null) {
+            val profileBottomDialogFragment = ProfileBottomDialogFragment.newInstance(isUpdateAvailable, isPermissionsRequired)
+            profileBottomDialogFragment.show(
+                supportFragmentManager,
+                "profileBottomDialogFragment"
+            )
+        }
     }
 
     private fun setRefreshLayout() {
@@ -518,12 +523,14 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
         // Show the changelog
         val settingsManager = ServiceLocator.settingsManager
         if (settingsManager.getSettingsInt(PREFS.VERSION_CODE) < BuildConfig.VERSION_CODE) {
-            val addChangelogBottomDialogFragment: ChangelogBottomDialogFragment =
-                ChangelogBottomDialogFragment.newInstance()
-            addChangelogBottomDialogFragment.show(
-                supportFragmentManager,
-                "MainActivity:addChangelogBottomDialogFragment"
-            )
+            if (supportFragmentManager.findFragmentByTag("MainActivity:addChangelogBottomDialogFragment") == null) {
+                val addChangelogBottomDialogFragment: ChangelogBottomDialogFragment =
+                    ChangelogBottomDialogFragment.newInstance()
+                addChangelogBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "MainActivity:addChangelogBottomDialogFragment"
+                )
+            }
         }
 
         // Write the current version code to prevent double triggering
@@ -546,13 +553,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
         binding.mainAppBarInclude!!.mainTopBarUserInitials.text = usernameInitials
 
         binding.mainAppBarInclude!!.mainTopBarUserInitials.setOnClickListener {
-            val profileBottomDialogFragment = ProfileBottomDialogFragment.newInstance(isUpdateAvailable, isPermissionsRequired)
-            if (!profileBottomDialogFragment.isAdded) {
-                profileBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "profileBottomDialogFragment"
-                )
-            }
+            showProfileDialog()
         }
 
         binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesIcon.setOnClickListener {
@@ -583,121 +584,69 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
         viewModel.checkForUpdates()
     }
 
-    private fun checkForCertificateExpiration() {
+    private suspend fun checkForCertificateExpiration() {
         val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
-        val alias = encryptedSettingsManager.getSettingsString(PREFS.CERTIFICATE_ALIAS)
+        val alias = encryptedSettingsManager.getSettingsString(PREFS.CERTIFICATE_ALIAS) ?: return
 
-        if (alias != null) {
-            lifecycleScope.launch {
-                withContext(Dispatchers.IO) {
-                    val chain = KeyChain.getCertificateChain(this@MainActivity, alias)
-                    val expiryDateOfChain = chain?.firstOrNull()?.notAfter
+        val expiryDate = withContext(Dispatchers.IO) {
+            viewModel.getCertificateExpiryDateIfNear(alias)
+        } ?: return
 
-
-                    if (expiryDateOfChain != null) {
-                        val expiryDate = DateTimeUtils.convertDateToLocalTimeZoneDate(expiryDateOfChain) // Get the expiry date
-                        val currentDateTime = LocalDateTime.now() // Get the current date
-                        val deadLineDate = expiryDate?.minusDays(5) // Subtract 5 days from the expiry date
-                        if (currentDateTime.isAfter(deadLineDate)) {
-                            // The current date is suddenly after the deadline date. It will expire within 5 days
-                            // Show the certificate is about to expire card
-                            val text = PrettyTime().format(expiryDate)
-
-                            withContext(Dispatchers.Main) {
-                                MaterialDialogHelper.showMaterialDialog(
-                                    context = this@MainActivity,
-                                    title = this@MainActivity.resources.getString(R.string.certificate_about_to_expire),
-                                    message = this@MainActivity.resources.getString(R.string.certificate_about_to_expire_desc, text),
-                                    icon = R.drawable.ic_certificate,
-                                    neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
-                                    positiveButtonText = this@MainActivity.resources.getString(R.string.certificate_about_to_expire_option_1),
-                                    positiveButtonAction = {
-                                        selectCertificate()
-                                    }).show()
-                            }
-
-                        } else {
-                            // The current date is not yet after the deadline date.
-                        }
-                    }
-                }
-            }
-            // If expiryDate is null it will never expire, which I highly doubt will EVER happen
-
-        }
+        val text = PrettyTime().format(expiryDate)
+        MaterialDialogHelper.showMaterialDialog(
+            context = this@MainActivity,
+            title = this@MainActivity.resources.getString(R.string.certificate_about_to_expire),
+            message = this@MainActivity.resources.getString(R.string.certificate_about_to_expire_desc, text),
+            icon = R.drawable.ic_certificate,
+            neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
+            positiveButtonText = this@MainActivity.resources.getString(R.string.certificate_about_to_expire_option_1),
+            positiveButtonAction = {
+                selectCertificate()
+            }).show()
     }
 
     private suspend fun checkForApiExpiration() {
-        val result = ServiceLocator.userRepository.getApiTokenDetails()
-        if (result is NetworkResult.Success && result.data.expires_at != null) {
-            val apiTokenDetails = result.data
-            val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(apiTokenDetails.expires_at) // Get the expiry date
-            val currentDateTime = LocalDateTime.now() // Get the current date
-            val deadLineDate = expiryDate?.minusDays(5) // Subtract 5 days from the expiry date
-            if (currentDateTime.isAfter(deadLineDate)) {
-                // The current date is suddenly after the deadline date. It will expire within 5 days
-                // Show the api is about to expire card
-                val text = PrettyTime().format(expiryDate)
-                MaterialDialogHelper.showMaterialDialog(
-                    context = this@MainActivity,
-                    title = this@MainActivity.resources.getString(R.string.api_token_about_to_expire),
-                    message = this@MainActivity.resources.getString(R.string.api_token_about_to_expire_desc, text),
-                    icon = R.drawable.ic_letters_case,
-                    neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
-                    positiveButtonText = this@MainActivity.resources.getString(R.string.api_token_about_to_expire_option_1),
-                    positiveButtonAction = {
-                        verifyNewApiToken()
-                    },
-
-                    ).show()
-
-            } else {
-                // The current date is not yet before the deadline date. It will expire within 5 days
+        val expiryDate = viewModel.getApiTokenExpiryDateIfNear() ?: return
+        val text = PrettyTime().format(expiryDate)
+        MaterialDialogHelper.showMaterialDialog(
+            context = this@MainActivity,
+            title = this@MainActivity.resources.getString(R.string.api_token_about_to_expire),
+            message = this@MainActivity.resources.getString(R.string.api_token_about_to_expire_desc, text),
+            icon = R.drawable.ic_letters_case,
+            neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
+            positiveButtonText = this@MainActivity.resources.getString(R.string.api_token_about_to_expire_option_1),
+            positiveButtonAction = {
+                verifyNewApiToken()
             }
-        }
+        ).show()
     }
 
-    private fun checkForSubscriptionExpiration() {
-        // Only check on hosted instance
-        if (AddyIo.isUsingHostedInstance) {
-            lifecycleScope.launch {
-                val result = ServiceLocator.userRepository.getUserResource()
-                if (result is NetworkResult.Success && result.data.subscription_ends_at != null) {
-                    val user = result.data
-                    val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(user.subscription_ends_at) // Get the expiry date
-                    val currentDateTime = LocalDateTime.now() // Get the current date
-                    val deadLineDate = expiryDate?.minusDays(7) // Subtract 7 days from the expiry date
-                    if (currentDateTime.isAfter(deadLineDate)) {
-                        // The current date is suddenly after the deadline date. It will expire within 7 days
-                        val text = PrettyTime().format(expiryDate)
-                        val dialog = MaterialDialogHelper.showMaterialDialog(
-                            context = this@MainActivity,
-                            title = this@MainActivity.resources.getString(R.string.subscription_about_to_expire),
-                            message = this@MainActivity.resources.getString(R.string.subscription_about_to_expire_desc, text),
-                            icon = R.drawable.ic_credit_card,
-                            neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
-                        )
-                        // Only show the renew button when not-google play version
-                        // https://support.google.com/googleplay/android-developer/answer/13321562
-                        dialog.setPositiveButton(
-                            this@MainActivity.resources.getString(R.string.subscription_about_to_expire_option_1)
-                        ) { _, _ ->
-                            if (BuildConfig.FLAVOR == "gplay") {
-                                val intent = Intent(this@MainActivity, ManageSubscriptionActivity::class.java)
-                                subscriptionResultLauncher.launch(intent)
-                            } else {
-                                val url = "${AddyIo.API_BASE_URL}/settings/subscription"
-                                val i = Intent(Intent.ACTION_VIEW)
-                                i.data = url.toUri()
-                                startActivity(i)
-                            }
-                        }
-
-                        dialog.show()
-                    }
-                }
+    private suspend fun checkForSubscriptionExpiration() {
+        val expiryDate = viewModel.getSubscriptionExpiryDateIfNear() ?: return
+        val text = PrettyTime().format(expiryDate)
+        val dialog = MaterialDialogHelper.showMaterialDialog(
+            context = this@MainActivity,
+            title = this@MainActivity.resources.getString(R.string.subscription_about_to_expire),
+            message = this@MainActivity.resources.getString(R.string.subscription_about_to_expire_desc, text),
+            icon = R.drawable.ic_credit_card,
+            neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
+        )
+        // Only show the renew button when not-google play version
+        // https://support.google.com/googleplay/android-developer/answer/13321562
+        dialog.setPositiveButton(
+            this@MainActivity.resources.getString(R.string.subscription_about_to_expire_option_1)
+        ) { _, _ ->
+            if (BuildConfig.FLAVOR == "gplay") {
+                val intent = Intent(this@MainActivity, ManageSubscriptionActivity::class.java)
+                subscriptionResultLauncher.launch(intent)
+            } else {
+                val url = "${AddyIo.API_BASE_URL}/settings/subscription"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = url.toUri()
+                startActivity(i)
             }
         }
+        dialog.show()
     }
 
     /*
@@ -749,8 +698,8 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     }
 
     private fun verifyNewApiToken() {
-        val addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AddyIo.API_BASE_URL)
-        if (!addApiBottomDialogFragment.isAdded) {
+        if (supportFragmentManager.findFragmentByTag("addApiBottomDialogFragment") == null) {
+            val addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AddyIo.API_BASE_URL)
             addApiBottomDialogFragment.show(
                 supportFragmentManager,
                 "addApiBottomDialogFragment"

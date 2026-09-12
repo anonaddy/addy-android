@@ -72,8 +72,8 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
             binding.activityAppSettingsFeaturesNotifyApiTokenExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyApiTokenExpirySection.getSwitchChecked())
         }
         binding.activityAppSettingsFeaturesNotifyApiTokenExpiryChangeToken.setOnLayoutClickedListener {
-            val addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AddyIo.API_BASE_URL)
-            if (!addApiBottomDialogFragment.isAdded) {
+            if (supportFragmentManager.findFragmentByTag("addApiBottomDialogFragment") == null) {
+                val addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AddyIo.API_BASE_URL)
                 addApiBottomDialogFragment.show(
                     supportFragmentManager,
                     "addApiBottomDialogFragment"

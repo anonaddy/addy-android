@@ -9,10 +9,9 @@ class SetupWearOSBottomSheetActivity : BaseActivity(), SetupWearOSBottomDialogFr
 
         val nodeId = intent.getStringExtra("nodeId")
         val nodeDisplayName = intent.getStringExtra("nodeDisplayName")
-        val setupWearOSBottomDialogFragment: SetupWearOSBottomDialogFragment =
-            SetupWearOSBottomDialogFragment.newInstance(nodeId, nodeDisplayName)
-
-        if (!setupWearOSBottomDialogFragment.isAdded) {
+        if (supportFragmentManager.findFragmentByTag("setupWearOSBottomDialogFragment") == null) {
+            val setupWearOSBottomDialogFragment: SetupWearOSBottomDialogFragment =
+                SetupWearOSBottomDialogFragment.newInstance(nodeId, nodeDisplayName)
             setupWearOSBottomDialogFragment.show(
                 supportFragmentManager,
                 "setupWearOSBottomDialogFragment"

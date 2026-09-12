@@ -128,11 +128,13 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             if (p0.id == R.id.bs_rule_action_add_action_button) {
                 addAction(requireContext())
             } else if (p0.id == R.id.bs_rule_action_label_create_button) {
-                val labelsAddBottomDialogFragment = AddLabelBottomDialogFragment.newInstance(null)
-                labelsAddBottomDialogFragment.show(
-                    childFragmentManager,
-                    "labelsAddBottomDialogFragment"
-                )
+                if (childFragmentManager.findFragmentByTag("labelsAddBottomDialogFragment") == null) {
+                    val labelsAddBottomDialogFragment = AddLabelBottomDialogFragment.newInstance(null)
+                    labelsAddBottomDialogFragment.show(
+                        childFragmentManager,
+                        "labelsAddBottomDialogFragment"
+                    )
+                }
             }
         }
     }

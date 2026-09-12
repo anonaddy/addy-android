@@ -21,9 +21,7 @@ import kotlinx.coroutines.launch
 class AppSettingsUpdateActivity : BaseActivity() {
     private var checkedForUpdates: Boolean = false
 
-    private val addChangelogBottomDialogFragment: ChangelogBottomDialogFragment =
-
-        ChangelogBottomDialogFragment.newInstance()
+    private var addChangelogBottomDialogFragment: ChangelogBottomDialogFragment? = null
 
     private var forceSwitch = false
 
@@ -69,8 +67,9 @@ class AppSettingsUpdateActivity : BaseActivity() {
         }
 
         binding.activityAppSettingsUpdateSectionChangelog.setOnLayoutClickedListener {
-            if (!addChangelogBottomDialogFragment.isAdded) {
-                addChangelogBottomDialogFragment.show(
+            if (addChangelogBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("addChangelogBottomDialogFragment") == null) {
+                addChangelogBottomDialogFragment = ChangelogBottomDialogFragment.newInstance()
+                addChangelogBottomDialogFragment?.show(
                     supportFragmentManager,
                     "addChangelogBottomDialogFragment"
                 )

@@ -41,10 +41,10 @@ class ManageDomainActivity : BaseActivity(),
 
     private var shouldRefreshOnFinish = false
 
-    private lateinit var editDomainDescriptionBottomDialogFragment: EditDomainDescriptionBottomDialogFragment
-    private lateinit var editDomainRecipientBottomDialogFragment: EditDomainRecipientBottomDialogFragment
-    private lateinit var editDomainFromNameBottomDialogFragment: EditDomainFromNameBottomDialogFragment
-    private lateinit var editDomainAutoCreateRegexBottomDialogFragment: EditDomainAutoCreateRegexBottomDialogFragment
+    private var editDomainDescriptionBottomDialogFragment: EditDomainDescriptionBottomDialogFragment? = null
+    private var editDomainRecipientBottomDialogFragment: EditDomainRecipientBottomDialogFragment? = null
+    private var editDomainFromNameBottomDialogFragment: EditDomainFromNameBottomDialogFragment? = null
+    private var editDomainAutoCreateRegexBottomDialogFragment: EditDomainAutoCreateRegexBottomDialogFragment? = null
 
     private var domain: Domains? = null
         set(value) {
@@ -108,8 +108,8 @@ class ManageDomainActivity : BaseActivity(),
         }
 
         binding.activityManageDomainDescEdit.setOnLayoutClickedListener {
-            if (!editDomainDescriptionBottomDialogFragment.isAdded) {
-                editDomainDescriptionBottomDialogFragment.show(
+            if (editDomainDescriptionBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editDomainDescriptionBottomDialogFragment") == null) {
+                editDomainDescriptionBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editDomainDescriptionBottomDialogFragment"
                 )
@@ -118,8 +118,8 @@ class ManageDomainActivity : BaseActivity(),
 
 
         binding.activityManageDomainRecipientsEdit.setOnLayoutClickedListener {
-            if (!editDomainRecipientBottomDialogFragment.isAdded) {
-                editDomainRecipientBottomDialogFragment.show(
+            if (editDomainRecipientBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editDomainRecipientsBottomDialogFragment") == null) {
+                editDomainRecipientBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editDomainRecipientsBottomDialogFragment"
                 )
@@ -127,8 +127,8 @@ class ManageDomainActivity : BaseActivity(),
         }
 
         binding.activityManageDomainFromNameEdit.setOnLayoutClickedListener {
-            if (!editDomainFromNameBottomDialogFragment.isAdded) {
-                editDomainFromNameBottomDialogFragment.show(
+            if (editDomainFromNameBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editDomainFromNameBottomDialogFragment") == null) {
+                editDomainFromNameBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editDomainFromNameBottomDialogFragment"
                 )
@@ -136,8 +136,8 @@ class ManageDomainActivity : BaseActivity(),
         }
 
         binding.activityManageDomainAutoCreateRegexEdit.setOnLayoutClickedListener {
-            if (!editDomainAutoCreateRegexBottomDialogFragment.isAdded) {
-                editDomainAutoCreateRegexBottomDialogFragment.show(
+            if (editDomainAutoCreateRegexBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editDomainAutoCreateRegexBottomDialogFragment") == null) {
+                editDomainAutoCreateRegexBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editDomainAutoCreateRegexBottomDialogFragment"
                 )
@@ -167,7 +167,7 @@ class ManageDomainActivity : BaseActivity(),
     }
 
     override fun descriptionEdited(domain: Domains) {
-        editDomainDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+        (editDomainDescriptionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editDomainDescriptionBottomDialogFragment") as? EditDomainDescriptionBottomDialogFragment)?.dismissAllowingStateLoss()
         shouldRefreshOnFinish = true
 
         // Do this last, will trigger updateUI as well as re-init editDomainDescriptionBottomDialogFragment
@@ -175,19 +175,22 @@ class ManageDomainActivity : BaseActivity(),
     }
 
     override fun recipientEdited(domain: Domains) {
-        editDomainRecipientBottomDialogFragment.dismissAllowingStateLoss()
+        (editDomainRecipientBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editDomainRecipientsBottomDialogFragment") as? EditDomainRecipientBottomDialogFragment)?.dismissAllowingStateLoss()
+        shouldRefreshOnFinish = true
         // Do this last, will trigger updateUI as well as re-init editDomainRecipientBottomDialogFragment
         this.domain = domain
     }
 
     override fun fromNameEdited(domain: Domains) {
-        editDomainFromNameBottomDialogFragment.dismissAllowingStateLoss()
+        (editDomainFromNameBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editDomainFromNameBottomDialogFragment") as? EditDomainFromNameBottomDialogFragment)?.dismissAllowingStateLoss()
+        shouldRefreshOnFinish = true
         // Do this last, will trigger updateUI as well as re-init editDomainFromNameBottomDialogFragment
         this.domain = domain
     }
 
     override fun autoCreateRegexEdited(domain: Domains) {
-        editDomainAutoCreateRegexBottomDialogFragment.dismissAllowingStateLoss()
+        (editDomainAutoCreateRegexBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editDomainAutoCreateRegexBottomDialogFragment") as? EditDomainAutoCreateRegexBottomDialogFragment)?.dismissAllowingStateLoss()
+        shouldRefreshOnFinish = true
         // Do this last, will trigger updateUI as well as re-init editDomainAutoCreateRegexBottomDialogFragment
         this.domain = domain
     }
@@ -446,8 +449,8 @@ class ManageDomainActivity : BaseActivity(),
         if (AddyIo.isUsingHostedInstance) {
             binding.activityManageDomainSharedWithFamilySwitchLayout.visibility = View.VISIBLE
             binding.activityManageDomainSharedWithFamilySwitchLayout.setSwitchChecked(domain.shared_with_family)
-            val userResource = (this.application as AddyIoApp).userResource
-            val hasFamilyPlanRole = !userResource.family_plan_role.isNullOrEmpty()
+            val userResource = (this.application as? AddyIoApp)?.userResourceOrNull
+            val hasFamilyPlanRole = !userResource?.family_plan_role.isNullOrEmpty()
             if (hasFamilyPlanRole) {
                 binding.activityManageDomainSharedWithFamilySwitchLayout.setLayoutEnabled(true)
                 binding.activityManageDomainSharedWithFamilySwitchLayout.setDescription(
@@ -517,8 +520,9 @@ class ManageDomainActivity : BaseActivity(),
          */
 
         // Set recipient
+        val defaultEmail = (this.application as? AddyIoApp)?.userResourceExtendedOrNull?.default_recipient_email ?: ""
         val recipients: String = domain.default_recipient?.email ?: this.resources.getString(
-            R.string.default_recipient_s, (this.application as AddyIoApp).userResourceExtended.default_recipient_email
+            R.string.default_recipient_s, defaultEmail
         )
 
 

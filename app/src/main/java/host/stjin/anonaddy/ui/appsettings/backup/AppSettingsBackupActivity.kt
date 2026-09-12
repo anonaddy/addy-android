@@ -23,9 +23,7 @@ import java.util.Date
 
 class AppSettingsBackupActivity : BaseActivity(),
     BackupSetPasswordBottomDialogFragment.AddBackupPasswordBottomDialogListener {
-    private val backupSetPasswordBottomDialogFragment: BackupSetPasswordBottomDialogFragment =
-
-        BackupSetPasswordBottomDialogFragment.newInstance()
+    private var backupSetPasswordBottomDialogFragment: BackupSetPasswordBottomDialogFragment? = null
 
     private var forceSwitch = false
 
@@ -122,8 +120,9 @@ class AppSettingsBackupActivity : BaseActivity(),
         binding.activityAppSettingsBackupSectionBackupLocation.setOnLayoutClickedListener { openDirectory() }
 
         binding.activityAppSettingsBackupSectionBackupPassword.setOnLayoutClickedListener {
-            if (!backupSetPasswordBottomDialogFragment.isAdded) {
-                backupSetPasswordBottomDialogFragment.show(
+            if (backupSetPasswordBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("backupSetPasswordBottomDialogFragment") == null) {
+                backupSetPasswordBottomDialogFragment = BackupSetPasswordBottomDialogFragment.newInstance()
+                backupSetPasswordBottomDialogFragment?.show(
                     supportFragmentManager,
                     "backupSetPasswordBottomDialogFragment"
                 )
@@ -150,7 +149,7 @@ class AppSettingsBackupActivity : BaseActivity(),
     }
 
     override fun onSaved() {
-        backupSetPasswordBottomDialogFragment.dismissAllowingStateLoss()
+        (backupSetPasswordBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("backupSetPasswordBottomDialogFragment") as? BackupSetPasswordBottomDialogFragment)?.dismissAllowingStateLoss()
         SnackbarHelper.createSnackbar(
             this@AppSettingsBackupActivity,
             this@AppSettingsBackupActivity.resources.getString(R.string.backup_password_set),

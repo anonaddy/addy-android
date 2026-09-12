@@ -39,10 +39,10 @@ class ManageUsernameActivity : BaseActivity(),
 
     private var shouldRefreshOnFinish = false
 
-    private lateinit var editUsernameDescriptionBottomDialogFragment: EditUsernameDescriptionBottomDialogFragment
-    private lateinit var editUsernameRecipientBottomDialogFragment: EditUsernameRecipientBottomDialogFragment
-    private lateinit var editUsernameFromNameBottomDialogFragment: EditUsernameFromNameBottomDialogFragment
-    private lateinit var editUsernameAutoCreateRegexBottomDialogFragment: EditUsernameAutoCreateRegexBottomDialogFragment
+    private var editUsernameDescriptionBottomDialogFragment: EditUsernameDescriptionBottomDialogFragment? = null
+    private var editUsernameRecipientBottomDialogFragment: EditUsernameRecipientBottomDialogFragment? = null
+    private var editUsernameFromNameBottomDialogFragment: EditUsernameFromNameBottomDialogFragment? = null
+    private var editUsernameAutoCreateRegexBottomDialogFragment: EditUsernameAutoCreateRegexBottomDialogFragment? = null
 
     private var username: Usernames? = null
         set(value) {
@@ -105,8 +105,8 @@ class ManageUsernameActivity : BaseActivity(),
         }
 
         binding.activityManageUsernameDescEdit.setOnLayoutClickedListener {
-            if (!editUsernameDescriptionBottomDialogFragment.isAdded) {
-                editUsernameDescriptionBottomDialogFragment.show(
+            if (editUsernameDescriptionBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editUsernameDescriptionBottomDialogFragment") == null) {
+                editUsernameDescriptionBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editUsernameDescriptionBottomDialogFragment"
                 )
@@ -115,16 +115,16 @@ class ManageUsernameActivity : BaseActivity(),
 
 
         binding.activityManageUsernameRecipientsEdit.setOnLayoutClickedListener {
-            if (!editUsernameRecipientBottomDialogFragment.isAdded) {
-                editUsernameRecipientBottomDialogFragment.show(
+            if (editUsernameRecipientBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editUsernameRecipientsBottomDialogFragment") == null) {
+                editUsernameRecipientBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editUsernameRecipientsBottomDialogFragment"
                 )
             }
         }
         binding.activityManageUsernameFromNameEdit.setOnLayoutClickedListener {
-            if (!editUsernameFromNameBottomDialogFragment.isAdded) {
-                editUsernameFromNameBottomDialogFragment.show(
+            if (editUsernameFromNameBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editUsernameFromNameBottomDialogFragment") == null) {
+                editUsernameFromNameBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editUsernameFromNameBottomDialogFragment"
                 )
@@ -132,8 +132,8 @@ class ManageUsernameActivity : BaseActivity(),
         }
 
         binding.activityManageUsernameAutoCreateRegexEdit.setOnLayoutClickedListener {
-            if (!editUsernameAutoCreateRegexBottomDialogFragment.isAdded) {
-                editUsernameAutoCreateRegexBottomDialogFragment.show(
+            if (editUsernameAutoCreateRegexBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editUsernameAutoCreateRegexBottomDialogFragment") == null) {
+                editUsernameAutoCreateRegexBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editUsernameAutoCreateRegexBottomDialogFragment"
                 )
@@ -156,7 +156,7 @@ class ManageUsernameActivity : BaseActivity(),
     }
 
     override fun descriptionEdited(username: Usernames) {
-        editUsernameDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+        (editUsernameDescriptionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editUsernameDescriptionBottomDialogFragment") as? EditUsernameDescriptionBottomDialogFragment)?.dismissAllowingStateLoss()
         shouldRefreshOnFinish = true
 
         // Do this last, will trigger updateUI as well as re-init editUsernameDescriptionBottomDialogFragment
@@ -164,22 +164,22 @@ class ManageUsernameActivity : BaseActivity(),
     }
 
     override fun recipientEdited(username: Usernames) {
-        editUsernameRecipientBottomDialogFragment.dismissAllowingStateLoss()
-
+        (editUsernameRecipientBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editUsernameRecipientsBottomDialogFragment") as? EditUsernameRecipientBottomDialogFragment)?.dismissAllowingStateLoss()
+        shouldRefreshOnFinish = true
         // Do this last, will trigger updateUI as well as re-init editUsernameRecipientBottomDialogFragment
         this.username = username
     }
 
     override fun fromNameEdited(username: Usernames) {
-        editUsernameFromNameBottomDialogFragment.dismissAllowingStateLoss()
-
+        (editUsernameFromNameBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editUsernameFromNameBottomDialogFragment") as? EditUsernameFromNameBottomDialogFragment)?.dismissAllowingStateLoss()
+        shouldRefreshOnFinish = true
         // Do this last, will trigger updateUI as well as re-init editUsernameFromNameBottomDialogFragment
         this.username = username
     }
 
     override fun autoCreateRegexEdited(username: Usernames) {
-        editUsernameAutoCreateRegexBottomDialogFragment.dismissAllowingStateLoss()
-
+        (editUsernameAutoCreateRegexBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editUsernameAutoCreateRegexBottomDialogFragment") as? EditUsernameAutoCreateRegexBottomDialogFragment)?.dismissAllowingStateLoss()
+        shouldRefreshOnFinish = true
         // Do this last, will trigger updateUI as well as re-init editUsernameAutoCreateRegexBottomDialogFragment
         this.username = username
     }
@@ -491,8 +491,9 @@ class ManageUsernameActivity : BaseActivity(),
          */
 
         // Set recipient
+        val defaultEmail = (this.application as? AddyIoApp)?.userResourceExtendedOrNull?.default_recipient_email ?: ""
         val recipients: String = username.default_recipient?.email ?: this.resources.getString(
-            R.string.default_recipient_s, (this.application as AddyIoApp).userResourceExtended.default_recipient_email
+            R.string.default_recipient_s, defaultEmail
         )
 
         binding.activityManageUsernameRecipientsEdit.setDescription(recipients)

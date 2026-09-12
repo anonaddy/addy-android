@@ -47,7 +47,7 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
             R.drawable.ic_credit_card
         )
 
-        setSubscriptionInfoText((this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AddyIoApp).userResource) // Set this data right away for visuals
+        setSubscriptionInfoText((this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as? AddyIoApp)?.userResourceOrNull) // Set this data right away for visuals
         checkSubscriptionExpiry()
         loadSettings()
         setOnClickListeners()

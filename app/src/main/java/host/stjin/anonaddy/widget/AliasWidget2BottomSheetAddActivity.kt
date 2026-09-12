@@ -11,10 +11,10 @@ class AliasWidget2BottomSheetAddActivity : BaseActivity(), AddAliasBottomDialogF
         super.onCreate(savedInstanceState)
 
         requireAuthentication {
-            val addAliasBottomDialogFragment: AddAliasBottomDialogFragment =
-                AddAliasBottomDialogFragment.newInstance()
-            // Main fragment (the one with the text and loading indicator)
-            if (!addAliasBottomDialogFragment.isAdded) {
+            if (supportFragmentManager.findFragmentByTag("addAliasBottomDialogFragment") == null) {
+                val addAliasBottomDialogFragment: AddAliasBottomDialogFragment =
+                    AddAliasBottomDialogFragment.newInstance()
+                // Main fragment (the one with the text and loading indicator)
                 addAliasBottomDialogFragment.show(
                     supportFragmentManager,
                     "addAliasBottomDialogFragment"

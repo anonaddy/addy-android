@@ -119,11 +119,13 @@ class EditAliasLabelsBottomDialogFragment : BaseBottomSheetDialogFragment(), Vie
         if (p0?.id == R.id.bs_edit_labels_alias_save_button) {
             saveLabels()
         } else if (p0?.id == R.id.bs_edit_labels_alias_create_button) {
-            val labelsAddBottomDialogFragment = AddLabelBottomDialogFragment.newInstance(null)
-            labelsAddBottomDialogFragment.show(
-                childFragmentManager,
-                "labelsAddBottomDialogFragment"
-            )
+            if (childFragmentManager.findFragmentByTag("labelsAddBottomDialogFragment") == null) {
+                val labelsAddBottomDialogFragment = AddLabelBottomDialogFragment.newInstance(null)
+                labelsAddBottomDialogFragment.show(
+                    childFragmentManager,
+                    "labelsAddBottomDialogFragment"
+                )
+            }
         }
     }
 

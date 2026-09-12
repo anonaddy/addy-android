@@ -48,9 +48,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private lateinit var recipientRepository: RecipientRepository
     private lateinit var appMaintenanceRepository: AppMaintenanceRepository
 
-    private val unsupportedBottomDialogFragment: UnsupportedBottomDialogFragment =
-
-        UnsupportedBottomDialogFragment.newInstance()
+    private var unsupportedBottomDialogFragment: UnsupportedBottomDialogFragment? = null
 
     private lateinit var binding: ActivitySplashBinding
 
@@ -183,7 +181,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     override fun onClickHowToUpdate() {
-        unsupportedBottomDialogFragment.dismissAllowingStateLoss()
+        (unsupportedBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("unsupportedBottomDialogFragment") as? UnsupportedBottomDialogFragment)?.dismissAllowingStateLoss()
         val url = "https://github.com/anonaddy/anonaddy/blob/master/SELF-HOSTING.md#updating"
         val i = Intent(Intent.ACTION_VIEW)
         i.data = url.toUri()
@@ -192,7 +190,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     override fun onClickIgnore() {
-        unsupportedBottomDialogFragment.dismissAllowingStateLoss()
+        (unsupportedBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("unsupportedBottomDialogFragment") as? UnsupportedBottomDialogFragment)?.dismissAllowingStateLoss()
         lifecycleScope.launch {
             loadUserResourceIntoMemory()
         }
@@ -233,8 +231,9 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                             loadUserResourceIntoMemory()
                         }
                     } else {
-                        if (!unsupportedBottomDialogFragment.isAdded) {
-                            unsupportedBottomDialogFragment.show(
+                        if (unsupportedBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("unsupportedBottomDialogFragment") == null) {
+                            unsupportedBottomDialogFragment = UnsupportedBottomDialogFragment.newInstance()
+                            unsupportedBottomDialogFragment?.show(
                                 supportFragmentManager,
                                 "unsupportedBottomDialogFragment"
                             )

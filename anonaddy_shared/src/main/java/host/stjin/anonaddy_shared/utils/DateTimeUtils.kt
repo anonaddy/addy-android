@@ -12,7 +12,7 @@ object DateTimeUtils {
 
     private val SERVER_ZONE_ID = ZoneId.of("GMT")
     private val SERVER_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    private val SHORT_DATE_FORMATTER = DateTimeFormatter.ofPattern("E d MMM", Locale.getDefault())
+    private val SHORT_DATE_FORMATTER: DateTimeFormatter get() = DateTimeFormatter.ofPattern("E d MMM", Locale.getDefault())
 
     enum class DatetimeFormat {
         DATE,

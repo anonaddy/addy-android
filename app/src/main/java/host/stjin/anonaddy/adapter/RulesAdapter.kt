@@ -7,6 +7,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.RulesRecyclerviewListItemBinding
@@ -14,35 +16,56 @@ import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.Rules
 import java.util.Collections
 
+class RuleDiffCallback : DiffUtil.ItemCallback<Rules>() {
+    override fun areItemsTheSame(oldItem: Rules, newItem: Rules): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Rules, newItem: Rules): Boolean {
+        return oldItem == newItem
+    }
+}
+
 class RulesAdapter(
     listWithRules: List<Rules> = emptyList(),
     private var recipients: ArrayList<Recipients>?,
     private val allowDrag: Boolean,
     private var onRuleClicker: ClickListener? = null
-) : RecyclerView.Adapter<RulesAdapter.ViewHolder>() {
+) : ListAdapter<Rules, RulesAdapter.ViewHolder>(RuleDiffCallback()) {
 
-    private val rulesList = ArrayList<Rules>(listWithRules)
+    private var internalRulesList = ArrayList<Rules>(listWithRules)
 
-    val currentList: List<Rules>
-        get() = rulesList
-
-    fun submitList(list: List<Rules>?) {
-        rulesList.clear()
-        if (list != null) {
-            rulesList.addAll(list)
+    init {
+        if (listWithRules.isNotEmpty()) {
+            submitList(listWithRules)
         }
-        notifyDataSetChanged()
+    }
+
+    val currentRules: List<Rules>
+        get() = if (internalRulesList.isNotEmpty()) internalRulesList else currentList
+
+    override fun submitList(list: List<Rules>?) {
+        submitList(list, null)
+    }
+
+    override fun submitList(list: List<Rules>?, commitCallback: Runnable?) {
+        internalRulesList = if (list != null) ArrayList(list) else ArrayList()
+        super.submitList(list?.toList(), commitCallback)
+    }
+
+    public override fun getItem(position: Int): Rules {
+        return if (position in internalRulesList.indices) internalRulesList[position] else super.getItem(position)
     }
 
     fun onItemMove(fromPosition: Int, toPosition: Int) {
-        if (fromPosition in rulesList.indices && toPosition in rulesList.indices && fromPosition != toPosition) {
+        if (fromPosition in internalRulesList.indices && toPosition in internalRulesList.indices && fromPosition != toPosition) {
             if (fromPosition < toPosition) {
                 for (i in fromPosition until toPosition) {
-                    Collections.swap(rulesList, i, i + 1)
+                    Collections.swap(internalRulesList, i, i + 1)
                 }
             } else {
                 for (i in fromPosition downTo toPosition + 1) {
-                    Collections.swap(rulesList, i, i - 1)
+                    Collections.swap(internalRulesList, i, i - 1)
                 }
             }
             notifyItemMoved(fromPosition, toPosition)
@@ -58,8 +81,6 @@ class RulesAdapter(
         }
     }
 
-    override fun getItemCount(): Int = rulesList.size
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = RulesRecyclerviewListItemBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -70,7 +91,7 @@ class RulesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = rulesList[position]
+        val item = getItem(position)
 
         if (allowDrag) {
             holder.binding.rulesRecyclerviewListDrag.visibility = View.VISIBLE

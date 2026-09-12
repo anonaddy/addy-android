@@ -36,10 +36,9 @@ class SetupHow4Fragment : BaseFragment(), RegistrationFormBottomDialogFragment.A
         val root = binding.root
 
         binding.setupHow4ButtonNext.setOnClickListener {
-            val registrationFormBottomDialogFragment: RegistrationFormBottomDialogFragment =
-                RegistrationFormBottomDialogFragment.newInstance()
-
-            if (!registrationFormBottomDialogFragment.isAdded) {
+            if (childFragmentManager.findFragmentByTag("registrationFormBottomDialogFragment") == null) {
+                val registrationFormBottomDialogFragment: RegistrationFormBottomDialogFragment =
+                    RegistrationFormBottomDialogFragment.newInstance()
                 registrationFormBottomDialogFragment.show(
                     childFragmentManager,
                     "registrationFormBottomDialogFragment"

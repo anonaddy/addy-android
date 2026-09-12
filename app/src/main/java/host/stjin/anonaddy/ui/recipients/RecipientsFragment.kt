@@ -45,7 +45,7 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
     private var encryptedSettingsManager: SettingsManager? = null
     private var oneTimeRecyclerViewActions: Boolean = true
 
-    private val addRecipientsFragment: AddRecipientBottomDialogFragment = AddRecipientBottomDialogFragment.newInstance()
+    private var addRecipientsFragment: AddRecipientBottomDialogFragment? = null
     private var _binding: FragmentRecipientsBinding? = null
     private val binding get() = _binding!!
 
@@ -92,6 +92,7 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
 
     override fun onDestroyView() {
         super.onDestroyView()
+        addRecipientsFragment = null
         if (::deleteRecipientSnackbar.isInitialized && deleteRecipientSnackbar.isShown) {
             deleteRecipientSnackbar.dismiss()
         }
@@ -101,8 +102,9 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
     // 3. View Setup
     private fun setOnClickListener() {
         binding.recipientsAddRecipients.setOnClickListener {
-            if (!addRecipientsFragment.isAdded) {
-                addRecipientsFragment.show(
+            if (addRecipientsFragment?.isAdded != true && childFragmentManager.findFragmentByTag("addRecipientsFragment") == null) {
+                addRecipientsFragment = AddRecipientBottomDialogFragment.newInstance()
+                addRecipientsFragment?.show(
                     childFragmentManager,
                     "addRecipientsFragment"
                 )
@@ -310,7 +312,7 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
     }
 
     override fun onAdded() {
-        addRecipientsFragment.dismissAllowingStateLoss()
+        (addRecipientsFragment ?: childFragmentManager.findFragmentByTag("addRecipientsFragment") as? AddRecipientBottomDialogFragment)?.dismissAllowingStateLoss()
         verificationEmailSentSnackbar()
         getDataFromWeb(null, showShimmer = false)
     }

@@ -89,7 +89,7 @@ class RulesFragment : BaseFragment(), Refreshable {
 
                 if (hasOrderChanged) {
                     hasOrderChanged = false
-                    val reorderedList = ArrayList(rulesAdapter.currentList)
+                    val reorderedList = ArrayList(rulesAdapter.currentRules)
 
                     viewLifecycleOwner.lifecycleScope.launch {
                         val result = rulesViewModel.reorderRules(reorderedList)
@@ -200,7 +200,7 @@ class RulesFragment : BaseFragment(), Refreshable {
         rulesAdapter = RulesAdapter(emptyList(), recipients, true)
         rulesAdapter.setClickListener(object : RulesAdapter.ClickListener {
             override fun onClickActivate(pos: Int, view: View) {
-                val currentList = rulesAdapter.currentList
+                val currentList = rulesAdapter.currentRules
                 if (pos in currentList.indices) {
                     if (currentList[pos].active) {
                         viewLifecycleOwner.lifecycleScope.launch {
@@ -215,7 +215,7 @@ class RulesFragment : BaseFragment(), Refreshable {
             }
 
             override fun onClickSettings(pos: Int, view: View) {
-                val currentList = rulesAdapter.currentList
+                val currentList = rulesAdapter.currentRules
                 if (pos in currentList.indices) {
                     val intent = Intent(context, CreateRuleActivity::class.java)
                     intent.putExtra("recipients", GsonTools.gson.toJson(recipients))
@@ -225,7 +225,7 @@ class RulesFragment : BaseFragment(), Refreshable {
             }
 
             override fun onClickDelete(pos: Int, view: View) {
-                val currentList = rulesAdapter.currentList
+                val currentList = rulesAdapter.currentRules
                 if (pos in currentList.indices) {
                     deleteRule(currentList[pos].id)
                 }
@@ -276,7 +276,7 @@ class RulesFragment : BaseFragment(), Refreshable {
 
             encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, list.size)
             rulesAdapter.updateRecipients(recipients)
-            rulesAdapter.submitList(list)
+            rulesAdapter.submitList(list.toList())
             binding.animationFragment.stopAnimation()
         }
     }

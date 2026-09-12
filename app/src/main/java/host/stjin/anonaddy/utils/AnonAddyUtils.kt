@@ -129,8 +129,10 @@ object AnonAddyUtils {
 
         // 3. If fragmentManager is provided, show custom BottomSheet chooser with "Always use this app" checkbox
         if (fragmentManager != null) {
-            val chooserDialog = SendMailAppChooserBottomDialogFragment.newInstance(intent)
-            chooserDialog.show(fragmentManager, "SendMailAppChooserBottomDialogFragment")
+            if (fragmentManager.findFragmentByTag("SendMailAppChooserBottomDialogFragment") == null) {
+                val chooserDialog = SendMailAppChooserBottomDialogFragment.newInstance(intent)
+                chooserDialog.show(fragmentManager, "SendMailAppChooserBottomDialogFragment")
+            }
             return false
         }
 

@@ -115,6 +115,7 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
 
     override fun onDestroyView() {
         super.onDestroyView()
+        blocklistAddBottomDialogFragment = null
         if (::deleteBlocklistSnackbar.isInitialized && deleteBlocklistSnackbar.isShown) {
             deleteBlocklistSnackbar.dismiss()
         }
@@ -164,11 +165,13 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
         }
 
         binding.fragmentBlocklistAddBlocklistEntryButton.setOnClickListener {
-            blocklistAddBottomDialogFragment = AddBlocklistBottomDialogFragment()
-            blocklistAddBottomDialogFragment!!.show(
-                childFragmentManager,
-                "blocklistAddBottomDialogFragment"
-            )
+            if (blocklistAddBottomDialogFragment?.isAdded != true && childFragmentManager.findFragmentByTag("blocklistAddBottomDialogFragment") == null) {
+                blocklistAddBottomDialogFragment = AddBlocklistBottomDialogFragment.newInstance()
+                blocklistAddBottomDialogFragment?.show(
+                    childFragmentManager,
+                    "blocklistAddBottomDialogFragment"
+                )
+            }
         }
     }
 
@@ -433,7 +436,7 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
     }
 
     override fun onAddedBlocklistEntry(newBlocklistEntry: NewBlocklistEntry) {
-        blocklistAddBottomDialogFragment?.dismissAllowingStateLoss()
+        (blocklistAddBottomDialogFragment ?: childFragmentManager.findFragmentByTag("blocklistAddBottomDialogFragment") as? AddBlocklistBottomDialogFragment)?.dismissAllowingStateLoss()
         getDataFromWeb(null, showShimmer = false)
     }
 

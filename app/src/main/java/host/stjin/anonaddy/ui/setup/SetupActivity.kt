@@ -57,10 +57,9 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
                 // There are no request codes
                 val data: Intent? = result.data
                 data?.data?.let {
-                    val backupPasswordBottomDialogFragment: BackupPasswordBottomDialogFragment =
-                        BackupPasswordBottomDialogFragment.newInstance(it)
-
-                    if (!backupPasswordBottomDialogFragment.isAdded) {
+                    if (supportFragmentManager.findFragmentByTag("backupPasswordBottomDialogFragment") == null) {
+                        val backupPasswordBottomDialogFragment: BackupPasswordBottomDialogFragment =
+                            BackupPasswordBottomDialogFragment.newInstance(it)
                         backupPasswordBottomDialogFragment.show(
                             supportFragmentManager,
                             "backupPasswordBottomDialogFragment"
@@ -165,13 +164,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
                 verifyKeyAndAdd(text)
                 Toast.makeText(this, resources.getString(R.string.API_key_copied_from_clipboard), Toast.LENGTH_LONG).show()
             } else {
-                val addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance()
-                if (!addApiBottomDialogFragment.isAdded) {
-                    addApiBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "addApiBottomDialogFragment"
-                    )
-                }
+                showAddApiDialog()
             }
         }
 
@@ -243,14 +236,18 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
                 // Revert the button to normal
                 binding.fragmentSetupInitButtonApi.revertAnimation()
 
-                val addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance()
-                if (!addApiBottomDialogFragment.isAdded) {
-                    addApiBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "addApiBottomDialogFragment"
-                    )
-                }
+                showAddApiDialog()
             }
+        }
+    }
+
+    private fun showAddApiDialog() {
+        if (supportFragmentManager.findFragmentByTag("addApiBottomDialogFragment") == null) {
+            val addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance()
+            addApiBottomDialogFragment.show(
+                supportFragmentManager,
+                "addApiBottomDialogFragment"
+            )
         }
     }
 

@@ -42,7 +42,7 @@ class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUse
     private var encryptedSettingsManager: SettingsManager? = null
     private var oneTimeRecyclerViewActions: Boolean = true
 
-    private var addUsernameFragment: AddUsernameBottomDialogFragment = AddUsernameBottomDialogFragment.newInstance(0)
+    private var addUsernameFragment: AddUsernameBottomDialogFragment? = null
     private var _binding: FragmentUsernameSettingsBinding? = null
     private val binding get() = _binding!!
 
@@ -118,6 +118,7 @@ class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUse
 
     override fun onDestroyView() {
         super.onDestroyView()
+        addUsernameFragment = null
         if (::deleteUsernameSnackbar.isInitialized && deleteUsernameSnackbar.isShown) {
             deleteUsernameSnackbar.dismiss()
         }
@@ -127,8 +128,10 @@ class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUse
     // 3. View Setup
     private fun setOnClickListener() {
         binding.fragmentUsernameSettingsAddUsername.setOnClickListener {
-            if (!addUsernameFragment.isAdded) {
-                addUsernameFragment.show(
+            if (addUsernameFragment?.isAdded != true && childFragmentManager.findFragmentByTag("addUsernameFragment") == null) {
+                val limit = (activity?.application as? AddyIoApp)?.userResourceOrNull?.username_limit ?: 0
+                addUsernameFragment = AddUsernameBottomDialogFragment.newInstance(limit)
+                addUsernameFragment?.show(
                     childFragmentManager,
                     "addUsernameFragment"
                 )
@@ -212,8 +215,6 @@ class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUse
         when (val result = usernamesViewModel.refreshUserResource()) {
             is NetworkResult.Success -> {
                 if (!isAdded) return
-                val user = result.data
-                addUsernameFragment = AddUsernameBottomDialogFragment.newInstance(user.username_limit)
                 setStats()
             }
             is NetworkResult.Error -> {
@@ -273,7 +274,7 @@ class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUse
     }
 
     override fun onAdded() {
-        addUsernameFragment.dismissAllowingStateLoss()
+        (addUsernameFragment ?: childFragmentManager.findFragmentByTag("addUsernameFragment") as? AddUsernameBottomDialogFragment)?.dismissAllowingStateLoss()
         getDataFromWeb(null, showShimmer = false)
     }
 

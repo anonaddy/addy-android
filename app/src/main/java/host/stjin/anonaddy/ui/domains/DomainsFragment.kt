@@ -42,7 +42,7 @@ class DomainsFragment : BaseFragment(), AddDomainBottomDialogFragment.AddDomainB
     private var encryptedSettingsManager: SettingsManager? = null
     private var oneTimeRecyclerViewActions: Boolean = true
 
-    private val addDomainFragment: AddDomainBottomDialogFragment = AddDomainBottomDialogFragment.newInstance()
+    private var addDomainFragment: AddDomainBottomDialogFragment? = null
     private var _binding: FragmentDomainSettingsBinding? = null
     private val binding get() = _binding!!
 
@@ -118,6 +118,7 @@ class DomainsFragment : BaseFragment(), AddDomainBottomDialogFragment.AddDomainB
 
     override fun onDestroyView() {
         super.onDestroyView()
+        addDomainFragment = null
         if (::deleteDomainSnackbar.isInitialized && deleteDomainSnackbar.isShown) {
             deleteDomainSnackbar.dismiss()
         }
@@ -127,8 +128,9 @@ class DomainsFragment : BaseFragment(), AddDomainBottomDialogFragment.AddDomainB
     // 3. View Setup
     private fun setOnClickListener() {
         binding.fragmentDomainSettingsAddDomain.setOnClickListener {
-            if (!addDomainFragment.isAdded) {
-                addDomainFragment.show(
+            if (addDomainFragment?.isAdded != true && childFragmentManager.findFragmentByTag("addDomainFragment") == null) {
+                addDomainFragment = AddDomainBottomDialogFragment.newInstance()
+                addDomainFragment?.show(
                     childFragmentManager,
                     "addDomainFragment"
                 )
@@ -275,7 +277,7 @@ class DomainsFragment : BaseFragment(), AddDomainBottomDialogFragment.AddDomainB
     }
 
     override fun onAdded() {
-        addDomainFragment.dismissAllowingStateLoss()
+        (addDomainFragment ?: childFragmentManager.findFragmentByTag("addDomainFragment") as? AddDomainBottomDialogFragment)?.dismissAllowingStateLoss()
         getDataFromWeb(null, showShimmer = false)
     }
 

@@ -1,16 +1,20 @@
 package host.stjin.anonaddy.ui
 
 import android.app.Application
+import android.security.KeyChain
 import androidx.lifecycle.viewModelScope
 import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.Updater
 import host.stjin.anonaddy.ui.base.BaseViewModel
+import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.network.NetworkResult
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 class MainViewModel(application: Application) : BaseViewModel(application) {
 
@@ -58,5 +62,43 @@ class MainViewModel(application: Application) : BaseViewModel(application) {
         val currentAccountNotifications = encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)
         val listSize = (result as? NetworkResult.Success)?.data?.data?.size ?: 0
         return if (listSize > currentAccountNotifications) listSize - currentAccountNotifications else 0
+    }
+
+    suspend fun getApiTokenExpiryDateIfNear(): LocalDateTime? {
+        val result = userRepository.getApiTokenDetails()
+        if (result is NetworkResult.Success && result.data.expires_at != null) {
+            val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(result.data.expires_at)
+            val deadLineDate = expiryDate?.minusDays(5)
+            if (deadLineDate != null && LocalDateTime.now().isAfter(deadLineDate)) {
+                return expiryDate
+            }
+        }
+        return null
+    }
+
+    suspend fun getSubscriptionExpiryDateIfNear(): LocalDateTime? {
+        if (!AddyIo.isUsingHostedInstance) return null
+        val result = userRepository.getUserResource()
+        if (result is NetworkResult.Success && result.data.subscription_ends_at != null) {
+            val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(result.data.subscription_ends_at)
+            val deadLineDate = expiryDate?.minusDays(7)
+            if (deadLineDate != null && LocalDateTime.now().isAfter(deadLineDate)) {
+                return expiryDate
+            }
+        }
+        return null
+    }
+
+    fun getCertificateExpiryDateIfNear(alias: String): LocalDateTime? {
+        val chain = KeyChain.getCertificateChain(getApplication(), alias)
+        val expiryDateOfChain = chain?.firstOrNull()?.notAfter
+        if (expiryDateOfChain != null) {
+            val expiryDate = DateTimeUtils.convertDateToLocalTimeZoneDate(expiryDateOfChain)
+            val deadLineDate = expiryDate?.minusDays(5)
+            if (deadLineDate != null && LocalDateTime.now().isAfter(deadLineDate)) {
+                return expiryDate
+            }
+        }
+        return null
     }
 }

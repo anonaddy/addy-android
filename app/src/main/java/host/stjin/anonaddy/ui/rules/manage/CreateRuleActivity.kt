@@ -1,5 +1,4 @@
 package host.stjin.anonaddy.ui.rules.manage
-import host.stjin.anonaddy_shared.utils.GsonTools
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -25,6 +24,7 @@ import host.stjin.anonaddy_shared.models.Condition
 import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.Rules
 import host.stjin.anonaddy_shared.network.NetworkResult
+import host.stjin.anonaddy_shared.utils.GsonTools
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
@@ -41,13 +41,9 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
     private lateinit var recipients: ArrayList<Recipients>
 
-    private var conditionBottomDialogFragment: ConditionBottomDialogFragment =
+    private var conditionBottomDialogFragment: ConditionBottomDialogFragment? = null
 
-        ConditionBottomDialogFragment.newInstance(null, null)
-
-    private var actionBottomDialogFragment: ActionBottomDialogFragment =
-
-        ActionBottomDialogFragment.newInstance(arrayListOf(), null, null)
+    private var actionBottomDialogFragment: ActionBottomDialogFragment? = null
 
     private lateinit var binding: ActivityRulesCreateBinding
 
@@ -176,7 +172,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
     // Condition
     override fun onAddedCondition(conditionEditIndex: Int?, type: String, match: String?, values: List<String>?) {
-        conditionBottomDialogFragment.dismissAllowingStateLoss()
+        (conditionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("conditionBottomDialogFragment") as? ConditionBottomDialogFragment)?.dismissAllowingStateLoss()
 
         val condition = Condition(
             type = type,
@@ -196,7 +192,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
     // Actions
     override fun onAddedAction(actionEditIndex: Int?, type: String, value: String) {
-        actionBottomDialogFragment.dismissAllowingStateLoss()
+        (actionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("actionBottomDialogFragment") as? ActionBottomDialogFragment)?.dismissAllowingStateLoss()
         val action = Action(
             type = type,
             value = value
@@ -212,7 +208,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     override fun onAddedAction(actionEditIndex: Int?, type: String, value: Boolean) {
-        actionBottomDialogFragment.dismissAllowingStateLoss()
+        (actionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("actionBottomDialogFragment") as? ActionBottomDialogFragment)?.dismissAllowingStateLoss()
         val action = Action(
             type = type,
             value = value.toString()
@@ -440,10 +436,10 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             }
 
             cardView.setOnClickListener {
-                if (!conditionBottomDialogFragment.isAdded) {
+                if (conditionBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("conditionBottomDialogFragment") == null) {
                     // Reset the variable to remove the arguments that could be sent with the previous edit button
                     conditionBottomDialogFragment = ConditionBottomDialogFragment.newInstance(conditionNumber, rules.conditions[conditionNumber])
-                    conditionBottomDialogFragment.show(
+                    conditionBottomDialogFragment?.show(
                         supportFragmentManager,
                         "conditionBottomDialogFragment"
                     )
@@ -456,10 +452,10 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         val inflatedAddConditionLayout: View =
             inflater.inflate(R.layout.rules_view_condition_action_add, binding.activityRulesCreateLLConditions as ViewGroup?, false)
         inflatedAddConditionLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_add).setOnClickListener {
-            if (!conditionBottomDialogFragment.isAdded) {
+            if (conditionBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("conditionBottomDialogFragment") == null) {
                 // Remove the arguments that could be sent with the edit button
                 conditionBottomDialogFragment = ConditionBottomDialogFragment.newInstance(null, null)
-                conditionBottomDialogFragment.show(
+                conditionBottomDialogFragment?.show(
                     supportFragmentManager,
                     "conditionBottomDialogFragment"
                 )
@@ -523,10 +519,10 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             }
 
             cardView.setOnClickListener {
-                if (!actionBottomDialogFragment.isAdded) {
+                if (actionBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("actionBottomDialogFragment") == null) {
                     // Reset the variable to remove the arguments that could be sent with the previous edit button
                     actionBottomDialogFragment = ActionBottomDialogFragment.newInstance(recipients, actionNumber, rules.actions[actionNumber])
-                    actionBottomDialogFragment.show(
+                    actionBottomDialogFragment?.show(
                         supportFragmentManager,
                         "actionBottomDialogFragment"
                     )
@@ -540,10 +536,10 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         val inflatedAddActionLayout: View =
             inflater.inflate(R.layout.rules_view_condition_action_add, binding.activityRulesCreateLLActions as ViewGroup?, false)
         inflatedAddActionLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_add).setOnClickListener {
-            if (!actionBottomDialogFragment.isAdded) {
+            if (actionBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("actionBottomDialogFragment") == null) {
                 // Reset the variable to remove the arguments that could be sent with the edit button
                 actionBottomDialogFragment = ActionBottomDialogFragment.newInstance(recipients, null, null)
-                actionBottomDialogFragment.show(
+                actionBottomDialogFragment?.show(
                     supportFragmentManager,
                     "actionBottomDialogFragment"
                 )

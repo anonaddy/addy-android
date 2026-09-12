@@ -75,12 +75,11 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
 
     private var aliasSortFilter: AliasSortFilter = defaultAliasSortFilter.copy()
 
-    private val addAliasBottomDialogFragment: AddAliasBottomDialogFragment =
-        AddAliasBottomDialogFragment.newInstance()
+    private var addAliasBottomDialogFragment: AddAliasBottomDialogFragment? = null
 
-    private lateinit var filterOptionsAliasBottomDialogFragment: FilterOptionsAliasBottomDialogFragment
+    private var filterOptionsAliasBottomDialogFragment: FilterOptionsAliasBottomDialogFragment? = null
 
-    private lateinit var aliasMultipleSelectionBottomDialogFragment: AliasMultipleSelectionBottomDialogFragment
+    private var aliasMultipleSelectionBottomDialogFragment: AliasMultipleSelectionBottomDialogFragment? = null
 
     private var _binding: FragmentAliasesBinding? = null
 
@@ -183,6 +182,9 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
 
     override fun onDestroyView() {
         super.onDestroyView()
+        addAliasBottomDialogFragment = null
+        filterOptionsAliasBottomDialogFragment = null
+        aliasMultipleSelectionBottomDialogFragment = null
         _binding = null
     }
 
@@ -304,32 +306,27 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
         }
 
         binding.aliasChipCustom.setOnClickListener {
-            if (!filterOptionsAliasBottomDialogFragment.isAdded) {
-                filterOptionsAliasBottomDialogFragment.show(
+            if (filterOptionsAliasBottomDialogFragment?.isAdded != true && childFragmentManager.findFragmentByTag("filterOptionsAliasBottomDialogFragment") == null) {
+                filterOptionsAliasBottomDialogFragment = FilterOptionsAliasBottomDialogFragment.newInstance(aliasSortFilter)
+                filterOptionsAliasBottomDialogFragment?.show(
                     childFragmentManager,
                     "filterOptionsAliasBottomDialogFragment"
                 )
             }
         }
 
-        binding.aliasAddAliasFab.setOnClickListener {
-            if (!addAliasBottomDialogFragment.isAdded) {
-                addAliasBottomDialogFragment.show(
-                    childFragmentManager,
-                    "addAliasBottomDialogFragment"
-                )
-            }
-        }
+        binding.aliasAddAliasFab.setOnClickListener { showAddAliasDialog() }
+        binding.aliasAddAlias.setOnClickListener { showAddAliasDialog() }
+    }
 
-        binding.aliasAddAlias.setOnClickListener {
-            if (!addAliasBottomDialogFragment.isAdded) {
-                addAliasBottomDialogFragment.show(
-                    childFragmentManager,
-                    "addAliasBottomDialogFragment"
-                )
-            }
+    private fun showAddAliasDialog() {
+        if (addAliasBottomDialogFragment?.isAdded != true && childFragmentManager.findFragmentByTag("addAliasBottomDialogFragment") == null) {
+            addAliasBottomDialogFragment = AddAliasBottomDialogFragment.newInstance()
+            addAliasBottomDialogFragment?.show(
+                childFragmentManager,
+                "addAliasBottomDialogFragment"
+            )
         }
-
     }
 
     private fun setAliasesAdapter(context: Context, list: PaginatedResponse<Aliases>) {
@@ -405,10 +402,10 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
                                     length = Snackbar.LENGTH_INDEFINITE,
                                     allowSwipeDismiss = false
                                 ).setAction(R.string.actions) {
-                                    aliasMultipleSelectionBottomDialogFragment =
-                                        AliasMultipleSelectionBottomDialogFragment.newInstance(selectedAliases)
-                                    if (!aliasMultipleSelectionBottomDialogFragment.isAdded) {
-                                        aliasMultipleSelectionBottomDialogFragment.show(
+                                    if (aliasMultipleSelectionBottomDialogFragment?.isAdded != true && childFragmentManager.findFragmentByTag("aliasMultipleSelectionBottomDialogFragment") == null) {
+                                        aliasMultipleSelectionBottomDialogFragment =
+                                            AliasMultipleSelectionBottomDialogFragment.newInstance(selectedAliases)
+                                        aliasMultipleSelectionBottomDialogFragment?.show(
                                             childFragmentManager,
                                             "aliasMultipleSelectionBottomDialogFragment"
                                         )
@@ -429,10 +426,10 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
                                     ).apply {
                                         anchorView = bottomNavView
                                     }.setAction(R.string.actions) {
-                                        aliasMultipleSelectionBottomDialogFragment =
-                                            AliasMultipleSelectionBottomDialogFragment.newInstance(selectedAliases)
-                                        if (!aliasMultipleSelectionBottomDialogFragment.isAdded) {
-                                            aliasMultipleSelectionBottomDialogFragment.show(
+                                        if (aliasMultipleSelectionBottomDialogFragment?.isAdded != true && childFragmentManager.findFragmentByTag("aliasMultipleSelectionBottomDialogFragment") == null) {
+                                            aliasMultipleSelectionBottomDialogFragment =
+                                                AliasMultipleSelectionBottomDialogFragment.newInstance(selectedAliases)
+                                            aliasMultipleSelectionBottomDialogFragment?.show(
                                                 childFragmentManager,
                                                 "aliasMultipleSelectionBottomDialogFragment"
                                             )
@@ -578,7 +575,7 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
     }
 
     override fun onAdded() {
-        addAliasBottomDialogFragment.dismissAllowingStateLoss()
+        (addAliasBottomDialogFragment ?: childFragmentManager.findFragmentByTag("addAliasBottomDialogFragment") as? AddAliasBottomDialogFragment)?.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb(null, showShimmer = false)
 
@@ -604,10 +601,8 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
         settingsManager?.putSettingsString(SettingsManager.PREFS.ALIAS_SORT_FILTER, data)
 
 
-        if (filterOptionsAliasBottomDialogFragment.isAdded) {
-            // Could not be added because this is called from homeFragment on sw600dp
-            filterOptionsAliasBottomDialogFragment.dismissAllowingStateLoss()
-        }
+        // Could not be added because this is called from homeFragment on sw600dp
+        (filterOptionsAliasBottomDialogFragment ?: childFragmentManager.findFragmentByTag("filterOptionsAliasBottomDialogFragment") as? FilterOptionsAliasBottomDialogFragment)?.dismissAllowingStateLoss()
 
         loadFilter()
         getDataFromWeb(null, showShimmer = false)
@@ -622,7 +617,7 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
     }
 
     override fun onCloseMultipleSelectionBottomDialogFragment(shouldRefreshData: Boolean) {
-        aliasMultipleSelectionBottomDialogFragment.dismissAllowingStateLoss()
+        (aliasMultipleSelectionBottomDialogFragment ?: childFragmentManager.findFragmentByTag("aliasMultipleSelectionBottomDialogFragment") as? AliasMultipleSelectionBottomDialogFragment)?.dismissAllowingStateLoss()
         aliasAdapter?.updateWatchedAliases()
 
         if (shouldRefreshData) {
@@ -636,7 +631,7 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
     }
 
     override fun onCancelMultipleSelectionBottomDialogFragment(shouldRefreshData: Boolean) {
-        aliasMultipleSelectionBottomDialogFragment.dismissAllowingStateLoss()
+        (aliasMultipleSelectionBottomDialogFragment ?: childFragmentManager.findFragmentByTag("aliasMultipleSelectionBottomDialogFragment") as? AliasMultipleSelectionBottomDialogFragment)?.dismissAllowingStateLoss()
         aliasAdapter?.unselectAliases()
         aliasAdapter?.updateWatchedAliases()
         hideSnackBar()

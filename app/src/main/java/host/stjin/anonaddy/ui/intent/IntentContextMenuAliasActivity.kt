@@ -30,10 +30,12 @@ class IntentContextMenuAliasActivity : BaseActivity(),
     IntentSendMailRecipientBottomDialogFragment.AddIntentSendMailRecipientBottomDialogListener,
     IntentBottomDialogFragment.IntentBottomDialogListener,
     SendMailAppChooserBottomDialogFragment.SendMailAppChooserBottomDialogListener {
-    lateinit var domainRepository: DomainRepository
-    lateinit var aliasRepository: AliasRepository
+    private lateinit var domainRepository: DomainRepository
+    private lateinit var aliasRepository: AliasRepository
 
-    private lateinit var intentBottomDialogFragment: IntentBottomDialogFragment
+    private var intentBottomDialogFragment: IntentBottomDialogFragment? = null
+    private fun getIntentBottomDialogFragment(): IntentBottomDialogFragment? =
+        intentBottomDialogFragment ?: (supportFragmentManager.findFragmentByTag("intentBottomDialogFragment") as? IntentBottomDialogFragment)
 
     private var domainOptions: List<String> = listOf()
 
@@ -41,7 +43,9 @@ class IntentContextMenuAliasActivity : BaseActivity(),
 
     private var body: String? = null
 
-    private lateinit var intentSendMailRecipientBottomDialogFragment: IntentSendMailRecipientBottomDialogFragment
+    private var intentSendMailRecipientBottomDialogFragment: IntentSendMailRecipientBottomDialogFragment? = null
+    private fun getIntentSendMailRecipientBottomDialogFragment(): IntentSendMailRecipientBottomDialogFragment? =
+        intentSendMailRecipientBottomDialogFragment ?: (supportFragmentManager.findFragmentByTag("intentSendMailRecipientBottomDialogFragment") as? IntentSendMailRecipientBottomDialogFragment)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,9 +67,9 @@ class IntentContextMenuAliasActivity : BaseActivity(),
 
     private fun processIntent() {
         // Main fragment (the one with the text and loading indicator)
-        intentBottomDialogFragment = IntentBottomDialogFragment.newInstance()
-        if (!intentBottomDialogFragment.isAdded) {
-            intentBottomDialogFragment.show(
+        if (getIntentBottomDialogFragment() == null) {
+            intentBottomDialogFragment = IntentBottomDialogFragment.newInstance()
+            intentBottomDialogFragment?.show(
                 supportFragmentManager,
                 "intentBottomDialogFragment"
             )
@@ -165,12 +169,8 @@ class IntentContextMenuAliasActivity : BaseActivity(),
     }
 
     override fun finish() {
-        if (::intentSendMailRecipientBottomDialogFragment.isInitialized) {
-            intentSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
-        }
-        if (::intentBottomDialogFragment.isInitialized) {
-            intentBottomDialogFragment.dismissAllowingStateLoss()
-        }
+        getIntentSendMailRecipientBottomDialogFragment()?.dismissAllowingStateLoss()
+        getIntentBottomDialogFragment()?.dismissAllowingStateLoss()
         super.finish()
     }
 
@@ -182,7 +182,7 @@ class IntentContextMenuAliasActivity : BaseActivity(),
         bccRecipients: String,
         skipAndOpenDefaultMailApp: Boolean
     ) {
-        intentSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
+        getIntentSendMailRecipientBottomDialogFragment()?.dismissAllowingStateLoss()
 
         if (skipAndOpenDefaultMailApp) {
             openMailToShareSheet(
@@ -194,7 +194,7 @@ class IntentContextMenuAliasActivity : BaseActivity(),
             // Check if this alias exists
             if (aliasObject != null) {
                 // The entered alias exists!
-                intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_sharesheet))
+                getIntentBottomDialogFragment()?.setText(this.resources.getString(R.string.intent_opening_sharesheet))
 
                 // Get recipients
                 val anonaddyRecipientAddresses = AnonAddyUtils.getSendAddress(recipients, aliasObject)
@@ -225,7 +225,7 @@ class IntentContextMenuAliasActivity : BaseActivity(),
 
                 openMailToShareSheet(anonaddyRecipientAddresses, anonaddyCcRecipientAddresses, anonaddyBccRecipientAddresses)
             } else {
-                intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, alias))
+                getIntentBottomDialogFragment()?.setText(this.resources.getString(R.string.intent_creating_alias, alias))
 
                 // Alias does not exist, perhaps the user wants to create it?
                 val splittedEmailAddress = alias.split("@")
@@ -292,7 +292,7 @@ class IntentContextMenuAliasActivity : BaseActivity(),
 
                 if (domainOptions.contains(splittedEmailAddress[1])) {
                     // The domain of the email address is linked to this addy.io account. User most likely wants to either manage or create this Alias.
-                    intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, emails[0]))
+                    getIntentBottomDialogFragment()?.setText(this.resources.getString(R.string.intent_creating_alias, emails[0]))
                     lifecycleScope.launch {
                         checkIfAliasExists(emails[0])
                     }
@@ -317,14 +317,13 @@ class IntentContextMenuAliasActivity : BaseActivity(),
     }
 
     private fun sendEmailFromAlias(emails: ArrayList<String>, validCcRecipients: ArrayList<String>, validBccRecipients: ArrayList<String>) {
-        intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_send_mail_dialog))
+        getIntentBottomDialogFragment()?.setText(this.resources.getString(R.string.intent_opening_send_mail_dialog))
 
         // Get aliases and pass it through to the send email bottomdialog
-        intentSendMailRecipientBottomDialogFragment =
-            IntentSendMailRecipientBottomDialogFragment.newInstance(emails, validCcRecipients, validBccRecipients, domainOptions)
-
-        if (!intentSendMailRecipientBottomDialogFragment.isAdded) {
-            intentSendMailRecipientBottomDialogFragment.show(
+        if (getIntentSendMailRecipientBottomDialogFragment() == null) {
+            intentSendMailRecipientBottomDialogFragment =
+                IntentSendMailRecipientBottomDialogFragment.newInstance(emails, validCcRecipients, validBccRecipients, domainOptions)
+            intentSendMailRecipientBottomDialogFragment?.show(
                 supportFragmentManager,
                 "intentSendMailRecipientBottomDialogFragment"
             )
@@ -353,15 +352,17 @@ class IntentContextMenuAliasActivity : BaseActivity(),
             if (!aliasId.isNullOrEmpty()) {
                 // ID is not empty, thus there was a match
                 // Let the user know that an alias exists, wait 1s and open the ManageAliasActivity
-                intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_alias_already_exists))
+                getIntentBottomDialogFragment()?.setText(this.resources.getString(R.string.intent_alias_already_exists))
                 Handler(Looper.getMainLooper()).postDelayed({
-                    intentBottomDialogFragment.dismissAllowingStateLoss()
-                    // There is an alias with this exact email address. It already exists! Open the ManageAliasActivity
-                    val intent = Intent(this, ManageAliasActivity::class.java)
-                    // Pass data object in the bundle and populate details activity.
-                    intent.putExtra("alias_id", aliasId)
-                    startActivity(intent)
-                    finish()
+                    if (!isFinishing && !isDestroyed) {
+                        getIntentBottomDialogFragment()?.dismissAllowingStateLoss()
+                        // There is an alias with this exact email address. It already exists! Open the ManageAliasActivity
+                        val intent = Intent(this, ManageAliasActivity::class.java)
+                        // Pass data object in the bundle and populate details activity.
+                        intent.putExtra("alias_id", aliasId)
+                        startActivity(intent)
+                        finish()
+                    }
                 }, 1000)
             } else {
                 // ID is empty, this alias is new! Let's create it
@@ -420,9 +421,7 @@ class IntentContextMenuAliasActivity : BaseActivity(),
         anonaddyCcRecipientAddresses: Array<String?>,
         anonaddyBccRecipientAddresses: Array<String?>
     ) {
-        if (::intentBottomDialogFragment.isInitialized) {
-            intentBottomDialogFragment.dismissAllowingStateLoss()
-        }
+        getIntentBottomDialogFragment()?.dismissAllowingStateLoss()
 
         // Open the mailto app select sheet, but make sure to exclude ourselves!
         val intent = AnonAddyUtils.buildEmailIntent(

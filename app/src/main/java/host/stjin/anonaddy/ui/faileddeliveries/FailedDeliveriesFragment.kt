@@ -100,6 +100,7 @@ class FailedDeliveriesFragment : BaseFragment(), FailedDeliveryDetailsBottomDial
 
     override fun onDestroyView() {
         super.onDestroyView()
+        failedDeliveryDetailsBottomDialogFragment = null
         _binding = null
     }
 
@@ -109,11 +110,13 @@ class FailedDeliveriesFragment : BaseFragment(), FailedDeliveryDetailsBottomDial
         failedDeliveriesAdapter.setClickListener(object : FailedDeliveryAdapter.ClickListener {
             override fun onClickDetails(pos: Int, view: View) {
                 failedDeliveriesList?.data?.getOrNull(pos)?.let {
-                    failedDeliveryDetailsBottomDialogFragment = FailedDeliveryDetailsBottomDialogFragment.newInstance(it)
-                    failedDeliveryDetailsBottomDialogFragment!!.show(
-                        childFragmentManager,
-                        "failedDeliveryDetailsBottomDialogFragment"
-                    )
+                    if (failedDeliveryDetailsBottomDialogFragment?.isAdded != true && childFragmentManager.findFragmentByTag("failedDeliveryDetailsBottomDialogFragment") == null) {
+                        failedDeliveryDetailsBottomDialogFragment = FailedDeliveryDetailsBottomDialogFragment.newInstance(it)
+                        failedDeliveryDetailsBottomDialogFragment?.show(
+                            childFragmentManager,
+                            "failedDeliveryDetailsBottomDialogFragment"
+                        )
+                    }
                 }
             }
         })
@@ -252,7 +255,7 @@ class FailedDeliveriesFragment : BaseFragment(), FailedDeliveryDetailsBottomDial
     }
 
     override fun onDeleted(failedDeliveryId: String) {
-        failedDeliveryDetailsBottomDialogFragment?.dismissAllowingStateLoss()
+        (failedDeliveryDetailsBottomDialogFragment ?: childFragmentManager.findFragmentByTag("failedDeliveryDetailsBottomDialogFragment") as? FailedDeliveryDetailsBottomDialogFragment)?.dismissAllowingStateLoss()
         getDataFromWeb(null, showShimmer = false)
     }
 

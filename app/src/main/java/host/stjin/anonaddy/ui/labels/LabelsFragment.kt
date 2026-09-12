@@ -100,6 +100,7 @@ class LabelsFragment : BaseFragment(), AddLabelBottomDialogFragment.AddLabelsBot
 
     override fun onDestroyView() {
         super.onDestroyView()
+        labelsAddBottomDialogFragment = null
         if (::deleteLabelSnackbar.isInitialized && deleteLabelSnackbar.isShown) {
             deleteLabelSnackbar.dismiss()
         }
@@ -148,11 +149,13 @@ class LabelsFragment : BaseFragment(), AddLabelBottomDialogFragment.AddLabelsBot
         }
 
         binding.fragmentLabelsAddLabelButton.setOnClickListener {
-            labelsAddBottomDialogFragment = AddLabelBottomDialogFragment.newInstance(null)
-            labelsAddBottomDialogFragment!!.show(
-                childFragmentManager,
-                "labelsAddBottomDialogFragment"
-            )
+            if (labelsAddBottomDialogFragment?.isAdded != true && childFragmentManager.findFragmentByTag("labelsAddBottomDialogFragment") == null) {
+                labelsAddBottomDialogFragment = AddLabelBottomDialogFragment.newInstance(null)
+                labelsAddBottomDialogFragment?.show(
+                    childFragmentManager,
+                    "labelsAddBottomDialogFragment"
+                )
+            }
         }
     }
 
@@ -219,11 +222,13 @@ class LabelsFragment : BaseFragment(), AddLabelBottomDialogFragment.AddLabelsBot
             }
 
             override fun onClickEdit(pos: Int, view: View, label: Labels) {
-                labelsAddBottomDialogFragment = AddLabelBottomDialogFragment.newInstance(label)
-                labelsAddBottomDialogFragment!!.show(
-                    childFragmentManager,
-                    "labelsAddBottomDialogFragment"
-                )
+                if (labelsAddBottomDialogFragment?.isAdded != true && childFragmentManager.findFragmentByTag("labelsAddBottomDialogFragment") == null) {
+                    labelsAddBottomDialogFragment = AddLabelBottomDialogFragment.newInstance(label)
+                    labelsAddBottomDialogFragment?.show(
+                        childFragmentManager,
+                        "labelsAddBottomDialogFragment"
+                    )
+                }
             }
         })
 
@@ -290,7 +295,7 @@ class LabelsFragment : BaseFragment(), AddLabelBottomDialogFragment.AddLabelsBot
     }
 
     override fun onAddedLabelEntry(label: Labels) {
-        labelsAddBottomDialogFragment?.dismissAllowingStateLoss()
+        (labelsAddBottomDialogFragment ?: childFragmentManager.findFragmentByTag("labelsAddBottomDialogFragment") as? AddLabelBottomDialogFragment)?.dismissAllowingStateLoss()
         getDataFromWeb(null, showShimmer = false)
     }
 

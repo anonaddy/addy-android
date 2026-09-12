@@ -36,8 +36,8 @@ class AliasMultipleSelectionBottomDialogFragment : BaseBottomSheetDialogFragment
 
     private var listener: AddAliasMultipleSelectionBottomDialogListener? = null
 
-    private lateinit var editAliasLabelsBottomDialogFragment: EditAliasLabelsBottomDialogFragment
-    private lateinit var editAliasRecipientsBottomDialogFragment: EditAliasRecipientsBottomDialogFragment
+    private var editAliasLabelsBottomDialogFragment: EditAliasLabelsBottomDialogFragment? = null
+    private var editAliasRecipientsBottomDialogFragment: EditAliasRecipientsBottomDialogFragment? = null
 
     private lateinit var aliasWatcher: AliasWatcher
 
@@ -85,6 +85,8 @@ class AliasMultipleSelectionBottomDialogFragment : BaseBottomSheetDialogFragment
 
     override fun onDestroyView() {
         super.onDestroyView()
+        editAliasLabelsBottomDialogFragment = null
+        editAliasRecipientsBottomDialogFragment = null
         _binding = null
     }
 
@@ -101,19 +103,23 @@ class AliasMultipleSelectionBottomDialogFragment : BaseBottomSheetDialogFragment
 
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLabelsEdit.setOnLayoutClickedListener {
             val aliasIds = selectedAliases.map { it.id }
-            editAliasLabelsBottomDialogFragment = EditAliasLabelsBottomDialogFragment.newInstance(aliasIds, null)
-            editAliasLabelsBottomDialogFragment.show(
-                childFragmentManager,
-                "editAliasLabelsBottomDialogFragment"
-            )
+            if (editAliasLabelsBottomDialogFragment?.isAdded != true && childFragmentManager.findFragmentByTag("editAliasLabelsBottomDialogFragment") == null) {
+                editAliasLabelsBottomDialogFragment = EditAliasLabelsBottomDialogFragment.newInstance(aliasIds, null)
+                editAliasLabelsBottomDialogFragment?.show(
+                    childFragmentManager,
+                    "editAliasLabelsBottomDialogFragment"
+                )
+            }
         }
 
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasRecipientsEdit.setOnLayoutClickedListener {
-            editAliasRecipientsBottomDialogFragment = EditAliasRecipientsBottomDialogFragment.newInstance(null, null)
-            editAliasRecipientsBottomDialogFragment.show(
-                childFragmentManager,
-                "editAliasRecipientsBottomDialogFragment"
-            )
+            if (editAliasRecipientsBottomDialogFragment?.isAdded != true && childFragmentManager.findFragmentByTag("editAliasRecipientsBottomDialogFragment") == null) {
+                editAliasRecipientsBottomDialogFragment = EditAliasRecipientsBottomDialogFragment.newInstance(null, null)
+                editAliasRecipientsBottomDialogFragment?.show(
+                    childFragmentManager,
+                    "editAliasRecipientsBottomDialogFragment"
+                )
+            }
         }
 
 
@@ -136,7 +142,7 @@ class AliasMultipleSelectionBottomDialogFragment : BaseBottomSheetDialogFragment
 
     override fun labelsEdited() {
         shouldRefreshData = true
-        editAliasLabelsBottomDialogFragment.dismissAllowingStateLoss()
+        (editAliasLabelsBottomDialogFragment ?: childFragmentManager.findFragmentByTag("editAliasLabelsBottomDialogFragment") as? EditAliasLabelsBottomDialogFragment)?.dismissAllowingStateLoss()
         listener?.onCloseMultipleSelectionBottomDialogFragment(shouldRefreshData)
         dismissAllowingStateLoss()
     }
@@ -146,6 +152,7 @@ class AliasMultipleSelectionBottomDialogFragment : BaseBottomSheetDialogFragment
     }
 
     override fun bulkRecipientsEdited(recipientIds: ArrayList<String>) {
+        (editAliasRecipientsBottomDialogFragment ?: childFragmentManager.findFragmentByTag("editAliasRecipientsBottomDialogFragment") as? EditAliasRecipientsBottomDialogFragment)?.dismissAllowingStateLoss()
         amountOfNetworkCallsDone = 0
         networkAction = NetworkAction.CHANGE_RECIPIENTS_STATE
         updateUi()
@@ -179,7 +186,7 @@ class AliasMultipleSelectionBottomDialogFragment : BaseBottomSheetDialogFragment
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.visibility = View.GONE
 
         // Pinned
-        if ((activity?.application as? AddyIoApp)?.userResource?.subscription != null) {
+        if ((activity?.application as? AddyIoApp)?.userResourceOrNull?.subscription != null) {
             binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasPinnedSwitchLayout.visibility = View.VISIBLE
         } else {
             binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasPinnedSwitchLayout.visibility = View.GONE

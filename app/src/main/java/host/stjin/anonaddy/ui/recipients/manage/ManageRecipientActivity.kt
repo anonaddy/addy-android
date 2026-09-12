@@ -33,9 +33,9 @@ class ManageRecipientActivity : BaseActivity(),
     private val viewModel: ManageRecipientViewModel by viewModels()
     private lateinit var aliasRepository: AliasRepository
 
-    private lateinit var addRecipientPublicGpgKeyBottomDialogFragment: AddRecipientPublicGpgKeyBottomDialogFragment
+    private var addRecipientPublicGpgKeyBottomDialogFragment: AddRecipientPublicGpgKeyBottomDialogFragment? = null
 
-    private lateinit var editRecipientDescriptionBottomDialogFragment: EditRecipientDescriptionBottomDialogFragment
+    private var editRecipientDescriptionBottomDialogFragment: EditRecipientDescriptionBottomDialogFragment? = null
 
     private var shouldRefreshOnFinish = false
 
@@ -93,8 +93,8 @@ class ManageRecipientActivity : BaseActivity(),
 
     private fun setOnClickListeners() {
         binding.activityManageRecipientDescEdit.setOnLayoutClickedListener {
-            if (!editRecipientDescriptionBottomDialogFragment.isAdded) {
-                editRecipientDescriptionBottomDialogFragment.show(
+            if (editRecipientDescriptionBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editRecipientDescriptionBottomDialogFragment") == null) {
+                editRecipientDescriptionBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editRecipientDescriptionBottomDialogFragment"
                 )
@@ -102,8 +102,8 @@ class ManageRecipientActivity : BaseActivity(),
         }
 
         binding.activityManageRecipientChangePgpKey.setOnLayoutClickedListener {
-            if (!addRecipientPublicGpgKeyBottomDialogFragment.isAdded) {
-                addRecipientPublicGpgKeyBottomDialogFragment.show(
+            if (addRecipientPublicGpgKeyBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("addRecipientPublicGpgKeyBottomDialogFragment") == null) {
+                addRecipientPublicGpgKeyBottomDialogFragment?.show(
                     supportFragmentManager,
                     "addRecipientPublicGpgKeyBottomDialogFragment"
                 )
@@ -174,14 +174,15 @@ class ManageRecipientActivity : BaseActivity(),
     }
 
     override fun onKeyAdded(recipient: Recipients) {
-        addRecipientPublicGpgKeyBottomDialogFragment.dismissAllowingStateLoss()
+        (addRecipientPublicGpgKeyBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("addRecipientPublicGpgKeyBottomDialogFragment") as? AddRecipientPublicGpgKeyBottomDialogFragment)?.dismissAllowingStateLoss()
+        shouldRefreshOnFinish = true
 
         // Do this last, will trigger updateUI as well as re-init addRecipientPublicGpgKeyBottomDialogFragment
         this.recipient = recipient
     }
 
     override fun descriptionEdited(recipient: Recipients) {
-        editRecipientDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+        (editRecipientDescriptionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editRecipientDescriptionBottomDialogFragment") as? EditRecipientDescriptionBottomDialogFragment)?.dismissAllowingStateLoss()
         shouldRefreshOnFinish = true
 
         // Do this last, will trigger updateUI as well as re-init editRecipientDescriptionBottomDialogFragment
@@ -234,10 +235,10 @@ class ManageRecipientActivity : BaseActivity(),
                     } else {
                         binding.activityManageRecipientActive.showProgressBar(false)
                         binding.activityManageRecipientActive.setSwitchChecked(false)
-                        if (!addRecipientPublicGpgKeyBottomDialogFragment.isAdded) {
-                            addRecipientPublicGpgKeyBottomDialogFragment.show(
+                        if (addRecipientPublicGpgKeyBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("addRecipientPublicGpgKeyBottomDialogFragment") == null) {
+                            addRecipientPublicGpgKeyBottomDialogFragment?.show(
                                 supportFragmentManager,
-                                "editrecipientDescriptionBottomDialogFragment"
+                                "addRecipientPublicGpgKeyBottomDialogFragment"
                             )
                         }
                     }

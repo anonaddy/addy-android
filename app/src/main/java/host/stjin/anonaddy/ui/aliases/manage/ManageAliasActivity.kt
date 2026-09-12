@@ -60,14 +60,14 @@ class ManageAliasActivity : BaseActivity(),
 
     private var shouldRefreshOnFinish = false
 
-    private lateinit var editAliasDescriptionBottomDialogFragment: EditAliasDescriptionBottomDialogFragment
-    private lateinit var editAliasLabelsBottomDialogFragment: EditAliasLabelsBottomDialogFragment
+    private var editAliasDescriptionBottomDialogFragment: EditAliasDescriptionBottomDialogFragment? = null
+    private var editAliasLabelsBottomDialogFragment: EditAliasLabelsBottomDialogFragment? = null
 
-    private lateinit var editAliasFromNameBottomDialogFragment: EditAliasFromNameBottomDialogFragment
+    private var editAliasFromNameBottomDialogFragment: EditAliasFromNameBottomDialogFragment? = null
 
-    private lateinit var editAliasRecipientsBottomDialogFragment: EditAliasRecipientsBottomDialogFragment
+    private var editAliasRecipientsBottomDialogFragment: EditAliasRecipientsBottomDialogFragment? = null
 
-    private lateinit var editAliasSendMailRecipientBottomDialogFragment: EditAliasSendMailRecipientBottomDialogFragment
+    private var editAliasSendMailRecipientBottomDialogFragment: EditAliasSendMailRecipientBottomDialogFragment? = null
 
     private var alias: Aliases? = null
         set(value) {
@@ -154,8 +154,8 @@ class ManageAliasActivity : BaseActivity(),
         }
 
         binding.activityManageAliasGeneralActions.activityManageAliasLabelsEdit.setOnLayoutClickedListener {
-            if (!editAliasLabelsBottomDialogFragment.isAdded) {
-                editAliasLabelsBottomDialogFragment.show(
+            if (editAliasLabelsBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editAliasLabelsBottomDialogFragment") == null) {
+                editAliasLabelsBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editAliasLabelsBottomDialogFragment"
                 )
@@ -163,8 +163,8 @@ class ManageAliasActivity : BaseActivity(),
         }
 
         binding.activityManageAliasGeneralActions.activityManageAliasDescEdit.setOnLayoutClickedListener {
-            if (!editAliasDescriptionBottomDialogFragment.isAdded) {
-                editAliasDescriptionBottomDialogFragment.show(
+            if (editAliasDescriptionBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editAliasDescriptionBottomDialogFragment") == null) {
+                editAliasDescriptionBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editAliasDescriptionBottomDialogFragment"
                 )
@@ -172,8 +172,8 @@ class ManageAliasActivity : BaseActivity(),
         }
 
         binding.activityManageAliasGeneralActions.activityManageAliasRecipientsEdit.setOnLayoutClickedListener {
-            if (!editAliasRecipientsBottomDialogFragment.isAdded) {
-                editAliasRecipientsBottomDialogFragment.show(
+            if (editAliasRecipientsBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editAliasRecipientsBottomDialogFragment") == null) {
+                editAliasRecipientsBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editAliasRecipientsBottomDialogFragment"
                 )
@@ -181,8 +181,8 @@ class ManageAliasActivity : BaseActivity(),
         }
 
         binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setOnLayoutClickedListener {
-            if (!editAliasFromNameBottomDialogFragment.isAdded) {
-                editAliasFromNameBottomDialogFragment.show(
+            if (editAliasFromNameBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editAliasFromNameBottomDialogFragment") == null) {
+                editAliasFromNameBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editAliasFromNameBottomDialogFragment"
                 )
@@ -204,8 +204,8 @@ class ManageAliasActivity : BaseActivity(),
         }
 
         binding.activityManageAliasSend.setOnClickListener {
-            if (!editAliasSendMailRecipientBottomDialogFragment.isAdded) {
-                editAliasSendMailRecipientBottomDialogFragment.show(
+            if (editAliasSendMailRecipientBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("editAliasSendMailRecipientBottomDialogFragment") == null) {
+                editAliasSendMailRecipientBottomDialogFragment?.show(
                     supportFragmentManager,
                     "editAliasSendMailRecipientBottomDialogFragment"
                 )
@@ -222,7 +222,7 @@ class ManageAliasActivity : BaseActivity(),
 
     override fun labelsEdited() {
         shouldRefreshOnFinish = true
-        editAliasLabelsBottomDialogFragment.dismissAllowingStateLoss()
+        (editAliasLabelsBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editAliasLabelsBottomDialogFragment") as? EditAliasLabelsBottomDialogFragment)?.dismissAllowingStateLoss()
 
         // Fetch alias again since we updated labels
         lifecycleScope.launch {
@@ -232,7 +232,7 @@ class ManageAliasActivity : BaseActivity(),
 
     override fun descriptionEdited(alias: Aliases) {
         shouldRefreshOnFinish = true
-        editAliasDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+        (editAliasDescriptionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editAliasDescriptionBottomDialogFragment") as? EditAliasDescriptionBottomDialogFragment)?.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
         this.alias = alias
@@ -240,7 +240,7 @@ class ManageAliasActivity : BaseActivity(),
 
     override fun fromNameEdited(alias: Aliases) {
         shouldRefreshOnFinish = true
-        editAliasFromNameBottomDialogFragment.dismissAllowingStateLoss()
+        (editAliasFromNameBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editAliasFromNameBottomDialogFragment") as? EditAliasFromNameBottomDialogFragment)?.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init editAliasFromNameBottomDialogFragment
         this.alias = alias
@@ -250,7 +250,7 @@ class ManageAliasActivity : BaseActivity(),
         // This changes the last updated time of the alias which is being shown in the recyclerview in the aliasesFragment.
         // So we update the list when coming back
         shouldRefreshOnFinish = true
-        editAliasRecipientsBottomDialogFragment.dismissAllowingStateLoss()
+        (editAliasRecipientsBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editAliasRecipientsBottomDialogFragment") as? EditAliasRecipientsBottomDialogFragment)?.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
         this.alias = alias
@@ -271,7 +271,7 @@ class ManageAliasActivity : BaseActivity(),
         if (intent.resolveActivity(packageManager) != null) {
             AnonAddyUtils.sendEmail(this, intent, this.resources.getString(R.string.send_mail), supportFragmentManager)
         }
-        editAliasSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
+        (editAliasSendMailRecipientBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editAliasSendMailRecipientBottomDialogFragment") as? EditAliasSendMailRecipientBottomDialogFragment)?.dismissAllowingStateLoss()
     }
 
     override fun onPressCopy(toString: String) {
@@ -284,7 +284,7 @@ class ManageAliasActivity : BaseActivity(),
         val clip = ClipData.newPlainText("recipients", recipients?.joinToString(";"))
         clipboard.setPrimaryClip(clip)
         Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
-        editAliasSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
+        (editAliasSendMailRecipientBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editAliasSendMailRecipientBottomDialogFragment") as? EditAliasSendMailRecipientBottomDialogFragment)?.dismissAllowingStateLoss()
     }
 
     private fun setRefreshLayout() {

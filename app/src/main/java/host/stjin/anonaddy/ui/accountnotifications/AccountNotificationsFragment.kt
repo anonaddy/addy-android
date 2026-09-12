@@ -64,6 +64,7 @@ class AccountNotificationsFragment : BaseFragment(),
 
     override fun onDestroyView() {
         super.onDestroyView()
+        accountNotificationsDetailsBottomDialogFragment = null
         _binding = null
     }
 
@@ -73,17 +74,19 @@ class AccountNotificationsFragment : BaseFragment(),
         accountNotificationsAdapter.setClickListener(object : AccountNotificationsAdapter.ClickListener {
             override fun onClickDetails(pos: Int, view: View) {
                 accountNotifications?.getOrNull(pos)?.let {
-                    accountNotificationsDetailsBottomDialogFragment = AccountNotificationsDetailsBottomDialogFragment.newInstance(
-                        it.created_at,
-                        it.title,
-                        it.text,
-                        it.link_text,
-                        it.link
-                    )
-                    accountNotificationsDetailsBottomDialogFragment!!.show(
-                        childFragmentManager,
-                        "accountNotificationsDetailsBottomDialogFragment"
-                    )
+                    if (accountNotificationsDetailsBottomDialogFragment?.isAdded != true && childFragmentManager.findFragmentByTag("accountNotificationsDetailsBottomDialogFragment") == null) {
+                        accountNotificationsDetailsBottomDialogFragment = AccountNotificationsDetailsBottomDialogFragment.newInstance(
+                            it.created_at,
+                            it.title,
+                            it.text,
+                            it.link_text,
+                            it.link
+                        )
+                        accountNotificationsDetailsBottomDialogFragment?.show(
+                            childFragmentManager,
+                            "accountNotificationsDetailsBottomDialogFragment"
+                        )
+                    }
                 }
             }
         })

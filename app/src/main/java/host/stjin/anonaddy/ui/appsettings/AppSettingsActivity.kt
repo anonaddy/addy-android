@@ -44,17 +44,11 @@ class AppSettingsActivity : BaseActivity(),
     UIUXInterfaceBottomDialogFragment.AddUIUXInterfaceBottomDialogListener,
     BackgroundServiceIntervalBottomDialogFragment.AddBackgroundServiceIntervalBottomDialogListener,
     PreferredEmailClientBottomDialogFragment.PreferredEmailClientBottomDialogListener {
-    private val addUIUXInterfaceBottomDialogFragment: UIUXInterfaceBottomDialogFragment =
+    private var addUIUXInterfaceBottomDialogFragment: UIUXInterfaceBottomDialogFragment? = null
 
-        UIUXInterfaceBottomDialogFragment.newInstance()
+    private var addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment? = null
 
-    private var addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
-
-        BackgroundServiceIntervalBottomDialogFragment.newInstance()
-
-    private val deleteAccountConfirmationBottomDialogFragment: DeleteAccountConfirmationBottomDialogFragment =
-
-        DeleteAccountConfirmationBottomDialogFragment.newInstance()
+    private var deleteAccountConfirmationBottomDialogFragment: DeleteAccountConfirmationBottomDialogFragment? = null
 
     private lateinit var settingsManager: SettingsManager
 
@@ -111,8 +105,9 @@ class AppSettingsActivity : BaseActivity(),
 
     private fun setOnClickListeners() {
         binding.activityAppSettingsSectionAppTheme.setOnLayoutClickedListener {
-            if (!addUIUXInterfaceBottomDialogFragment.isAdded) {
-                addUIUXInterfaceBottomDialogFragment.show(
+            if (addUIUXInterfaceBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("addDarkModeBottomDialogFragment") == null) {
+                addUIUXInterfaceBottomDialogFragment = UIUXInterfaceBottomDialogFragment.newInstance()
+                addUIUXInterfaceBottomDialogFragment?.show(
                     supportFragmentManager,
                     "addDarkModeBottomDialogFragment"
                 )
@@ -120,11 +115,13 @@ class AppSettingsActivity : BaseActivity(),
         }
 
         binding.activityAppSettingsSectionPreferredEmailClient.setOnLayoutClickedListener {
-            val dialog = PreferredEmailClientBottomDialogFragment()
-            dialog.show(
-                supportFragmentManager,
-                "PreferredEmailClientBottomDialogFragment"
-            )
+            if (supportFragmentManager.findFragmentByTag("PreferredEmailClientBottomDialogFragment") == null) {
+                val dialog = PreferredEmailClientBottomDialogFragment()
+                dialog.show(
+                    supportFragmentManager,
+                    "PreferredEmailClientBottomDialogFragment"
+                )
+            }
         }
 
         binding.activityAppSettingsSectionFeatures.setOnLayoutClickedListener {
@@ -143,8 +140,9 @@ class AppSettingsActivity : BaseActivity(),
         }
 
         binding.activityAppSettingsSectionBackgroundService.setOnLayoutClickedListener {
-            if (!addBackgroundServiceIntervalBottomDialogFragment.isAdded) {
-                addBackgroundServiceIntervalBottomDialogFragment.show(
+            if (addBackgroundServiceIntervalBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("addBackgroundServiceIntervalBottomDialogFragment") == null) {
+                addBackgroundServiceIntervalBottomDialogFragment = BackgroundServiceIntervalBottomDialogFragment.newInstance()
+                addBackgroundServiceIntervalBottomDialogFragment?.show(
                     supportFragmentManager,
                     "addBackgroundServiceIntervalBottomDialogFragment"
                 )
@@ -200,8 +198,9 @@ class AppSettingsActivity : BaseActivity(),
         binding.activityAppSettingsSectionReset.setOnLayoutClickedListener { resetApp() }
 
         binding.activityAppSettingsSectionDeleteAccount.setOnLayoutClickedListener {
-            if (!deleteAccountConfirmationBottomDialogFragment.isAdded) {
-                deleteAccountConfirmationBottomDialogFragment.show(
+            if (deleteAccountConfirmationBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("deleteAccountConfirmationBottomDialogFragment") == null) {
+                deleteAccountConfirmationBottomDialogFragment = DeleteAccountConfirmationBottomDialogFragment.newInstance()
+                deleteAccountConfirmationBottomDialogFragment?.show(
                     supportFragmentManager,
                     "deleteAccountConfirmationBottomDialogFragment"
                 )
@@ -258,7 +257,7 @@ class AppSettingsActivity : BaseActivity(),
 
         // Schedule the background worker (this will cancel if already scheduled)
         BackgroundWorkerHelper(this).scheduleBackgroundWorker()
-        addBackgroundServiceIntervalBottomDialogFragment.dismissAllowingStateLoss()
+        (addBackgroundServiceIntervalBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("addBackgroundServiceIntervalBottomDialogFragment") as? BackgroundServiceIntervalBottomDialogFragment)?.dismissAllowingStateLoss()
     }
 
     override fun onPreferredEmailClientSelected(packageName: String?, appName: String) {

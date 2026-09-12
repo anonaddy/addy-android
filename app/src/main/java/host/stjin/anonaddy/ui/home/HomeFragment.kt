@@ -20,7 +20,6 @@ import host.stjin.anonaddy.ui.base.SharedScrollViewModel
 import host.stjin.anonaddy_shared.models.UiState
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
-import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.UserResource
@@ -260,7 +259,7 @@ class HomeFragment : BaseFragment(), Refreshable {
         updateHasReachedTopOfNsv(binding.homeStatisticsNSV)
     }
 
-    private fun setStatistics(userResource: UserResource = (activity?.application as AddyIoApp).userResource) {
+    private fun setStatistics(userResource: UserResource) {
         val currMonthlyBandwidth = userResource.bandwidth.toDouble() / 1024 / 1024
         val maxMonthlyBandwidth = (userResource.bandwidth_limit ?: 0) / 1024 / 1024
 

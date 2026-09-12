@@ -1,5 +1,4 @@
 package host.stjin.anonaddy.ui.rules.manage
-import host.stjin.anonaddy_shared.utils.GsonTools
 
 import android.app.Dialog
 import android.content.Context
@@ -15,6 +14,7 @@ import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetRulesConditionBinding
 import host.stjin.anonaddy_shared.models.Condition
+import host.stjin.anonaddy_shared.utils.GsonTools
 
 
 class ConditionBottomDialogFragment :
