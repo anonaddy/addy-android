@@ -74,7 +74,7 @@ class AppMaintenanceRepository(
         }
     }
 
-    suspend fun getAllAccountNotifications(page: Int? = null, size: Int? = null): NetworkResult<PaginatedResponse<AccountNotifications>> {
+    suspend fun getAllAccountNotifications(): NetworkResult<PaginatedResponse<AccountNotifications>> {
         waitForInit()
 
         val (_, response, result) = Fuel.get(API_URL_ACCOUNT_NOTIFICATIONS)
@@ -99,7 +99,7 @@ class AppMaintenanceRepository(
     }
 
     suspend fun cacheAccountNotificationsCountForWidgetAndBackgroundService(): NetworkResult<Boolean> {
-        return when (val notificationsResult = getAllAccountNotifications(1, 25)) {
+        return when (val notificationsResult = getAllAccountNotifications()) {
             is NetworkResult.Success -> {
                 val result = notificationsResult.data
                 val currentAccountNotifications = encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)

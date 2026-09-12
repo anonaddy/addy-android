@@ -15,6 +15,7 @@ import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
 
 class AccountNotificationsDetailsBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+    private var category: String? = null
     private var created: String? = null
     private var title: String? = null
     private var text: String? = null
@@ -30,6 +31,7 @@ class AccountNotificationsDetailsBottomDialogFragment : BaseBottomSheetDialogFra
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
+            category = it.getString(ARG_CATEGORY)
             created = it.getString(ARG_CREATED)
             title = it.getString(ARG_TITLE)
             text = it.getString(ARG_TEXT)
@@ -56,6 +58,12 @@ class AccountNotificationsDetailsBottomDialogFragment : BaseBottomSheetDialogFra
         }
 
         binding.bsAccountNotificationsTitle.text = title ?: ""
+        if (!category.isNullOrEmpty()) {
+            binding.bsAccountNotificationsCategory.visibility = View.VISIBLE
+            binding.bsAccountNotificationsCategory.text = category
+        } else {
+            binding.bsAccountNotificationsCategory.visibility = View.GONE
+        }
         binding.bsAccountNotificationsOpenButton.text = linkText ?: this.resources.getString(R.string.open_link)
         binding.bsAccountNotificationsCreated.text = created?.let { DateTimeUtils.convertStringToLocalTimeZoneString(it) } ?: ""
 
@@ -93,6 +101,7 @@ class AccountNotificationsDetailsBottomDialogFragment : BaseBottomSheetDialogFra
     }
 
     companion object {
+        private const val ARG_CATEGORY = "arg_category"
         private const val ARG_CREATED = "arg_created"
         private const val ARG_TITLE = "arg_title"
         private const val ARG_TEXT = "arg_text"
@@ -104,10 +113,12 @@ class AccountNotificationsDetailsBottomDialogFragment : BaseBottomSheetDialogFra
             title: String,
             text: String,
             linkText: String?,
-            link: String?
+            link: String?,
+            category: String? = null
         ): AccountNotificationsDetailsBottomDialogFragment {
             return AccountNotificationsDetailsBottomDialogFragment().apply {
                 arguments = Bundle().apply {
+                    putString(ARG_CATEGORY, category)
                     putString(ARG_CREATED, created)
                     putString(ARG_TITLE, title)
                     putString(ARG_TEXT, text)

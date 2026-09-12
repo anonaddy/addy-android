@@ -37,16 +37,13 @@ class AliasRepository(
     ): NetworkResult<Aliases> {
         waitForInit()
 
-        val array = JSONArray(recipients ?: emptyList<String>())
-        val labelsArray = JSONArray(labels ?: emptyList<String>())
-
         val json = JSONObject().apply {
             put("domain", domain)
-            put("description", description)
-            put("format", format)
-            put("local_part", aliasLocalPart)
-            put("recipient_ids", array)
-            put("label_ids", labelsArray)
+            if (description.isNotEmpty()) put("description", description)
+            if (format.isNotEmpty()) put("format", format)
+            if (aliasLocalPart.isNotEmpty()) put("local_part", aliasLocalPart)
+            if (!recipients.isNullOrEmpty()) put("recipient_ids", JSONArray(recipients))
+            if (!labels.isNullOrEmpty()) put("label_ids", JSONArray(labels))
         }
 
         val (_, response, result) = Fuel.post(API_URL_ALIAS)

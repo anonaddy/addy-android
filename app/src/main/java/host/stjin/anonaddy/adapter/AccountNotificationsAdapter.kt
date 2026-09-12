@@ -44,6 +44,12 @@ class AccountNotificationsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.binding.accountNotificationsRecyclerviewListTitle.text = item.title
+        if (item.category.isNotEmpty()) {
+            holder.binding.accountNotificationsRecyclerviewListCategory.visibility = View.VISIBLE
+            holder.binding.accountNotificationsRecyclerviewListCategory.text = item.category
+        } else {
+            holder.binding.accountNotificationsRecyclerviewListCategory.visibility = View.GONE
+        }
         holder.binding.accountNotificationsRecyclerviewListCreated.text = DateTimeUtils.convertStringToLocalTimeZoneString(item.created_at)
         holder.binding.accountNotificationsRecyclerviewListText.text = HtmlCompat.fromHtml(item.text, HtmlCompat.FROM_HTML_MODE_LEGACY)
     }

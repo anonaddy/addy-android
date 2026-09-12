@@ -20,7 +20,7 @@ class LabelRepository(
     dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : BaseNetworkClient(context, dispatchers) {
 
-    suspend fun getAllLabels(search: String? = null, page: Int? = null, size: Int? = null): NetworkResult<PaginatedResponse<Labels>> {
+    suspend fun getAllLabels(search: String? = null): NetworkResult<PaginatedResponse<Labels>> {
         waitForInit()
 
         val parameters = arrayListOf<Pair<String, String>>()
@@ -51,12 +51,12 @@ class LabelRepository(
         return addNewLabel(newLabelEntry.name, newLabelEntry.colour)
     }
 
-    suspend fun addNewLabel(name: String, color: String?): NetworkResult<Labels> {
+    suspend fun addNewLabel(name: String, colour: String): NetworkResult<Labels> {
         waitForInit()
 
         val json = JSONObject().apply {
             put("name", name)
-            put("colour", color)
+            put("colour", colour)
         }
 
         val (_, response, result) = Fuel.post(API_URL_LABELS)
@@ -85,12 +85,12 @@ class LabelRepository(
         return updateLabel(labelId, newLabelEntry.name, newLabelEntry.colour)
     }
 
-    suspend fun updateLabel(labelId: String, name: String, color: String?): NetworkResult<Labels> {
+    suspend fun updateLabel(labelId: String, name: String, colour: String): NetworkResult<Labels> {
         waitForInit()
 
         val json = JSONObject().apply {
             put("name", name)
-            put("colour", color)
+            put("colour", colour)
         }
 
         val (_, response, result) = Fuel.patch("$API_URL_LABELS/$labelId")

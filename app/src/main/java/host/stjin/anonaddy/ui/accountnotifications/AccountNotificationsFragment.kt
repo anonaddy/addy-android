@@ -80,7 +80,8 @@ class AccountNotificationsFragment : BaseFragment(),
                             it.title,
                             it.text,
                             it.link_text,
-                            it.link
+                            it.link,
+                            it.category
                         )
                         accountNotificationsDetailsBottomDialogFragment?.show(
                             childFragmentManager,

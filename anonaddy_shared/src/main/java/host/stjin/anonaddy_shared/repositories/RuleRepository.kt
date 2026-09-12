@@ -22,7 +22,7 @@ class RuleRepository(
     dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : BaseNetworkClient(context, dispatchers) {
 
-    suspend fun getAllRules(page: Int? = null, size: Int? = null): NetworkResult<PaginatedResponse<Rules>> {
+    suspend fun getAllRules(): NetworkResult<PaginatedResponse<Rules>> {
         waitForInit()
 
         val (_, response, result) = Fuel.get(API_URL_RULES)
