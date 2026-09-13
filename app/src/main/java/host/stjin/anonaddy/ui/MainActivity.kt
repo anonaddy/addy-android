@@ -230,6 +230,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                     checkForSubscriptionExpiration()
                     checkForNewFailedDeliveries()
                     checkForNewAccountNotifications()
+                    ServiceLocator.aliasSearchManager.syncAllAliasesIfNeeded()
                 }
             }
 

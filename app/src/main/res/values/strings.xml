@@ -70,7 +70,7 @@
     <string name="app_changelog"><![CDATA[
 <h3>What\'s new in addy.io for Android 6.6.0</h3>
 <h4>Highlights</h4>
-<p>- Major under-the-hood rewrite of the codebase for better performance and stability<br />- Added pagination and loading indicators when scrolling through aliases, blocklist, and failed deliveries<br />- Long-pressing to select multiple aliases is now enabled by default<br />- Reordering rules is now smoother and only syncs when you let go</p>
+<p>- Major under-the-hood rewrite of the codebase for better performance and stability<br />- Integration with Android System Search to search aliases directly from launcher search<br />- Quick Settings tiles to add an alias or instantly generate and copy a random alias<br />- Digital assistant and launcher shortcuts integration for creating aliases<br />- Added pagination and loading indicators when scrolling through aliases, blocklist, and failed deliveries<br />- Long-pressing to select multiple aliases is now enabled by default<br />- Reordering rules is now smoother and only syncs when you let go</p>
 <h4>Fixed/Improved</h4>
 <p>- Bumped minimum instance version to 1.7.3<br />- Show alias description in failed delivery details<br />- Improved widget scaling and theming across different launcher grid sizes<br />- Fixed UI padding and button clipping across various screens<br />- Performance improvements and other things to make the app even smoother</p>
 <h4> </h4>
@@ -915,4 +915,19 @@
     <string name="always_ask">Always ask</string>
     <string name="always_use_this_app">Always use this app</string>
     <string name="choose_email_app">Choose email app</string>
+    <string name="system_search_and_assistant">System search &amp; Gemini</string>
+    <string name="system_search_and_assistant_desc">Index aliases for Android system search and enable Gemini to find and create aliases.</string>
+    <string name="system_search">System search</string>
+    <string name="system_search_desc">Allows you to search and navigate to aliases through your launcher and device search.</string>
+    <string name="app_intent_add_alias">Create alias</string>
+    <string name="app_intent_add_alias_desc">Creates a new alias and copies the email to your clipboard</string>
+    <string name="app_intent_add_alias_custom">Create custom alias</string>
+    <string name="app_intent_category_name">Aliases</string>
+    <string name="assistant_alias_created_copied">Alias created and copied: %1$s</string>
+    <string name="assistant_error_creating_alias">Failed to create alias</string>
+    <string name="assistant_app_not_setup">Addy.io is not configured. Please open the app first.</string>
+    <string name="assistant_creating_alias">Creating alias…</string>
+    <string name="quick_alias">Quick alias</string>
+    <string name="quick_alias_desc">Quickly create and copy an alias</string>
+    <string name="not_configured">Not logged in</string>
 </resources>

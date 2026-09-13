@@ -1,5 +1,6 @@
 package host.stjin.anonaddy
 
+import host.stjin.anonaddy.service.AliasSearchManager
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy_shared.ServiceLocator as BaseServiceLocator
 
@@ -10,4 +11,5 @@ import host.stjin.anonaddy_shared.ServiceLocator as BaseServiceLocator
 object ServiceLocator : BaseServiceLocator() {
     // Services
     val aliasWatcher: AliasWatcher by lazy { AliasWatcher(getContext()) }
+    val aliasSearchManager: AliasSearchManager by lazy { AliasSearchManager(getContext()) }
 }

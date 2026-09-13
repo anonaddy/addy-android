@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <string-array name="create_alias_query_patterns">
+        <item>Create an alias</item>
+        <item>Create alias</item>
+        <item>Create a new alias</item>
+        <item>Add an alias</item>
+        <item>Add alias</item>
+        <item>Generate an alias</item>
+        <item>Generate alias</item>
+        <item>Make an alias</item>
+        <item>New alias</item>
+        <item>Create an alias for $alias_description</item>
+        <item>Create alias for $alias_description</item>
+        <item>Add an alias for $alias_description</item>
+        <item>Add alias for $alias_description</item>
+    </string-array>
+
+    <string-array name="create_custom_alias_query_patterns">
+        <item>Create a custom alias</item>
+        <item>Create custom alias</item>
+        <item>Add a custom alias</item>
+        <item>Add custom alias</item>
+        <item>Make a custom alias</item>
+        <item>Make custom alias</item>
+        <item>Create a custom alias $alias_local_part</item>
+        <item>Create custom alias $alias_local_part</item>
+    </string-array>
+
+    <string-array name="add_alias_feature_names">
+        <item>@string/add_alias</item>
+        <item>Create alias</item>
+        <item>New alias</item>
+    </string-array>
+
     <string-array name="domains_formats_names">
         <item>@string/domains_format_random_characters</item>
         <item>@string/domains_format_uuid</item>

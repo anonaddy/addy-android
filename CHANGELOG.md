@@ -7,6 +7,9 @@
 ##### Highlights
 
 - Major under-the-hood rewrite of the codebase for better performance and stability
+- Integration with Android System Search (AppSearch) to search and access aliases directly from launcher search
+- Quick Settings tiles to quickly add an alias or instantly generate a random alias to your clipboard
+- Digital assistant and launcher shortcuts integration for creating aliases
 - Added pagination and loading indicators when scrolling through aliases, blocklist entries, and failed deliveries
 - Long-pressing to select multiple aliases is now enabled by default
 - Reordering rules is now smoother and only syncs to the server when you let go

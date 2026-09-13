@@ -124,10 +124,25 @@ class ManageAliasActivity : BaseActivity(),
                 return
             }
             setPage(aliasId)
+        } else if (b?.getString("android.app.appsearch.extra.DOCUMENT_ID") != null) {
+            // AppSearch system search result extra
+            val aliasId = b.getString("android.app.appsearch.extra.DOCUMENT_ID")
+            if (aliasId == null) {
+                finish()
+                return
+            }
+            setPage(aliasId)
         } else if (intent.action != null) {
-            // /deactivate URI's
+            // URIs (addy://alias/{id} or /deactivate)
             val data: Uri? = intent?.data
-            if (data.toString().contains("/deactivate")) {
+            if (data?.scheme == "addy" && data.host == "alias") {
+                val aliasId = data.lastPathSegment
+                if (!aliasId.isNullOrEmpty()) {
+                    setPage(aliasId)
+                } else {
+                    finish()
+                }
+            } else if (data.toString().contains("/deactivate")) {
                 val aliasId = data.toString().substringAfter("deactivate/").substringBefore("?")
                 shouldDeactivateThisAlias = true
                 setPage(aliasId)
@@ -305,36 +320,42 @@ class ManageAliasActivity : BaseActivity(),
     private fun addAliasAsShortcut() {
         val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         if (!encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)) {
+            val aliasObj = alias ?: return
 
-            // Only add shortcuts when PRIVACY_MODE is disabled to hide aliases
-            val intent = Intent(Intent.ACTION_MAIN, Uri.EMPTY, this, ManageAliasActivity::class.java)
-            // Pass data object in the bundle and populate details activity.
-            intent.putExtra("alias_id", alias!!.id)
+            val intent = Intent(this, ManageAliasActivity::class.java).apply {
+                action = Intent.ACTION_VIEW
+                data = Uri.parse("addy://alias/${aliasObj.id}")
+                putExtra("alias_id", aliasObj.id)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
 
             val bitmap = getBitmapFromView(binding.activityManageAliasChart)
+            val icon = IconCompat.createWithBitmap(bitmap)
 
-            val shortcut = ShortcutInfoCompat.Builder(this, alias!!.id)
-                .setShortLabel(alias!!.email)
-                .setLongLabel(alias!!.email)
-                .setIcon(IconCompat.createWithBitmap(bitmap))
-                .setIntent(
-                    intent
-                ).build()
+            val longLabel = if (!aliasObj.description.isNullOrBlank()) {
+                "${aliasObj.email} (${aliasObj.description})"
+            } else {
+                aliasObj.email
+            }
 
+            val shortcut = ShortcutInfoCompat.Builder(this, "alias_${aliasObj.id}")
+                .setShortLabel(aliasObj.email)
+                .setLongLabel(longLabel)
+                .setIcon(icon)
+                .setIntent(intent)
+                .setLongLived(true)
+                .setCategories(setOf("host.stjin.anonaddy.category.ALIAS"))
+                .build()
 
             try {
-                ShortcutManagerCompat.getDynamicShortcuts(this).also { shortcuts ->
-                    val maxShortcutsCount = ShortcutManagerCompat.getMaxShortcutCountPerActivity(this)
-                    if (shortcuts.count() == maxShortcutsCount) {
-                        shortcuts.removeLastOrNull()
-                        shortcuts.add(0, shortcut)
-                        ShortcutManagerCompat.setDynamicShortcuts(this, shortcuts)
-                    } else {
-                        ShortcutManagerCompat.pushDynamicShortcut(this, shortcut)
-                    }
-                }
+                ShortcutManagerCompat.pushDynamicShortcut(this, shortcut)
             } catch (exception: Throwable) {
-                ShortcutManagerCompat.removeAllDynamicShortcuts(this)
+                LoggingHelper(this).addLog(
+                    LOGIMPORTANCE.WARNING.int,
+                    "Failed to add alias shortcut: ${exception.message}",
+                    "ManageAliasActivity.addAliasAsShortcut",
+                    null
+                )
             }
         }
     }
@@ -722,6 +743,7 @@ class ManageAliasActivity : BaseActivity(),
         if (result is NetworkResult.Success) {
             deleteAliasSnackbar.dismiss()
             shouldRefreshOnFinish = true
+            ServiceLocator.aliasSearchManager.deindexAlias(id)
             finish()
         } else {
             val error = (result as? NetworkResult.Error)?.error
@@ -742,6 +764,7 @@ class ManageAliasActivity : BaseActivity(),
         if (result is NetworkResult.Success) {
             forgetAliasSnackbar.dismiss()
             shouldRefreshOnFinish = true
+            ServiceLocator.aliasSearchManager.deindexAlias(id)
             finish()
         } else {
             val error = (result as? NetworkResult.Error)?.error
@@ -763,6 +786,7 @@ class ManageAliasActivity : BaseActivity(),
             restoreAliasSnackbar.dismiss()
             shouldRefreshOnFinish = true
             this.alias = result.data
+            ServiceLocator.aliasSearchManager.indexAlias(result.data)
         } else {
             val error = (result as? NetworkResult.Error)?.error
             SnackbarHelper.createSnackbar(
@@ -798,7 +822,9 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     private fun updateUi(alias: Aliases) {
-
+        lifecycleScope.launch {
+            ServiceLocator.aliasSearchManager.indexAlias(alias)
+        }
 
         // Set the AliasShortcut here, to make sure the donut is rendered
         Handler(Looper.getMainLooper()).postDelayed({

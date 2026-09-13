@@ -134,6 +134,13 @@ class AppSettingsActivity : BaseActivity(),
             binding.activityAppSettingsSectionPrivacy.setSwitchChecked(!binding.activityAppSettingsSectionPrivacy.getSwitchChecked())
         }
 
+        binding.activityAppSettingsSectionSystemSearch.setOnLayoutClickedListener {
+            if (binding.activityAppSettingsSectionSystemSearch.isLayoutEnabled()) {
+                forceSwitch = true
+                binding.activityAppSettingsSectionSystemSearch.setSwitchChecked(!binding.activityAppSettingsSectionSystemSearch.getSwitchChecked())
+            }
+        }
+
         binding.activityAppSettingsSectionWearos.setOnLayoutClickedListener {
             val intent = Intent(this@AppSettingsActivity, AppSettingsWearOSActivity::class.java)
             startActivity(intent)
@@ -298,7 +305,18 @@ class AppSettingsActivity : BaseActivity(),
     private fun loadSettings() {
         binding.activityAppSettingsSectionSecurity.setSwitchChecked(encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED))
         binding.activityAppSettingsSectionLogs.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS))
-        binding.activityAppSettingsSectionPrivacy.setSwitchChecked(encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE))
+        val privacyMode = encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)
+        binding.activityAppSettingsSectionPrivacy.setSwitchChecked(privacyMode)
+
+        if (privacyMode) {
+            // Privacy mode suppresses System search entirely and makes toggle untouchable
+            binding.activityAppSettingsSectionSystemSearch.setSwitchChecked(false)
+            binding.activityAppSettingsSectionSystemSearch.setLayoutEnabled(false)
+        } else {
+            val systemSearch = encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.SYSTEM_SEARCH, true)
+            binding.activityAppSettingsSectionSystemSearch.setSwitchChecked(systemSearch)
+            binding.activityAppSettingsSectionSystemSearch.setLayoutEnabled(true)
+        }
 
         val preferredPackage = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.DEFAULT_EMAIL_CLIENT)
         if (preferredPackage.isNullOrEmpty()) {
@@ -326,13 +344,50 @@ class AppSettingsActivity : BaseActivity(),
                 encryptedSettingsManager.putSettingsBool(SettingsManager.PREFS.PRIVACY_MODE, checked)
 
                 if (checked) {
-                    // If privacy mode enabled, remove all shortcuts
+                    // If privacy mode enabled, remove all shortcuts and search index
                     ShortcutManagerCompat.removeAllDynamicShortcuts(this@AppSettingsActivity)
+                    lifecycleScope.launch {
+                        ServiceLocator.aliasSearchManager.deleteAllIndexedAliases()
+                    }
+                    // Disable system search and make toggle untouchable
+                    binding.activityAppSettingsSectionSystemSearch.setSwitchChecked(false)
+                    binding.activityAppSettingsSectionSystemSearch.setLayoutEnabled(false)
+                } else {
+                    // Re-enable touchability
+                    binding.activityAppSettingsSectionSystemSearch.setLayoutEnabled(true)
+                    val systemSearch = encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.SYSTEM_SEARCH, true)
+                    binding.activityAppSettingsSectionSystemSearch.setSwitchChecked(systemSearch)
+                    if (systemSearch) {
+                        lifecycleScope.launch {
+                            ServiceLocator.aliasSearchManager.syncAllAliases()
+                        }
+                    }
                 }
 
                 // Schedule the background worker to update widgets (this will cancel if already scheduled)
                 BackgroundWorkerHelper(this@AppSettingsActivity).scheduleBackgroundWorker()
 
+            }
+        }
+
+        binding.activityAppSettingsSectionSystemSearch.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed || forceSwitch) {
+                if (encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)) {
+                    binding.activityAppSettingsSectionSystemSearch.setSwitchChecked(false)
+                    return@setOnSwitchCheckedChangedListener
+                }
+
+                encryptedSettingsManager.putSettingsBool(SettingsManager.PREFS.SYSTEM_SEARCH, checked)
+
+                lifecycleScope.launch {
+                    if (!checked) {
+                        ServiceLocator.aliasSearchManager.deleteAllIndexedAliases()
+                    } else {
+                        ServiceLocator.aliasSearchManager.syncAllAliases()
+                    }
+                }
+
+                BackgroundWorkerHelper(this@AppSettingsActivity).scheduleBackgroundWorker()
             }
         }
     }

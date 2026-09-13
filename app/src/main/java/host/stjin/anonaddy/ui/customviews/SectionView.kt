@@ -202,7 +202,18 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         return materialSwitch?.isChecked == true
     }
 
+    private var layoutEnabled: Boolean = true
+
+    fun isLayoutEnabled(): Boolean {
+        return layoutEnabled
+    }
+
     fun setLayoutEnabled(boolean: Boolean) {
+        layoutEnabled = boolean
+        isEnabled = boolean
+        isClickable = boolean
+        cardView?.isEnabled = boolean
+        cardView?.isClickable = boolean
         materialSwitch?.isEnabled = boolean
         materialSwitch?.isClickable = boolean
 
@@ -215,6 +226,21 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
             linearLayout?.setOnClickListener(null)
             linearLayout?.setOnLongClickListener(null)
         }
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        if (!isLayoutEnabled()) {
+            return true
+        }
+        return super.onInterceptTouchEvent(ev)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (!isLayoutEnabled()) {
+            return true
+        }
+        return super.onTouchEvent(event)
     }
 
     fun showProgressBar(boolean: Boolean) {

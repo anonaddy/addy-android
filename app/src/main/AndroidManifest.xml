@@ -109,8 +109,12 @@
             android:exported="true"
             android:theme="@style/AppTheme.Setup">
             <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <activity-alias
@@ -215,6 +219,40 @@
                     android:pathPrefix="/deactivate" />
                 <!-- END -->
 
+            </intent-filter>
+
+            <!-- Deep linking from AppSearch and System Search -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="alias"
+                    android:scheme="addy" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.intent.CreateAliasAssistantActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/app_intent_add_alias"
+            android:launchMode="singleInstance"
+            android:noHistory="true"
+            android:theme="@style/AppTheme.Transparent">
+            <intent-filter>
+                <action android:name="host.stjin.anonaddy.intent.action.CREATE_ALIAS" />
+                <action android:name="host.stjin.anonaddy.intent.action.CREATE_CUSTOM_ALIAS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="create-alias"
+                    android:scheme="addy" />
             </intent-filter>
         </activity>
         <activity
@@ -397,6 +435,30 @@
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:theme="@style/AppTheme.Transparent" />
+
+        <!-- Quick Settings Tile: Add Alias (Opens bottom sheet dialog) -->
+        <service
+            android:name=".service.AddAliasTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_qs_add_alias"
+            android:label="@string/add_alias"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <!-- Quick Settings Tile: Quick Alias (Instantly creates & copies to clipboard) -->
+        <service
+            android:name=".service.QuickAliasTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_qs_quick_alias"
+            android:label="@string/quick_alias"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

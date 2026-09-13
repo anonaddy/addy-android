@@ -61,7 +61,8 @@ class BackgroundWorkerHelper(private val context: Context) {
             val shouldCheckApiTokenExpiry = settingsManager.getSettingsBool(PREFS.NOTIFY_API_TOKEN_EXPIRY, true)
             val shouldCheckCertificateExpiry = settingsManager.getSettingsBool(PREFS.NOTIFY_CERTIFICATE_EXPIRY)
             val shouldMakePeriodicBackups = settingsManager.getSettingsBool(PREFS.PERIODIC_BACKUPS)
-            return (aliasToWatch.isNotEmpty() || amountOfWidgets > 0 || shouldCheckForUpdates || shouldCheckForFailedDeliveries || shouldCheckForAccountNotifications || shouldCheckApiTokenExpiry || shouldCheckCertificateExpiry || shouldMakePeriodicBackups)
+            val shouldSyncSearch = encryptedSettingsManager.getSettingsBool(PREFS.SYSTEM_SEARCH, true) && !encryptedSettingsManager.getSettingsBool(PREFS.PRIVACY_MODE)
+            return (aliasToWatch.isNotEmpty() || amountOfWidgets > 0 || shouldCheckForUpdates || shouldCheckForFailedDeliveries || shouldCheckForAccountNotifications || shouldCheckApiTokenExpiry || shouldCheckCertificateExpiry || shouldMakePeriodicBackups || shouldSyncSearch)
         } else {
             return false
         }

@@ -20,6 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.BottomsheetAddaliasBinding
 import host.stjin.anonaddy.utils.LabelUtils
 import host.stjin.anonaddy_shared.AddyIo
@@ -342,6 +343,9 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         when (val result = viewModel.addAlias(domain, description, format, aliasLocalPart, recipients, labels)) {
             is NetworkResult.Success -> {
                 val alias = result.data
+                lifecycleScope.launch {
+                    ServiceLocator.aliasSearchManager.indexAlias(alias)
+                }
                 val clipboard: ClipboardManager =
                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("alias", alias.email)

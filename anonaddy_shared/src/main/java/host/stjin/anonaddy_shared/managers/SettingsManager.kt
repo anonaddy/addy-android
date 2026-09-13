@@ -46,8 +46,9 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
         // Sorting and Filtering for aliasesFragment
         ALIAS_SORT_FILTER(false, PREFTYPES.STRING, "alias_sort_filter"),
-        //endregion
 
+        //endregion
+ 
         // Encrypted
         DEFAULT_EMAIL_CLIENT(true, PREFTYPES.STRING, "default_email_client"),
         BIOMETRIC_ENABLED(true, PREFTYPES.BOOLEAN, "biometric_enabled"),
@@ -55,6 +56,9 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         RECENT_SEARCHES_BLOCKLIST(true, PREFTYPES.STRING, "recent_searches_blocklist"),
         RECENT_SEARCHES_LABELS(true, PREFTYPES.STRING, "recent_searches_labels"),
         PRIVACY_MODE(true, PREFTYPES.BOOLEAN, "privacy_mode"),
+        SYSTEM_SEARCH(true, PREFTYPES.BOOLEAN, "system_search"),
+        SYSTEM_SEARCH_AND_ASSISTANT(true, PREFTYPES.BOOLEAN, "system_search_and_assistant"),
+        SYSTEM_SEARCH_LAST_SYNC(true, PREFTYPES.STRING, "system_search_last_sync"),
         API_KEY(true, PREFTYPES.STRING, "API_KEY"),
         BASE_URL(true, PREFTYPES.STRING, "BASE_URL"),
         BACKUPS_PASSWORD(true, PREFTYPES.STRING, "backups_password"),

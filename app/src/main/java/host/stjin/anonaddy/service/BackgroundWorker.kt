@@ -298,9 +298,14 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker
                     }
                 }
 
+                val searchSyncDeferred = async {
+                    ServiceLocator.aliasSearchManager.syncAllAliasesIfNeeded()
+                }
+
                 updateCheckDeferred.await()
                 domainErrorsDeferred.await()
                 backupDeferred.await()
+                searchSyncDeferred.await()
 
                 WorkerTaskResults(
                     userResourceNetworkCallResult = userResourceDeferred.await(),

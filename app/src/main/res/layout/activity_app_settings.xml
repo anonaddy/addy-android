@@ -140,6 +140,15 @@
                     app:sectionTitle="@string/privacy_mode" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_section_system_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/system_search_desc"
+                    app:sectionShowSwitch="true"
+                    app:sectionStartIcon="@drawable/ic_search"
+                    app:sectionTitle="@string/system_search" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_logs"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
