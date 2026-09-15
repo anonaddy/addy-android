@@ -55,6 +55,13 @@ class RuleRepository(
     suspend fun createRule(rule: Rules): NetworkResult<Rules> {
         waitForInit()
 
+        // Ensure actions with setAliasDescription have an empty string value rather than null so it serializes properly
+        rule.actions.forEachIndexed { index, action ->
+            if (action.type == "setAliasDescription" && action.value == null) {
+                rule.actions[index] = action.copy(value = "")
+            }
+        }
+
         val ruleJson = gson.toJson(rule)
         val (_, response, result) = Fuel.post(API_URL_RULES)
             .appendHeader(*getHeaders())
@@ -66,6 +73,13 @@ class RuleRepository(
 
     suspend fun updateRule(ruleId: String, rule: Rules): NetworkResult<String> {
         waitForInit()
+
+        // Ensure actions with setAliasDescription have an empty string value rather than null so it serializes properly
+        rule.actions.forEachIndexed { index, action ->
+            if (action.type == "setAliasDescription" && action.value == null) {
+                rule.actions[index] = action.copy(value = "")
+            }
+        }
 
         val ruleJson = gson.toJson(rule)
         val (_, response, result) = Fuel.patch("$API_URL_RULES/$ruleId")

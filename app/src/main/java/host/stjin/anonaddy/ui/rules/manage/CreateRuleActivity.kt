@@ -111,6 +111,13 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             // Update title
             binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.VISIBLE
 
+            // Ensure setAliasDescription actions serialize value as "" rather than null/omitted
+            rules.actions.forEachIndexed { index, act ->
+                if (act.type == "setAliasDescription" && act.value == null) {
+                    rules.actions[index] = act.copy(value = "")
+                }
+            }
+
             if (ruleId != null) {
                 // Update the rule
                 lifecycleScope.launch {

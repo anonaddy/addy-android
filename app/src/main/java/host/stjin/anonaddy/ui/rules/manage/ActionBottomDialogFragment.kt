@@ -20,6 +20,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetRulesActionBinding
 import host.stjin.anonaddy.ui.labels.AddLabelBottomDialogFragment
 import host.stjin.anonaddy.ui.labels.LabelsViewModel
+import androidx.core.widget.addTextChangedListener
 import host.stjin.anonaddy_shared.models.Action
 import host.stjin.anonaddy_shared.models.Labels
 import host.stjin.anonaddy_shared.models.Recipients
@@ -106,6 +107,9 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         binding.bsRuleActionAddActionButton.setOnClickListener(this)
         binding.bsRuleActionLabelCreateButton.setOnClickListener(this)
         spinnerChangeListener(requireContext())
+        binding.bsRuleActionValuesTiet.addTextChangedListener {
+            binding.bsRuleActionValuesTil.error = null
+        }
 
         updateUi(requireContext())
 
@@ -291,14 +295,24 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     private fun checkIfTypeShouldShowHint() {
         val typeIndex = actionTypeNames.indexOf(binding.bsRuleActionTypeMact.text.toString())
         val type = if (typeIndex != -1) actionTypes[typeIndex] else ""
-        if (type == "subject") {
-            binding.bsRuleActionValuesTilSubjectHint.visibility = View.VISIBLE
-        } else {
-            binding.bsRuleActionValuesTilSubjectHint.visibility = View.GONE
+        when (type) {
+            "subject" -> {
+                binding.bsRuleActionValuesTilSubjectHint.visibility = View.VISIBLE
+                binding.bsRuleActionValuesTilAliasDescriptionHint.visibility = View.GONE
+            }
+            "setAliasDescription" -> {
+                binding.bsRuleActionValuesTilSubjectHint.visibility = View.GONE
+                binding.bsRuleActionValuesTilAliasDescriptionHint.visibility = View.VISIBLE
+            }
+            else -> {
+                binding.bsRuleActionValuesTilSubjectHint.visibility = View.GONE
+                binding.bsRuleActionValuesTilAliasDescriptionHint.visibility = View.GONE
+            }
         }
     }
 
     private fun checkIfTypeRequiresValueField(context: Context) {
+        binding.bsRuleActionValuesTil.error = null
         val typeIndex = actionTypeNames.indexOf(binding.bsRuleActionTypeMact.text.toString())
         val type = if (typeIndex != -1) actionTypes[typeIndex] else "subject"
 
@@ -418,7 +432,13 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
             else -> {
                 val value = binding.bsRuleActionValuesTiet.text.toString()
-                listener?.onAddedAction(actionEditIndex, type, value)
+                if (type != "setAliasDescription" && value.trim().isEmpty()) {
+                    binding.bsRuleActionValuesTil.error = context.resources.getString(R.string.this_field_cannot_be_empty)
+                    return
+                } else {
+                    binding.bsRuleActionValuesTil.error = null
+                }
+                listener?.onAddedAction(actionEditIndex, type, value.trim())
             }
         }
 
