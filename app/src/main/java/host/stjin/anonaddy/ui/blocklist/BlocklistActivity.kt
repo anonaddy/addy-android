@@ -113,11 +113,16 @@ class BlocklistActivity : BaseActivity() {
                 getFragment()?.onRefreshData()
             }
             is NetworkResult.Error -> {
-                SnackbarHelper.createSnackbar(
-                    this,
-                    resources.getString(R.string.error_adding_blocklist_entry) + "\n" + result.error,
-                    binding.root,
-                    LoggingHelper.LOGFILES.DEFAULT
+                MaterialDialogHelper.showMaterialDialog(
+                    context = this,
+                    title = resources.getString(R.string.blocklist_add),
+                    message = if (!result.error.isNullOrEmpty()) {
+                        result.error
+                    } else {
+                        resources.getString(R.string.error_adding_blocklist_entry)
+                    },
+                    icon = R.drawable.ic_forbid,
+                    neutralButtonText = resources.getString(R.string.close)
                 ).show()
             }
         }
