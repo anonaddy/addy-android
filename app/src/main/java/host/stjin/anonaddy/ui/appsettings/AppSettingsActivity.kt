@@ -264,7 +264,8 @@ class AppSettingsActivity : BaseActivity(),
 
         // Schedule the background worker (this will cancel if already scheduled)
         BackgroundWorkerHelper(this).scheduleBackgroundWorker()
-        (addBackgroundServiceIntervalBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("addBackgroundServiceIntervalBottomDialogFragment") as? BackgroundServiceIntervalBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("addBackgroundServiceIntervalBottomDialogFragment") as? BackgroundServiceIntervalBottomDialogFragment
+            ?: addBackgroundServiceIntervalBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
     }
 
     override fun onPreferredEmailClientSelected(packageName: String?, appName: String) {

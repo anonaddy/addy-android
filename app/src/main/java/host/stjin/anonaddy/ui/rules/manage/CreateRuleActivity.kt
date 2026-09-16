@@ -179,7 +179,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
     // Condition
     override fun onAddedCondition(conditionEditIndex: Int?, type: String, match: String?, values: List<String>?) {
-        (conditionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("conditionBottomDialogFragment") as? ConditionBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("conditionBottomDialogFragment") as? ConditionBottomDialogFragment
+            ?: conditionBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
 
         val condition = Condition(
             type = type,
@@ -199,7 +200,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
     // Actions
     override fun onAddedAction(actionEditIndex: Int?, type: String, value: String) {
-        (actionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("actionBottomDialogFragment") as? ActionBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("actionBottomDialogFragment") as? ActionBottomDialogFragment
+            ?: actionBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         val action = Action(
             type = type,
             value = value
@@ -215,7 +217,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     override fun onAddedAction(actionEditIndex: Int?, type: String, value: Boolean) {
-        (actionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("actionBottomDialogFragment") as? ActionBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("actionBottomDialogFragment") as? ActionBottomDialogFragment
+            ?: actionBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         val action = Action(
             type = type,
             value = value.toString()

@@ -436,7 +436,8 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
     }
 
     override fun onAddedBlocklistEntry(newBlocklistEntry: NewBlocklistEntry) {
-        (blocklistAddBottomDialogFragment ?: childFragmentManager.findFragmentByTag("blocklistAddBottomDialogFragment") as? AddBlocklistBottomDialogFragment)?.dismissAllowingStateLoss()
+        (childFragmentManager.findFragmentByTag("blocklistAddBottomDialogFragment") as? AddBlocklistBottomDialogFragment
+            ?: blocklistAddBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         getDataFromWeb(null, showShimmer = false)
     }
 

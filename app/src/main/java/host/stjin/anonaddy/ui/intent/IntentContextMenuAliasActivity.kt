@@ -35,7 +35,8 @@ class IntentContextMenuAliasActivity : BaseActivity(),
 
     private var intentBottomDialogFragment: IntentBottomDialogFragment? = null
     private fun getIntentBottomDialogFragment(): IntentBottomDialogFragment? =
-        intentBottomDialogFragment ?: (supportFragmentManager.findFragmentByTag("intentBottomDialogFragment") as? IntentBottomDialogFragment)
+        (supportFragmentManager.findFragmentByTag("intentBottomDialogFragment") as? IntentBottomDialogFragment)
+            ?: intentBottomDialogFragment
 
     private var domainOptions: List<String> = listOf()
 
@@ -45,7 +46,8 @@ class IntentContextMenuAliasActivity : BaseActivity(),
 
     private var intentSendMailRecipientBottomDialogFragment: IntentSendMailRecipientBottomDialogFragment? = null
     private fun getIntentSendMailRecipientBottomDialogFragment(): IntentSendMailRecipientBottomDialogFragment? =
-        intentSendMailRecipientBottomDialogFragment ?: (supportFragmentManager.findFragmentByTag("intentSendMailRecipientBottomDialogFragment") as? IntentSendMailRecipientBottomDialogFragment)
+        (supportFragmentManager.findFragmentByTag("intentSendMailRecipientBottomDialogFragment") as? IntentSendMailRecipientBottomDialogFragment)
+            ?: intentSendMailRecipientBottomDialogFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -169,8 +171,8 @@ class IntentContextMenuAliasActivity : BaseActivity(),
     }
 
     override fun finish() {
-        getIntentSendMailRecipientBottomDialogFragment()?.dismissAllowingStateLoss()
-        getIntentBottomDialogFragment()?.dismissAllowingStateLoss()
+        getIntentSendMailRecipientBottomDialogFragment()?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
+        getIntentBottomDialogFragment()?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         super.finish()
     }
 
@@ -182,7 +184,7 @@ class IntentContextMenuAliasActivity : BaseActivity(),
         bccRecipients: String,
         skipAndOpenDefaultMailApp: Boolean
     ) {
-        getIntentSendMailRecipientBottomDialogFragment()?.dismissAllowingStateLoss()
+        getIntentSendMailRecipientBottomDialogFragment()?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
 
         if (skipAndOpenDefaultMailApp) {
             openMailToShareSheet(
@@ -355,7 +357,7 @@ class IntentContextMenuAliasActivity : BaseActivity(),
                 getIntentBottomDialogFragment()?.setText(this.resources.getString(R.string.intent_alias_already_exists))
                 Handler(Looper.getMainLooper()).postDelayed({
                     if (!isFinishing && !isDestroyed) {
-                        getIntentBottomDialogFragment()?.dismissAllowingStateLoss()
+                        getIntentBottomDialogFragment()?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
                         // There is an alias with this exact email address. It already exists! Open the ManageAliasActivity
                         val intent = Intent(this, ManageAliasActivity::class.java)
                         // Pass data object in the bundle and populate details activity.
@@ -421,7 +423,7 @@ class IntentContextMenuAliasActivity : BaseActivity(),
         anonaddyCcRecipientAddresses: Array<String?>,
         anonaddyBccRecipientAddresses: Array<String?>
     ) {
-        getIntentBottomDialogFragment()?.dismissAllowingStateLoss()
+        getIntentBottomDialogFragment()?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
 
         // Open the mailto app select sheet, but make sure to exclude ourselves!
         val intent = AnonAddyUtils.buildEmailIntent(

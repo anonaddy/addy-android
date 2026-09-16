@@ -181,7 +181,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     override fun onClickHowToUpdate() {
-        (unsupportedBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("unsupportedBottomDialogFragment") as? UnsupportedBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("unsupportedBottomDialogFragment") as? UnsupportedBottomDialogFragment
+            ?: unsupportedBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         val url = "https://github.com/anonaddy/anonaddy/blob/master/SELF-HOSTING.md#updating"
         val i = Intent(Intent.ACTION_VIEW)
         i.data = url.toUri()
@@ -190,7 +191,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     override fun onClickIgnore() {
-        (unsupportedBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("unsupportedBottomDialogFragment") as? UnsupportedBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("unsupportedBottomDialogFragment") as? UnsupportedBottomDialogFragment
+            ?: unsupportedBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         lifecycleScope.launch {
             loadUserResourceIntoMemory()
         }

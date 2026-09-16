@@ -295,7 +295,8 @@ class LabelsFragment : BaseFragment(), AddLabelBottomDialogFragment.AddLabelsBot
     }
 
     override fun onAddedLabelEntry(label: Labels) {
-        (labelsAddBottomDialogFragment ?: childFragmentManager.findFragmentByTag("labelsAddBottomDialogFragment") as? AddLabelBottomDialogFragment)?.dismissAllowingStateLoss()
+        (childFragmentManager.findFragmentByTag("labelsAddBottomDialogFragment") as? AddLabelBottomDialogFragment
+            ?: labelsAddBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         getDataFromWeb(null, showShimmer = false)
     }
 

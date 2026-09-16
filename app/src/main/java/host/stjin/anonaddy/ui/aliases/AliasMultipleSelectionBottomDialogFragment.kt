@@ -142,7 +142,8 @@ class AliasMultipleSelectionBottomDialogFragment : BaseBottomSheetDialogFragment
 
     override fun labelsEdited() {
         shouldRefreshData = true
-        (editAliasLabelsBottomDialogFragment ?: childFragmentManager.findFragmentByTag("editAliasLabelsBottomDialogFragment") as? EditAliasLabelsBottomDialogFragment)?.dismissAllowingStateLoss()
+        (childFragmentManager.findFragmentByTag("editAliasLabelsBottomDialogFragment") as? EditAliasLabelsBottomDialogFragment
+            ?: editAliasLabelsBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         listener?.onCloseMultipleSelectionBottomDialogFragment(shouldRefreshData)
         dismissAllowingStateLoss()
     }
@@ -152,7 +153,8 @@ class AliasMultipleSelectionBottomDialogFragment : BaseBottomSheetDialogFragment
     }
 
     override fun bulkRecipientsEdited(recipientIds: ArrayList<String>) {
-        (editAliasRecipientsBottomDialogFragment ?: childFragmentManager.findFragmentByTag("editAliasRecipientsBottomDialogFragment") as? EditAliasRecipientsBottomDialogFragment)?.dismissAllowingStateLoss()
+        (childFragmentManager.findFragmentByTag("editAliasRecipientsBottomDialogFragment") as? EditAliasRecipientsBottomDialogFragment
+            ?: editAliasRecipientsBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         amountOfNetworkCallsDone = 0
         networkAction = NetworkAction.CHANGE_RECIPIENTS_STATE
         updateUi()

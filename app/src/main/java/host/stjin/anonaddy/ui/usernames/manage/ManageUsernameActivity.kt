@@ -156,7 +156,8 @@ class ManageUsernameActivity : BaseActivity(),
     }
 
     override fun descriptionEdited(username: Usernames) {
-        (editUsernameDescriptionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editUsernameDescriptionBottomDialogFragment") as? EditUsernameDescriptionBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editUsernameDescriptionBottomDialogFragment") as? EditUsernameDescriptionBottomDialogFragment
+            ?: editUsernameDescriptionBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         shouldRefreshOnFinish = true
 
         // Do this last, will trigger updateUI as well as re-init editUsernameDescriptionBottomDialogFragment
@@ -164,21 +165,24 @@ class ManageUsernameActivity : BaseActivity(),
     }
 
     override fun recipientEdited(username: Usernames) {
-        (editUsernameRecipientBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editUsernameRecipientsBottomDialogFragment") as? EditUsernameRecipientBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editUsernameRecipientsBottomDialogFragment") as? EditUsernameRecipientBottomDialogFragment
+            ?: editUsernameRecipientBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         shouldRefreshOnFinish = true
         // Do this last, will trigger updateUI as well as re-init editUsernameRecipientBottomDialogFragment
         this.username = username
     }
 
     override fun fromNameEdited(username: Usernames) {
-        (editUsernameFromNameBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editUsernameFromNameBottomDialogFragment") as? EditUsernameFromNameBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editUsernameFromNameBottomDialogFragment") as? EditUsernameFromNameBottomDialogFragment
+            ?: editUsernameFromNameBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         shouldRefreshOnFinish = true
         // Do this last, will trigger updateUI as well as re-init editUsernameFromNameBottomDialogFragment
         this.username = username
     }
 
     override fun autoCreateRegexEdited(username: Usernames) {
-        (editUsernameAutoCreateRegexBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editUsernameAutoCreateRegexBottomDialogFragment") as? EditUsernameAutoCreateRegexBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editUsernameAutoCreateRegexBottomDialogFragment") as? EditUsernameAutoCreateRegexBottomDialogFragment
+            ?: editUsernameAutoCreateRegexBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         shouldRefreshOnFinish = true
         // Do this last, will trigger updateUI as well as re-init editUsernameAutoCreateRegexBottomDialogFragment
         this.username = username

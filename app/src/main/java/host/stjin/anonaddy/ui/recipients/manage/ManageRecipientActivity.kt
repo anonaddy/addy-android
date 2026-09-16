@@ -174,7 +174,8 @@ class ManageRecipientActivity : BaseActivity(),
     }
 
     override fun onKeyAdded(recipient: Recipients) {
-        (addRecipientPublicGpgKeyBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("addRecipientPublicGpgKeyBottomDialogFragment") as? AddRecipientPublicGpgKeyBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("addRecipientPublicGpgKeyBottomDialogFragment") as? AddRecipientPublicGpgKeyBottomDialogFragment
+            ?: addRecipientPublicGpgKeyBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         shouldRefreshOnFinish = true
 
         // Do this last, will trigger updateUI as well as re-init addRecipientPublicGpgKeyBottomDialogFragment
@@ -182,7 +183,8 @@ class ManageRecipientActivity : BaseActivity(),
     }
 
     override fun descriptionEdited(recipient: Recipients) {
-        (editRecipientDescriptionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editRecipientDescriptionBottomDialogFragment") as? EditRecipientDescriptionBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editRecipientDescriptionBottomDialogFragment") as? EditRecipientDescriptionBottomDialogFragment
+            ?: editRecipientDescriptionBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         shouldRefreshOnFinish = true
 
         // Do this last, will trigger updateUI as well as re-init editRecipientDescriptionBottomDialogFragment

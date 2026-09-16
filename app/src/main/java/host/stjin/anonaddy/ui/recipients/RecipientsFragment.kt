@@ -312,7 +312,8 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
     }
 
     override fun onAdded() {
-        (addRecipientsFragment ?: childFragmentManager.findFragmentByTag("addRecipientsFragment") as? AddRecipientBottomDialogFragment)?.dismissAllowingStateLoss()
+        (childFragmentManager.findFragmentByTag("addRecipientsFragment") as? AddRecipientBottomDialogFragment
+            ?: addRecipientsFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         verificationEmailSentSnackbar()
         getDataFromWeb(null, showShimmer = false)
     }

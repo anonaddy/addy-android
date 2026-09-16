@@ -277,7 +277,8 @@ class DomainsFragment : BaseFragment(), AddDomainBottomDialogFragment.AddDomainB
     }
 
     override fun onAdded() {
-        (addDomainFragment ?: childFragmentManager.findFragmentByTag("addDomainFragment") as? AddDomainBottomDialogFragment)?.dismissAllowingStateLoss()
+        (childFragmentManager.findFragmentByTag("addDomainFragment") as? AddDomainBottomDialogFragment
+            ?: addDomainFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         getDataFromWeb(null, showShimmer = false)
     }
 

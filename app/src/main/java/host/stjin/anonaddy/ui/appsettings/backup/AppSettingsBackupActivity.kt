@@ -149,7 +149,8 @@ class AppSettingsBackupActivity : BaseActivity(),
     }
 
     override fun onSaved() {
-        (backupSetPasswordBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("backupSetPasswordBottomDialogFragment") as? BackupSetPasswordBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("backupSetPasswordBottomDialogFragment") as? BackupSetPasswordBottomDialogFragment
+            ?: backupSetPasswordBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         SnackbarHelper.createSnackbar(
             this@AppSettingsBackupActivity,
             this@AppSettingsBackupActivity.resources.getString(R.string.backup_password_set),

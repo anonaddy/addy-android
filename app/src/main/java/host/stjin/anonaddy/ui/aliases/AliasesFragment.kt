@@ -223,8 +223,6 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
         this.aliasSortFilter.filter = if (searchText.isEmpty()) null else searchText.lowercase(java.util.Locale.getDefault())
 
         updateChipSelection(this.aliasSortFilter)
-
-        filterOptionsAliasBottomDialogFragment = FilterOptionsAliasBottomDialogFragment.newInstance(aliasSortFilter)
     }
 
     private fun setOnNestedScrollViewListener(set: Boolean) {
@@ -575,7 +573,8 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
     }
 
     override fun onAdded() {
-        (addAliasBottomDialogFragment ?: childFragmentManager.findFragmentByTag("addAliasBottomDialogFragment") as? AddAliasBottomDialogFragment)?.dismissAllowingStateLoss()
+        (childFragmentManager.findFragmentByTag("addAliasBottomDialogFragment") as? AddAliasBottomDialogFragment
+            ?: addAliasBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb(null, showShimmer = false)
 
@@ -602,7 +601,8 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
 
 
         // Could not be added because this is called from homeFragment on sw600dp
-        (filterOptionsAliasBottomDialogFragment ?: childFragmentManager.findFragmentByTag("filterOptionsAliasBottomDialogFragment") as? FilterOptionsAliasBottomDialogFragment)?.dismissAllowingStateLoss()
+        (childFragmentManager.findFragmentByTag("filterOptionsAliasBottomDialogFragment") as? FilterOptionsAliasBottomDialogFragment
+            ?: filterOptionsAliasBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
 
         loadFilter()
         getDataFromWeb(null, showShimmer = false)
@@ -617,7 +617,8 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
     }
 
     override fun onCloseMultipleSelectionBottomDialogFragment(shouldRefreshData: Boolean) {
-        (aliasMultipleSelectionBottomDialogFragment ?: childFragmentManager.findFragmentByTag("aliasMultipleSelectionBottomDialogFragment") as? AliasMultipleSelectionBottomDialogFragment)?.dismissAllowingStateLoss()
+        (childFragmentManager.findFragmentByTag("aliasMultipleSelectionBottomDialogFragment") as? AliasMultipleSelectionBottomDialogFragment
+            ?: aliasMultipleSelectionBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         aliasAdapter?.updateWatchedAliases()
 
         if (shouldRefreshData) {
@@ -631,7 +632,8 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
     }
 
     override fun onCancelMultipleSelectionBottomDialogFragment(shouldRefreshData: Boolean) {
-        (aliasMultipleSelectionBottomDialogFragment ?: childFragmentManager.findFragmentByTag("aliasMultipleSelectionBottomDialogFragment") as? AliasMultipleSelectionBottomDialogFragment)?.dismissAllowingStateLoss()
+        (childFragmentManager.findFragmentByTag("aliasMultipleSelectionBottomDialogFragment") as? AliasMultipleSelectionBottomDialogFragment
+            ?: aliasMultipleSelectionBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         aliasAdapter?.unselectAliases()
         aliasAdapter?.updateWatchedAliases()
         hideSnackBar()

@@ -167,7 +167,8 @@ class ManageDomainActivity : BaseActivity(),
     }
 
     override fun descriptionEdited(domain: Domains) {
-        (editDomainDescriptionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editDomainDescriptionBottomDialogFragment") as? EditDomainDescriptionBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editDomainDescriptionBottomDialogFragment") as? EditDomainDescriptionBottomDialogFragment
+            ?: editDomainDescriptionBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         shouldRefreshOnFinish = true
 
         // Do this last, will trigger updateUI as well as re-init editDomainDescriptionBottomDialogFragment
@@ -175,21 +176,24 @@ class ManageDomainActivity : BaseActivity(),
     }
 
     override fun recipientEdited(domain: Domains) {
-        (editDomainRecipientBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editDomainRecipientsBottomDialogFragment") as? EditDomainRecipientBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editDomainRecipientsBottomDialogFragment") as? EditDomainRecipientBottomDialogFragment
+            ?: editDomainRecipientBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         shouldRefreshOnFinish = true
         // Do this last, will trigger updateUI as well as re-init editDomainRecipientBottomDialogFragment
         this.domain = domain
     }
 
     override fun fromNameEdited(domain: Domains) {
-        (editDomainFromNameBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editDomainFromNameBottomDialogFragment") as? EditDomainFromNameBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editDomainFromNameBottomDialogFragment") as? EditDomainFromNameBottomDialogFragment
+            ?: editDomainFromNameBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         shouldRefreshOnFinish = true
         // Do this last, will trigger updateUI as well as re-init editDomainFromNameBottomDialogFragment
         this.domain = domain
     }
 
     override fun autoCreateRegexEdited(domain: Domains) {
-        (editDomainAutoCreateRegexBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editDomainAutoCreateRegexBottomDialogFragment") as? EditDomainAutoCreateRegexBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editDomainAutoCreateRegexBottomDialogFragment") as? EditDomainAutoCreateRegexBottomDialogFragment
+            ?: editDomainAutoCreateRegexBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         shouldRefreshOnFinish = true
         // Do this last, will trigger updateUI as well as re-init editDomainAutoCreateRegexBottomDialogFragment
         this.domain = domain

@@ -274,7 +274,8 @@ class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUse
     }
 
     override fun onAdded() {
-        (addUsernameFragment ?: childFragmentManager.findFragmentByTag("addUsernameFragment") as? AddUsernameBottomDialogFragment)?.dismissAllowingStateLoss()
+        (childFragmentManager.findFragmentByTag("addUsernameFragment") as? AddUsernameBottomDialogFragment
+            ?: addUsernameFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         getDataFromWeb(null, showShimmer = false)
     }
 

@@ -255,7 +255,8 @@ class FailedDeliveriesFragment : BaseFragment(), FailedDeliveryDetailsBottomDial
     }
 
     override fun onDeleted(failedDeliveryId: String) {
-        (failedDeliveryDetailsBottomDialogFragment ?: childFragmentManager.findFragmentByTag("failedDeliveryDetailsBottomDialogFragment") as? FailedDeliveryDetailsBottomDialogFragment)?.dismissAllowingStateLoss()
+        (childFragmentManager.findFragmentByTag("failedDeliveryDetailsBottomDialogFragment") as? FailedDeliveryDetailsBottomDialogFragment
+            ?: failedDeliveryDetailsBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         getDataFromWeb(null, showShimmer = false)
     }
 

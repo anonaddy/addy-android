@@ -237,7 +237,8 @@ class ManageAliasActivity : BaseActivity(),
 
     override fun labelsEdited() {
         shouldRefreshOnFinish = true
-        (editAliasLabelsBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editAliasLabelsBottomDialogFragment") as? EditAliasLabelsBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editAliasLabelsBottomDialogFragment") as? EditAliasLabelsBottomDialogFragment
+            ?: editAliasLabelsBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
 
         // Fetch alias again since we updated labels
         lifecycleScope.launch {
@@ -247,7 +248,8 @@ class ManageAliasActivity : BaseActivity(),
 
     override fun descriptionEdited(alias: Aliases) {
         shouldRefreshOnFinish = true
-        (editAliasDescriptionBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editAliasDescriptionBottomDialogFragment") as? EditAliasDescriptionBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editAliasDescriptionBottomDialogFragment") as? EditAliasDescriptionBottomDialogFragment
+            ?: editAliasDescriptionBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
         this.alias = alias
@@ -255,7 +257,8 @@ class ManageAliasActivity : BaseActivity(),
 
     override fun fromNameEdited(alias: Aliases) {
         shouldRefreshOnFinish = true
-        (editAliasFromNameBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editAliasFromNameBottomDialogFragment") as? EditAliasFromNameBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editAliasFromNameBottomDialogFragment") as? EditAliasFromNameBottomDialogFragment
+            ?: editAliasFromNameBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init editAliasFromNameBottomDialogFragment
         this.alias = alias
@@ -265,7 +268,8 @@ class ManageAliasActivity : BaseActivity(),
         // This changes the last updated time of the alias which is being shown in the recyclerview in the aliasesFragment.
         // So we update the list when coming back
         shouldRefreshOnFinish = true
-        (editAliasRecipientsBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editAliasRecipientsBottomDialogFragment") as? EditAliasRecipientsBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editAliasRecipientsBottomDialogFragment") as? EditAliasRecipientsBottomDialogFragment
+            ?: editAliasRecipientsBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
         this.alias = alias
@@ -286,7 +290,8 @@ class ManageAliasActivity : BaseActivity(),
         if (intent.resolveActivity(packageManager) != null) {
             AnonAddyUtils.sendEmail(this, intent, this.resources.getString(R.string.send_mail), supportFragmentManager)
         }
-        (editAliasSendMailRecipientBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editAliasSendMailRecipientBottomDialogFragment") as? EditAliasSendMailRecipientBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editAliasSendMailRecipientBottomDialogFragment") as? EditAliasSendMailRecipientBottomDialogFragment
+            ?: editAliasSendMailRecipientBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
     }
 
     override fun onPressCopy(toString: String) {
@@ -299,7 +304,8 @@ class ManageAliasActivity : BaseActivity(),
         val clip = ClipData.newPlainText("recipients", recipients?.joinToString(";"))
         clipboard.setPrimaryClip(clip)
         Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
-        (editAliasSendMailRecipientBottomDialogFragment ?: supportFragmentManager.findFragmentByTag("editAliasSendMailRecipientBottomDialogFragment") as? EditAliasSendMailRecipientBottomDialogFragment)?.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("editAliasSendMailRecipientBottomDialogFragment") as? EditAliasSendMailRecipientBottomDialogFragment
+            ?: editAliasSendMailRecipientBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
     }
 
     private fun setRefreshLayout() {
