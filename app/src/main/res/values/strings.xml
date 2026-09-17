@@ -762,6 +762,8 @@
     <string name="reset_app_logout_failure">Could not delete the API key, do you want to reset the app anyways?</string>
     <string name="reset_app_anyways">Reset anyways</string>
     <string name="registration_register">Register</string>
+    <string name="registration_newsletter_title">Email me when we add new features</string>
+    <string name="registration_newsletter_subtitle">A few times a year. No tracking pixels.</string>
     <string name="registration_disclaimer">By creating an account, you consent to our Terms of Service and Privacy Policy</string>
     <string name="registration_username_header">Create your username</string>
     <string name="registration_username_footer">This is used to login and in the domain for your <b>standard aliases</b>\ne.g. ebay@<b>johndoe</b>.anonaddy.com or x@<b>johndoe</b>.anonaddy.me</string>

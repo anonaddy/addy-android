@@ -8,7 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.CheckBox
 import androidx.core.net.toUri
+import androidx.core.view.AccessibilityDelegateCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -46,6 +50,17 @@ class RegistrationFormBottomDialogFragment : BaseBottomSheetDialogFragment(), Vi
         binding.bsRegistrationFormRegisterButton.setOnClickListener(this)
         binding.bsRegistrationFormPrivacyPolicyButton.setOnClickListener(this)
         binding.bsRegistrationFormTermsOfServiceButton.setOnClickListener(this)
+        binding.bsRegistrationFormNewsletterLl.setOnClickListener(this)
+
+        ViewCompat.setAccessibilityDelegate(binding.bsRegistrationFormNewsletterLl, object : AccessibilityDelegateCompat() {
+            @Suppress("DEPRECATION")
+            override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfoCompat) {
+                super.onInitializeAccessibilityNodeInfo(host, info)
+                info.className = CheckBox::class.java.name
+                info.isCheckable = true
+                info.isChecked = binding.bsRegistrationFormNewsletterCheckbox.isChecked
+            }
+        })
 
         fillSpinners(requireContext())
 
@@ -87,6 +102,10 @@ class RegistrationFormBottomDialogFragment : BaseBottomSheetDialogFragment(), Vi
                         "https://addy.io/terms?ref=appstore".toUri()
                     )
                     startActivity(browserIntent)
+                }
+
+                R.id.bs_registration_form_newsletter_ll -> {
+                    binding.bsRegistrationFormNewsletterCheckbox.toggle()
                 }
             }
         }
@@ -170,7 +189,8 @@ class RegistrationFormBottomDialogFragment : BaseBottomSheetDialogFragment(), Vi
             username = binding.bsRegistrationFormUsernameTiet.text.toString(),
             email = binding.bsRegistrationFormEmailTiet.text.toString(),
             password = binding.bsRegistrationFormPasswordTiet.text.toString(),
-            apiExpiration = expirationOption
+            apiExpiration = expirationOption,
+            newsletter = binding.bsRegistrationFormNewsletterCheckbox.isChecked
         )
         when (result) {
             is NetworkResult.Success -> {

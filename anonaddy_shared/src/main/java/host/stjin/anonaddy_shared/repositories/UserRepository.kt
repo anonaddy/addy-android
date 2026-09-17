@@ -45,7 +45,8 @@ class UserRepository(
         username: String,
         email: String,
         password: String,
-        apiExpiration: String
+        apiExpiration: String,
+        newsletter: Boolean = false
     ): NetworkResult<String> {
         waitForInit()
 
@@ -55,6 +56,7 @@ class UserRepository(
             put("password", password)
             put("device_name", "addy.io for Android")
             put("expiration", if (apiExpiration == "never") null else apiExpiration)
+            put("newsletter", newsletter)
         }
 
         val (_, response, result) = Fuel.post(API_URL_REGISTER)
