@@ -20,7 +20,7 @@ configure<ApplicationExtension> {
          */
 
         // SDK 37 + v6.6.0 + release 01 + 00 (for app)
-        versionCode = 376600200 // https://developer.android.com/training/wearables/packaging
+        versionCode = 376600300 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on GitHub
         versionName = "v6.6.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -130,7 +130,7 @@ dependencies {
     // AppSearch for on-device system search
     implementation("androidx.appsearch:appsearch:1.1.0")
     implementation("androidx.appsearch:appsearch-platform-storage:1.1.0")
-    implementation("androidx.concurrent:concurrent-futures-ktx:1.2.0")
+    implementation("androidx.concurrent:concurrent-futures-ktx:1.3.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")

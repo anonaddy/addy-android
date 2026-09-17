@@ -155,7 +155,7 @@ class RulesAdapter(
                         ?: context.resources.getString(R.string.unknown)
                     "$actionTypeText $recipient"
                 }
-                "block", "encryption", "blocklistSender", "blocklistDomain", "removeAttachments", "deactivateAlias", "deleteAlias" -> {
+                "block", "quarantine", "encryption", "blocklistSender", "blocklistDomain", "removeAttachments", "deactivateAlias", "deleteAlias" -> {
                     actionTypeText
                 }
                 else -> {

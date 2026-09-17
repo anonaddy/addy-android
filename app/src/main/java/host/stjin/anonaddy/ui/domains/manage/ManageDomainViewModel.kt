@@ -3,6 +3,7 @@ package host.stjin.anonaddy.ui.domains.manage
 import android.app.Application
 import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.ui.base.BaseViewModel
+import host.stjin.anonaddy_shared.models.CheckDomainSendingResponse
 import host.stjin.anonaddy_shared.models.Domains
 import host.stjin.anonaddy_shared.network.NetworkResult
 
@@ -60,5 +61,9 @@ class ManageDomainViewModel(application: Application) : BaseViewModel(applicatio
 
     suspend fun updateAutoCreateRegexDomain(domainId: String, autoCreateRegex: String?): NetworkResult<Domains> {
         return domainRepository.updateAutoCreateRegexSpecificDomain(domainId, autoCreateRegex)
+    }
+
+    suspend fun checkDomainSending(domainId: String): NetworkResult<CheckDomainSendingResponse> {
+        return domainRepository.checkDomainSending(domainId)
     }
 }

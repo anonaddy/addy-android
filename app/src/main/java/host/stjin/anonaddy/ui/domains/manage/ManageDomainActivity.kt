@@ -63,6 +63,7 @@ class ManageDomainActivity : BaseActivity(),
 
     private var isAliasesExpanded = false
     private var forceSwitch = false
+    private var isCheckingDomainSending = false
 
     private lateinit var deleteDomainSnackbar: Snackbar
 
@@ -144,6 +145,10 @@ class ManageDomainActivity : BaseActivity(),
             }
         }
 
+
+        binding.activityManageDomainCheckDomainSending.setOnLayoutClickedListener {
+            this@ManageDomainActivity.domain?.let { checkDomainSending(it.id) }
+        }
 
         binding.activityManageDomainDelete.setOnLayoutClickedListener { deleteDomain(this@ManageDomainActivity.domain!!.id) }
 
@@ -366,6 +371,36 @@ class ManageDomainActivity : BaseActivity(),
                 binding.activityManageDomainCL,
                 LoggingHelper.LOGFILES.DEFAULT
             ).show()
+        }
+    }
+
+    private fun checkDomainSending(id: String) {
+        if (isCheckingDomainSending) return
+        isCheckingDomainSending = true
+        binding.activityManageDomainCheckDomainSending.showProgressBar(true)
+        lifecycleScope.launch {
+            val result = viewModel.checkDomainSending(id)
+            isCheckingDomainSending = false
+            binding.activityManageDomainCheckDomainSending.showProgressBar(false)
+            if (result is NetworkResult.Success) {
+                this@ManageDomainActivity.domain = result.data.data
+                shouldRefreshOnFinish = true
+                MaterialDialogHelper.showMaterialDialog(
+                    context = this@ManageDomainActivity,
+                    title = resources.getString(R.string.check_domain_sending),
+                    message = result.data.message ?: resources.getString(R.string.domain_sending_verified),
+                    icon = R.drawable.ic_dns,
+                    positiveButtonText = resources.getString(android.R.string.ok)
+                ).show()
+            } else {
+                MaterialDialogHelper.showMaterialDialog(
+                    context = this@ManageDomainActivity,
+                    title = resources.getString(R.string.error_checking_domain_sending),
+                    message = result.errorOrNull() ?: "",
+                    icon = R.drawable.ic_dns_alert,
+                    positiveButtonText = resources.getString(android.R.string.ok)
+                ).show()
+            }
         }
     }
 
@@ -628,18 +663,20 @@ class ManageDomainActivity : BaseActivity(),
 
 
         /**
-         * Check DNS
+         * Check Domain Sending & Check DNS
          */
 
         if (domain.domain_sending_verified_at == null) {
-            binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns_alert, null)
-            binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc_incorrect))
-            binding.activityManageDomainCheckDns.setSectionAlert(true)
+            binding.activityManageDomainCheckDomainSending.setImageResourceIcons(R.drawable.ic_dns_alert, null)
+            binding.activityManageDomainCheckDomainSending.setDescription(resources.getString(R.string.check_dns_desc_incorrect))
+            binding.activityManageDomainCheckDomainSending.setSectionAlert(true)
         } else {
-            binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns, null)
-            binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc))
-            binding.activityManageDomainCheckDns.setSectionAlert(false)
+            binding.activityManageDomainCheckDomainSending.setImageResourceIcons(R.drawable.ic_dns, null)
+            binding.activityManageDomainCheckDomainSending.setDescription(resources.getString(R.string.check_dns_desc))
+            binding.activityManageDomainCheckDomainSending.setSectionAlert(false)
         }
+
+        binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc))
 
         binding.animationFragment.stopAnimation()
         binding.activityManageDomainNSV.animate().alpha(1.0f)

@@ -33,3 +33,9 @@ data class DomainOptions(
     val defaultAliasFormat: String,
     val sharedDomains: List<String>
 )
+
+data class CheckDomainSendingResponse(
+    val success: Boolean?,
+    val message: String?,
+    val `data`: Domains
+)

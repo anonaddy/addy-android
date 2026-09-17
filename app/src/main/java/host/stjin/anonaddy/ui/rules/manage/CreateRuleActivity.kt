@@ -511,7 +511,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                     subtitle.text = recipient?.email ?: this.resources.getString(R.string.unknown)
                     subtitle.visibility = View.VISIBLE
                 }
-                "block", "encryption", "blocklistSender", "blocklistDomain", "removeAttachments", "deactivateAlias", "deleteAlias" -> {
+                "block", "quarantine", "encryption", "blocklistSender", "blocklistDomain", "removeAttachments", "deactivateAlias", "deleteAlias" -> {
                     subtitle.text = ""
                     subtitle.visibility = View.GONE
                 }

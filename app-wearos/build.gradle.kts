@@ -10,7 +10,7 @@ val wear_protolayout_version = rootProject.extra["wear_protolayout_version"]
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.10" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.20" // this version matches your Kotlin version
 }
 
 configure<ApplicationExtension> {
@@ -29,7 +29,7 @@ configure<ApplicationExtension> {
          */
 
         // SDK 37 + v1.7.0 + release 01 + 01 (for wearos)
-        versionCode = 371700101
+        versionCode = 371700201
         versionName = "1.7.0"
         vectorDrawables {
             useSupportLibrary = true

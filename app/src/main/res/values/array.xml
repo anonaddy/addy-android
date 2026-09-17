@@ -207,6 +207,7 @@
         <item>encryption</item>
         <item>banner</item>
         <item>block</item>
+        <item>quarantine</item>
         <item>blocklistSender</item>
         <item>blocklistDomain</item>
         <item>removeAttachments</item>
@@ -223,6 +224,7 @@
         <item>@string/turn_PGP_encryption_off</item>
         <item>@string/set_the_banner_information_location_to</item>
         <item>@string/block_the_email</item>
+        <item>@string/quarantine_the_email</item>
         <item>@string/add_sender_to_blocklist</item>
         <item>@string/add_domain_to_blocklist</item>
         <item>@string/remove_attachments</item>
@@ -282,6 +284,7 @@
     <string name="turn_PGP_encryption_off">turn PGP encryption off</string>
     <string name="set_the_banner_information_location_to">set the banner information location to</string>
     <string name="block_the_email">block the email</string>
+    <string name="quarantine_the_email">quarantine the email</string>
     <string name="add_sender_to_blocklist">add sender to blocklist</string>
     <string name="add_domain_to_blocklist">add domain to blocklist</string>
     <string name="remove_attachments">remove attachments</string>

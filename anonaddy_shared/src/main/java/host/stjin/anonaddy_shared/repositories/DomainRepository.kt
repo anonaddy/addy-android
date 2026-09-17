@@ -8,6 +8,7 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_SHARED_WITH_FAMILY_DOMAINS
+import host.stjin.anonaddy_shared.models.CheckDomainSendingResponse
 import host.stjin.anonaddy_shared.models.DomainOptions
 import host.stjin.anonaddy_shared.models.Domains
 import host.stjin.anonaddy_shared.models.PaginatedResponse
@@ -185,5 +186,15 @@ class DomainRepository(
             .awaitStringResponseResult()
 
         return handleResponse(response, result, "updateFromNameSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
+    }
+
+    suspend fun checkDomainSending(domainId: String): NetworkResult<CheckDomainSendingResponse> {
+        waitForInit()
+
+        val (_, response, result) = Fuel.post("$API_URL_DOMAINS/$domainId/check-sending")
+            .appendHeader(*getHeaders())
+            .awaitStringResponseResult()
+
+        return handleResponse(response, result, "checkDomainSending") { gson.fromJson(it, CheckDomainSendingResponse::class.java) }
     }
 }

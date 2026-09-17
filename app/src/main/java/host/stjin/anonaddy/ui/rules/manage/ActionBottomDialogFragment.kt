@@ -329,7 +329,7 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.GONE
             }
-            "block", "encryption", "blocklistSender", "blocklistDomain", "removeAttachments", "deactivateAlias", "deleteAlias" -> {
+            "block", "quarantine", "encryption", "blocklistSender", "blocklistDomain", "removeAttachments", "deactivateAlias", "deleteAlias" -> {
                 binding.bsRuleActionForwardToTil.visibility = View.GONE
                 binding.bsRuleActionLabelTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
@@ -401,7 +401,7 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                 listener?.onAddedAction(actionEditIndex, type, bannerLocation)
             }
 
-            "block", "encryption", "blocklistSender", "blocklistDomain", "removeAttachments", "deactivateAlias", "deleteAlias" -> {
+            "block", "quarantine", "encryption", "blocklistSender", "blocklistDomain", "removeAttachments", "deactivateAlias", "deleteAlias" -> {
                 listener?.onAddedAction(actionEditIndex, type, true)
             }
 

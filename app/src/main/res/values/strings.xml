@@ -186,6 +186,9 @@
     <string name="delete_domain_desc">You will no longer be able to receive any emails at this domain</string>
     <string name="check_dns">Check DNS</string>
     <string name="check_dns_desc">Verify DNS configuration</string>
+    <string name="check_domain_sending">Check domain sending</string>
+    <string name="domain_sending_verified">Domain sending records verified</string>
+    <string name="error_checking_domain_sending">Something went wrong checking domain sending records</string>
     <string name="domain_activated">Domain activated</string>
     <string name="domain_deactivated">Domain deactivated</string>
     <string name="manage_domain_basic_info">Domain: %1$s\nCreated: %2$s\nUpdated at: %3$s\nDomain verified at: %4$s\nDomain MX validated at: %5$s\nDomain sending verified at: %6$s\nEmail forwarded: %7$d\nEmail blocked: %8$d\nEmail replies: %9$d\nEmail sent: %10$d</string>

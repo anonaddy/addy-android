@@ -43,7 +43,12 @@ class RecipientRepository(
     suspend fun getRecipients(verifiedOnly: Boolean = false): NetworkResult<PaginatedResponse<Recipients>> {
         waitForInit()
 
-        val (_, response, result) = Fuel.get(API_URL_RECIPIENTS)
+        val parameters = ArrayList<Pair<String, Any>>()
+        if (verifiedOnly) {
+            parameters.add(Pair("filter[verified]", "true"))
+        }
+
+        val (_, response, result) = Fuel.get(API_URL_RECIPIENTS, parameters)
             .appendHeader(*getHeaders())
             .awaitStringResponseResult()
 
