@@ -54,7 +54,7 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
     AliasMultipleSelectionBottomDialogFragment.AddAliasMultipleSelectionBottomDialogListener, Refreshable {
 
     // 1. Properties
-    private val aliasesViewModel: AliasesViewModel by viewModels()
+    private val aliasesViewModel: AliasesViewModel by activityViewModels()
     private val sharedFilterViewModel: SharedFilterViewModel by activityViewModels()
     private val sharedScrollViewModel: SharedScrollViewModel by activityViewModels()
     private var settingsManager: SettingsManager? = null
@@ -182,6 +182,7 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
 
     override fun onDestroyView() {
         super.onDestroyView()
+        oneTimeRecyclerViewActions = true
         addAliasBottomDialogFragment = null
         filterOptionsAliasBottomDialogFragment = null
         aliasMultipleSelectionBottomDialogFragment = null
@@ -515,6 +516,7 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
                 shimmerItemCount = 100
                 shimmerLayoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(requireContext()))
                 layoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(requireContext()))
+                ScreenSizeUtils.setupAutoFitGrid(this)
 
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
@@ -551,7 +553,7 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
             return aliasesViewModel.loadAliases(aliasSortFilter, forceRefresh = false, isLoadMore = true)
         } else {
             setOnNestedScrollViewListener(set = false)
-            return aliasesViewModel.loadAliases(aliasSortFilter, forceRefresh = (savedInstanceState == null), isLoadMore = false)
+            return aliasesViewModel.loadAliases(aliasSortFilter, forceRefresh = false, isLoadMore = false)
         }
     }
 

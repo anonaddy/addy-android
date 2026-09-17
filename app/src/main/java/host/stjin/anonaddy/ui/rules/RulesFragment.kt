@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -46,7 +47,7 @@ import kotlinx.coroutines.launch
 class RulesFragment : BaseFragment(), Refreshable {
 
     // 1. Properties
-    private val rulesViewModel: RulesViewModel by viewModels()
+    private val rulesViewModel: RulesViewModel by activityViewModels()
 
     private var recipients: ArrayList<Recipients>? = null
     private var encryptedSettingsManager: SettingsManager? = null
@@ -285,8 +286,10 @@ class RulesFragment : BaseFragment(), Refreshable {
     fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true) {
         isSilentRefresh = !showShimmer
         setStats()
-        viewLifecycleOwner.lifecycleScope.launch { getUserResource() }
-        rulesViewModel.loadRules(forceRefresh = (savedInstanceState == null))
+        if ((activity?.application as? host.stjin.anonaddy_shared.AddyIoApp)?.userResourceOrNull == null) {
+            viewLifecycleOwner.lifecycleScope.launch { getUserResource() }
+        }
+        rulesViewModel.loadRules(forceRefresh = false)
     }
 
     override suspend fun onRefreshData() {

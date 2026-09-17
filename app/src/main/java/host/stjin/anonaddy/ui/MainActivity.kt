@@ -98,11 +98,13 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     }
 
     private var isUpdateAvailable = false
-
     private var isPermissionsRequired = false
+    private var lastRecordedIsTablet: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lastRecordedIsTablet = resources.getBoolean(R.bool.isTablet)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -121,7 +123,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
         requireAuthentication {
             lifecycleScope.launch {
-                loadMainActivity()
+                loadMainActivity(savedInstanceState == null)
                 // No need to check for updates on recreation of the activity
                 if (savedInstanceState == null) {
                     checkForUpdates()
@@ -149,22 +151,9 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
         }
 
 
-        if (AddyIo.isUsingHostedInstance) {
-            if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)!!.visibility =
-                    View.VISIBLE
-            } else {
-                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIcon.visibility = View.VISIBLE
-            }
-        } else {
-            if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)!!.visibility =
-                    View.GONE
-            } else {
-                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIcon.visibility = View.GONE
-            }
-
-        }
+        val notificationsVisibility = if (AddyIo.isUsingHostedInstance) View.VISIBLE else View.GONE
+        binding.navRail?.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)?.visibility = notificationsVisibility
+        binding.mainAppBarInclude?.mainTopBarAccountNotificationsIcon?.visibility = notificationsVisibility
 
 
     }
@@ -187,12 +176,20 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
     }
 
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val currentIsTablet = resources.getBoolean(R.bool.isTablet)
+        if (lastRecordedIsTablet != null && lastRecordedIsTablet != currentIsTablet) {
+            lastRecordedIsTablet = currentIsTablet
+            recreate()
+        }
+    }
+
     // Make sure the viewPager is ABOVE the bottomnavbar
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            // In onCreate or a setup method
-            ViewCompat.setOnApplyWindowInsetsListener(binding.activityMainViewpager!!) { view, insets ->
+        binding.activityMainViewpager?.let { viewPager ->
+            ViewCompat.setOnApplyWindowInsetsListener(viewPager) { view, insets ->
                 val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 
                 // Add system navigation bar height to the existing margin
@@ -270,19 +267,19 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     private fun setRailVersion() {
         val railVersionText =
             if (AddyIo.isUsingHostedInstance) this.resources.getString(R.string.hosted) else AddyIo.VERSIONSTRING
-        binding.navRail!!.headerView?.findViewById<TextView>(R.id.navigation_rail_fab_version)!!.text = railVersionText
+        binding.navRail?.headerView?.findViewById<TextView>(R.id.navigation_rail_fab_version)?.text = railVersionText
 
         val usernameInitials = (this.application as? AddyIoApp)?.userResourceOrNull?.username?.take(2)?.uppercase(Locale.getDefault()) ?: ""
-        binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.main_top_bar_user_initials)!!.text = usernameInitials
+        binding.navRail?.headerView?.findViewById<MaterialButton>(R.id.main_top_bar_user_initials)?.text = usernameInitials
 
     }
 
     private fun setOnBigScreenClickListener() {
-        binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.main_top_bar_user_initials)!!.setOnClickListener {
+        binding.navRail?.headerView?.findViewById<MaterialButton>(R.id.main_top_bar_user_initials)?.setOnClickListener {
             showProfileDialog()
         }
 
-        binding.navRail!!.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)!!.setOnClickListener {
+        binding.navRail?.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)?.setOnClickListener {
             val intent = Intent(this, AccountNotificationsActivity::class.java)
             startActivity(intent)
         }
@@ -300,22 +297,23 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     }
 
     private fun setRefreshLayout() {
-        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+        val mainAppBar = binding.mainAppBarInclude
+        if (mainAppBar != null) {
             binding.refreshLayout?.setOnRefreshListener(object : RefreshLayout.OnRefreshListener {
                 override fun refresh() {
                     changeTopBarSubTitle(
-                        binding.mainAppBarInclude!!.mainTopBarSubtitle,
-                        binding.mainAppBarInclude!!.mainTopBarTitle,
+                        mainAppBar.mainTopBarSubtitle,
+                        mainAppBar.mainTopBarTitle,
                         this@MainActivity.resources.getString(R.string.refreshing_data)
                     )
-                    shimmerTopBarSubTitle(binding.mainAppBarInclude!!.mainTopBarSubtitleShimmerframelayout, true)
+                    shimmerTopBarSubTitle(mainAppBar.mainTopBarSubtitleShimmerframelayout, true)
 
                     refreshAllData {
                         binding.refreshLayout?.finishRefreshing()
-                        shimmerTopBarSubTitle(binding.mainAppBarInclude!!.mainTopBarSubtitleShimmerframelayout, true)
+                        shimmerTopBarSubTitle(mainAppBar.mainTopBarSubtitleShimmerframelayout, true)
                         changeTopBarSubTitle(
-                            binding.mainAppBarInclude!!.mainTopBarSubtitle,
-                            binding.mainAppBarInclude!!.mainTopBarTitle,
+                            mainAppBar.mainTopBarSubtitle,
+                            mainAppBar.mainTopBarTitle,
                             null
                         )
                     }
@@ -326,21 +324,21 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                     if (pixelsMoved > 50) {
                         if (shouldRefreshOnRelease) {
                             changeTopBarSubTitle(
-                                binding.mainAppBarInclude!!.mainTopBarSubtitle,
-                                binding.mainAppBarInclude!!.mainTopBarTitle,
+                                mainAppBar.mainTopBarSubtitle,
+                                mainAppBar.mainTopBarTitle,
                                 this@MainActivity.resources.getString(R.string.release_to_refresh)
                             )
                         } else {
                             changeTopBarSubTitle(
-                                binding.mainAppBarInclude!!.mainTopBarSubtitle,
-                                binding.mainAppBarInclude!!.mainTopBarTitle,
+                                mainAppBar.mainTopBarSubtitle,
+                                mainAppBar.mainTopBarTitle,
                                 this@MainActivity.resources.getString(R.string.pull_down_to_refresh)
                             )
                         }
                     } else {
                         changeTopBarSubTitle(
-                            binding.mainAppBarInclude!!.mainTopBarSubtitle,
-                            binding.mainAppBarInclude!!.mainTopBarTitle,
+                            mainAppBar.mainTopBarSubtitle,
+                            mainAppBar.mainTopBarTitle,
                             null
                         )
                     }
@@ -349,8 +347,8 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
                 override fun cancel() {
                     changeTopBarSubTitle(
-                        binding.mainAppBarInclude!!.mainTopBarSubtitle,
-                        binding.mainAppBarInclude!!.mainTopBarTitle,
+                        mainAppBar.mainTopBarSubtitle,
+                        mainAppBar.mainTopBarTitle,
                         null
                     )
                 }
@@ -367,16 +365,19 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
         }
     }
 
-    private fun loadMainActivity() {
-        showChangeLog()
-
-        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            setupRefreshLayout(binding.mainAppBarInclude!!.appBar, binding.refreshLayout!!)
+    private fun loadMainActivity(isFirstLaunch: Boolean = true) {
+        if (isFirstLaunch) {
+            showChangeLog()
         }
 
-        val navView = if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.navRail!! else binding.navView!!
-        viewPager =
-            if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp!! else binding.activityMainViewpager!!
+        val mainAppBar = binding.mainAppBarInclude
+        val refreshLayout = binding.refreshLayout
+        if (mainAppBar != null && refreshLayout != null) {
+            setupRefreshLayout(mainAppBar.appBar, refreshLayout)
+        }
+
+        val navView = binding.navRail ?: binding.navView ?: return
+        viewPager = binding.activityMainViewpagerSw600dp ?: binding.activityMainViewpager ?: return
 
         val fragmentList: ArrayList<Fragment> = if (resources.getBoolean(R.bool.isTablet)) {
             arrayListOf(
@@ -400,7 +401,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
 
         viewPager.adapter = MainViewpagerAdapter(this, fragmentList)
-        viewPager.offscreenPageLimit = if (resources.getBoolean(R.bool.isTablet)) 8 else 3
+        viewPager.offscreenPageLimit = 1
         // Disallow swiping through the pages
         viewPager.isUserInputEnabled = false
         viewPager.setPageTransformer { page, position ->
@@ -476,23 +477,18 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
             }
         })
 
-        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            binding.navRail!!.setOnItemSelectedListener {
-                navigateTo(it.itemId)
-                false
-            }
-        } else {
-            binding.navView!!.setOnItemSelectedListener {
-                navigateTo(it.itemId)
-                false
-            }
+        binding.navRail?.setOnItemSelectedListener {
+            navigateTo(it.itemId)
+            false
+        }
+        binding.navView?.setOnItemSelectedListener {
+            navigateTo(it.itemId)
+            false
         }
 
-        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            binding.mainAppBarInclude!!.toolbar.setOnClickListener {
-                sharedScrollViewModel.triggerScrollUp()
-                binding.mainAppBarInclude!!.appBar.setExpanded(true, true)
-            }
+        binding.mainAppBarInclude?.toolbar?.setOnClickListener {
+            sharedScrollViewModel.triggerScrollUp()
+            binding.mainAppBarInclude?.appBar?.setExpanded(true, true)
         }
 
         checkForTargetExtrasAndStartupPage()
@@ -551,19 +547,19 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     private fun initialiseMainAppBar() {
         // Figure out the from name initials
         val usernameInitials = (this.application as? AddyIoApp)?.userResourceOrNull?.username?.take(2)?.uppercase(Locale.getDefault()) ?: ""
-        binding.mainAppBarInclude!!.mainTopBarUserInitials.text = usernameInitials
+        binding.mainAppBarInclude?.mainTopBarUserInitials?.text = usernameInitials
 
-        binding.mainAppBarInclude!!.mainTopBarUserInitials.setOnClickListener {
+        binding.mainAppBarInclude?.mainTopBarUserInitials?.setOnClickListener {
             showProfileDialog()
         }
 
-        binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesIcon.setOnClickListener {
+        binding.mainAppBarInclude?.mainTopBarFailedDeliveriesIcon?.setOnClickListener {
             hideFailedDeliveriesBadge()
             val intent = Intent(this, FailedDeliveriesActivity::class.java)
             startActivity(intent)
         }
 
-        binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIcon.setOnClickListener {
+        binding.mainAppBarInclude?.mainTopBarAccountNotificationsIcon?.setOnClickListener {
             hideAccountNotificationsBadge()
             val intent = Intent(this, AccountNotificationsActivity::class.java)
             startActivity(intent)
@@ -662,13 +658,12 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
         val newDeliveriesCount = viewModel.getFailedDeliveriesCount()
 
         if (newDeliveriesCount > 0) {
-            if (!isTablet) {
-                setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesIcon, true)
-            } else {
-                val badge = binding.navRail!!.getOrCreateBadge(R.id.navigation_failed_deliveries)
-                badge.isVisible = true
-                // An icon only badge will be displayed unless a number or text is set:
-                badge.number = newDeliveriesCount  // or badge.text = "New"
+            binding.mainAppBarInclude?.mainTopBarFailedDeliveriesIcon?.let {
+                setButtonAccentColor(it, true)
+            }
+            binding.navRail?.getOrCreateBadge(R.id.navigation_failed_deliveries)?.apply {
+                isVisible = true
+                number = newDeliveriesCount
             }
         } else {
             hideFailedDeliveriesBadge()
@@ -688,10 +683,11 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     private suspend fun checkForNewAccountNotifications() {
         val newNotificationsCount = viewModel.getNewAccountNotificationsCount()
         if (newNotificationsCount > 0) {
-            if (!isTablet) {
-                setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIcon, true)
-            } else {
-                setButtonAccentColor(binding.navRail!!.headerView?.findViewById(R.id.navigation_rail_fab_account_notifications)!!, true)
+            binding.mainAppBarInclude?.mainTopBarAccountNotificationsIcon?.let {
+                setButtonAccentColor(it, true)
+            }
+            binding.navRail?.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)?.let {
+                setButtonAccentColor(it, true)
             }
         } else {
             hideAccountNotificationsBadge()
@@ -735,13 +731,13 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                     ).show()
                     notificationManager.cancel(NotificationHelper.CERTIFICATE_EXPIRE_NOTIFICATION_ID)
                 } else {
-                    binding.navView.let {
+                    binding.navView?.let { navView ->
                         SnackbarHelper.createSnackbar(
                             this@MainActivity,
                             this@MainActivity.resources.getString(R.string.certificate_updated),
-                            it!!
+                            navView
                         ).apply {
-                            anchorView = binding.navView
+                            anchorView = navView
                         }.show()
                         notificationManager.cancel(NotificationHelper.CERTIFICATE_EXPIRE_NOTIFICATION_ID)
                     }
@@ -761,20 +757,19 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
         val shouldShowDot = isUpdateAvailable || isPermissionsRequired
 
-        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            // If there is an update available or there are permissions required, show the dot
-            setButtonAccentColor(binding.navRail!!.headerView?.findViewById(R.id.main_top_bar_user_initials)!!, shouldShowDot)
-        } else {
-            setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarUserInitials, shouldShowDot)
+        val profileButton = binding.navRail?.headerView?.findViewById<MaterialButton>(R.id.main_top_bar_user_initials)
+            ?: binding.mainAppBarInclude?.mainTopBarUserInitials
+
+        profileButton?.let {
+            setButtonAccentColor(it, shouldShowDot)
         }
     }
 
     private fun hideFailedDeliveriesBadge() {
-        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesIcon, false)
-        } else {
-            binding.navRail?.removeBadge(R.id.navigation_failed_deliveries)
+        binding.mainAppBarInclude?.mainTopBarFailedDeliveriesIcon?.let {
+            setButtonAccentColor(it, false)
         }
+        binding.navRail?.removeBadge(R.id.navigation_failed_deliveries)
     }
 
 
@@ -793,12 +788,10 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     }
 
     private fun hideAccountNotificationsBadge() {
-        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            setButtonAccentColor(binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIcon, false)
-        } else {
-            binding.navRail?.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)?.icon?.colorFilter = null
+        binding.mainAppBarInclude?.mainTopBarAccountNotificationsIcon?.let {
+            setButtonAccentColor(it, false)
         }
-
+        binding.navRail?.headerView?.findViewById<MaterialButton>(R.id.navigation_rail_fab_account_notifications)?.icon?.colorFilter = null
     }
 
     // Also gets called from the startupPage check
@@ -845,13 +838,13 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
             notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
 
         } else {
-            binding.navView.let {
+            binding.navView?.let { navView ->
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.api_key_updated),
-                    it!!
+                    navView
                 ).apply {
-                    anchorView = binding.navView
+                    anchorView = navView
                 }.show()
 
                 notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)

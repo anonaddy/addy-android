@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -37,7 +38,7 @@ import kotlinx.coroutines.launch
 class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUsernameBottomDialogListener, Refreshable {
 
     // 1. Properties
-    private val usernamesViewModel: UsernamesViewModel by viewModels()
+    private val usernamesViewModel: UsernamesViewModel by activityViewModels()
 
     private var encryptedSettingsManager: SettingsManager? = null
     private var oneTimeRecyclerViewActions: Boolean = true
@@ -118,6 +119,7 @@ class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUse
 
     override fun onDestroyView() {
         super.onDestroyView()
+        oneTimeRecyclerViewActions = true
         addUsernameFragment = null
         if (::deleteUsernameSnackbar.isInitialized && deleteUsernameSnackbar.isShown) {
             deleteUsernameSnackbar.dismiss()
@@ -167,6 +169,7 @@ class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUse
                 shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, 2) ?: 2
                 shimmerLayoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
                 layoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
+                ScreenSizeUtils.setupAutoFitGrid(this)
 
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
@@ -207,8 +210,10 @@ class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUse
     fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true) {
         isSilentRefresh = !showShimmer
         setStats()
-        viewLifecycleOwner.lifecycleScope.launch { getUserResource() }
-        usernamesViewModel.loadUsernames(forceRefresh = (savedInstanceState == null))
+        if ((activity?.application as? AddyIoApp)?.userResourceOrNull == null) {
+            viewLifecycleOwner.lifecycleScope.launch { getUserResource() }
+        }
+        usernamesViewModel.loadUsernames(forceRefresh = false)
     }
 
     private suspend fun getUserResource() {

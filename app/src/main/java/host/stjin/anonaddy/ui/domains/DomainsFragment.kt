@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -37,7 +38,7 @@ import kotlinx.coroutines.launch
 class DomainsFragment : BaseFragment(), AddDomainBottomDialogFragment.AddDomainBottomDialogListener, Refreshable {
 
     // 1. Properties
-    private val domainsViewModel: DomainsViewModel by viewModels()
+    private val domainsViewModel: DomainsViewModel by activityViewModels()
 
     private var encryptedSettingsManager: SettingsManager? = null
     private var oneTimeRecyclerViewActions: Boolean = true
@@ -118,6 +119,7 @@ class DomainsFragment : BaseFragment(), AddDomainBottomDialogFragment.AddDomainB
 
     override fun onDestroyView() {
         super.onDestroyView()
+        oneTimeRecyclerViewActions = true
         addDomainFragment = null
         if (::deleteDomainSnackbar.isInitialized && deleteDomainSnackbar.isShown) {
             deleteDomainSnackbar.dismiss()
@@ -166,6 +168,7 @@ class DomainsFragment : BaseFragment(), AddDomainBottomDialogFragment.AddDomainB
                 shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, 2) ?: 2
                 shimmerLayoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
                 layoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
+                ScreenSizeUtils.setupAutoFitGrid(this)
 
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
@@ -206,8 +209,10 @@ class DomainsFragment : BaseFragment(), AddDomainBottomDialogFragment.AddDomainB
     fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true) {
         isSilentRefresh = !showShimmer
         setStats()
-        viewLifecycleOwner.lifecycleScope.launch { getUserResource() }
-        domainsViewModel.loadDomains(forceRefresh = (savedInstanceState == null))
+        if ((activity?.application as? AddyIoApp)?.userResourceOrNull == null) {
+            viewLifecycleOwner.lifecycleScope.launch { getUserResource() }
+        }
+        domainsViewModel.loadDomains(forceRefresh = false)
     }
 
     private suspend fun getUserResource() {

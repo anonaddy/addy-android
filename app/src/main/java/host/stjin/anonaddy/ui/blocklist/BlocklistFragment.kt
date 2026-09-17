@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -40,7 +41,7 @@ import kotlinx.coroutines.launch
 class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBlocklistBottomDialogListener, Refreshable {
 
     // 1. Properties
-    private val blocklistViewModel: BlocklistViewModel by viewModels()
+    private val blocklistViewModel: BlocklistViewModel by activityViewModels()
 
     private var blocklistEntries: PaginatedResponse<BlocklistEntries>? = null
     private var encryptedSettingsManager: SettingsManager? = null
@@ -115,6 +116,7 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
 
     override fun onDestroyView() {
         super.onDestroyView()
+        oneTimeRecyclerViewActions = true
         blocklistAddBottomDialogFragment = null
         if (::deleteBlocklistSnackbar.isInitialized && deleteBlocklistSnackbar.isShown) {
             deleteBlocklistSnackbar.dismiss()
@@ -126,7 +128,7 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
     private fun setOnClickListeners() {
         binding.blocklistSearchView.editText.addTextChangedListener { text ->
             val searchText = text?.toString()?.trim()
-            if (searchText.isNullOrEmpty()) {
+            if (searchText.isNullOrEmpty() && !binding.blocklistSearchBar.text.isNullOrEmpty()) {
                 binding.blocklistSearchBar.setText(null)
                 getDataFromWeb(null)
             }
@@ -135,7 +137,7 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
         binding.blocklistSearchView.addTransitionListener { _, _, newState ->
             if (newState == com.google.android.material.search.SearchView.TransitionState.HIDDEN) {
                 val searchText = binding.blocklistSearchView.text.toString().trim()
-                if (searchText.isEmpty()) {
+                if (searchText.isEmpty() && !binding.blocklistSearchBar.text.isNullOrEmpty()) {
                     binding.blocklistSearchBar.setText(null)
                     getDataFromWeb(null)
                 }
@@ -212,6 +214,7 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
                     encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_BLOCKLIST_ENTRIES_COUNT, 2) ?: 2
                 shimmerLayoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
                 layoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
+                ScreenSizeUtils.setupAutoFitGrid(this)
 
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
@@ -221,8 +224,11 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
 
                 showShimmer()
 
+                var lastCheckedChipId = binding.fragmentBlocklistChipgroup.checkedChipId
                 binding.fragmentBlocklistChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
-                    if (checkedIds.isNotEmpty()) {
+                    val newCheckedId = checkedIds.firstOrNull() ?: View.NO_ID
+                    if (newCheckedId != lastCheckedChipId) {
+                        lastCheckedChipId = newCheckedId
                         loadBlocklistEntries(forceReload = true, showShimmer = false)
                     }
                 }
@@ -347,7 +353,7 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
             return loadBlocklistEntries(forceReload = false, showShimmer = false)
         } else {
             setOnNestedScrollViewListener(set = false)
-            return loadBlocklistEntries(forceReload = (savedInstanceState == null), showShimmer = showShimmer)
+            return loadBlocklistEntries(forceReload = false, showShimmer = showShimmer)
         }
     }
 

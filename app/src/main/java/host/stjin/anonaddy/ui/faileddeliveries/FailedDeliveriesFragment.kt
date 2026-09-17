@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 class FailedDeliveriesFragment : BaseFragment(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener, Refreshable {
 
     // 1. Properties
-    private val failedDeliveriesViewModel: FailedDeliveriesViewModel by viewModels()
+    private val failedDeliveriesViewModel: FailedDeliveriesViewModel by activityViewModels()
 
     private var failedDeliveriesList: PaginatedResponse<FailedDeliveries>? = null
     private var encryptedSettingsManager: SettingsManager? = null
@@ -100,6 +101,7 @@ class FailedDeliveriesFragment : BaseFragment(), FailedDeliveryDetailsBottomDial
 
     override fun onDestroyView() {
         super.onDestroyView()
+        oneTimeRecyclerViewActions = true
         failedDeliveryDetailsBottomDialogFragment = null
         _binding = null
     }
@@ -130,6 +132,7 @@ class FailedDeliveriesFragment : BaseFragment(), FailedDeliveryDetailsBottomDial
                     encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, 2) ?: 2
                 shimmerLayoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
                 layoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
+                ScreenSizeUtils.setupAutoFitGrid(this)
 
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
@@ -139,8 +142,11 @@ class FailedDeliveriesFragment : BaseFragment(), FailedDeliveryDetailsBottomDial
 
                 showShimmer()
 
+                var lastCheckedChipId = binding.fragmentFailedDeliveriesChipgroup.checkedChipId
                 binding.fragmentFailedDeliveriesChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
-                    if (checkedIds.isNotEmpty()) {
+                    val newCheckedId = checkedIds.firstOrNull() ?: View.NO_ID
+                    if (newCheckedId != lastCheckedChipId) {
+                        lastCheckedChipId = newCheckedId
                         loadFailedDeliveries(forceReload = true, showShimmer = false)
                     }
                 }
@@ -211,7 +217,7 @@ class FailedDeliveriesFragment : BaseFragment(), FailedDeliveryDetailsBottomDial
             loadFailedDeliveries(forceReload = false, showShimmer = false)
         } else {
             setOnNestedScrollViewListener(false)
-            loadFailedDeliveries(forceReload = (savedInstanceState == null), showShimmer = showShimmer)
+            loadFailedDeliveries(forceReload = false, showShimmer = showShimmer)
         }
     }
 

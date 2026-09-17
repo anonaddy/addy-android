@@ -100,6 +100,7 @@ class LabelsFragment : BaseFragment(), AddLabelBottomDialogFragment.AddLabelsBot
 
     override fun onDestroyView() {
         super.onDestroyView()
+        oneTimeRecyclerViewActions = true
         labelsAddBottomDialogFragment = null
         if (::deleteLabelSnackbar.isInitialized && deleteLabelSnackbar.isShown) {
             deleteLabelSnackbar.dismiss()
@@ -110,7 +111,7 @@ class LabelsFragment : BaseFragment(), AddLabelBottomDialogFragment.AddLabelsBot
     private fun setOnClickListener() {
         binding.labelsSearchView.editText.addTextChangedListener { text ->
             val searchText = text?.toString()?.trim()
-            if (searchText.isNullOrEmpty()) {
+            if (searchText.isNullOrEmpty() && !binding.labelsSearchBar.text.isNullOrEmpty()) {
                 binding.labelsSearchBar.setText(null)
                 getDataFromWeb(null)
             }
@@ -119,7 +120,7 @@ class LabelsFragment : BaseFragment(), AddLabelBottomDialogFragment.AddLabelsBot
         binding.labelsSearchView.addTransitionListener { _, _, newState ->
             if (newState == com.google.android.material.search.SearchView.TransitionState.HIDDEN) {
                 val searchText = binding.labelsSearchView.text.toString().trim()
-                if (searchText.isEmpty()) {
+                if (searchText.isEmpty() && !binding.labelsSearchBar.text.isNullOrEmpty()) {
                     binding.labelsSearchBar.setText(null)
                     getDataFromWeb(null)
                 }
@@ -240,6 +241,7 @@ class LabelsFragment : BaseFragment(), AddLabelBottomDialogFragment.AddLabelsBot
                 shimmerItemCount = 2
                 shimmerLayoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
                 layoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
+                ScreenSizeUtils.setupAutoFitGrid(this)
 
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
@@ -290,7 +292,7 @@ class LabelsFragment : BaseFragment(), AddLabelBottomDialogFragment.AddLabelsBot
         val searchText = binding.labelsSearchBar.text.toString().trim()
         return labelsViewModel.loadLabels(
             search = if (searchText.isEmpty()) null else searchText.lowercase(java.util.Locale.getDefault()),
-            forceRefresh = (savedInstanceState == null)
+            forceRefresh = false
         )
     }
 

@@ -26,6 +26,8 @@ import host.stjin.anonaddy_shared.network.BaseNetworkClient
 import host.stjin.anonaddy_shared.network.NetworkResult
 import host.stjin.anonaddy_shared.utils.DefaultDispatcherProvider
 import host.stjin.anonaddy_shared.utils.DispatcherProvider
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.json.JSONObject
 
 sealed class LoginResult {
@@ -232,27 +234,79 @@ class UserRepository(
         }
     }
 
-    suspend fun getUserResource(): NetworkResult<UserResource> {
-        waitForInit()
+    companion object {
+        private const val USER_RESOURCE_CACHE_TTL_MS = 60_000L
+        private const val API_TOKEN_DETAILS_CACHE_TTL_MS = 60_000L
+    }
 
-        val (_, response, result) = Fuel.get(API_URL_ACCOUNT_DETAILS)
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+    private val userResourceMutex = Mutex()
+    private var cachedUserResource: UserResource? = null
+    private var lastUserResourceFetchTime: Long = 0L
 
-        return handleResponse(response, result, "getUserResource") { data ->
-            gson.fromJson(data, SingleUserResource::class.java).data
+    private val apiTokenDetailsMutex = Mutex()
+    private var cachedApiTokenDetails: ApiTokenDetails? = null
+    private var lastApiTokenDetailsFetchTime: Long = 0L
+
+    suspend fun getUserResource(forceRefresh: Boolean = false): NetworkResult<UserResource> {
+        val now = System.currentTimeMillis()
+        if (!forceRefresh && cachedUserResource != null && (now - lastUserResourceFetchTime < USER_RESOURCE_CACHE_TTL_MS)) {
+            return NetworkResult.Success(cachedUserResource!!)
+        }
+
+        return userResourceMutex.withLock {
+            val lockNow = System.currentTimeMillis()
+            if (!forceRefresh && cachedUserResource != null && (lockNow - lastUserResourceFetchTime < USER_RESOURCE_CACHE_TTL_MS)) {
+                return@withLock NetworkResult.Success(cachedUserResource!!)
+            }
+
+            waitForInit()
+
+            val (_, response, result) = Fuel.get(API_URL_ACCOUNT_DETAILS)
+                .appendHeader(*getHeaders())
+                .awaitStringResponseResult()
+
+            val networkResult = handleResponse(response, result, "getUserResource") { data ->
+                gson.fromJson(data, SingleUserResource::class.java).data
+            }
+
+            if (networkResult is NetworkResult.Success) {
+                cachedUserResource = networkResult.data
+                lastUserResourceFetchTime = System.currentTimeMillis()
+                (context as? host.stjin.anonaddy_shared.AddyIoApp)?.userResource = networkResult.data
+            }
+
+            networkResult
         }
     }
 
-    suspend fun getApiTokenDetails(): NetworkResult<ApiTokenDetails> {
-        waitForInit()
+    suspend fun getApiTokenDetails(forceRefresh: Boolean = false): NetworkResult<ApiTokenDetails> {
+        val now = System.currentTimeMillis()
+        if (!forceRefresh && cachedApiTokenDetails != null && (now - lastApiTokenDetailsFetchTime < API_TOKEN_DETAILS_CACHE_TTL_MS)) {
+            return NetworkResult.Success(cachedApiTokenDetails!!)
+        }
 
-        val (_, response, result) = Fuel.get(API_URL_API_TOKEN_DETAILS)
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        return apiTokenDetailsMutex.withLock {
+            val lockNow = System.currentTimeMillis()
+            if (!forceRefresh && cachedApiTokenDetails != null && (lockNow - lastApiTokenDetailsFetchTime < API_TOKEN_DETAILS_CACHE_TTL_MS)) {
+                return@withLock NetworkResult.Success(cachedApiTokenDetails!!)
+            }
 
-        return handleResponse(response, result, "getApiTokenDetails") { data ->
-            gson.fromJson(data, ApiTokenDetails::class.java)
+            waitForInit()
+
+            val (_, response, result) = Fuel.get(API_URL_API_TOKEN_DETAILS)
+                .appendHeader(*getHeaders())
+                .awaitStringResponseResult()
+
+            val networkResult = handleResponse(response, result, "getApiTokenDetails") { data ->
+                gson.fromJson(data, ApiTokenDetails::class.java)
+            }
+
+            if (networkResult is NetworkResult.Success) {
+                cachedApiTokenDetails = networkResult.data
+                lastApiTokenDetailsFetchTime = System.currentTimeMillis()
+            }
+
+            networkResult
         }
     }
 

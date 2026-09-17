@@ -28,7 +28,7 @@ abstract class BaseViewModel(application: Application) : AndroidViewModel(applic
     fun loadUserResource(forceRefresh: Boolean = false): Job {
         return viewModelScope.launch {
             if (forceRefresh || _userResourceState.value !is UiState.Success) {
-                when (val result = userRepository.getUserResource()) {
+                when (val result = userRepository.getUserResource(forceRefresh = forceRefresh)) {
                     is NetworkResult.Success -> {
                         (getApplication() as? AddyIoApp)?.userResource = result.data
                         _userResourceState.value = UiState.Success(result.data)
@@ -44,8 +44,8 @@ abstract class BaseViewModel(application: Application) : AndroidViewModel(applic
     /**
      * Refreshes the user resource specifically for fragments that need the latest stats.
      */
-    suspend fun refreshUserResource(): NetworkResult<UserResource> {
-        return when (val result = userRepository.getUserResource()) {
+    suspend fun refreshUserResource(forceRefresh: Boolean = true): NetworkResult<UserResource> {
+        return when (val result = userRepository.getUserResource(forceRefresh = forceRefresh)) {
             is NetworkResult.Success -> {
                 (getApplication() as? AddyIoApp)?.userResource = result.data
                 _userResourceState.value = UiState.Success(result.data)

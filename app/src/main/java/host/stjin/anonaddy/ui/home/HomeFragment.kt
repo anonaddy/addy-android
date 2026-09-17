@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 
 class HomeFragment : BaseFragment(), Refreshable {
 
-    private val homeViewModel: HomeViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
     private val sharedFilterViewModel: SharedFilterViewModel by activityViewModels()
     private val sharedScrollViewModel: SharedScrollViewModel by activityViewModels()
 
@@ -47,7 +47,7 @@ class HomeFragment : BaseFragment(), Refreshable {
         setNsvListener()
         observeViewModel()
 
-        homeViewModel.loadUserResource(forceRefresh = savedInstanceState == null)
+        homeViewModel.loadUserResource(forceRefresh = false)
 
         return root
     }

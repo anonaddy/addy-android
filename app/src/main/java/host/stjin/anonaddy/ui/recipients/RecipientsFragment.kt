@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddRecipientBottomDialogListener, Refreshable {
 
     // 1. Properties
-    private val recipientsViewModel: RecipientsViewModel by viewModels()
+    private val recipientsViewModel: RecipientsViewModel by activityViewModels()
     private val sharedScrollViewModel: SharedScrollViewModel by activityViewModels()
 
     private var encryptedSettingsManager: SettingsManager? = null
@@ -92,6 +92,7 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
 
     override fun onDestroyView() {
         super.onDestroyView()
+        oneTimeRecyclerViewActions = true
         addRecipientsFragment = null
         if (::deleteRecipientSnackbar.isInitialized && deleteRecipientSnackbar.isShown) {
             deleteRecipientSnackbar.dismiss()
@@ -153,6 +154,7 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
                 shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, 2) ?: 2
                 shimmerLayoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(context))
                 layoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(context))
+                ScreenSizeUtils.setupAutoFitGrid(this)
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
@@ -160,8 +162,11 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
 
                 showShimmer()
 
+                var lastCheckedChipId = binding.recipientsChipgroup.checkedChipId
                 binding.recipientsChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
-                    if (checkedIds.isNotEmpty()) {
+                    val newCheckedId = checkedIds.firstOrNull() ?: View.NO_ID
+                    if (newCheckedId != lastCheckedChipId) {
+                        lastCheckedChipId = newCheckedId
                         getDataFromWeb(null, showShimmer = false)
                     }
                 }
@@ -218,8 +223,10 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
     fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true) {
         isSilentRefresh = !showShimmer
         setStats()
-        viewLifecycleOwner.lifecycleScope.launch { getUserResource() }
-        recipientsViewModel.loadRecipients(forceRefresh = (savedInstanceState == null), verifiedOnly = getSelectedFilter())
+        if ((activity?.application as? AddyIoApp)?.userResourceOrNull == null) {
+            viewLifecycleOwner.lifecycleScope.launch { getUserResource() }
+        }
+        recipientsViewModel.loadRecipients(forceRefresh = false, verifiedOnly = getSelectedFilter())
     }
 
     private fun getSelectedFilter(): Boolean {

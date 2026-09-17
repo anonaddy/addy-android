@@ -417,7 +417,9 @@
         <activity
             android:name=".ui.setup.SetupNewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.MainActivity" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation" />
         <!-- WEAR OS -->
         <service
             android:name=".service.WearableListener"
