@@ -27,6 +27,7 @@ class FailedDeliveriesViewModel(application: Application) : BaseViewModel(applic
     val isLoadingMore: StateFlow<Boolean> = _isLoadingMore.asStateFlow()
 
     private var currentPaginatedData: PaginatedResponse<FailedDeliveries>? = null
+    private var currentFilter: String? = null
 
     val currentData: PaginatedResponse<FailedDeliveries>?
         get() = currentPaginatedData
@@ -36,16 +37,18 @@ class FailedDeliveriesViewModel(application: Application) : BaseViewModel(applic
         forceRefresh: Boolean = false,
         isLoadMore: Boolean = false
     ): Job {
-        if (!forceRefresh && !isLoadMore && _failedDeliveriesState.value is UiState.Success && filter == null) {
+        val filterChanged = currentFilter != filter
+        if (!forceRefresh && !isLoadMore && !filterChanged && _failedDeliveriesState.value is UiState.Success) {
             return Job().apply { complete() }
         }
 
         return viewModelScope.launch {
-            if (forceRefresh || !isLoadMore) {
+            if (isLoadMore) {
+                _isLoadingMore.value = true
+            } else {
+                currentFilter = filter
                 currentPaginatedData = null
                 _failedDeliveriesState.value = UiState.Loading
-            } else {
-                _isLoadingMore.value = true
             }
 
             val nextPage = currentPaginatedData.nextPage(isLoadMore)

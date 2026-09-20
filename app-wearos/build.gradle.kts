@@ -29,7 +29,7 @@ configure<ApplicationExtension> {
          */
 
         // SDK 37 + v1.7.0 + release 01 + 01 (for wearos)
-        versionCode = 371700201
+        versionCode = 371700301
         versionName = "1.7.0"
         vectorDrawables {
             useSupportLibrary = true
@@ -40,6 +40,7 @@ configure<ApplicationExtension> {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         getByName("debug") {

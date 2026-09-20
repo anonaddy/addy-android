@@ -27,6 +27,8 @@ class BlocklistViewModel(application: Application) : BaseViewModel(application) 
     val isLoadingMore: StateFlow<Boolean> = _isLoadingMore.asStateFlow()
 
     private var currentPaginatedData: PaginatedResponse<BlocklistEntries>? = null
+    private var currentFilter: String? = null
+    private var currentSearch: String? = null
 
     val currentData: PaginatedResponse<BlocklistEntries>?
         get() = currentPaginatedData
@@ -37,14 +39,17 @@ class BlocklistViewModel(application: Application) : BaseViewModel(application) 
         forceRefresh: Boolean = false,
         isLoadMore: Boolean = false
     ): Job {
-        if (!forceRefresh && !isLoadMore && _blocklistState.value is UiState.Success && filter == null && search == null) {
+        val filterChanged = currentFilter != filter || currentSearch != search
+        if (!forceRefresh && !isLoadMore && !filterChanged && _blocklistState.value is UiState.Success) {
             return Job().apply { complete() }
         }
 
         return viewModelScope.launch {
             if (isLoadMore) {
                 _isLoadingMore.value = true
-            } else if (forceRefresh || currentPaginatedData == null) {
+            } else {
+                currentFilter = filter
+                currentSearch = search
                 currentPaginatedData = null
                 _blocklistState.value = UiState.Loading
             }

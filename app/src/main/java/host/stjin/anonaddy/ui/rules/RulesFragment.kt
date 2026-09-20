@@ -60,7 +60,7 @@ class RulesFragment : BaseFragment(), Refreshable {
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
             if (data?.getBooleanExtra("shouldRefresh", false) == true) {
-                getDataFromWeb(null, showShimmer = false)
+                getDataFromWeb(null, showShimmer = false, forceRefresh = true)
             }
         }
     }
@@ -283,13 +283,13 @@ class RulesFragment : BaseFragment(), Refreshable {
     }
 
     // 5. Private Helpers / Public Methods
-    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true) {
+    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true, forceRefresh: Boolean = false) {
         isSilentRefresh = !showShimmer
         setStats()
-        if ((activity?.application as? host.stjin.anonaddy_shared.AddyIoApp)?.userResourceOrNull == null) {
+        if (forceRefresh || (activity?.application as? host.stjin.anonaddy_shared.AddyIoApp)?.userResourceOrNull == null) {
             viewLifecycleOwner.lifecycleScope.launch { getUserResource() }
         }
-        rulesViewModel.loadRules(forceRefresh = false)
+        rulesViewModel.loadRules(forceRefresh = forceRefresh)
     }
 
     override suspend fun onRefreshData() {
@@ -348,7 +348,7 @@ class RulesFragment : BaseFragment(), Refreshable {
     private suspend fun deactivateRule(ruleId: String) {
         val result = rulesViewModel.deactivateRule(ruleId)
         if (result is NetworkResult.Success && result.data == "204") {
-            getDataFromWeb(null, showShimmer = false)
+            getDataFromWeb(null, showShimmer = false, forceRefresh = true)
             showError(null, R.string.rule_deactivated)
         } else {
             val error = result.errorOrNull() ?: ""
@@ -359,7 +359,7 @@ class RulesFragment : BaseFragment(), Refreshable {
     private suspend fun activateRule(ruleId: String) {
         val result = rulesViewModel.activateRule(ruleId)
         if (result is NetworkResult.Success) {
-            getDataFromWeb(null, showShimmer = false)
+            getDataFromWeb(null, showShimmer = false, forceRefresh = true)
             showError(null, R.string.rule_activated)
         } else {
             val error = result.errorOrNull() ?: ""
@@ -394,7 +394,7 @@ class RulesFragment : BaseFragment(), Refreshable {
         val result = rulesViewModel.deleteRule(id)
         if (result is NetworkResult.Success && result.data == "204") {
             deleteRuleSnackbar.dismiss()
-            getDataFromWeb(null, showShimmer = false)
+            getDataFromWeb(null, showShimmer = false, forceRefresh = true)
         } else {
             val error = result.errorOrNull() ?: ""
             showError(error, R.string.error_deleting_rule)

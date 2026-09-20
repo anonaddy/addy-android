@@ -152,9 +152,9 @@ class AccountNotificationsFragment : BaseFragment(),
     }
 
     // 5. Private Helpers / Public Methods
-    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true) {
+    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true, forceRefresh: Boolean = false) {
         isSilentRefresh = !showShimmer
-        notificationsViewModel.loadNotifications(forceRefresh = false)
+        notificationsViewModel.loadNotifications(forceRefresh = forceRefresh)
     }
 
     override suspend fun onRefreshData() {

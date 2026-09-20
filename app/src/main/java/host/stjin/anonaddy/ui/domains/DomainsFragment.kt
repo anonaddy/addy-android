@@ -51,7 +51,7 @@ class DomainsFragment : BaseFragment(), AddDomainBottomDialogFragment.AddDomainB
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
             if (data?.getBooleanExtra("shouldRefresh", false) == true) {
-                getDataFromWeb(null, showShimmer = false)
+                getDataFromWeb(null, showShimmer = false, forceRefresh = true)
             }
         }
     }
@@ -206,13 +206,13 @@ class DomainsFragment : BaseFragment(), AddDomainBottomDialogFragment.AddDomainB
     }
 
     // 5. Private Helpers / Public Methods
-    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true) {
+    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true, forceRefresh: Boolean = false) {
         isSilentRefresh = !showShimmer
         setStats()
-        if ((activity?.application as? AddyIoApp)?.userResourceOrNull == null) {
+        if (forceRefresh || (activity?.application as? AddyIoApp)?.userResourceOrNull == null) {
             viewLifecycleOwner.lifecycleScope.launch { getUserResource() }
         }
-        domainsViewModel.loadDomains(forceRefresh = false)
+        domainsViewModel.loadDomains(forceRefresh = forceRefresh)
     }
 
     private suspend fun getUserResource() {
@@ -274,7 +274,7 @@ class DomainsFragment : BaseFragment(), AddDomainBottomDialogFragment.AddDomainB
         val result = domainsViewModel.deleteDomain(id)
         if (result is NetworkResult.Success && result.data == "204") {
             deleteDomainSnackbar.dismiss()
-            getDataFromWeb(null, showShimmer = false)
+            getDataFromWeb(null, showShimmer = false, forceRefresh = true)
         } else {
             val errorMsg = result.errorOrNull() ?: ""
             showError(errorMsg, R.string.error_deleting_domain)
@@ -284,7 +284,7 @@ class DomainsFragment : BaseFragment(), AddDomainBottomDialogFragment.AddDomainB
     override fun onAdded() {
         (childFragmentManager.findFragmentByTag("addDomainFragment") as? AddDomainBottomDialogFragment
             ?: addDomainFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
-        getDataFromWeb(null, showShimmer = false)
+        getDataFromWeb(null, showShimmer = false, forceRefresh = true)
     }
 
     override suspend fun onRefreshData() {

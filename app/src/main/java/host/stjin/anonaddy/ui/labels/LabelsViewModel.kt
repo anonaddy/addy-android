@@ -20,12 +20,16 @@ class LabelsViewModel(application: Application) : BaseViewModel(application) {
     private val _labelsState = MutableStateFlow<UiState<List<Labels>>>(UiState.Loading)
     val labelsState: StateFlow<UiState<List<Labels>>> = _labelsState.asStateFlow()
 
+    private var currentSearch: String? = null
+
     fun loadLabels(search: String? = null, forceRefresh: Boolean = false): Job {
-        if (!forceRefresh && _labelsState.value is UiState.Success && search == null) {
+        val searchChanged = currentSearch != search
+        if (!forceRefresh && !searchChanged && _labelsState.value is UiState.Success) {
             return Job().apply { complete() }
         }
 
         return viewModelScope.launch {
+            currentSearch = search
             _labelsState.value = UiState.Loading
             when (val result = labelRepository.getAllLabels(search = search)) {
                 is NetworkResult.Success -> {

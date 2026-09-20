@@ -51,7 +51,7 @@ class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUse
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
             if (data?.getBooleanExtra("shouldRefresh", false) == true) {
-                getDataFromWeb(null, showShimmer = false)
+                getDataFromWeb(null, showShimmer = false, forceRefresh = true)
             }
         }
     }
@@ -207,13 +207,13 @@ class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUse
     }
 
     // 5. Private Helpers / Public Methods
-    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true) {
+    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true, forceRefresh: Boolean = false) {
         isSilentRefresh = !showShimmer
         setStats()
-        if ((activity?.application as? AddyIoApp)?.userResourceOrNull == null) {
+        if (forceRefresh || (activity?.application as? AddyIoApp)?.userResourceOrNull == null) {
             viewLifecycleOwner.lifecycleScope.launch { getUserResource() }
         }
-        usernamesViewModel.loadUsernames(forceRefresh = false)
+        usernamesViewModel.loadUsernames(forceRefresh = forceRefresh)
     }
 
     private suspend fun getUserResource() {
@@ -271,7 +271,7 @@ class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUse
         val result = usernamesViewModel.deleteUsername(id)
         if (result is NetworkResult.Success && result.data == "204") {
             deleteUsernameSnackbar.dismiss()
-            getDataFromWeb(null, showShimmer = false)
+            getDataFromWeb(null, showShimmer = false, forceRefresh = true)
         } else {
             val errorMsg = result.errorOrNull() ?: ""
             showError(errorMsg, R.string.error_deleting_username)
@@ -281,7 +281,7 @@ class UsernamesFragment : BaseFragment(), AddUsernameBottomDialogFragment.AddUse
     override fun onAdded() {
         (childFragmentManager.findFragmentByTag("addUsernameFragment") as? AddUsernameBottomDialogFragment
             ?: addUsernameFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
-        getDataFromWeb(null, showShimmer = false)
+        getDataFromWeb(null, showShimmer = false, forceRefresh = true)
     }
 
     override suspend fun onRefreshData() {

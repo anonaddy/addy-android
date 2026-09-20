@@ -92,7 +92,7 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
             // There are no request codes
             val data: Intent? = result.data
             if (data?.getBooleanExtra("shouldRefresh", false) == true) {
-                getDataFromWeb(null, showShimmer = false)
+                getDataFromWeb(null, showShimmer = false, forceRefresh = true)
             }
         }
     }
@@ -535,7 +535,12 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
         updateHasReachedTopOfNsv(binding.fragmentAliasesNsv)
     }
 
-    fun getDataFromWeb(savedInstanceState: Bundle?, isLoadMore: Boolean = false, showShimmer: Boolean = true): kotlinx.coroutines.Job? {
+    fun getDataFromWeb(
+        savedInstanceState: Bundle?,
+        isLoadMore: Boolean = false,
+        showShimmer: Boolean = true,
+        forceRefresh: Boolean = false
+    ): kotlinx.coroutines.Job? {
         isSilentRefresh = !showShimmer
         if (isLoadMore) {
             val current = aliasesViewModel.currentData
@@ -553,7 +558,7 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
             return aliasesViewModel.loadAliases(aliasSortFilter, forceRefresh = false, isLoadMore = true)
         } else {
             setOnNestedScrollViewListener(set = false)
-            return aliasesViewModel.loadAliases(aliasSortFilter, forceRefresh = false, isLoadMore = false)
+            return aliasesViewModel.loadAliases(aliasSortFilter, forceRefresh = forceRefresh, isLoadMore = false)
         }
     }
 
@@ -578,7 +583,7 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
         (childFragmentManager.findFragmentByTag("addAliasBottomDialogFragment") as? AddAliasBottomDialogFragment
             ?: addAliasBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
-        getDataFromWeb(null, showShimmer = false)
+        getDataFromWeb(null, showShimmer = false, forceRefresh = true)
 
         if (BuildConfig.FLAVOR == "gplay") {
             // User has successfully created an alias, this is usually a sign of a satisfied user, let's ask the user to review the app only after the app has been opened at least 10 times
@@ -626,7 +631,7 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
         if (shouldRefreshData) {
             aliasAdapter?.unselectAliases()
             hideSnackBar()
-            getDataFromWeb(null, showShimmer = false)
+            getDataFromWeb(null, showShimmer = false, forceRefresh = true)
         } else {
             // Show snackbar again
             aliasSelectionSnackbar?.show()
@@ -640,7 +645,7 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
         aliasAdapter?.updateWatchedAliases()
         hideSnackBar()
         if (shouldRefreshData) {
-            getDataFromWeb(null, showShimmer = false)
+            getDataFromWeb(null, showShimmer = false, forceRefresh = true)
         }
     }
 
@@ -654,7 +659,7 @@ class AliasesFragment : BaseFragment(), AddAliasBottomDialogFragment.AddAliasBot
         // Use a try-catch as an ultimate safeguard against rare lifecycle race conditions.
         try {
             isSilentRefresh = true
-            getDataFromWeb(null, showShimmer = false)?.join()
+            getDataFromWeb(null, showShimmer = false, forceRefresh = true)?.join()
         } catch (e: Exception) {
             // Log the error if the lifecycle state was somehow invalid despite the check.
             LoggingHelper(requireContext()).addLog(

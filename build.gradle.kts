@@ -23,7 +23,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:9.4.0")
+        classpath("com.android.tools.build:gradle:9.4.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.20")
 
         // NOTE: Do not place your application dependencies here; they belong

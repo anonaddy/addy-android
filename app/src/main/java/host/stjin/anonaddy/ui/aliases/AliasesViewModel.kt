@@ -29,6 +29,7 @@ class AliasesViewModel(application: Application) : BaseViewModel(application) {
     val isLoadingMore: StateFlow<Boolean> = _isLoadingMore.asStateFlow()
 
     private var currentPaginatedData: PaginatedResponse<Aliases>? = null
+    private var currentFilter: AliasSortFilter? = null
 
     val currentData: PaginatedResponse<Aliases>?
         get() = currentPaginatedData
@@ -38,14 +39,16 @@ class AliasesViewModel(application: Application) : BaseViewModel(application) {
         forceRefresh: Boolean = false,
         isLoadMore: Boolean = false
     ): Job {
-        if (!forceRefresh && !isLoadMore && _aliasesState.value is UiState.Success) {
+        val filterChanged = currentFilter != aliasSortFilter
+        if (!forceRefresh && !isLoadMore && !filterChanged && _aliasesState.value is UiState.Success) {
             return Job().apply { complete() }
         }
 
         return viewModelScope.launch {
             if (isLoadMore) {
                 _isLoadingMore.value = true
-            } else if (forceRefresh || currentPaginatedData == null) {
+            } else {
+                currentFilter = aliasSortFilter.copy()
                 currentPaginatedData = null
                 _aliasesState.value = UiState.Loading
             }

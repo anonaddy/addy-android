@@ -338,7 +338,7 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
     }
 
     // 5. Private Helpers / Public Methods
-    fun getDataFromWeb(savedInstanceState: Bundle?, isLoadMore: Boolean = false, showShimmer: Boolean = true): kotlinx.coroutines.Job? {
+    fun getDataFromWeb(savedInstanceState: Bundle?, isLoadMore: Boolean = false, showShimmer: Boolean = true, forceRefresh: Boolean = false): kotlinx.coroutines.Job? {
         isSilentRefresh = !showShimmer
         if (isLoadMore) {
             val current = blocklistViewModel.currentData
@@ -353,7 +353,7 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
             return loadBlocklistEntries(forceReload = false, showShimmer = false)
         } else {
             setOnNestedScrollViewListener(set = false)
-            return loadBlocklistEntries(forceReload = false, showShimmer = showShimmer)
+            return loadBlocklistEntries(forceReload = forceRefresh, showShimmer = showShimmer)
         }
     }
 
@@ -415,9 +415,8 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
                     binding.fragmentBlocklistNoBlocklist.visibility = View.VISIBLE
                 }
                 fragmentShown()
-            } else {
-                getDataFromWeb(null)
             }
+            getDataFromWeb(null, showShimmer = false, forceRefresh = true)
         } else {
             val error = result.errorOrNull() ?: ""
             showError(error, R.string.error_deleting_blocklist_entry)
@@ -444,7 +443,7 @@ class BlocklistFragment : BaseFragment(), AddBlocklistBottomDialogFragment.AddBl
     override fun onAddedBlocklistEntry(newBlocklistEntry: NewBlocklistEntry) {
         (childFragmentManager.findFragmentByTag("blocklistAddBottomDialogFragment") as? AddBlocklistBottomDialogFragment
             ?: blocklistAddBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
-        getDataFromWeb(null, showShimmer = false)
+        getDataFromWeb(null, showShimmer = false, forceRefresh = true)
     }
 
     companion object {

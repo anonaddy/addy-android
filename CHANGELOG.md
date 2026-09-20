@@ -1,32 +1,45 @@
 # Changelog
 
-## [v6.6.0-beta01] - TBD
+## [v6.6.0] - 2026-09-20
 
 ### addy.io
 
 ##### Highlights
 
-- Major under-the-hood rewrite of the codebase for better performance and stability
-- Integration with Android System Search (AppSearch) to search and access aliases directly from launcher search
-- Quick Settings tiles to quickly add an alias or instantly generate a random alias to your clipboard
-- Digital assistant and launcher shortcuts integration for creating aliases
-- Added pagination and loading indicators when scrolling through aliases, blocklist entries, and failed deliveries
-- Long-pressing to select multiple aliases is now enabled by default
-- Reordering rules is now smoother and only syncs to the server when you let go
+- **Lightning-Fast Networking**: Migrated the entire networking layer from Fuel to OkHttp with R8 minification for faster response times and improved battery efficiency.
+- **Android System Search (AppSearch)**: Search and access your aliases directly from your launcher or device search bar.
+- **Quick Settings Tiles**: Instantly generate & copy a random alias to your clipboard or open the alias creator directly from your Quick Settings panel.
+- **Foldable & Tablet Polish**: Optimized for large screens and foldables with responsive grid layouts, dynamic column sizing, and seamless state preservation across folds.
+- **Digital Assistant & Shortcuts**: Create aliases quickly with Google Assistant commands and app launcher shortcuts.
+- **Bulk Alias Management**: Multi-select aliases by long-pressing is now enabled by default, complete with smooth pagination and loading indicators.
+- **Domain Sending Verification**: Check your custom domain DNS and mail delivery configuration directly within domain settings.
+
+##### Added
+
+- Deep link support to block senders and domains directly in Blocklist (`addy://blocklist?sender=...` or `?domain=...`)
+- Block senders or domains directly from failed delivery details
+- Quarantine action for custom rules
+- Newsletter signup checkbox on registration form
+- Preferred email client setting with mailto intent handling
 
 ##### Fixed/Improved
 
 - Bumped minimum instance version to 1.7.3
-- Show alias description in failed delivery details
-- Improved widget scaling across different launcher grid sizes and fixed widget theming
+- Display alias description in failed delivery details
+- Redesigned responsive AppWidgets with improved scaling and dynamic theming
+- Reordering rules is now smoother and only syncs to the server upon release
 - Fixed UI padding and button clipping issues across several screens
-- Performance improvements and other things to make the app even smoother
+- General stability, lifecycle, and memory improvements
 
 ### addy.io for Android wearables _(v1.7.0)_
 
+##### Highlights
+
+- Complete rewrite with modern MVVM architecture and Compose UI
+- Redesigned Wear OS tile integration for quick alias generation
+
 ##### Fixed/Improved
 
-- Migrated to MVVM architecture with dedicated ViewModels for smoother performance
 - Fixed activity navigation loops and improved sync reliability with the phone app
 - Performance improvements and other things to make the app even smoother
 

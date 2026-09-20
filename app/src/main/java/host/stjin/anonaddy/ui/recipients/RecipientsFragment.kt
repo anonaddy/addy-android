@@ -53,7 +53,7 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
             if (data?.getBooleanExtra("shouldRefresh", false) == true) {
-                getDataFromWeb(null, showShimmer = false)
+                getDataFromWeb(null, showShimmer = false, forceRefresh = true)
             }
         }
     }
@@ -162,6 +162,9 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
 
                 showShimmer()
 
+                if (recipientsViewModel.verifiedOnlyFilter) {
+                    binding.recipientsChipgroup.check(R.id.recipients_chip_verified_only)
+                }
                 var lastCheckedChipId = binding.recipientsChipgroup.checkedChipId
                 binding.recipientsChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
                     val newCheckedId = checkedIds.firstOrNull() ?: View.NO_ID
@@ -175,6 +178,12 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
     }
 
     private fun setRecipientAdapter(list: ArrayList<Recipients>) {
+        if (getSelectedFilter()) {
+            binding.recipientsAllRecipientsTitle.text = getString(R.string.recipients_filtered)
+        } else {
+            binding.recipientsAllRecipientsTitle.text = getString(R.string.recipients)
+        }
+
         binding.recipientsCount.apply {
             val total = list.size
             if (total > 0) {
@@ -220,13 +229,18 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
     }
 
     // 5. Private Helpers / Public Methods
-    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true) {
+    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true, forceRefresh: Boolean = false) {
         isSilentRefresh = !showShimmer
+        if (getSelectedFilter()) {
+            binding.recipientsAllRecipientsTitle.text = getString(R.string.recipients_filtered)
+        } else {
+            binding.recipientsAllRecipientsTitle.text = getString(R.string.recipients)
+        }
         setStats()
-        if ((activity?.application as? AddyIoApp)?.userResourceOrNull == null) {
+        if (forceRefresh || (activity?.application as? AddyIoApp)?.userResourceOrNull == null) {
             viewLifecycleOwner.lifecycleScope.launch { getUserResource() }
         }
-        recipientsViewModel.loadRecipients(forceRefresh = false, verifiedOnly = getSelectedFilter())
+        recipientsViewModel.loadRecipients(forceRefresh = forceRefresh, verifiedOnly = getSelectedFilter())
     }
 
     private fun getSelectedFilter(): Boolean {
@@ -311,7 +325,7 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
         val result = recipientsViewModel.deleteRecipient(id)
         if (result is NetworkResult.Success && result.data == "204") {
             deleteRecipientSnackbar.dismiss()
-            getDataFromWeb(null, showShimmer = false)
+            getDataFromWeb(null, showShimmer = false, forceRefresh = true)
         } else {
             val error = result.errorOrNull() ?: ""
             showError(error, R.string.error_deleting_recipient)
@@ -322,7 +336,7 @@ class RecipientsFragment : BaseFragment(), AddRecipientBottomDialogFragment.AddR
         (childFragmentManager.findFragmentByTag("addRecipientsFragment") as? AddRecipientBottomDialogFragment
             ?: addRecipientsFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
         verificationEmailSentSnackbar()
-        getDataFromWeb(null, showShimmer = false)
+        getDataFromWeb(null, showShimmer = false, forceRefresh = true)
     }
 
     override suspend fun onRefreshData() {

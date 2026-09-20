@@ -202,7 +202,7 @@ class FailedDeliveriesFragment : BaseFragment(), FailedDeliveryDetailsBottomDial
     }
 
     // 5. Private Helpers / Public Methods
-    fun getDataFromWeb(savedInstanceState: Bundle?, isLoadMore: Boolean = false, showShimmer: Boolean = true) {
+    fun getDataFromWeb(savedInstanceState: Bundle?, isLoadMore: Boolean = false, showShimmer: Boolean = true, forceRefresh: Boolean = false) {
         isSilentRefresh = !showShimmer
         if (isLoadMore) {
             val current = failedDeliveriesViewModel.currentData
@@ -217,7 +217,7 @@ class FailedDeliveriesFragment : BaseFragment(), FailedDeliveryDetailsBottomDial
             loadFailedDeliveries(forceReload = false, showShimmer = false)
         } else {
             setOnNestedScrollViewListener(false)
-            loadFailedDeliveries(forceReload = false, showShimmer = showShimmer)
+            loadFailedDeliveries(forceReload = forceRefresh, showShimmer = showShimmer)
         }
     }
 
@@ -263,7 +263,7 @@ class FailedDeliveriesFragment : BaseFragment(), FailedDeliveryDetailsBottomDial
     override fun onDeleted(failedDeliveryId: String) {
         (childFragmentManager.findFragmentByTag("failedDeliveryDetailsBottomDialogFragment") as? FailedDeliveryDetailsBottomDialogFragment
             ?: failedDeliveryDetailsBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
-        getDataFromWeb(null, showShimmer = false)
+        getDataFromWeb(null, showShimmer = false, forceRefresh = true)
     }
 
     private fun getSelectedFilter(): String? {

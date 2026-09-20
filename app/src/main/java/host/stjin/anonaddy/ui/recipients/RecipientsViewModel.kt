@@ -20,12 +20,19 @@ class RecipientsViewModel(application: Application) : BaseViewModel(application)
     private val _recipientsState = MutableStateFlow<UiState<List<Recipients>>>(UiState.Loading)
     val recipientsState: StateFlow<UiState<List<Recipients>>> = _recipientsState.asStateFlow()
 
+    private var currentVerifiedOnly: Boolean? = null
+
+    val verifiedOnlyFilter: Boolean
+        get() = currentVerifiedOnly ?: false
+
     fun loadRecipients(forceRefresh: Boolean = false, verifiedOnly: Boolean = false): Job {
-        if (!forceRefresh && _recipientsState.value is UiState.Success) {
+        val filterChanged = currentVerifiedOnly != verifiedOnly
+        if (!forceRefresh && !filterChanged && _recipientsState.value is UiState.Success) {
             return Job().apply { complete() }
         }
 
         return viewModelScope.launch {
+            currentVerifiedOnly = verifiedOnly
             _recipientsState.value = UiState.Loading
             when (val result = recipientRepository.getRecipients(verifiedOnly = verifiedOnly)) {
                 is NetworkResult.Success -> {

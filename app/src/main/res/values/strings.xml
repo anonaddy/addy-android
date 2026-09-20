@@ -4,6 +4,7 @@
     <string name="app_settings">App settings</string>
     <string name="title_recipients">@string/recipients</string>
     <string name="recipients">Recipients</string>
+    <string name="recipients_filtered">Recipients (filtered)</string>
     <string name="addyio_settings">addy.io settings</string>
     <string name="monthly_bandwidth">Monthly bandwidth</string>
     <string name="copied_alias">Copied alias</string>
@@ -70,13 +71,15 @@
     <string name="app_changelog"><![CDATA[
 <h3>What\'s new in addy.io for Android 6.6.0</h3>
 <h4>Highlights</h4>
-<p>- Major under-the-hood rewrite of the codebase for better performance and stability<br />- Integration with Android System Search to search aliases directly from launcher search<br />- Quick Settings tiles to add an alias or instantly generate and copy a random alias<br />- Digital assistant and launcher shortcuts integration for creating aliases<br />- Added pagination and loading indicators when scrolling through aliases, blocklist, and failed deliveries<br />- Long-pressing to select multiple aliases is now enabled by default<br />- Reordering rules is now smoother and only syncs when you let go</p>
-<h4>Fixed/Improved</h4>
-<p>- Bumped minimum instance version to 1.7.3<br />- Show alias description in failed delivery details<br />- Improved widget scaling and theming across different launcher grid sizes<br />- Fixed UI padding and button clipping across various screens<br />- Performance improvements and other things to make the app even smoother</p>
+<p>⚡ <b>Faster &amp; Smoother Networking</b><br />Completely overhauled networking engine with OkHttp for lightning-fast speeds and better battery efficiency.<br /><br />
+🔍 <b>System Search (AppSearch)</b><br />Find your aliases directly from your launcher search bar without opening the app.<br /><br />
+⚡ <b>Quick Settings Tiles</b><br />Generate and copy a new alias in a single tap right from your Quick Settings panel.<br /><br />
+📱 <b>Foldable &amp; Tablet Ready</b><br />Enjoy adaptive multi-column layouts and seamless transitions when folding and unfolding.<br /><br />
+🌐 <b>Domain Sending Verification</b><br />Verify your custom domain\'s outbound mail deliverability right from the app.<br /><br />
+✨ <b>Bulk Actions &amp; Deep Links</b><br />Easily multi-select aliases, block senders via deep links, and block domains directly from failed deliveries.</p>
 <h4> </h4>
-<h3>What\'s new in addy.io for Android Wearables 1.7.0</h3>
-<h4>Fixed/Improved</h4>
-<p>- Modernized the watch architecture and ViewModels for smoother performance<br />- Fixed navigation loops and improved sync between the watch and phone app<br />- Performance improvements and other things to make the app even smoother</p>
+<h3>What\'s new in addy.io for Wearables 1.7.0</h3>
+<p>⌚ <b>Modernized Wear OS Experience</b><br />Fresh Compose UI, responsive tiles, and rock-solid sync with your phone.</p>
 ]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>

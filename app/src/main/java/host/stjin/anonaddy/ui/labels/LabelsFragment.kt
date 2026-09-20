@@ -287,19 +287,19 @@ class LabelsFragment : BaseFragment(), AddLabelBottomDialogFragment.AddLabelsBot
     }
 
     // 5. Private Helpers / Public Methods
-    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true): kotlinx.coroutines.Job {
+    fun getDataFromWeb(savedInstanceState: Bundle?, showShimmer: Boolean = true, forceRefresh: Boolean = false): kotlinx.coroutines.Job {
         isSilentRefresh = !showShimmer
         val searchText = binding.labelsSearchBar.text.toString().trim()
         return labelsViewModel.loadLabels(
             search = if (searchText.isEmpty()) null else searchText.lowercase(java.util.Locale.getDefault()),
-            forceRefresh = false
+            forceRefresh = forceRefresh
         )
     }
 
     override fun onAddedLabelEntry(label: Labels) {
         (childFragmentManager.findFragmentByTag("labelsAddBottomDialogFragment") as? AddLabelBottomDialogFragment
             ?: labelsAddBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
-        getDataFromWeb(null, showShimmer = false)
+        getDataFromWeb(null, showShimmer = false, forceRefresh = true)
     }
 
     private fun deleteLabel(id: String, context: Context) {
@@ -330,7 +330,7 @@ class LabelsFragment : BaseFragment(), AddLabelBottomDialogFragment.AddLabelsBot
         val result = labelsViewModel.deleteLabel(id)
         if (result is NetworkResult.Success) {
             deleteLabelSnackbar.dismiss()
-            getDataFromWeb(null, showShimmer = false)
+            getDataFromWeb(null, showShimmer = false, forceRefresh = true)
         } else {
             deleteLabelSnackbar.dismiss()
             showError(result.errorOrNull(), R.string.error_deleting_label)
@@ -343,7 +343,7 @@ class LabelsFragment : BaseFragment(), AddLabelBottomDialogFragment.AddLabelsBot
         }
         try {
             isSilentRefresh = true
-            getDataFromWeb(null, showShimmer = false).join()
+            getDataFromWeb(null, showShimmer = false, forceRefresh = true).join()
         } catch (e: Exception) {
             LoggingHelper(requireContext()).addLog(
                 LOGIMPORTANCE.CRITICAL.int,
