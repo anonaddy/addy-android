@@ -29,7 +29,9 @@ open class ServiceLocator {
     val recipientRepository: RecipientRepository by lazy { RecipientRepository(getContext()) }
     val domainRepository: DomainRepository by lazy { DomainRepository(getContext()) }
     val usernameRepository: UsernameRepository by lazy { UsernameRepository(getContext()) }
-    val ruleRepository: RuleRepository by lazy { RuleRepository(getContext()) }
+    val rulesRepository: RulesRepository by lazy { RulesRepository(getContext()) }
+    @Deprecated("Use rulesRepository", ReplaceWith("rulesRepository"))
+    val ruleRepository get() = rulesRepository
     val labelRepository: LabelRepository by lazy { LabelRepository(getContext()) }
     val blocklistRepository: BlocklistRepository by lazy { BlocklistRepository(getContext()) }
     val appMaintenanceRepository: AppMaintenanceRepository by lazy { AppMaintenanceRepository(getContext()) }

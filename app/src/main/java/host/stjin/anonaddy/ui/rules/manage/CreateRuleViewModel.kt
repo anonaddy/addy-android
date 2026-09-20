@@ -10,19 +10,19 @@ import host.stjin.anonaddy_shared.network.NetworkResult
 
 class CreateRuleViewModel(application: Application) : BaseViewModel(application) {
 
-    private val ruleRepository = ServiceLocator.ruleRepository
+    private val rulesRepository = ServiceLocator.rulesRepository
     private val recipientRepository = ServiceLocator.recipientRepository
 
     suspend fun getSpecificRule(ruleId: String): NetworkResult<Rules> {
-        return ruleRepository.getSpecificRule(ruleId)
+        return rulesRepository.getSpecificRule(ruleId)
     }
 
     suspend fun createRule(rule: Rules): NetworkResult<Rules> {
-        return ruleRepository.createRule(rule)
+        return rulesRepository.createRule(rule)
     }
 
     suspend fun updateRule(ruleId: String, rule: Rules): NetworkResult<String> {
-        return ruleRepository.updateRule(ruleId, rule)
+        return rulesRepository.updateRule(ruleId, rule)
     }
 
     suspend fun getAllRecipients(): NetworkResult<PaginatedResponse<Recipients>> {

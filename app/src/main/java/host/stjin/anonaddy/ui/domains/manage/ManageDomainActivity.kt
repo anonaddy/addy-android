@@ -487,7 +487,7 @@ class ManageDomainActivity : BaseActivity(),
 
         if (AddyIo.isUsingHostedInstance) {
             binding.activityManageDomainSharedWithFamilySwitchLayout.visibility = View.VISIBLE
-            binding.activityManageDomainSharedWithFamilySwitchLayout.setSwitchChecked(domain.shared_with_family)
+            binding.activityManageDomainSharedWithFamilySwitchLayout.setSwitchChecked(domain.shared_with_family == true)
             val userResource = (this.application as? AddyIoApp)?.userResourceOrNull
             val hasFamilyPlanRole = !userResource?.family_plan_role.isNullOrEmpty()
             if (hasFamilyPlanRole) {

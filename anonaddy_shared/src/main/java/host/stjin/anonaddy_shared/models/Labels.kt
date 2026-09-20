@@ -17,7 +17,9 @@ data class Labels(
     val updated_at: String
 ) : Serializable
 
-data class NewLabelEntry(
+data class NewLabel(
     val name: String,
     val colour: String
 )
+
+typealias NewLabelEntry = NewLabel

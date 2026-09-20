@@ -17,10 +17,12 @@ import host.stjin.anonaddy_shared.utils.DefaultDispatcherProvider
 import host.stjin.anonaddy_shared.utils.DispatcherProvider
 import host.stjin.anonaddy_shared.utils.fromJson
 
-class RuleRepository(
+class RulesRepository(
     context: Context,
     dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : BaseNetworkClient(context, dispatchers) {
+
+typealias RuleRepository = RulesRepository
 
     suspend fun getAllRules(): NetworkResult<PaginatedResponse<Rules>> {
         waitForInit()

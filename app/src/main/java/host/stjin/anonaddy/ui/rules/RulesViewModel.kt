@@ -22,7 +22,7 @@ data class RulesScreenData(
 
 class RulesViewModel(application: Application) : BaseViewModel(application) {
 
-    private val ruleRepository = ServiceLocator.ruleRepository
+    private val rulesRepository = ServiceLocator.rulesRepository
     private val recipientRepository = ServiceLocator.recipientRepository
 
     private val _rulesState = MutableStateFlow<UiState<RulesScreenData>>(UiState.Loading)
@@ -35,7 +35,7 @@ class RulesViewModel(application: Application) : BaseViewModel(application) {
 
         return viewModelScope.launch {
             _rulesState.value = UiState.Loading
-            val rulesDeferred = async { ruleRepository.getAllRules() }
+            val rulesDeferred = async { rulesRepository.getAllRules() }
             val recipientsDeferred = async { recipientRepository.getRecipients() }
 
             val rulesResult = rulesDeferred.await()
@@ -60,18 +60,18 @@ class RulesViewModel(application: Application) : BaseViewModel(application) {
     }
 
     suspend fun activateRule(ruleId: String): NetworkResult<Rules> {
-        return ruleRepository.activateSpecificRule(ruleId)
+        return rulesRepository.activateSpecificRule(ruleId)
     }
 
     suspend fun deactivateRule(ruleId: String): NetworkResult<String> {
-        return ruleRepository.deactivateSpecificRule(ruleId)
+        return rulesRepository.deactivateSpecificRule(ruleId)
     }
 
     suspend fun deleteRule(ruleId: String): NetworkResult<String> {
-        return ruleRepository.deleteRule(ruleId)
+        return rulesRepository.deleteRule(ruleId)
     }
 
     suspend fun reorderRules(rulesList: List<Rules>): NetworkResult<String> {
-        return ruleRepository.reorderRules(rulesList)
+        return rulesRepository.reorderRules(rulesList)
     }
 }
