@@ -1,8 +1,6 @@
 package host.stjin.anonaddy_shared.repositories
 
 import android.content.Context
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_ALIAS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS_RECIPIENTS
@@ -46,26 +44,9 @@ class AliasRepository(
             if (!labels.isNullOrEmpty()) put("label_ids", JSONArray(labels))
         }
 
-        val (_, response, result) = Fuel.post(API_URL_ALIAS)
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_ALIAS, json.toString())
 
-        return when (response.statusCode) {
-            201 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
-                NetworkResult.Success(addyIoData.data, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "addAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "addAlias") { gson.fromJson(it, SingleAlias::class.java).data }
     }
 
     suspend fun getAliases(
@@ -122,49 +103,17 @@ class AliasRepository(
         // Always include labels
         parameters.add("with" to "labels")
 
-        val (_, response, result) = Fuel.get(API_URL_ALIAS, parameters)
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeGet(API_URL_ALIAS, parameters)
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData: PaginatedResponse<Aliases> = gson.fromJson(data)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "getAliases")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "getAliases") { gson.fromJson(it) }
     }
 
     suspend fun getSpecificAlias(aliasId: String): NetworkResult<Aliases> {
         waitForInit()
 
-        val (_, response, result) = Fuel.get("$API_URL_ALIAS/$aliasId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeGet("$API_URL_ALIAS/$aliasId")
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
-                NetworkResult.Success(addyIoData.data, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "getSpecificAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "getSpecificAlias") { gson.fromJson(it, SingleAlias::class.java).data }
     }
 
     suspend fun updateDescriptionSpecificAlias(aliasId: String, description: String?): NetworkResult<Aliases> {
@@ -174,26 +123,9 @@ class AliasRepository(
             put("description", description)
         }
 
-        val (_, response, result) = Fuel.patch("$API_URL_ALIAS/$aliasId")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePatch("$API_URL_ALIAS/$aliasId", json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
-                NetworkResult.Success(addyIoData.data, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "updateDescriptionSpecificAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "updateDescriptionSpecificAlias") { gson.fromJson(it, SingleAlias::class.java).data }
     }
 
     suspend fun updateFromNameSpecificAlias(aliasId: String, fromName: String?): NetworkResult<Aliases> {
@@ -203,26 +135,9 @@ class AliasRepository(
             put("from_name", fromName)
         }
 
-        val (_, response, result) = Fuel.patch("$API_URL_ALIAS/$aliasId")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePatch("$API_URL_ALIAS/$aliasId", json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
-                NetworkResult.Success(addyIoData.data, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "updateFromNameSpecificAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "updateFromNameSpecificAlias") { gson.fromJson(it, SingleAlias::class.java).data }
     }
 
     suspend fun updateRecipientsSpecificAlias(aliasId: String, recipientIds: List<String>): NetworkResult<Aliases> {
@@ -234,26 +149,9 @@ class AliasRepository(
             put("recipient_ids", array)
         }
 
-        val (_, response, result) = Fuel.post(API_URL_ALIAS_RECIPIENTS)
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_ALIAS_RECIPIENTS, json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
-                NetworkResult.Success(addyIoData.data, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "updateRecipientsSpecificAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "updateRecipientsSpecificAlias") { gson.fromJson(it, SingleAlias::class.java).data }
     }
 
     suspend fun bulkGetAlias(aliasIds: List<String>): NetworkResult<PaginatedResponse<Aliases>> {
@@ -264,362 +162,128 @@ class AliasRepository(
             put("ids", array)
         }
 
-        val (_, response, result) = Fuel.post("$API_URL_ALIAS/get/bulk")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost("$API_URL_ALIAS/get/bulk", json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData: PaginatedResponse<Aliases> = gson.fromJson(data)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "bulkGetAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "bulkGetAlias") { gson.fromJson(it) }
     }
 
     suspend fun activateSpecificAlias(aliasId: String): NetworkResult<Aliases> {
         waitForInit()
 
-        val (_, response, result) = Fuel.post(API_URL_ACTIVE_ALIAS)
-            .appendHeader(*getHeaders())
-            .body(JSONObject().put("id", aliasId).toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_ACTIVE_ALIAS, JSONObject().put("id", aliasId).toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
-                NetworkResult.Success(addyIoData.data, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "activateSpecificAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "activateSpecificAlias") { gson.fromJson(it, SingleAlias::class.java).data }
     }
 
     suspend fun deactivateSpecificAlias(aliasId: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.delete("$API_URL_ACTIVE_ALIAS/$aliasId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeDelete("$API_URL_ACTIVE_ALIAS/$aliasId")
 
-        return when (response.statusCode) {
-            204 -> NetworkResult.Success("204", response.statusCode)
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "deactivateSpecificAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleStatusResponse(response, "deactivateSpecificAlias", expectedCode = 204)
     }
 
     suspend fun pinSpecificAlias(aliasId: String): NetworkResult<Aliases> {
         waitForInit()
 
-        val (_, response, result) = Fuel.post(API_URL_PINNED_ALIASES)
-            .appendHeader(*getHeaders())
-            .body(JSONObject().put("id", aliasId).toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_PINNED_ALIASES, JSONObject().put("id", aliasId).toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
-                NetworkResult.Success(addyIoData.data, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "pinSpecificAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "pinSpecificAlias") { gson.fromJson(it, SingleAlias::class.java).data }
     }
 
     suspend fun unpinSpecificAlias(aliasId: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.delete("$API_URL_PINNED_ALIASES/$aliasId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeDelete("$API_URL_PINNED_ALIASES/$aliasId")
 
-        return when (response.statusCode) {
-            204 -> NetworkResult.Success("204", response.statusCode)
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "unpinSpecificAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleStatusResponse(response, "unpinSpecificAlias", expectedCode = 204)
     }
 
     suspend fun deleteAlias(aliasId: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.delete("$API_URL_ALIAS/$aliasId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeDelete("$API_URL_ALIAS/$aliasId")
 
-        return when (response.statusCode) {
-            204 -> NetworkResult.Success("204", response.statusCode)
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "deleteAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleStatusResponse(response, "deleteAlias", expectedCode = 204)
     }
 
     suspend fun restoreAlias(aliasId: String): NetworkResult<Aliases> {
         waitForInit()
 
-        val (_, response, result) = Fuel.patch("$API_URL_ALIAS/$aliasId/restore")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executePatch("$API_URL_ALIAS/$aliasId/restore")
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
-                NetworkResult.Success(addyIoData.data, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "restoreAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "restoreAlias") { gson.fromJson(it, SingleAlias::class.java).data }
     }
 
     suspend fun forgetAlias(aliasId: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.delete("$API_URL_ALIAS/$aliasId/forget")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeDelete("$API_URL_ALIAS/$aliasId/forget")
 
-        return when (response.statusCode) {
-            204 -> NetworkResult.Success("204", response.statusCode)
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "forgetAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleStatusResponse(response, "forgetAlias", expectedCode = 204)
     }
 
     suspend fun bulkDeleteAlias(aliasIds: List<String>): NetworkResult<BulkActionResponse> {
         waitForInit()
 
         val json = JSONObject().put("ids", JSONArray(aliasIds))
-        val (_, response, result) = Fuel.post("$API_URL_ALIAS/delete/bulk")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost("$API_URL_ALIAS/delete/bulk", json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "bulkDeleteAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "bulkDeleteAlias") { gson.fromJson(it, BulkActionResponse::class.java) }
     }
 
     suspend fun bulkRestoreAlias(aliasIds: List<String>): NetworkResult<BulkActionResponse> {
         waitForInit()
 
         val json = JSONObject().put("ids", JSONArray(aliasIds))
-        val (_, response, result) = Fuel.post("$API_URL_ALIAS/restore/bulk")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost("$API_URL_ALIAS/restore/bulk", json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "bulkRestoreAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "bulkRestoreAlias") { gson.fromJson(it, BulkActionResponse::class.java) }
     }
 
     suspend fun bulkForgetAlias(aliasIds: List<String>): NetworkResult<BulkActionResponse> {
         waitForInit()
 
         val json = JSONObject().put("ids", JSONArray(aliasIds))
-        val (_, response, result) = Fuel.post("$API_URL_ALIAS/forget/bulk")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost("$API_URL_ALIAS/forget/bulk", json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "bulkForgetAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "bulkForgetAlias") { gson.fromJson(it, BulkActionResponse::class.java) }
     }
 
     suspend fun bulkActivateAlias(aliasIds: List<String>): NetworkResult<BulkActionResponse> {
         waitForInit()
 
         val json = JSONObject().put("ids", JSONArray(aliasIds))
-        val (_, response, result) = Fuel.post("$API_URL_ALIAS/activate/bulk")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost("$API_URL_ALIAS/activate/bulk", json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "bulkActivateAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "bulkActivateAlias") { gson.fromJson(it, BulkActionResponse::class.java) }
     }
 
     suspend fun bulkDeactivateAlias(aliasIds: List<String>): NetworkResult<BulkActionResponse> {
         waitForInit()
 
         val json = JSONObject().put("ids", JSONArray(aliasIds))
-        val (_, response, result) = Fuel.post("$API_URL_ALIAS/deactivate/bulk")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost("$API_URL_ALIAS/deactivate/bulk", json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "bulkDeactivateAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "bulkDeactivateAlias") { gson.fromJson(it, BulkActionResponse::class.java) }
     }
 
     suspend fun bulkPinAlias(aliasIds: List<String>): NetworkResult<BulkActionResponse> {
         waitForInit()
 
         val json = JSONObject().put("ids", JSONArray(aliasIds))
-        val (_, response, result) = Fuel.post("$API_URL_ALIAS/pin/bulk")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost("$API_URL_ALIAS/pin/bulk", json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "bulkPinAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "bulkPinAlias") { gson.fromJson(it, BulkActionResponse::class.java) }
     }
 
     suspend fun bulkUnpinAlias(aliasIds: List<String>): NetworkResult<BulkActionResponse> {
         waitForInit()
 
         val json = JSONObject().put("ids", JSONArray(aliasIds))
-        val (_, response, result) = Fuel.post("$API_URL_ALIAS/unpin/bulk")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost("$API_URL_ALIAS/unpin/bulk", json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "bulkUnpinAlias")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "bulkUnpinAlias") { gson.fromJson(it, BulkActionResponse::class.java) }
     }
 
     suspend fun bulkUpdateAliasesLabels(aliasIds: List<String>, labelIds: List<String>): NetworkResult<BulkActionResponse> {
@@ -630,26 +294,9 @@ class AliasRepository(
             put("label_ids", JSONArray(labelIds))
         }
 
-        val (_, response, result) = Fuel.post("$API_URL_ALIAS/labels/bulk")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost("$API_URL_ALIAS/labels/bulk", json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "bulkUpdateAliasesLabels")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "bulkUpdateAliasesLabels") { gson.fromJson(it, BulkActionResponse::class.java) }
     }
 
     suspend fun bulkUpdateAliasesRecipients(aliasIds: List<String>, recipientIds: List<String>): NetworkResult<BulkActionResponse> {
@@ -660,72 +307,26 @@ class AliasRepository(
             put("recipient_ids", JSONArray(recipientIds))
         }
 
-        val (_, response, result) = Fuel.post("$API_URL_ALIAS/recipients/bulk")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost("$API_URL_ALIAS/recipients/bulk", json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "bulkUpdateAliasesRecipients")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "bulkUpdateAliasesRecipients") { gson.fromJson(it, BulkActionResponse::class.java) }
     }
 
     suspend fun activateAttachedRecipientsOnly(aliasId: String): NetworkResult<Aliases> {
         waitForInit()
 
         val json = JSONObject().put("id", aliasId)
-        val (_, response, result) = Fuel.post(API_URL_ATTACHED_RECIPIENTS_ONLY)
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_ATTACHED_RECIPIENTS_ONLY, json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
-                NetworkResult.Success(addyIoData.data, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "activateAttachedRecipientsOnly")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "activateAttachedRecipientsOnly") { gson.fromJson(it, SingleAlias::class.java).data }
     }
 
     suspend fun deactivateAttachedRecipientsOnly(aliasId: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.delete("$API_URL_ATTACHED_RECIPIENTS_ONLY/$aliasId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeDelete("$API_URL_ATTACHED_RECIPIENTS_ONLY/$aliasId")
 
-        return when (response.statusCode) {
-            204 -> NetworkResult.Success("204", response.statusCode)
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "deactivateAttachedRecipientsOnly")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleStatusResponse(response, "deactivateAttachedRecipientsOnly", expectedCode = 204)
     }
 
     suspend fun cacheMostPopularAliasesDataForWidget(amountOfAliasesToCache: Int? = 15): NetworkResult<Boolean> {

@@ -1,21 +1,20 @@
 package host.stjin.anonaddy_shared.repositories
 
 import android.content.Context
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.coroutines.awaitByteArrayResponseResult
-import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
-import host.stjin.anonaddy_shared.ServiceLocator
 import host.stjin.anonaddy_shared.AddyIo.API_URL_FAILED_DELIVERIES
+import host.stjin.anonaddy_shared.ServiceLocator
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.FailedDeliveries
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.PaginatedResponse
 import host.stjin.anonaddy_shared.network.BaseNetworkClient
+import host.stjin.anonaddy_shared.models.ErrorHelper
 import host.stjin.anonaddy_shared.network.NetworkResult
-import org.json.JSONArray
-import org.json.JSONObject
 import host.stjin.anonaddy_shared.utils.DefaultDispatcherProvider
 import host.stjin.anonaddy_shared.utils.DispatcherProvider
 import host.stjin.anonaddy_shared.utils.fromJson
+import org.json.JSONArray
+import org.json.JSONObject
 
 class FailedDeliveriesRepository(
     context: Context,
@@ -29,54 +28,39 @@ class FailedDeliveriesRepository(
     ): NetworkResult<PaginatedResponse<FailedDeliveries>> {
         waitForInit()
 
-        val parameters = ArrayList<Pair<String, Any>>()
+        val parameters = ArrayList<Pair<String, Any?>>()
         if (page != null) parameters.add(Pair("page[number]", page.toString()))
         if (size != null) parameters.add(Pair("page[size]", size.toString()))
         if (filter != null) parameters.add(Pair("filter[email_type]", filter))
 
-        val (_, response, result) = Fuel.get(API_URL_FAILED_DELIVERIES, parameters)
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
-
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData: PaginatedResponse<FailedDeliveries> = gson.fromJson(data)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            404 -> {
-                NetworkResult.Error("404", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "getAllFailedDeliveries")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        val response = executeGet(API_URL_FAILED_DELIVERIES, parameters)
+        return handleResponse(response, "getAllFailedDeliveries") { gson.fromJson(it) }
     }
 
     suspend fun downloadSpecificFailedDelivery(id: String): NetworkResult<ByteArray> {
         waitForInit()
 
-        val (_, response, result) = Fuel.get("${API_URL_FAILED_DELIVERIES}/$id/download")
-            .appendHeader(*getHeaders())
-            .awaitByteArrayResponseResult()
-
-        return when (response.statusCode) {
+        val response = executeGet("${API_URL_FAILED_DELIVERIES}/$id/download")
+        val code = response.code
+        return when (code) {
             200 -> {
-                val data = result.get()
-                NetworkResult.Success(data, response.statusCode)
+                val data = response.body?.bytes() ?: ByteArray(0)
+                NetworkResult.Success(data, code)
             }
             401 -> {
                 invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
+                NetworkResult.Error("Unauthorized", code)
             }
             else -> {
-                val errorMessage = handleGenericErrorByteArray(response, result, "downloadSpecificFailedDelivery")
-                NetworkResult.Error(errorMessage, response.statusCode)
+                val bodyBytes = try { response.body?.bytes() ?: ByteArray(0) } catch (e: Exception) { ByteArray(0) }
+                val errorMessage = ErrorHelper.getErrorMessage(bodyBytes)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    "HTTP $code",
+                    "downloadSpecificFailedDelivery",
+                    errorMessage
+                )
+                NetworkResult.Error(errorMessage, code)
             }
         }
     }
@@ -90,42 +74,15 @@ class FailedDeliveriesRepository(
             }
         }
 
-        val (_, response, result) = Fuel.post("${API_URL_FAILED_DELIVERIES}/$id/resend")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
-
-        return when (response.statusCode) {
-            200, 204 -> NetworkResult.Success(Unit, response.statusCode)
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "resendFailedDelivery")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        val response = executePost("${API_URL_FAILED_DELIVERIES}/$id/resend", json.toString())
+        return handleResponse(response, "resendFailedDelivery") { }
     }
 
     suspend fun deleteFailedDelivery(id: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.delete("${API_URL_FAILED_DELIVERIES}/$id")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
-
-        return when (response.statusCode) {
-            204 -> NetworkResult.Success("204", response.statusCode)
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "deleteFailedDelivery")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        val response = executeDelete("${API_URL_FAILED_DELIVERIES}/$id")
+        return handleStatusResponse(response, "deleteFailedDelivery", expectedCode = 204)
     }
 
     suspend fun cacheFailedDeliveryCountForWidgetAndBackgroundService(previousId: String?): NetworkResult<Pair<Int, String?>> {

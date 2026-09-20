@@ -20,7 +20,7 @@ configure<LibraryExtension> {
 
     buildTypes {
         getByName("release") {
-            // Do not enable, Fuel will break
+            // OkHttp supports minification
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
@@ -50,10 +50,9 @@ dependencies {
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.security:security-crypto-ktx:1.1.0")
 
-    // Fuel, network requests
-    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
+    // OkHttp, network requests
+    implementation("com.squareup.okhttp3:okhttp:5.5.0")
     api("com.google.code.gson:gson:2.14.0")
-    implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
 
     // Built-in updater

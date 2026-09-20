@@ -1,8 +1,6 @@
 package host.stjin.anonaddy_shared.repositories
 
 import android.content.Context
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAINS
@@ -28,173 +26,133 @@ class DomainRepository(
     suspend fun getDomainOptions(): NetworkResult<DomainOptions> {
         waitForInit()
 
-        val (_, response, result) = Fuel.get(API_URL_DOMAIN_OPTIONS)
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeGet(API_URL_DOMAIN_OPTIONS)
 
-        return handleResponse(response, result, "getDomainOptions") { gson.fromJson(it, DomainOptions::class.java) }
+        return handleResponse(response, "getDomainOptions") { gson.fromJson(it, DomainOptions::class.java) }
     }
 
     suspend fun getAllDomains(): NetworkResult<PaginatedResponse<Domains>> {
         waitForInit()
 
-        val (_, response, result) = Fuel.get(API_URL_DOMAINS)
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeGet(API_URL_DOMAINS)
 
-        return handleResponse(response, result, "getAllDomains") { gson.fromJson(it) }
+        return handleResponse(response, "getAllDomains") { gson.fromJson(it) }
     }
 
     suspend fun getSpecificDomain(domainId: String): NetworkResult<Domains> {
         waitForInit()
 
-        val (_, response, result) = Fuel.get("$API_URL_DOMAINS/$domainId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeGet("$API_URL_DOMAINS/$domainId")
 
-        return handleResponse(response, result, "getSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
+        return handleResponse(response, "getSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
     }
 
     suspend fun addDomain(domain: String): NetworkResult<Domains> {
         waitForInit()
 
         val json = JSONObject().put("domain", domain)
-        val (_, response, result) = Fuel.post(API_URL_DOMAINS)
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_DOMAINS, json.toString())
 
-        return handleResponse(response, result, "addDomain") { gson.fromJson(it, SingleDomain::class.java).data }
+        return handleResponse(response, "addDomain") { gson.fromJson(it, SingleDomain::class.java).data }
     }
 
     suspend fun deleteDomain(domainId: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.delete("$API_URL_DOMAINS/$domainId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeDelete("$API_URL_DOMAINS/$domainId")
 
-        return handleStatusResponse(response, result, "deleteDomain", expectedCode = 204)
+        return handleStatusResponse(response, "deleteDomain", expectedCode = 204)
     }
 
     suspend fun activateSpecificDomain(domainId: String): NetworkResult<Domains> {
         waitForInit()
 
-        val (_, response, result) = Fuel.post(API_URL_ACTIVE_DOMAINS)
-            .appendHeader(*getHeaders())
-            .body(JSONObject().put("id", domainId).toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_ACTIVE_DOMAINS, JSONObject().put("id", domainId).toString())
 
-        return handleResponse(response, result, "activateSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
+        return handleResponse(response, "activateSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
     }
 
     suspend fun deactivateSpecificDomain(domainId: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.delete("$API_URL_ACTIVE_DOMAINS/$domainId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeDelete("$API_URL_ACTIVE_DOMAINS/$domainId")
 
-        return handleStatusResponse(response, result, "deactivateSpecificDomain", expectedCode = 204)
+        return handleStatusResponse(response, "deactivateSpecificDomain", expectedCode = 204)
     }
 
     suspend fun enableCatchAllSpecificDomain(domainId: String): NetworkResult<Domains> {
         waitForInit()
 
-        val (_, response, result) = Fuel.post(API_URL_CATCH_ALL_DOMAINS)
-            .appendHeader(*getHeaders())
-            .body(JSONObject().put("id", domainId).toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_CATCH_ALL_DOMAINS, JSONObject().put("id", domainId).toString())
 
-        return handleResponse(response, result, "enableCatchAllSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
+        return handleResponse(response, "enableCatchAllSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
     }
 
     suspend fun disableCatchAllSpecificDomain(domainId: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.delete("$API_URL_CATCH_ALL_DOMAINS/$domainId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeDelete("$API_URL_CATCH_ALL_DOMAINS/$domainId")
 
-        return handleStatusResponse(response, result, "disableCatchAllSpecificDomain", expectedCode = 204)
+        return handleStatusResponse(response, "disableCatchAllSpecificDomain", expectedCode = 204)
     }
 
     suspend fun enableSharedWithFamilySpecificDomain(domainId: String): NetworkResult<Domains> {
         waitForInit()
 
-        val (_, response, result) = Fuel.post(API_URL_SHARED_WITH_FAMILY_DOMAINS)
-            .appendHeader(*getHeaders())
-            .body(JSONObject().put("id", domainId).toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_SHARED_WITH_FAMILY_DOMAINS, JSONObject().put("id", domainId).toString())
 
-        return handleResponse(response, result, "enableSharedWithFamilySpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
+        return handleResponse(response, "enableSharedWithFamilySpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
     }
 
     suspend fun disableSharedWithFamilySpecificDomain(domainId: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.delete("$API_URL_SHARED_WITH_FAMILY_DOMAINS/$domainId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeDelete("$API_URL_SHARED_WITH_FAMILY_DOMAINS/$domainId")
 
-        return handleStatusResponse(response, result, "disableSharedWithFamilySpecificDomain", expectedCode = 204)
+        return handleStatusResponse(response, "disableSharedWithFamilySpecificDomain", expectedCode = 204)
     }
 
     suspend fun updateDefaultRecipientForSpecificDomain(domainId: String, recipientId: String?): NetworkResult<Domains> {
         waitForInit()
 
         val json = JSONObject().put("default_recipient", recipientId)
-        val (_, response, result) = Fuel.patch("$API_URL_DOMAINS/$domainId/default-recipient")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePatch("$API_URL_DOMAINS/$domainId/default-recipient", json.toString())
 
-        return handleResponse(response, result, "updateDefaultRecipientForSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
+        return handleResponse(response, "updateDefaultRecipientForSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
     }
 
     suspend fun updateDescriptionSpecificDomain(domainId: String, description: String?): NetworkResult<Domains> {
         waitForInit()
 
         val json = JSONObject().put("description", description)
-        val (_, response, result) = Fuel.patch("$API_URL_DOMAINS/$domainId")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePatch("$API_URL_DOMAINS/$domainId", json.toString())
 
-        return handleResponse(response, result, "updateDescriptionSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
+        return handleResponse(response, "updateDescriptionSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
     }
 
     suspend fun updateAutoCreateRegexSpecificDomain(domainId: String, autoCreateRegex: String?): NetworkResult<Domains> {
         waitForInit()
 
         val json = JSONObject().put("auto_create_regex", autoCreateRegex)
-        val (_, response, result) = Fuel.patch("$API_URL_DOMAINS/$domainId")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePatch("$API_URL_DOMAINS/$domainId", json.toString())
 
-        return handleResponse(response, result, "updateAutoCreateRegexSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
+        return handleResponse(response, "updateAutoCreateRegexSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
     }
 
     suspend fun updateFromNameSpecificDomain(domainId: String, fromName: String?): NetworkResult<Domains> {
         waitForInit()
 
         val json = JSONObject().put("from_name", fromName)
-        val (_, response, result) = Fuel.patch("$API_URL_DOMAINS/$domainId")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePatch("$API_URL_DOMAINS/$domainId", json.toString())
 
-        return handleResponse(response, result, "updateFromNameSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
+        return handleResponse(response, "updateFromNameSpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
     }
 
     suspend fun checkDomainSending(domainId: String): NetworkResult<CheckDomainSendingResponse> {
         waitForInit()
 
-        val (_, response, result) = Fuel.post("$API_URL_DOMAINS/$domainId/check-sending")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executePost("$API_URL_DOMAINS/$domainId/check-sending")
 
-        return handleResponse(response, result, "checkDomainSending") { gson.fromJson(it, CheckDomainSendingResponse::class.java) }
+        return handleResponse(response, "checkDomainSending") { gson.fromJson(it, CheckDomainSendingResponse::class.java) }
     }
 }

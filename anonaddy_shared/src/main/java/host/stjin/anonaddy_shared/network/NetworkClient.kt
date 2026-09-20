@@ -5,8 +5,6 @@ import android.os.Handler
 import android.os.Looper
 import android.security.KeyChain
 import android.util.Log
-import com.github.kittinunf.fuel.core.FuelManager
-import com.github.kittinunf.fuel.core.Response
 import host.stjin.anonaddy_shared.AddyIo.API_BASE_URL
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.BuildConfig
@@ -15,21 +13,45 @@ import host.stjin.anonaddy_shared.ServiceLocator
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.ErrorHelper
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.utils.DefaultDispatcherProvider
+import host.stjin.anonaddy_shared.utils.DispatcherProvider
 import host.stjin.anonaddy_shared.utils.LoggingHelper
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import okhttp3.*
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.IOException
 import java.net.Socket
+import java.security.KeyStore
 import java.security.Principal
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
 import java.util.Date
-import javax.net.ssl.HttpsURLConnection
+import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509KeyManager
+import javax.net.ssl.X509TrustManager
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
-import host.stjin.anonaddy_shared.utils.DefaultDispatcherProvider
-import host.stjin.anonaddy_shared.utils.DispatcherProvider
+suspend fun Call.await(): Response = suspendCancellableCoroutine { continuation ->
+    continuation.invokeOnCancellation {
+        cancel()
+    }
+    enqueue(object : Callback {
+        override fun onResponse(call: Call, response: Response) {
+            continuation.resume(response)
+        }
+        override fun onFailure(call: Call, e: IOException) {
+            continuation.resumeWithException(e)
+        }
+    })
+}
 
 open class BaseNetworkClient(
     protected val context: Context,
@@ -43,7 +65,7 @@ open class BaseNetworkClient(
     companion object {
         private val initMutex = Mutex()
         @Volatile
-        private var isSocketFactoryInitialized = false
+        private var okHttpClient: OkHttpClient? = null
     }
 
     init {
@@ -52,50 +74,64 @@ open class BaseNetworkClient(
 
     suspend fun waitForInit() {
         if (BuildConfig.DEBUG) {
-            val trace = Thread.currentThread().stackTrace
-            val callerMethod = if (trace.size > 4) trace[4].methodName else "unknown"
-            val callerClass = if (trace.size > 4) trace[4].className else "unknown"
-            val currentMethod = if (trace.size > 3) trace[3].methodName else "unknown"
-            println("$currentMethod called from $callerClass;$callerMethod")
+            Log.d("AFA", "Waiting for init")
         }
-        if (!isSocketFactoryInitialized) {
+        if (okHttpClient == null) {
             initMutex.withLock {
-                if (!isSocketFactoryInitialized) {
-                    val alias = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.CERTIFICATE_ALIAS)
-                    if (alias != null) {
-                        try {
-                            val chain = withContext(dispatchers.io) {
-                                KeyChain.getCertificateChain(context, alias)
-                            }
-                            val privateKey = withContext(dispatchers.io) {
-                                KeyChain.getPrivateKey(context, alias)
-                            }
-                            if (chain != null && privateKey != null) {
-                                withContext(dispatchers.main) {
-                                    setupCustomSocketFactory(alias, chain, privateKey)
-                                }
-                            }
-                        } catch (e: Exception) {
-                            withContext(dispatchers.main) {
-                                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.message.toString(), "BaseNetworkClient;init",
-                                    e.stackTrace.contentToString()
-                                )
-                            }
-                        }
-                    } else {
-                        withContext(dispatchers.main) {
-                            FuelManager.instance.apply {
-                                socketFactory = HttpsURLConnection.getDefaultSSLSocketFactory()
-                            }
-                        }
-                    }
-                    isSocketFactoryInitialized = true
+                if (okHttpClient == null) {
+                    okHttpClient = createOkHttpClient()
                 }
             }
         }
     }
 
-    private fun setupCustomSocketFactory(alias: String, chain: Array<X509Certificate>?, privateKey: PrivateKey) {
+    suspend fun getClient(): OkHttpClient {
+        waitForInit()
+        return okHttpClient ?: initMutex.withLock {
+            okHttpClient ?: createOkHttpClient().also { okHttpClient = it }
+        }
+    }
+
+    private suspend fun createOkHttpClient(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+
+        val alias = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.CERTIFICATE_ALIAS)
+        if (alias != null) {
+            try {
+                val chain = withContext(dispatchers.io) {
+                    KeyChain.getCertificateChain(context, alias)
+                }
+                val privateKey = withContext(dispatchers.io) {
+                    KeyChain.getPrivateKey(context, alias)
+                }
+                if (chain != null && privateKey != null) {
+                    withContext(dispatchers.main) {
+                        setupCustomSocketFactory(builder, alias, chain, privateKey)
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(dispatchers.main) {
+                    loggingHelper.addLog(
+                        LOGIMPORTANCE.CRITICAL.int,
+                        e.message.toString(),
+                        "BaseNetworkClient;init",
+                        e.stackTrace.contentToString()
+                    )
+                }
+            }
+        }
+        return builder.build()
+    }
+
+    private fun setupCustomSocketFactory(
+        builder: OkHttpClient.Builder,
+        alias: String,
+        chain: Array<X509Certificate>?,
+        privateKey: PrivateKey
+    ) {
         val expiryDateOfChain = chain?.firstOrNull()?.notAfter
         expiryDateOfChain?.let {
             if (it < Date()) {
@@ -124,9 +160,13 @@ open class BaseNetworkClient(
         val sslContext = SSLContext.getInstance("TLS")
         sslContext.init(arrayOf(customKeyManager), null, null)
 
-        FuelManager.instance.apply {
-            socketFactory = sslContext.socketFactory
-        }
+        val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+        trustManagerFactory.init(null as KeyStore?)
+        val trustManagers = trustManagerFactory.trustManagers
+        val x509TrustManager = trustManagers.firstOrNull { it is X509TrustManager } as? X509TrustManager
+            ?: return
+
+        builder.sslSocketFactory(sslContext.socketFactory, x509TrustManager)
     }
 
     private fun invalidCertificate() {
@@ -166,7 +206,7 @@ open class BaseNetworkClient(
         )
     }
 
-    private val userAgent: String by lazy {
+    protected val userAgent: String by lazy {
         val app = context.applicationContext as? AddyIoApp
         val ua = if (app != null) {
             "${app.userAgent.userAgentApplicationID} (${app.userAgent.userAgentApplicationBuildType}) / ${app.userAgent.userAgentVersion} (${app.userAgent.userAgentVersionCode})"
@@ -176,84 +216,144 @@ open class BaseNetworkClient(
         ua
     }
 
-    fun getFuelResponse(response: Response): ByteArray? {
-        return try {
-            response.data
-        } catch (e: Exception) {
-            null
+    suspend fun executeGet(
+        url: String,
+        parameters: List<Pair<String, Any?>>? = null,
+        headers: Array<Pair<String, Any>>? = null
+    ): Response {
+        val client = getClient()
+        val urlBuilder = url.toHttpUrl().newBuilder()
+        parameters?.forEach { (key, value) ->
+            if (value != null) {
+                urlBuilder.addQueryParameter(key, value.toString())
+            }
         }
+        val requestBuilder = Request.Builder().url(urlBuilder.build()).get()
+        val headerList = headers ?: getHeaders()
+        headerList.forEach { (k, v) ->
+            requestBuilder.header(k, v.toString())
+        }
+        return client.newCall(requestBuilder.build()).await()
+    }
+
+    suspend fun executePost(
+        url: String,
+        jsonBody: String? = null,
+        headers: Array<Pair<String, Any>>? = null
+    ): Response {
+        val client = getClient()
+        val body = (jsonBody ?: "").toRequestBody("application/json; charset=utf-8".toMediaType())
+        val requestBuilder = Request.Builder().url(url).post(body)
+        val headerList = headers ?: getHeaders()
+        headerList.forEach { (k, v) ->
+            requestBuilder.header(k, v.toString())
+        }
+        return client.newCall(requestBuilder.build()).await()
+    }
+
+    suspend fun executePatch(
+        url: String,
+        jsonBody: String? = null,
+        headers: Array<Pair<String, Any>>? = null
+    ): Response {
+        val client = getClient()
+        val body = (jsonBody ?: "").toRequestBody("application/json; charset=utf-8".toMediaType())
+        val requestBuilder = Request.Builder().url(url).patch(body)
+        val headerList = headers ?: getHeaders()
+        headerList.forEach { (k, v) ->
+            requestBuilder.header(k, v.toString())
+        }
+        return client.newCall(requestBuilder.build()).await()
+    }
+
+    suspend fun executeDelete(
+        url: String,
+        jsonBody: String? = null,
+        headers: Array<Pair<String, Any>>? = null
+    ): Response {
+        val client = getClient()
+        val body = jsonBody?.toRequestBody("application/json; charset=utf-8".toMediaType())
+        val requestBuilder = Request.Builder().url(url).delete(body)
+        val headerList = headers ?: getHeaders()
+        headerList.forEach { (k, v) ->
+            requestBuilder.header(k, v.toString())
+        }
+        return client.newCall(requestBuilder.build()).await()
     }
 
     fun handleGenericError(
-        response: Response,
-        result: com.github.kittinunf.result.Result<*, com.github.kittinunf.fuel.core.FuelError>,
-        methodName: String
+        statusCode: Int,
+        bodyString: String,
+        methodName: String,
+        exception: Throwable? = null
     ): String {
-        val ex = result.component2()?.message
-        val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-        Log.e("BaseNetworkClient", "${response.statusCode} - $ex")
-        val errorMessage = ErrorHelper.getErrorMessage(fuelResponse)
+        val exMessage = exception?.message ?: "HTTP $statusCode"
+        Log.e("BaseNetworkClient", "$statusCode - $exMessage")
+        val errorMessage = ErrorHelper.getErrorMessage(bodyString.toByteArray())
         loggingHelper.addLog(
             LOGIMPORTANCE.CRITICAL.int,
-            ex.toString(),
+            exMessage,
             methodName,
             errorMessage
         )
         return errorMessage
     }
 
-    fun handleGenericErrorByteArray(
-        response: Response,
-        result: com.github.kittinunf.result.Result<ByteArray, com.github.kittinunf.fuel.core.FuelError>,
-        methodName: String
-    ): String = handleGenericError(response, result, methodName)
-
     protected fun <T> handleResponse(
         response: Response,
-        result: com.github.kittinunf.result.Result<String, com.github.kittinunf.fuel.core.FuelError>,
         methodName: String,
         parser: (String) -> T
     ): NetworkResult<T> {
-        return when (response.statusCode) {
+        val bodyString = try {
+            response.body?.string() ?: ""
+        } catch (e: Exception) {
+            ""
+        }
+        val code = response.code
+        return when (code) {
             200, 201 -> {
                 try {
-                    val data = result.get()
-                    NetworkResult.Success(parser(data), response.statusCode)
+                    NetworkResult.Success(parser(bodyString), code)
                 } catch (e: Exception) {
-                    val errorMessage = handleGenericError(response, result, methodName)
-                    NetworkResult.Error(errorMessage, response.statusCode)
+                    val errorMessage = handleGenericError(code, bodyString, methodName, e)
+                    NetworkResult.Error(errorMessage, code)
                 }
             }
             204 -> {
                 @Suppress("UNCHECKED_CAST")
-                NetworkResult.Success(Unit as T, response.statusCode)
+                NetworkResult.Success(Unit as T, code)
             }
             401 -> {
                 invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
+                NetworkResult.Error("Unauthorized", code)
             }
             else -> {
-                val errorMessage = handleGenericError(response, result, methodName)
-                NetworkResult.Error(errorMessage, response.statusCode)
+                val errorMessage = handleGenericError(code, bodyString, methodName, null)
+                NetworkResult.Error(errorMessage, code)
             }
         }
     }
 
     protected fun handleStatusResponse(
         response: Response,
-        result: com.github.kittinunf.result.Result<String, com.github.kittinunf.fuel.core.FuelError>,
         methodName: String,
         expectedCode: Int = 200
     ): NetworkResult<String> {
-        return when (response.statusCode) {
-            expectedCode -> NetworkResult.Success(expectedCode.toString(), response.statusCode)
+        val bodyString = try {
+            response.body?.string() ?: ""
+        } catch (e: Exception) {
+            ""
+        }
+        val code = response.code
+        return when (code) {
+            expectedCode -> NetworkResult.Success(expectedCode.toString(), code)
             401 -> {
                 invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
+                NetworkResult.Error("Unauthorized", code)
             }
             else -> {
-                val errorMessage = handleGenericError(response, result, methodName)
-                NetworkResult.Error(errorMessage, response.statusCode)
+                val errorMessage = handleGenericError(code, bodyString, methodName, null)
+                NetworkResult.Error(errorMessage, code)
             }
         }
     }

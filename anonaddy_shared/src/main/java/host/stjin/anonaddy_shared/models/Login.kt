@@ -15,5 +15,5 @@ data class Login(
 data class LoginMfaRequired(
     val message: String,
     val mfa_key: String,
-    var cookie: Collection<String> // This is not part of the return body, this is just because we need to send the cookie manually in Fuel (https://github.com/kittinunf/fuel/issues/263)
+    var cookie: Collection<String> // Cookies to attach to the subsequent MFA request
 )

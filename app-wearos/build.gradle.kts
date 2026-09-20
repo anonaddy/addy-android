@@ -39,8 +39,7 @@ configure<ApplicationExtension> {
 
     buildTypes {
         getByName("release") {
-            // Do not enable, Fuel will break
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         getByName("debug") {

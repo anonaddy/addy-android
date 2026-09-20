@@ -1,9 +1,6 @@
 package host.stjin.anonaddy_shared.repositories
 
 import android.content.Context
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.core.Headers
-import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import host.stjin.anonaddy_shared.AddyIo.API_BASE_URL
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACCOUNT_DETAILS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_API_TOKEN_DETAILS
@@ -59,21 +56,19 @@ class UserRepository(
             put("newsletter", newsletter)
         }
 
-        val (_, response, result) = Fuel.post(API_URL_REGISTER)
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_REGISTER, json.toString())
+        val code = response.code
+        val bodyString = try { response.body?.string() ?: "" } catch (e: Exception) { "" }
 
-        return when (response.statusCode) {
-            204 -> NetworkResult.Success("204", response.statusCode)
+        return when (code) {
+            204 -> NetworkResult.Success("204", code)
             422 -> {
-                val data = response.data.toString(Charsets.UTF_8)
-                val addyIoData = gson.fromJson(data, Error::class.java)
-                NetworkResult.Error(addyIoData.message, response.statusCode)
+                val addyIoData = gson.fromJson(bodyString, Error::class.java)
+                NetworkResult.Error(addyIoData.message, code)
             }
             else -> {
-                val errorMessage = handleGenericError(response, result, "registration")
-                NetworkResult.Error(errorMessage, response.statusCode)
+                val errorMessage = handleGenericError(code, bodyString, "registration")
+                NetworkResult.Error(errorMessage, code)
             }
         }
     }
@@ -81,24 +76,22 @@ class UserRepository(
     suspend fun verifyRegistration(query: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.post("${API_URL_LOGIN_VERIFY}?${query}")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executePost("${API_URL_LOGIN_VERIFY}?${query}")
+        val code = response.code
+        val bodyString = try { response.body?.string() ?: "" } catch (e: Exception) { "" }
 
-        return when (response.statusCode) {
+        return when (code) {
             200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, Login::class.java)
-                NetworkResult.Success(addyIoData.api_key, response.statusCode)
+                val addyIoData = gson.fromJson(bodyString, Login::class.java)
+                NetworkResult.Success(addyIoData.api_key, code)
             }
             422, 404, 403 -> {
-                val data = response.data.toString(Charsets.UTF_8)
-                val addyIoData = gson.fromJson(data, Error::class.java)
-                NetworkResult.Error(addyIoData.message, response.statusCode)
+                val addyIoData = gson.fromJson(bodyString, Error::class.java)
+                NetworkResult.Error(addyIoData.message, code)
             }
             else -> {
-                val errorMessage = handleGenericError(response, result, "verifyRegistration")
-                NetworkResult.Error(errorMessage, response.statusCode)
+                val errorMessage = handleGenericError(code, bodyString, "verifyRegistration")
+                NetworkResult.Error(errorMessage, code)
             }
         }
     }
@@ -122,30 +115,31 @@ class UserRepository(
             put("expiration", if (apiExpiration == "never") null else apiExpiration)
         }
 
-        val (_, response, result) = Fuel.post(API_URL_LOGIN_MFA)
-            .header(Headers.COOKIE to cookies)
-            .appendHeader(
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
-            )
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val cookieHeader = cookies.joinToString("; ") { it.substringBefore(";") }
+        val customHeaders = arrayOf<Pair<String, Any>>(
+            "Content-Type" to "application/json",
+            "X-Requested-With" to "XMLHttpRequest",
+            "Accept" to "application/json",
+            "User-Agent" to userAgent,
+            "Cookie" to cookieHeader
+        )
 
-        return when (response.statusCode) {
+        val response = executePost(API_URL_LOGIN_MFA, json.toString(), customHeaders)
+        val code = response.code
+        val bodyString = try { response.body?.string() ?: "" } catch (e: Exception) { "" }
+
+        return when (code) {
             200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, Login::class.java)
-                NetworkResult.Success(addyIoData, response.statusCode)
+                val addyIoData = gson.fromJson(bodyString, Login::class.java)
+                NetworkResult.Success(addyIoData, code)
             }
             401 -> {
-                val data = response.data.toString(Charsets.UTF_8)
-                val addyIoData = gson.fromJson(data, Error::class.java)
-                NetworkResult.Error(addyIoData.message, response.statusCode)
+                val addyIoData = gson.fromJson(bodyString, Error::class.java)
+                NetworkResult.Error(addyIoData.message, code)
             }
             else -> {
-                val errorMessage = handleGenericError(response, result, "loginMfa")
-                NetworkResult.Error(errorMessage, response.statusCode)
+                val errorMessage = handleGenericError(code, bodyString, "loginMfa")
+                NetworkResult.Error(errorMessage, code)
             }
         }
     }
@@ -168,42 +162,35 @@ class UserRepository(
             put("expiration", if (apiExpiration == "never") null else apiExpiration)
         }
 
-        val (_, response, result) = Fuel.post(API_URL_LOGIN)
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_LOGIN, json.toString())
+        val code = response.code
+        val bodyString = try { response.body?.string() ?: "" } catch (e: Exception) { "" }
 
-        return when (response.statusCode) {
+        return when (code) {
             200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, Login::class.java)
-                LoginResult.Success(addyIoData, response.statusCode)
+                val addyIoData = gson.fromJson(bodyString, Login::class.java)
+                LoginResult.Success(addyIoData, code)
             }
             422 -> {
-                val data = response.data.toString(Charsets.UTF_8)
-                val addyIoData = gson.fromJson(data, LoginMfaRequired::class.java)
-                addyIoData.cookie = response.headers["Set-Cookie"]
-                LoginResult.MfaRequired(addyIoData, response.statusCode)
+                val addyIoData = gson.fromJson(bodyString, LoginMfaRequired::class.java)
+                addyIoData.cookie = response.headers("Set-Cookie")
+                LoginResult.MfaRequired(addyIoData, code)
             }
             401, 403 -> {
-                val data = response.data.toString(Charsets.UTF_8)
-                val addyIoData = gson.fromJson(data, Error::class.java)
-                LoginResult.Error(addyIoData.message, response.statusCode)
+                val addyIoData = gson.fromJson(bodyString, Error::class.java)
+                LoginResult.Error(addyIoData.message, code)
             }
             else -> {
-                val errorMessage = handleGenericError(response, result, "login")
-                LoginResult.Error(errorMessage, response.statusCode)
+                val errorMessage = handleGenericError(code, bodyString, "login")
+                LoginResult.Error(errorMessage, code)
             }
         }
     }
 
     suspend fun logout(): NetworkResult<Unit> {
         waitForInit()
-        val (_, response, result) = Fuel.post(API_URL_LOGOUT)
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
-
-        return handleResponse(response, result, "logout") { }
+        val response = executePost(API_URL_LOGOUT)
+        return handleResponse(response, "logout") { }
     }
 
     suspend fun deleteAccount(password: String): NetworkResult<Unit> {
@@ -213,12 +200,8 @@ class UserRepository(
             put("password", password)
         }
 
-        val (_, response, result) = Fuel.post(API_URL_DELETE_ACCOUNT)
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
-
-        return handleResponse(response, result, "deleteAccount") { }
+        val response = executePost(API_URL_DELETE_ACCOUNT, json.toString())
+        return handleResponse(response, "deleteAccount") { }
     }
 
     suspend fun verifyApiKey(baseUrl: String, apiKey: String): NetworkResult<UserResource> {
@@ -227,11 +210,9 @@ class UserRepository(
         lazyMgr.reset()
         API_BASE_URL = baseUrl
 
-        val (_, response, result) = Fuel.get(API_URL_ACCOUNT_DETAILS)
-            .appendHeader(*getHeaders(apiKey))
-            .awaitStringResponseResult()
+        val response = executeGet(API_URL_ACCOUNT_DETAILS, headers = getHeaders(apiKey))
 
-        return handleResponse(response, result, "verifyApiKey") { data ->
+        return handleResponse(response, "verifyApiKey") { data ->
             gson.fromJson(data, SingleUserResource::class.java).data
         }
     }
@@ -263,11 +244,9 @@ class UserRepository(
 
             waitForInit()
 
-            val (_, response, result) = Fuel.get(API_URL_ACCOUNT_DETAILS)
-                .appendHeader(*getHeaders())
-                .awaitStringResponseResult()
+            val response = executeGet(API_URL_ACCOUNT_DETAILS)
 
-            val networkResult = handleResponse(response, result, "getUserResource") { data ->
+            val networkResult = handleResponse(response, "getUserResource") { data ->
                 gson.fromJson(data, SingleUserResource::class.java).data
             }
 
@@ -295,11 +274,9 @@ class UserRepository(
 
             waitForInit()
 
-            val (_, response, result) = Fuel.get(API_URL_API_TOKEN_DETAILS)
-                .appendHeader(*getHeaders())
-                .awaitStringResponseResult()
+            val response = executeGet(API_URL_API_TOKEN_DETAILS)
 
-            val networkResult = handleResponse(response, result, "getApiTokenDetails") { data ->
+            val networkResult = handleResponse(response, "getApiTokenDetails") { data ->
                 gson.fromJson(data, ApiTokenDetails::class.java)
             }
 
@@ -323,12 +300,9 @@ class UserRepository(
             put("subscriptionId", subscriptionId)
         }
 
-        val (_, response, result) = Fuel.post(API_URL_NOTIFY_SUBSCRIPTION)
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_NOTIFY_SUBSCRIPTION, json.toString())
 
-        return handleResponse(response, result, "notifyServerForSubscriptionChange") { data ->
+        return handleResponse(response, "notifyServerForSubscriptionChange") { data ->
             gson.fromJson(data, SingleUserResource::class.java).data
         }
     }

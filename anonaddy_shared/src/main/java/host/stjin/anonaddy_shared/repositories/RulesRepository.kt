@@ -1,8 +1,6 @@
 package host.stjin.anonaddy_shared.repositories
 
 import android.content.Context
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_RULES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_REORDER_RULES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RULES
@@ -27,31 +25,25 @@ typealias RuleRepository = RulesRepository
     suspend fun getAllRules(): NetworkResult<PaginatedResponse<Rules>> {
         waitForInit()
 
-        val (_, response, result) = Fuel.get(API_URL_RULES)
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeGet(API_URL_RULES)
 
-        return handleResponse(response, result, "getAllRules") { gson.fromJson(it) }
+        return handleResponse(response, "getAllRules") { gson.fromJson(it) }
     }
 
     suspend fun getSpecificRule(ruleId: String): NetworkResult<Rules> {
         waitForInit()
 
-        val (_, response, result) = Fuel.get("$API_URL_RULES/$ruleId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeGet("$API_URL_RULES/$ruleId")
 
-        return handleResponse(response, result, "getSpecificRule") { gson.fromJson(it, SingleRule::class.java).data }
+        return handleResponse(response, "getSpecificRule") { gson.fromJson(it, SingleRule::class.java).data }
     }
 
     suspend fun deleteRule(ruleId: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.delete("$API_URL_RULES/$ruleId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeDelete("$API_URL_RULES/$ruleId")
 
-        return handleStatusResponse(response, result, "deleteRule", expectedCode = 204)
+        return handleStatusResponse(response, "deleteRule", expectedCode = 204)
     }
 
     suspend fun createRule(rule: Rules): NetworkResult<Rules> {
@@ -65,12 +57,9 @@ typealias RuleRepository = RulesRepository
         }
 
         val ruleJson = gson.toJson(rule)
-        val (_, response, result) = Fuel.post(API_URL_RULES)
-            .appendHeader(*getHeaders())
-            .body(ruleJson)
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_RULES, ruleJson)
 
-        return handleResponse(response, result, "createRule") { gson.fromJson(it, SingleRule::class.java).data }
+        return handleResponse(response, "createRule") { gson.fromJson(it, SingleRule::class.java).data }
     }
 
     suspend fun updateRule(ruleId: String, rule: Rules): NetworkResult<String> {
@@ -84,12 +73,9 @@ typealias RuleRepository = RulesRepository
         }
 
         val ruleJson = gson.toJson(rule)
-        val (_, response, result) = Fuel.patch("$API_URL_RULES/$ruleId")
-            .appendHeader(*getHeaders())
-            .body(ruleJson)
-            .awaitStringResponseResult()
+        val response = executePatch("$API_URL_RULES/$ruleId", ruleJson)
 
-        return handleStatusResponse(response, result, "updateRule", expectedCode = 200)
+        return handleStatusResponse(response, "updateRule", expectedCode = 200)
     }
 
     suspend fun reorderRules(rulesArray: List<Rules>): NetworkResult<String> {
@@ -97,32 +83,24 @@ typealias RuleRepository = RulesRepository
 
         val array = JSONArray(rulesArray.map { it.id })
         val obj = JSONObject().put("ids", array)
-        val (_, response, result) = Fuel.post(API_URL_REORDER_RULES)
-            .appendHeader(*getHeaders())
-            .body(obj.toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_REORDER_RULES, obj.toString())
 
-        return handleStatusResponse(response, result, "reorderRules", expectedCode = 200)
+        return handleStatusResponse(response, "reorderRules", expectedCode = 200)
     }
 
     suspend fun activateSpecificRule(ruleId: String): NetworkResult<Rules> {
         waitForInit()
 
-        val (_, response, result) = Fuel.post(API_URL_ACTIVE_RULES)
-            .appendHeader(*getHeaders())
-            .body(JSONObject().put("id", ruleId).toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_ACTIVE_RULES, JSONObject().put("id", ruleId).toString())
 
-        return handleResponse(response, result, "activateSpecificRule") { gson.fromJson(it, SingleRule::class.java).data }
+        return handleResponse(response, "activateSpecificRule") { gson.fromJson(it, SingleRule::class.java).data }
     }
 
     suspend fun deactivateSpecificRule(ruleId: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.delete("$API_URL_ACTIVE_RULES/$ruleId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeDelete("$API_URL_ACTIVE_RULES/$ruleId")
 
-        return handleStatusResponse(response, result, "deactivateSpecificRule", expectedCode = 204)
+        return handleStatusResponse(response, "deactivateSpecificRule", expectedCode = 204)
     }
 }

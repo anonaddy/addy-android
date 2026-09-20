@@ -3,8 +3,6 @@ package host.stjin.anonaddy_shared.repositories
 import android.content.Context
 import com.einmalfel.earl.EarlParser
 import com.einmalfel.earl.Feed
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACCOUNT_NOTIFICATIONS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_APP_VERSION
 import host.stjin.anonaddy_shared.AddyIo.GITHUB_TAGS_RSS_FEED
@@ -27,26 +25,25 @@ class AppMaintenanceRepository(
     suspend fun getAddyIoInstanceVersion(): NetworkResult<Version> {
         waitForInit()
 
-        val (_, response, result) = Fuel.get(API_URL_APP_VERSION)
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeGet(API_URL_APP_VERSION)
+        val code = response.code
+        val bodyString = try { response.body?.string() ?: "" } catch (e: Exception) { "" }
 
-        return when (response.statusCode) {
+        return when (code) {
             200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, Version::class.java)
-                NetworkResult.Success(addyIoData, response.statusCode)
+                val addyIoData = gson.fromJson(bodyString, Version::class.java)
+                NetworkResult.Success(addyIoData, code)
             }
             401 -> {
                 invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
+                NetworkResult.Error("Unauthorized", code)
             }
             404 -> {
-                NetworkResult.Success(Version(0, 0, 0, ""), response.statusCode)
+                NetworkResult.Success(Version(0, 0, 0, ""), code)
             }
             else -> {
-                val errorMessage = handleGenericError(response, result, "getAddyIoInstanceVersion")
-                NetworkResult.Error(errorMessage, response.statusCode)
+                val errorMessage = handleGenericError(code, bodyString, "getAddyIoInstanceVersion")
+                NetworkResult.Error(errorMessage, code)
             }
         }
     }
@@ -54,22 +51,23 @@ class AppMaintenanceRepository(
     suspend fun getGithubTags(): NetworkResult<Feed?> {
         waitForInit()
 
-        val (_, response, result) = Fuel.get(GITHUB_TAGS_RSS_FEED)
-            .awaitStringResponseResult()
+        val response = executeGet(GITHUB_TAGS_RSS_FEED)
+        val code = response.code
 
-        return when (response.statusCode) {
+        return when (code) {
             200 -> {
                 try {
-                    val inputStream: InputStream = result.get().byteInputStream()
-                    val feed = EarlParser.parse(inputStream, 0)
-                    NetworkResult.Success(feed, response.statusCode)
+                    val inputStream: InputStream? = response.body?.byteStream()
+                    val feed = if (inputStream != null) EarlParser.parse(inputStream, 0) else null
+                    NetworkResult.Success(feed, code)
                 } catch (e: Exception) {
-                    NetworkResult.Error(e.message, response.statusCode, e)
+                    NetworkResult.Error(e.message, code, e)
                 }
             }
             else -> {
-                val errorMessage = handleGenericError(response, result, "getGithubTags")
-                NetworkResult.Error(errorMessage, response.statusCode)
+                val bodyString = try { response.body?.string() ?: "" } catch (e: Exception) { "" }
+                val errorMessage = handleGenericError(code, bodyString, "getGithubTags")
+                NetworkResult.Error(errorMessage, code)
             }
         }
     }
@@ -77,25 +75,8 @@ class AppMaintenanceRepository(
     suspend fun getAllAccountNotifications(): NetworkResult<PaginatedResponse<AccountNotifications>> {
         waitForInit()
 
-        val (_, response, result) = Fuel.get(API_URL_ACCOUNT_NOTIFICATIONS)
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
-
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData: PaginatedResponse<AccountNotifications> = gson.fromJson(data)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "getAllAccountNotifications")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        val response = executeGet(API_URL_ACCOUNT_NOTIFICATIONS)
+        return handleResponse(response, "getAllAccountNotifications") { gson.fromJson(it) }
     }
 
     suspend fun cacheAccountNotificationsCountForWidgetAndBackgroundService(): NetworkResult<Boolean> {

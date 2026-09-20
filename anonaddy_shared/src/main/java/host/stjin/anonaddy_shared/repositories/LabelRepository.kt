@@ -1,8 +1,6 @@
 package host.stjin.anonaddy_shared.repositories
 
 import android.content.Context
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import host.stjin.anonaddy_shared.AddyIo.API_URL_LABELS
 import host.stjin.anonaddy_shared.models.Labels
 import host.stjin.anonaddy_shared.models.NewLabelEntry
@@ -26,25 +24,9 @@ class LabelRepository(
         val parameters = arrayListOf<Pair<String, String>>()
         if (!search.isNullOrEmpty()) parameters.add("filter[search]" to search)
 
-        val (_, response, result) = Fuel.get(API_URL_LABELS, parameters)
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeGet(API_URL_LABELS, parameters)
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData: PaginatedResponse<Labels> = gson.fromJson(data)
-                NetworkResult.Success(addyIoData, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "getAllLabels")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "getAllLabels") { gson.fromJson(it) }
     }
 
     suspend fun addNewLabel(newLabelEntry: NewLabelEntry): NetworkResult<Labels> {
@@ -59,26 +41,9 @@ class LabelRepository(
             put("colour", colour)
         }
 
-        val (_, response, result) = Fuel.post(API_URL_LABELS)
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePost(API_URL_LABELS, json.toString())
 
-        return when (response.statusCode) {
-            201 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, SingleLabel::class.java)
-                NetworkResult.Success(addyIoData.data, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "addNewLabel")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "addNewLabel") { gson.fromJson(it, SingleLabel::class.java).data }
     }
 
     suspend fun updateLabel(labelId: String, newLabelEntry: NewLabelEntry): NetworkResult<Labels> {
@@ -93,45 +58,16 @@ class LabelRepository(
             put("colour", colour)
         }
 
-        val (_, response, result) = Fuel.patch("$API_URL_LABELS/$labelId")
-            .appendHeader(*getHeaders())
-            .body(json.toString())
-            .awaitStringResponseResult()
+        val response = executePatch("$API_URL_LABELS/$labelId", json.toString())
 
-        return when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val addyIoData = gson.fromJson(data, SingleLabel::class.java)
-                NetworkResult.Success(addyIoData.data, response.statusCode)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "updateLabel")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleResponse(response, "updateLabel") { gson.fromJson(it, SingleLabel::class.java).data }
     }
 
     suspend fun deleteLabel(labelId: String): NetworkResult<String> {
         waitForInit()
 
-        val (_, response, result) = Fuel.delete("$API_URL_LABELS/$labelId")
-            .appendHeader(*getHeaders())
-            .awaitStringResponseResult()
+        val response = executeDelete("$API_URL_LABELS/$labelId")
 
-        return when (response.statusCode) {
-            204 -> NetworkResult.Success("204", response.statusCode)
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", response.statusCode)
-            }
-            else -> {
-                val errorMessage = handleGenericError(response, result, "deleteLabel")
-                NetworkResult.Error(errorMessage, response.statusCode)
-            }
-        }
+        return handleStatusResponse(response, "deleteLabel", expectedCode = 204)
     }
 }
