@@ -2,8 +2,8 @@ package host.stjin.anonaddy.service
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
+import androidx.core.net.toUri
 import androidx.appsearch.app.AppSearchSchema
 import androidx.appsearch.app.AppSearchSession
 import androidx.appsearch.app.GenericDocument
@@ -200,7 +200,7 @@ class AliasSearchManager(private val context: Context) {
     private fun createShortcutInfo(alias: Aliases): ShortcutInfoCompat {
         val intent = Intent(context, ManageAliasActivity::class.java).apply {
             action = Intent.ACTION_VIEW
-            data = Uri.parse("addy://alias/${alias.id}")
+            data = "addy://alias/${alias.id}".toUri()
             putExtra("alias_id", alias.id)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }

@@ -5,12 +5,14 @@ import android.content.Intent
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import androidx.annotation.RequiresApi
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.ui.intent.CreateAliasAssistantActivity
 import host.stjin.anonaddy.ui.setup.SetupActivity
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
+@RequiresApi(Build.VERSION_CODES.N)
 class QuickAliasTileService : TileService() {
 
     override fun onStartListening() {
@@ -70,7 +72,7 @@ class QuickAliasTileService : TileService() {
             )
             startActivityAndCollapse(pendingIntent)
         } else {
-            @Suppress("DEPRECATION")
+            @Suppress("DEPRECATION", "StartActivityAndCollapseDeprecated")
             startActivityAndCollapse(intent)
         }
     }

@@ -53,6 +53,7 @@ class AliasAdapter(
     private val aliasWatcher = AliasWatcher(context)
     private var aliasesToWatch: Set<String> = aliasWatcher.getAliasesToWatch()
     private var selectedAliases: ArrayList<Aliases> = arrayListOf()
+    private val prettyTime = PrettyTime()
 
     fun updateWatchedAliases() {
         aliasesToWatch = aliasWatcher.getAliasesToWatch()
@@ -91,7 +92,6 @@ class AliasAdapter(
         holder.binding.aliasesRecyclerviewListTitle.text = alias.email
 
         val context = holder.binding.aliasesRecyclerviewListDescription.context
-        val prettyTime = PrettyTime()
         val descriptionParts = mutableListOf<String>()
 
         // Add description if it exists

@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
+import androidx.core.net.toUri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -330,7 +331,7 @@ class ManageAliasActivity : BaseActivity(),
 
             val intent = Intent(this, ManageAliasActivity::class.java).apply {
                 action = Intent.ACTION_VIEW
-                data = Uri.parse("addy://alias/${aliasObj.id}")
+                data = "addy://alias/${aliasObj.id}".toUri()
                 putExtra("alias_id", aliasObj.id)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }

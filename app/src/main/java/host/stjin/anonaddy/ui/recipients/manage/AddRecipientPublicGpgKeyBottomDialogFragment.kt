@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.recipients.manage
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -52,6 +53,7 @@ class AddRecipientPublicGpgKeyBottomDialogFragment : BaseBottomSheetDialogFragme
             binding.bsEditRecipientGpgKeySaveButton.setOnClickListener(this)
 
 
+            @SuppressLint("ClickableViewAccessibility")
             binding.bsEditRecipientGpgKeyTiet.setOnTouchListener { view, motionEvent ->
                 view.parent.requestDisallowInterceptTouchEvent(true)
                 if ((motionEvent.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {

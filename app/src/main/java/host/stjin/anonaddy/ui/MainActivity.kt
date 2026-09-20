@@ -17,7 +17,6 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -438,7 +437,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                         navView.menu.findItem(R.id.navigation_rules)?.isChecked = true
                     }
 
-                    7 -> {
+                    6 -> {
                         hideFailedDeliveriesBadge()
 
                         navView.menu.findItem(R.id.navigation_failed_deliveries)?.isChecked = true

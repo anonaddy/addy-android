@@ -1,18 +1,20 @@
 package host.stjin.anonaddy_shared.utils
 
-import java.text.DateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Date
-import java.util.Locale
 
 object DateTimeUtils {
 
     private val SERVER_ZONE_ID = ZoneId.of("GMT")
     private val SERVER_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    private val SHORT_DATE_FORMATTER: DateTimeFormatter get() = DateTimeFormatter.ofPattern("E d MMM", Locale.getDefault())
+    private val DATE_FORMATTER = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+    private val TIME_FORMATTER = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)
+    private val DATE_TIME_FORMATTER = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
+    private val SHORT_DATE_FORMATTER = DateTimeFormatter.ofPattern("E d MMM")
 
     enum class DatetimeFormat {
         DATE,
@@ -32,12 +34,11 @@ object DateTimeUtils {
             val defaultZoneId = ZoneId.systemDefault()
 
             val localTimeZoneDate: ZonedDateTime = zonedDateTime.withZoneSameInstant(defaultZoneId)
-            val date = Date.from(localTimeZoneDate.toInstant())
 
             when (dateTimeFormat) {
-                DatetimeFormat.DATE -> DateFormat.getDateInstance(DateFormat.MEDIUM).format(date)
-                DatetimeFormat.TIME -> DateFormat.getTimeInstance(DateFormat.MEDIUM).format(date)
-                DatetimeFormat.DATETIME -> DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(date)
+                DatetimeFormat.DATE -> localTimeZoneDate.format(DATE_FORMATTER)
+                DatetimeFormat.TIME -> localTimeZoneDate.format(TIME_FORMATTER)
+                DatetimeFormat.DATETIME -> localTimeZoneDate.format(DATE_TIME_FORMATTER)
                 DatetimeFormat.SHORT_DATE -> localTimeZoneDate.format(SHORT_DATE_FORMATTER)
             }
         } catch (e: Exception) {

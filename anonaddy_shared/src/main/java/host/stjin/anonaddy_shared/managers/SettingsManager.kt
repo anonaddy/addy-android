@@ -57,7 +57,6 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         RECENT_SEARCHES_LABELS(true, PREFTYPES.STRING, "recent_searches_labels"),
         PRIVACY_MODE(true, PREFTYPES.BOOLEAN, "privacy_mode"),
         SYSTEM_SEARCH(true, PREFTYPES.BOOLEAN, "system_search"),
-        SYSTEM_SEARCH_AND_ASSISTANT(true, PREFTYPES.BOOLEAN, "system_search_and_assistant"),
         SYSTEM_SEARCH_LAST_SYNC(true, PREFTYPES.STRING, "system_search_last_sync"),
         API_KEY(true, PREFTYPES.STRING, "API_KEY"),
         BASE_URL(true, PREFTYPES.STRING, "BASE_URL"),
@@ -198,13 +197,12 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
     fun putStringSet(key: PREFS, mutableset: MutableSet<String>) {
         prefs.edit {
-            remove(key.key)
-            putStringSet(key.key, mutableset)
+            putStringSet(key.key, HashSet(mutableset))
         }
     }
 
     fun getStringSet(key: PREFS): MutableSet<String>? {
-        return prefs.getStringSet(key.key, HashSet())
+        return prefs.getStringSet(key.key, HashSet())?.toMutableSet()
     }
 
 

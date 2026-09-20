@@ -375,8 +375,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker
                 val aliasesJson = settingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
                 val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(appContext, it) }
 
-                val currentList = settingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
-                currentList?.let {
+                aliasesJson?.let {
                     settingsManager.putSettingsString(
                         PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS,
                         it

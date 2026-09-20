@@ -51,19 +51,24 @@ class FailedDeliveriesViewModel(application: Application) : BaseViewModel(applic
                 _failedDeliveriesState.value = UiState.Loading
             }
 
-            val nextPage = currentPaginatedData.nextPage(isLoadMore)
-            when (val result = failedDeliveriesRepository.getAllFailedDeliveries(page = nextPage, size = 25, filter = filter)) {
-                is NetworkResult.Success -> {
-                    val responseData = result.data
-                    val updatedData = if (isLoadMore) currentPaginatedData.appendPage(responseData) else responseData
-                    currentPaginatedData = updatedData
-                    _failedDeliveriesState.value = UiState.Success(updatedData)
+            try {
+                val nextPage = currentPaginatedData.nextPage(isLoadMore)
+                when (val result = failedDeliveriesRepository.getAllFailedDeliveries(page = nextPage, size = 25, filter = filter)) {
+                    is NetworkResult.Success -> {
+                        val responseData = result.data
+                        val updatedData = if (isLoadMore) currentPaginatedData.appendPage(responseData) else responseData
+                        currentPaginatedData = updatedData
+                        _failedDeliveriesState.value = UiState.Success(updatedData)
+                    }
+                    is NetworkResult.Error -> {
+                        _failedDeliveriesState.value = UiState.Error(result.error, result.statusCode)
+                    }
                 }
-                is NetworkResult.Error -> {
-                    _failedDeliveriesState.value = UiState.Error(result.error, result.statusCode)
+            } finally {
+                if (isLoadMore) {
+                    _isLoadingMore.value = false
                 }
             }
-            _isLoadingMore.value = false
         }
     }
 

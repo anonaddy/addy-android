@@ -3,8 +3,8 @@ package host.stjin.anonaddy.ui.intent
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
+import androidx.core.net.toUri
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.R
@@ -151,7 +151,7 @@ class CreateAliasAssistantActivity : BaseActivity() {
         val resultIntent = Intent().apply {
             putExtra("alias_email", alias.email)
             putExtra("alias_id", alias.id)
-            data = Uri.parse("addy://alias/${alias.id}")
+            data = "addy://alias/${alias.id}".toUri()
         }
         setResult(RESULT_OK, resultIntent)
         finish()

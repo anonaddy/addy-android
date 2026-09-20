@@ -44,7 +44,7 @@ class MainNavigator(private val activity: MainActivity) {
             }
             R.id.navigation_failed_deliveries -> {
                 if (isTablet) {
-                    viewPager.currentItem = 7
+                    viewPager.currentItem = 6
                 } else {
                     activity.startActivity(Intent(activity, FailedDeliveriesActivity::class.java))
                 }

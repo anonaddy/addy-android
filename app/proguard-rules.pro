@@ -21,3 +21,9 @@
 -renamesourcefileattribute SourceFile
 
 -keep class kotlin.Result { *; }
+
+# Keep ImageFilterView methods accessed via reflection in MotionScenes
+-keepclassmembers class androidx.constraintlayout.utils.widget.ImageFilterView {
+    void setRoundPercent(float);
+    float getRoundPercent();
+}

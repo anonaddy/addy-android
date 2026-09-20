@@ -65,6 +65,7 @@ class WearableListenerService : WearableListenerService() {
         }
     }
 
+    @SuppressLint("WearRecents")
     private fun storeSettings(wearOSConfiguration: String) {
         // Deserialize the configuration
         val configuration = GsonTools.jsonToWearOSSettingsObject(this, wearOSConfiguration)

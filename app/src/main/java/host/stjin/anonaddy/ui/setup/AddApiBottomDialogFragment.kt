@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.setup
 
+import android.annotation.SuppressLint
 import android.Manifest
 import android.app.Dialog
 import android.content.Context
@@ -128,6 +129,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         binding.bsSetupScannerView.setOnClickListener(this)
 
 
+        @SuppressLint("ClickableViewAccessibility")
         binding.bsSetupApikeyTiet.setOnTouchListener { view, motionEvent ->
             view.parent.requestDisallowInterceptTouchEvent(true)
             if ((motionEvent.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {

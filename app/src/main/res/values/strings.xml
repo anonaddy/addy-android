@@ -924,14 +924,9 @@
     <string name="always_ask">Always ask</string>
     <string name="always_use_this_app">Always use this app</string>
     <string name="choose_email_app">Choose email app</string>
-    <string name="system_search_and_assistant">System search &amp; Gemini</string>
-    <string name="system_search_and_assistant_desc">Index aliases for Android system search and enable Gemini to find and create aliases.</string>
     <string name="system_search">System search</string>
     <string name="system_search_desc">Allows you to search and navigate to aliases through your launcher and device search.</string>
     <string name="app_intent_add_alias">Create alias</string>
-    <string name="app_intent_add_alias_desc">Creates a new alias and copies the email to your clipboard</string>
-    <string name="app_intent_add_alias_custom">Create custom alias</string>
-    <string name="app_intent_category_name">Aliases</string>
     <string name="assistant_alias_created_copied">Alias created and copied: %1$s</string>
     <string name="assistant_error_creating_alias">Failed to create alias</string>
     <string name="assistant_app_not_setup">Addy.io is not configured. Please open the app first.</string>

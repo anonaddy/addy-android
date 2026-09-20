@@ -457,7 +457,8 @@
             android:exported="true"
             android:icon="@drawable/ic_qs_add_alias"
             android:label="@string/add_alias"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            tools:targetApi="n">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
@@ -469,7 +470,9 @@
             android:exported="true"
             android:icon="@drawable/ic_qs_quick_alias"
             android:label="@string/quick_alias"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:description="@string/quick_alias_desc"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            tools:targetApi="n">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>

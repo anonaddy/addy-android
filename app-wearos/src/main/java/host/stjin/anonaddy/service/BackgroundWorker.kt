@@ -7,6 +7,8 @@ import androidx.work.WorkerParameters
 import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.tiles.PinnedAliasesTileService
 import host.stjin.anonaddy_shared.network.NetworkResult
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 /*
 This BackgroundWorker is used for obtaining data in the background, this data is then being used to "Watch" aliases and updating the data the widget uses.
@@ -24,9 +26,17 @@ class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Cor
         val userRepository = ServiceLocator.userRepository
         val aliasRepository = ServiceLocator.aliasRepository
 
-        val userResourceResult = userRepository.cacheUserResourceForWidget()
-        val aliasResult = aliasRepository.cacheLastUpdatedAliasesData()
-        val pinnedAliasResult = aliasRepository.cachePinnedAliasesData()
+        val (userResourceResult, aliasResult, pinnedAliasResult) = coroutineScope {
+            val userResourceDeferred = async { userRepository.cacheUserResourceForWidget() }
+            val aliasDeferred = async { aliasRepository.cacheLastUpdatedAliasesData() }
+            val pinnedAliasDeferred = async { aliasRepository.cachePinnedAliasesData() }
+
+            Triple(
+                userResourceDeferred.await(),
+                aliasDeferred.await(),
+                pinnedAliasDeferred.await()
+            )
+        }
 
         return if (userResourceResult is NetworkResult.Success<Boolean> && userResourceResult.data &&
             aliasResult is NetworkResult.Success<Boolean> && aliasResult.data &&

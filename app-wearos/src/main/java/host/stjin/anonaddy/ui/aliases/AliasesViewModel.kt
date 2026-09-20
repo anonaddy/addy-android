@@ -42,7 +42,10 @@ class AliasesViewModel(application: Application) : BaseViewModel(application) {
             isLoading = true
         }
         viewModelScope.launch {
-            launch { ServiceLocator.userRepository.cacheUserResourceForWidget() }
+            launch {
+                ServiceLocator.userRepository.cacheUserResourceForWidget()
+                refreshUserResourceFromCache()
+            }
             val result = aliasRepository.cacheLastUpdatedAliasesData()
             isLoading = false
             if (result is NetworkResult.Success && result.data) {

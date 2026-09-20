@@ -76,11 +76,16 @@ open class BaseNetworkClient(
     val loggingHelper = LoggingHelper(context)
     val gson = host.stjin.anonaddy_shared.utils.GsonTools.gson
     val encryptedSettingsManager = serviceLocator.encryptedSettingsManager
+    val settingsManager = serviceLocator.settingsManager
 
     companion object {
         private val initMutex = Mutex()
         @Volatile
         private var okHttpClient: OkHttpClient? = null
+
+        fun resetClient() {
+            okHttpClient = null
+        }
     }
 
     init {

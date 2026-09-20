@@ -13,12 +13,11 @@ import host.stjin.anonaddy_shared.utils.LoggingHelper
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.PrintWriter
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.Date
-import java.util.Locale
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 import javax.crypto.Cipher
 import javax.crypto.CipherInputStream
@@ -31,6 +30,10 @@ import kotlin.system.measureTimeMillis
 
 // isAppInForeground is being used to determine if a notification or a snackbar should be used
 class BackupHelper(private val context: Context) {
+
+    companion object {
+        private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    }
 
     private val loggingHelper: LoggingHelper = LoggingHelper(context, LoggingHelper.LOGFILES.BACKUP_LOGS)
     private val settingsManager: SettingsManager = ServiceLocator.settingsManager
@@ -272,6 +275,6 @@ class BackupHelper(private val context: Context) {
     }
 
     private fun getDateTime(): String {
-        return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+        return LocalDateTime.now().format(DATE_TIME_FORMATTER)
     }
 }

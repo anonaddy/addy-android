@@ -553,7 +553,7 @@
                     android:padding="9dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_add"
-                    android:tint="?android:attr/colorBackground" />
+                    app:tint="?android:attr/colorBackground" />
             </LinearLayout>
 
             <LinearLayout
