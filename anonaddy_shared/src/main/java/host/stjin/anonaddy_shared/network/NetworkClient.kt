@@ -54,10 +54,16 @@ suspend fun Call.await(): Response = suspendCancellableCoroutine { continuation 
     }
     enqueue(object : Callback {
         override fun onResponse(call: Call, response: Response) {
-            continuation.resume(response)
+            if (continuation.isActive) {
+                continuation.resume(response)
+            } else {
+                response.close()
+            }
         }
         override fun onFailure(call: Call, e: IOException) {
-            continuation.resumeWithException(e)
+            if (continuation.isActive) {
+                continuation.resumeWithException(e)
+            }
         }
     })
 }
@@ -103,7 +109,6 @@ open class BaseNetworkClient(
     }
 
     suspend fun getClient(): OkHttpClient {
-        waitForInit()
         return okHttpClient ?: initMutex.withLock {
             okHttpClient ?: createOkHttpClient().also { okHttpClient = it }
         }
@@ -125,7 +130,7 @@ open class BaseNetworkClient(
                     KeyChain.getPrivateKey(context, alias)
                 }
                 if (chain != null && privateKey != null) {
-                    withContext(dispatchers.main) {
+                    withContext(dispatchers.io) {
                         setupCustomSocketFactory(builder, alias, chain, privateKey)
                     }
                 }
@@ -195,7 +200,7 @@ open class BaseNetworkClient(
                 null
             )
         } catch (e: Exception) {
-            Log.e("AFA", e.message.toString())
+            Log.e("BaseNetworkClient", e.message.toString())
         }
     }
 
@@ -208,7 +213,7 @@ open class BaseNetworkClient(
                 null
             )
         } catch (e: Exception) {
-            Log.e("AFA", e.message.toString())
+            Log.e("BaseNetworkClient", e.message.toString())
         }
     }
 
@@ -357,7 +362,7 @@ open class BaseNetworkClient(
             is NetworkResponse.Success -> {
                 val response = networkResponse.response
                 val bodyString = try {
-                    response.body.string()
+                    response.body?.string().orEmpty()
                 } catch (e: Exception) {
                     ""
                 }
@@ -407,7 +412,7 @@ open class BaseNetworkClient(
             is NetworkResponse.Success -> {
                 val response = networkResponse.response
                 val bodyString = try {
-                    response.body.string()
+                    response.body?.string().orEmpty()
                 } catch (e: Exception) {
                     ""
                 }
@@ -432,4 +437,55 @@ open class BaseNetworkClient(
         methodName: String,
         expectedCode: Int = 200
     ): NetworkResult<String> = handleStatusResponse(NetworkResponse.Success(response), methodName, expectedCode)
+
+    protected fun handleByteArrayResponse(
+        networkResponse: NetworkResponse,
+        methodName: String
+    ): NetworkResult<ByteArray> {
+        return when (networkResponse) {
+            is NetworkResponse.Failure -> {
+                val errorMessage = handleGenericError(0, "", methodName, networkResponse.exception)
+                NetworkResult.Error(errorMessage, 0, networkResponse.exception)
+            }
+            is NetworkResponse.Success -> {
+                val response = networkResponse.response
+                val code = response.code
+                when (code) {
+                    200 -> {
+                        val data = try {
+                            response.body?.bytes() ?: ByteArray(0)
+                        } catch (e: Exception) {
+                            ByteArray(0)
+                        }
+                        NetworkResult.Success(data, code)
+                    }
+                    401 -> {
+                        response.close()
+                        invalidApiKey()
+                        NetworkResult.Error("Unauthorized", code)
+                    }
+                    else -> {
+                        val bodyBytes = try {
+                            response.body?.bytes() ?: ByteArray(0)
+                        } catch (e: Exception) {
+                            ByteArray(0)
+                        }
+                        val errorMessage = ErrorHelper.getErrorMessage(bodyBytes)
+                        loggingHelper.addLog(
+                            LOGIMPORTANCE.CRITICAL.int,
+                            "HTTP $code",
+                            methodName,
+                            errorMessage
+                        )
+                        NetworkResult.Error(errorMessage, code)
+                    }
+                }
+            }
+        }
+    }
+
+    protected fun handleByteArrayResponse(
+        response: Response,
+        methodName: String
+    ): NetworkResult<ByteArray> = handleByteArrayResponse(NetworkResponse.Success(response), methodName)
 }
