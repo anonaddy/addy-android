@@ -267,7 +267,8 @@ class BackupHelper(private val context: Context) {
 
     private fun getStringSetFromString(value: String): MutableSet<String> {
         // Delete the { and } characters. Trim away all the spaces and split by comma
-        return value.replace("{", "").replace("}", "").replace(" ", "").trim().split(",").toMutableSet()
+        val cleaned = value.replace("{", "").replace("}", "").replace(" ", "").trim()
+        return if (cleaned.isEmpty()) mutableSetOf() else cleaned.split(",").filter { it.isNotEmpty() }.toMutableSet()
     }
 
     private fun getDateTime(): String {

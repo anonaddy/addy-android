@@ -321,7 +321,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker
 
             // If the aliasNetwork call was successful, perform the check
             if (aliasWatcherNetworkCallResult) {
-                AliasWatcher(appContext).watchAliasesForDifferences()
+                ServiceLocator.aliasWatcher.watchAliasesForDifferences()
             }
 
             if (BuildConfig.DEBUG) {
@@ -339,7 +339,12 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker
                 )
             }
 
-            return if (userResourceNetworkCallResult &&
+            // Update widgets if widget-related data was updated
+            if (userResourceNetworkCallResult || aliasNetworkCallResult) {
+                updateWidgets()
+            }
+
+            val allSuccessful = userResourceNetworkCallResult &&
                 aliasNetworkCallResult &&
                 aliasWatcherNetworkCallResult &&
                 failedDeliveriesNetworkCallResult &&
@@ -347,11 +352,11 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker
                 notifyCertificateExpiryResult &&
                 notifySubscriptionNetworkCallResult &&
                 accountNotificationsNetworkCallResult
-            ) {
-                updateWidgets()
+
+            return if (allSuccessful) {
                 Result.success()
             } else {
-                Result.failure()
+                Result.retry()
             }
         } else {
             backgroundWorkerHelper.cancelScheduledBackgroundWorker()
@@ -360,7 +365,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker
     }
 
     private suspend fun aliasWatcherTask(appContext: Context, aliasRepository: AliasRepository, settingsManager: SettingsManager): Boolean {
-        val aliasWatcher = AliasWatcher(appContext)
+        val aliasWatcher = ServiceLocator.aliasWatcher
         val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
 
         if (aliasesToWatch.isNotEmpty()) {
