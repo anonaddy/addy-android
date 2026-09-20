@@ -12,7 +12,7 @@ import host.stjin.anonaddy_shared.utils.GsonTools
 open class AddyIoApp : Application() {
 
     protected val serviceLocator: ServiceLocator by lazy {
-        ServiceLocator().apply { init(this@AddyIoApp) }
+        ServiceLocator.getInstance(this@AddyIoApp)
     }
 
     private val encryptedSettingsManager: SettingsManager by lazy { serviceLocator.encryptedSettingsManager }

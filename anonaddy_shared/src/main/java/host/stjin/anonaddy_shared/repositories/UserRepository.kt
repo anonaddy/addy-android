@@ -20,6 +20,7 @@ import host.stjin.anonaddy_shared.models.LoginMfaRequired
 import host.stjin.anonaddy_shared.models.SingleUserResource
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.network.BaseNetworkClient
+import host.stjin.anonaddy_shared.network.NetworkResponse
 import host.stjin.anonaddy_shared.network.NetworkResult
 import host.stjin.anonaddy_shared.utils.DefaultDispatcherProvider
 import host.stjin.anonaddy_shared.utils.DispatcherProvider
@@ -56,19 +57,27 @@ class UserRepository(
             put("newsletter", newsletter)
         }
 
-        val response = executePost(API_URL_REGISTER, json.toString())
-        val code = response.code
-        val bodyString = try { response.body?.string() ?: "" } catch (e: Exception) { "" }
-
-        return when (code) {
-            204 -> NetworkResult.Success("204", code)
-            422 -> {
-                val addyIoData = gson.fromJson(bodyString, Error::class.java)
-                NetworkResult.Error(addyIoData.message, code)
+        return when (val networkResponse = executePost(API_URL_REGISTER, json.toString())) {
+            is NetworkResponse.Failure -> {
+                val errorMessage = handleGenericError(0, "", "registration", networkResponse.exception)
+                NetworkResult.Error(errorMessage, 0, networkResponse.exception)
             }
-            else -> {
-                val errorMessage = handleGenericError(code, bodyString, "registration")
-                NetworkResult.Error(errorMessage, code)
+            is NetworkResponse.Success -> {
+                val response = networkResponse.response
+                val code = response.code
+                val bodyString = try { response.body.string() } catch (e: Exception) { "" }
+
+                when (code) {
+                    204 -> NetworkResult.Success("204", code)
+                    422 -> {
+                        val addyIoData = gson.fromJson(bodyString, Error::class.java)
+                        NetworkResult.Error(addyIoData.message, code)
+                    }
+                    else -> {
+                        val errorMessage = handleGenericError(code, bodyString, "registration")
+                        NetworkResult.Error(errorMessage, code)
+                    }
+                }
             }
         }
     }
@@ -76,22 +85,30 @@ class UserRepository(
     suspend fun verifyRegistration(query: String): NetworkResult<String> {
         waitForInit()
 
-        val response = executePost("${API_URL_LOGIN_VERIFY}?${query}")
-        val code = response.code
-        val bodyString = try { response.body?.string() ?: "" } catch (e: Exception) { "" }
+        return when (val networkResponse = executePost("${API_URL_LOGIN_VERIFY}?${query}")) {
+            is NetworkResponse.Failure -> {
+                val errorMessage = handleGenericError(0, "", "verifyRegistration", networkResponse.exception)
+                NetworkResult.Error(errorMessage, 0, networkResponse.exception)
+            }
+            is NetworkResponse.Success -> {
+                val response = networkResponse.response
+                val code = response.code
+                val bodyString = try { response.body.string() } catch (e: Exception) { "" }
 
-        return when (code) {
-            200 -> {
-                val addyIoData = gson.fromJson(bodyString, Login::class.java)
-                NetworkResult.Success(addyIoData.api_key, code)
-            }
-            422, 404, 403 -> {
-                val addyIoData = gson.fromJson(bodyString, Error::class.java)
-                NetworkResult.Error(addyIoData.message, code)
-            }
-            else -> {
-                val errorMessage = handleGenericError(code, bodyString, "verifyRegistration")
-                NetworkResult.Error(errorMessage, code)
+                when (code) {
+                    200 -> {
+                        val addyIoData = gson.fromJson(bodyString, Login::class.java)
+                        NetworkResult.Success(addyIoData.api_key, code)
+                    }
+                    422, 404, 403 -> {
+                        val addyIoData = gson.fromJson(bodyString, Error::class.java)
+                        NetworkResult.Error(addyIoData.message, code)
+                    }
+                    else -> {
+                        val errorMessage = handleGenericError(code, bodyString, "verifyRegistration")
+                        NetworkResult.Error(errorMessage, code)
+                    }
+                }
             }
         }
     }
@@ -124,22 +141,30 @@ class UserRepository(
             "Cookie" to cookieHeader
         )
 
-        val response = executePost(API_URL_LOGIN_MFA, json.toString(), customHeaders)
-        val code = response.code
-        val bodyString = try { response.body?.string() ?: "" } catch (e: Exception) { "" }
+        return when (val networkResponse = executePost(API_URL_LOGIN_MFA, json.toString(), customHeaders)) {
+            is NetworkResponse.Failure -> {
+                val errorMessage = handleGenericError(0, "", "loginMfa", networkResponse.exception)
+                NetworkResult.Error(errorMessage, 0, networkResponse.exception)
+            }
+            is NetworkResponse.Success -> {
+                val response = networkResponse.response
+                val code = response.code
+                val bodyString = try { response.body.string() } catch (e: Exception) { "" }
 
-        return when (code) {
-            200 -> {
-                val addyIoData = gson.fromJson(bodyString, Login::class.java)
-                NetworkResult.Success(addyIoData, code)
-            }
-            401 -> {
-                val addyIoData = gson.fromJson(bodyString, Error::class.java)
-                NetworkResult.Error(addyIoData.message, code)
-            }
-            else -> {
-                val errorMessage = handleGenericError(code, bodyString, "loginMfa")
-                NetworkResult.Error(errorMessage, code)
+                when (code) {
+                    200 -> {
+                        val addyIoData = gson.fromJson(bodyString, Login::class.java)
+                        NetworkResult.Success(addyIoData, code)
+                    }
+                    401 -> {
+                        val addyIoData = gson.fromJson(bodyString, Error::class.java)
+                        NetworkResult.Error(addyIoData.message, code)
+                    }
+                    else -> {
+                        val errorMessage = handleGenericError(code, bodyString, "loginMfa")
+                        NetworkResult.Error(errorMessage, code)
+                    }
+                }
             }
         }
     }
@@ -162,27 +187,35 @@ class UserRepository(
             put("expiration", if (apiExpiration == "never") null else apiExpiration)
         }
 
-        val response = executePost(API_URL_LOGIN, json.toString())
-        val code = response.code
-        val bodyString = try { response.body?.string() ?: "" } catch (e: Exception) { "" }
+        return when (val networkResponse = executePost(API_URL_LOGIN, json.toString())) {
+            is NetworkResponse.Failure -> {
+                val errorMessage = handleGenericError(0, "", "login", networkResponse.exception)
+                LoginResult.Error(errorMessage, 0)
+            }
+            is NetworkResponse.Success -> {
+                val response = networkResponse.response
+                val code = response.code
+                val bodyString = try { response.body.string() } catch (e: Exception) { "" }
 
-        return when (code) {
-            200 -> {
-                val addyIoData = gson.fromJson(bodyString, Login::class.java)
-                LoginResult.Success(addyIoData, code)
-            }
-            422 -> {
-                val addyIoData = gson.fromJson(bodyString, LoginMfaRequired::class.java)
-                addyIoData.cookie = response.headers("Set-Cookie")
-                LoginResult.MfaRequired(addyIoData, code)
-            }
-            401, 403 -> {
-                val addyIoData = gson.fromJson(bodyString, Error::class.java)
-                LoginResult.Error(addyIoData.message, code)
-            }
-            else -> {
-                val errorMessage = handleGenericError(code, bodyString, "login")
-                LoginResult.Error(errorMessage, code)
+                when (code) {
+                    200 -> {
+                        val addyIoData = gson.fromJson(bodyString, Login::class.java)
+                        LoginResult.Success(addyIoData, code)
+                    }
+                    422 -> {
+                        val addyIoData = gson.fromJson(bodyString, LoginMfaRequired::class.java)
+                        addyIoData.cookie = response.headers("Set-Cookie")
+                        LoginResult.MfaRequired(addyIoData, code)
+                    }
+                    401, 403 -> {
+                        val addyIoData = gson.fromJson(bodyString, Error::class.java)
+                        LoginResult.Error(addyIoData.message, code)
+                    }
+                    else -> {
+                        val errorMessage = handleGenericError(code, bodyString, "login")
+                        LoginResult.Error(errorMessage, code)
+                    }
+                }
             }
         }
     }

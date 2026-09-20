@@ -11,12 +11,31 @@ import host.stjin.anonaddy_shared.repositories.*
 open class ServiceLocator {
     private var appContext: Context? = null
 
-    fun init(context: Context) {
+    open fun init(context: Context) {
         appContext = context.applicationContext
+        synchronized(ServiceLocator::class.java) {
+            if (sharedAppInstance == null || sharedAppInstance === this) {
+                sharedAppInstance = this
+            }
+        }
     }
 
     protected fun getContext(): Context {
         return appContext ?: throw IllegalStateException("ServiceLocator must be initialized with a Context before use.")
+    }
+
+    companion object {
+        @Volatile
+        private var sharedAppInstance: ServiceLocator? = null
+
+        fun getInstance(context: Context? = null): ServiceLocator {
+            return sharedAppInstance ?: synchronized(this) {
+                sharedAppInstance ?: run {
+                    val ctx = context?.applicationContext ?: throw IllegalStateException("ServiceLocator must be initialized with a Context before use.")
+                    ServiceLocator().apply { init(ctx) }.also { sharedAppInstance = it }
+                }
+            }
+        }
     }
 
     // Settings Managers

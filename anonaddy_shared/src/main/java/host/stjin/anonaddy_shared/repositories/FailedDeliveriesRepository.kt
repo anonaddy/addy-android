@@ -9,6 +9,7 @@ import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.PaginatedResponse
 import host.stjin.anonaddy_shared.network.BaseNetworkClient
 import host.stjin.anonaddy_shared.models.ErrorHelper
+import host.stjin.anonaddy_shared.network.NetworkResponse
 import host.stjin.anonaddy_shared.network.NetworkResult
 import host.stjin.anonaddy_shared.utils.DefaultDispatcherProvider
 import host.stjin.anonaddy_shared.utils.DispatcherProvider
@@ -23,7 +24,7 @@ class FailedDeliveriesRepository(
 
     suspend fun getAllFailedDeliveries(
         page: Int? = 1,
-        size: Int? = 100,
+        size: Int? = 25,
         filter: String? = null
     ): NetworkResult<PaginatedResponse<FailedDeliveries>> {
         waitForInit()
@@ -40,27 +41,35 @@ class FailedDeliveriesRepository(
     suspend fun downloadSpecificFailedDelivery(id: String): NetworkResult<ByteArray> {
         waitForInit()
 
-        val response = executeGet("${API_URL_FAILED_DELIVERIES}/$id/download")
-        val code = response.code
-        return when (code) {
-            200 -> {
-                val data = response.body?.bytes() ?: ByteArray(0)
-                NetworkResult.Success(data, code)
+        return when (val networkResponse = executeGet("${API_URL_FAILED_DELIVERIES}/$id/download")) {
+            is NetworkResponse.Failure -> {
+                val errorMessage = handleGenericError(0, "", "downloadSpecificFailedDelivery", networkResponse.exception)
+                NetworkResult.Error(errorMessage, 0, networkResponse.exception)
             }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", code)
-            }
-            else -> {
-                val bodyBytes = try { response.body?.bytes() ?: ByteArray(0) } catch (e: Exception) { ByteArray(0) }
-                val errorMessage = ErrorHelper.getErrorMessage(bodyBytes)
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    "HTTP $code",
-                    "downloadSpecificFailedDelivery",
-                    errorMessage
-                )
-                NetworkResult.Error(errorMessage, code)
+            is NetworkResponse.Success -> {
+                val response = networkResponse.response
+                val code = response.code
+                when (code) {
+                    200 -> {
+                        val data = response.body.bytes()
+                        NetworkResult.Success(data, code)
+                    }
+                    401 -> {
+                        invalidApiKey()
+                        NetworkResult.Error("Unauthorized", code)
+                    }
+                    else -> {
+                        val bodyBytes = try { response.body.bytes() } catch (e: Exception) { ByteArray(0) }
+                        val errorMessage = ErrorHelper.getErrorMessage(bodyBytes)
+                        loggingHelper.addLog(
+                            LOGIMPORTANCE.CRITICAL.int,
+                            "HTTP $code",
+                            "downloadSpecificFailedDelivery",
+                            errorMessage
+                        )
+                        NetworkResult.Error(errorMessage, code)
+                    }
+                }
             }
         }
     }
@@ -88,7 +97,7 @@ class FailedDeliveriesRepository(
     suspend fun cacheFailedDeliveryCountForWidgetAndBackgroundService(previousId: String?): NetworkResult<Pair<Int, String?>> {
         waitForInit()
 
-        val settingsManager = ServiceLocator().apply { init(context) }.settingsManager
+        val settingsManager = ServiceLocator.getInstance(context).settingsManager
         val filterType = settingsManager.getSettingsString(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES_TYPE) ?: "all"
 
         return when (val deliveriesResult = getAllFailedDeliveries(1, 25, null)) {

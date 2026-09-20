@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter
 
 class LoggingHelper(private val context: Context, sharedPreference: LOGFILES = LOGFILES.DEFAULT) {
     private val prefs = context.getSharedPreferences(sharedPreference.filename, 0)
-    private val settingsManager = ServiceLocator().apply { init(context) }.settingsManager
+    private val settingsManager = ServiceLocator.getInstance(context).settingsManager
 
     companion object {
         private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")

@@ -11,6 +11,7 @@ import host.stjin.anonaddy_shared.models.AccountNotifications
 import host.stjin.anonaddy_shared.models.PaginatedResponse
 import host.stjin.anonaddy_shared.models.Version
 import host.stjin.anonaddy_shared.network.BaseNetworkClient
+import host.stjin.anonaddy_shared.network.NetworkResponse
 import host.stjin.anonaddy_shared.network.NetworkResult
 import host.stjin.anonaddy_shared.utils.DefaultDispatcherProvider
 import host.stjin.anonaddy_shared.utils.DispatcherProvider
@@ -25,25 +26,33 @@ class AppMaintenanceRepository(
     suspend fun getAddyIoInstanceVersion(): NetworkResult<Version> {
         waitForInit()
 
-        val response = executeGet(API_URL_APP_VERSION)
-        val code = response.code
-        val bodyString = try { response.body?.string() ?: "" } catch (e: Exception) { "" }
+        return when (val networkResponse = executeGet(API_URL_APP_VERSION)) {
+            is NetworkResponse.Failure -> {
+                val errorMessage = handleGenericError(0, "", "getAddyIoInstanceVersion", networkResponse.exception)
+                NetworkResult.Error(errorMessage, 0, networkResponse.exception)
+            }
+            is NetworkResponse.Success -> {
+                val response = networkResponse.response
+                val code = response.code
+                val bodyString = try { response.body.string() } catch (e: Exception) { "" }
 
-        return when (code) {
-            200 -> {
-                val addyIoData = gson.fromJson(bodyString, Version::class.java)
-                NetworkResult.Success(addyIoData, code)
-            }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", code)
-            }
-            404 -> {
-                NetworkResult.Success(Version(0, 0, 0, ""), code)
-            }
-            else -> {
-                val errorMessage = handleGenericError(code, bodyString, "getAddyIoInstanceVersion")
-                NetworkResult.Error(errorMessage, code)
+                when (code) {
+                    200 -> {
+                        val addyIoData = gson.fromJson(bodyString, Version::class.java)
+                        NetworkResult.Success(addyIoData, code)
+                    }
+                    401 -> {
+                        invalidApiKey()
+                        NetworkResult.Error("Unauthorized", code)
+                    }
+                    404 -> {
+                        NetworkResult.Success(Version(0, 0, 0, ""), code)
+                    }
+                    else -> {
+                        val errorMessage = handleGenericError(code, bodyString, "getAddyIoInstanceVersion")
+                        NetworkResult.Error(errorMessage, code)
+                    }
+                }
             }
         }
     }
@@ -51,23 +60,31 @@ class AppMaintenanceRepository(
     suspend fun getGithubTags(): NetworkResult<Feed?> {
         waitForInit()
 
-        val response = executeGet(GITHUB_TAGS_RSS_FEED)
-        val code = response.code
-
-        return when (code) {
-            200 -> {
-                try {
-                    val inputStream: InputStream? = response.body?.byteStream()
-                    val feed = if (inputStream != null) EarlParser.parse(inputStream, 0) else null
-                    NetworkResult.Success(feed, code)
-                } catch (e: Exception) {
-                    NetworkResult.Error(e.message, code, e)
-                }
+        return when (val networkResponse = executeGet(GITHUB_TAGS_RSS_FEED)) {
+            is NetworkResponse.Failure -> {
+                val errorMessage = handleGenericError(0, "", "getGithubTags", networkResponse.exception)
+                NetworkResult.Error(errorMessage, 0, networkResponse.exception)
             }
-            else -> {
-                val bodyString = try { response.body?.string() ?: "" } catch (e: Exception) { "" }
-                val errorMessage = handleGenericError(code, bodyString, "getGithubTags")
-                NetworkResult.Error(errorMessage, code)
+            is NetworkResponse.Success -> {
+                val response = networkResponse.response
+                val code = response.code
+
+                when (code) {
+                    200 -> {
+                        try {
+                            val inputStream: InputStream? = response.body.byteStream()
+                            val feed = if (inputStream != null) EarlParser.parse(inputStream, 0) else null
+                            NetworkResult.Success(feed, code)
+                        } catch (e: Exception) {
+                            NetworkResult.Error(e.message, code, e)
+                        }
+                    }
+                    else -> {
+                        val bodyString = try { response.body.string() } catch (e: Exception) { "" }
+                        val errorMessage = handleGenericError(code, bodyString, "getGithubTags")
+                        NetworkResult.Error(errorMessage, code)
+                    }
+                }
             }
         }
     }

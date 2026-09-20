@@ -33,19 +33,11 @@ import host.stjin.anonaddy.interfaces.Refreshable
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.accountnotifications.AccountNotificationsActivity
-import host.stjin.anonaddy.ui.aliases.AliasesFragment
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
 import host.stjin.anonaddy.ui.base.SharedScrollViewModel
-import host.stjin.anonaddy.ui.blocklist.BlocklistFragment
 import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
-import host.stjin.anonaddy.ui.domains.DomainsFragment
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
-import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesFragment
-import host.stjin.anonaddy.ui.home.HomeFragment
-import host.stjin.anonaddy.ui.recipients.RecipientsFragment
-import host.stjin.anonaddy.ui.rules.RulesFragment
 import host.stjin.anonaddy.ui.setup.AddApiBottomDialogFragment
-import host.stjin.anonaddy.ui.usernames.UsernamesFragment
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.WearOSHelper
@@ -379,28 +371,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
         val navView = binding.navRail ?: binding.navView ?: return
         viewPager = binding.activityMainViewpagerSw600dp ?: binding.activityMainViewpager ?: return
 
-        val fragmentList: ArrayList<Fragment> = if (resources.getBoolean(R.bool.isTablet)) {
-            arrayListOf(
-                HomeFragment.newInstance(),
-                AliasesFragment.newInstance(),
-                RecipientsFragment.newInstance(),
-                UsernamesFragment.newInstance(),
-                DomainsFragment.newInstance(),
-                RulesFragment.newInstance(),
-                BlocklistFragment.newInstance(),
-                FailedDeliveriesFragment.newInstance()
-            )
-        } else {
-            arrayListOf(
-                HomeFragment.newInstance(),
-                AliasesFragment.newInstance(),
-                RecipientsFragment.newInstance()
-            )
-        }
-
-
-
-        viewPager.adapter = MainViewpagerAdapter(this, fragmentList)
+        viewPager.adapter = MainViewpagerAdapter(this, resources.getBoolean(R.bool.isTablet))
         viewPager.offscreenPageLimit = 1
         // Disallow swiping through the pages
         viewPager.isUserInputEnabled = false

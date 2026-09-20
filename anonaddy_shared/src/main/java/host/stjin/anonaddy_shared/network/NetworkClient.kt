@@ -36,8 +36,17 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509KeyManager
 import javax.net.ssl.X509TrustManager
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+
+sealed class NetworkResponse {
+    data class Success(val response: Response) : NetworkResponse() {
+        val code: Int get() = response.code
+        val body: ResponseBody get() = response.body
+    }
+    data class Failure(val exception: Throwable) : NetworkResponse()
+}
 
 suspend fun Call.await(): Response = suspendCancellableCoroutine { continuation ->
     continuation.invokeOnCancellation {
@@ -57,7 +66,7 @@ open class BaseNetworkClient(
     protected val context: Context,
     val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) {
-    private val serviceLocator: ServiceLocator by lazy { ServiceLocator().apply { init(context) } }
+    private val serviceLocator: ServiceLocator by lazy { ServiceLocator.getInstance(context) }
     val loggingHelper = LoggingHelper(context)
     val gson = host.stjin.anonaddy_shared.utils.GsonTools.gson
     val encryptedSettingsManager = serviceLocator.encryptedSettingsManager
@@ -69,12 +78,20 @@ open class BaseNetworkClient(
     }
 
     init {
-        API_BASE_URL = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL) ?: API_BASE_URL
+        val savedBaseUrl = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL)
+        if (savedBaseUrl != null && savedBaseUrl != API_BASE_URL) {
+            API_BASE_URL = savedBaseUrl
+            host.stjin.anonaddy_shared.AddyIo.lazyMgr.reset()
+        }
     }
 
     suspend fun waitForInit() {
         if (BuildConfig.DEBUG) {
-            Log.d("AFA", "Waiting for init")
+            val trace = Thread.currentThread().stackTrace
+            val callerMethod = if (trace.size > 4) trace[4].methodName else "unknown"
+            val callerClass = if (trace.size > 4) trace[4].className else "unknown"
+            val currentMethod = if (trace.size > 3) trace[3].methodName else "unknown"
+            println("$currentMethod called from $callerClass;$callerMethod")
         }
         if (okHttpClient == null) {
             initMutex.withLock {
@@ -220,65 +237,93 @@ open class BaseNetworkClient(
         url: String,
         parameters: List<Pair<String, Any?>>? = null,
         headers: Array<Pair<String, Any>>? = null
-    ): Response {
-        val client = getClient()
-        val urlBuilder = url.toHttpUrl().newBuilder()
-        parameters?.forEach { (key, value) ->
-            if (value != null) {
-                urlBuilder.addQueryParameter(key, value.toString())
+    ): NetworkResponse {
+        return try {
+            val client = getClient()
+            val urlBuilder = url.toHttpUrl().newBuilder()
+            parameters?.forEach { (key, value) ->
+                if (value != null) {
+                    urlBuilder.addQueryParameter(key, value.toString())
+                }
             }
+            val requestBuilder = Request.Builder().url(urlBuilder.build()).get()
+            val headerList = headers ?: getHeaders()
+            headerList.forEach { (k, v) ->
+                requestBuilder.header(k, v.toString())
+            }
+            val response = client.newCall(requestBuilder.build()).await()
+            NetworkResponse.Success(response)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            NetworkResponse.Failure(e)
         }
-        val requestBuilder = Request.Builder().url(urlBuilder.build()).get()
-        val headerList = headers ?: getHeaders()
-        headerList.forEach { (k, v) ->
-            requestBuilder.header(k, v.toString())
-        }
-        return client.newCall(requestBuilder.build()).await()
     }
 
     suspend fun executePost(
         url: String,
         jsonBody: String? = null,
         headers: Array<Pair<String, Any>>? = null
-    ): Response {
-        val client = getClient()
-        val body = (jsonBody ?: "").toRequestBody("application/json; charset=utf-8".toMediaType())
-        val requestBuilder = Request.Builder().url(url).post(body)
-        val headerList = headers ?: getHeaders()
-        headerList.forEach { (k, v) ->
-            requestBuilder.header(k, v.toString())
+    ): NetworkResponse {
+        return try {
+            val client = getClient()
+            val body = (jsonBody ?: "").toRequestBody("application/json; charset=utf-8".toMediaType())
+            val requestBuilder = Request.Builder().url(url).post(body)
+            val headerList = headers ?: getHeaders()
+            headerList.forEach { (k, v) ->
+                requestBuilder.header(k, v.toString())
+            }
+            val response = client.newCall(requestBuilder.build()).await()
+            NetworkResponse.Success(response)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            NetworkResponse.Failure(e)
         }
-        return client.newCall(requestBuilder.build()).await()
     }
 
     suspend fun executePatch(
         url: String,
         jsonBody: String? = null,
         headers: Array<Pair<String, Any>>? = null
-    ): Response {
-        val client = getClient()
-        val body = (jsonBody ?: "").toRequestBody("application/json; charset=utf-8".toMediaType())
-        val requestBuilder = Request.Builder().url(url).patch(body)
-        val headerList = headers ?: getHeaders()
-        headerList.forEach { (k, v) ->
-            requestBuilder.header(k, v.toString())
+    ): NetworkResponse {
+        return try {
+            val client = getClient()
+            val body = (jsonBody ?: "").toRequestBody("application/json; charset=utf-8".toMediaType())
+            val requestBuilder = Request.Builder().url(url).patch(body)
+            val headerList = headers ?: getHeaders()
+            headerList.forEach { (k, v) ->
+                requestBuilder.header(k, v.toString())
+            }
+            val response = client.newCall(requestBuilder.build()).await()
+            NetworkResponse.Success(response)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            NetworkResponse.Failure(e)
         }
-        return client.newCall(requestBuilder.build()).await()
     }
 
     suspend fun executeDelete(
         url: String,
         jsonBody: String? = null,
         headers: Array<Pair<String, Any>>? = null
-    ): Response {
-        val client = getClient()
-        val body = jsonBody?.toRequestBody("application/json; charset=utf-8".toMediaType())
-        val requestBuilder = Request.Builder().url(url).delete(body)
-        val headerList = headers ?: getHeaders()
-        headerList.forEach { (k, v) ->
-            requestBuilder.header(k, v.toString())
+    ): NetworkResponse {
+        return try {
+            val client = getClient()
+            val body = jsonBody?.toRequestBody("application/json; charset=utf-8".toMediaType())
+            val requestBuilder = Request.Builder().url(url).delete(body)
+            val headerList = headers ?: getHeaders()
+            headerList.forEach { (k, v) ->
+                requestBuilder.header(k, v.toString())
+            }
+            val response = client.newCall(requestBuilder.build()).await()
+            NetworkResponse.Success(response)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            NetworkResponse.Failure(e)
         }
-        return client.newCall(requestBuilder.build()).await()
     }
 
     fun handleGenericError(
@@ -300,36 +345,84 @@ open class BaseNetworkClient(
     }
 
     protected fun <T> handleResponse(
-        response: Response,
+        networkResponse: NetworkResponse,
         methodName: String,
         parser: (String) -> T
     ): NetworkResult<T> {
-        val bodyString = try {
-            response.body?.string() ?: ""
-        } catch (e: Exception) {
-            ""
-        }
-        val code = response.code
-        return when (code) {
-            200, 201 -> {
-                try {
-                    NetworkResult.Success(parser(bodyString), code)
+        return when (networkResponse) {
+            is NetworkResponse.Failure -> {
+                val errorMessage = handleGenericError(0, "", methodName, networkResponse.exception)
+                NetworkResult.Error(errorMessage, 0, networkResponse.exception)
+            }
+            is NetworkResponse.Success -> {
+                val response = networkResponse.response
+                val bodyString = try {
+                    response.body.string()
                 } catch (e: Exception) {
-                    val errorMessage = handleGenericError(code, bodyString, methodName, e)
-                    NetworkResult.Error(errorMessage, code)
+                    ""
+                }
+                val code = response.code
+                when (code) {
+                    200, 201 -> {
+                        try {
+                            NetworkResult.Success(parser(bodyString), code)
+                        } catch (e: Exception) {
+                            val errorMessage = handleGenericError(code, bodyString, methodName, e)
+                            NetworkResult.Error(errorMessage, code, e)
+                        }
+                    }
+                    204 -> {
+                        @Suppress("UNCHECKED_CAST")
+                        NetworkResult.Success(Unit as T, code)
+                    }
+                    401 -> {
+                        invalidApiKey()
+                        NetworkResult.Error("Unauthorized", code)
+                    }
+                    else -> {
+                        val errorMessage = handleGenericError(code, bodyString, methodName, null)
+                        NetworkResult.Error(errorMessage, code)
+                    }
                 }
             }
-            204 -> {
-                @Suppress("UNCHECKED_CAST")
-                NetworkResult.Success(Unit as T, code)
+        }
+    }
+
+    protected fun <T> handleResponse(
+        response: Response,
+        methodName: String,
+        parser: (String) -> T
+    ): NetworkResult<T> = handleResponse(NetworkResponse.Success(response), methodName, parser)
+
+    protected fun handleStatusResponse(
+        networkResponse: NetworkResponse,
+        methodName: String,
+        expectedCode: Int = 200
+    ): NetworkResult<String> {
+        return when (networkResponse) {
+            is NetworkResponse.Failure -> {
+                val errorMessage = handleGenericError(0, "", methodName, networkResponse.exception)
+                NetworkResult.Error(errorMessage, 0, networkResponse.exception)
             }
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", code)
-            }
-            else -> {
-                val errorMessage = handleGenericError(code, bodyString, methodName, null)
-                NetworkResult.Error(errorMessage, code)
+            is NetworkResponse.Success -> {
+                val response = networkResponse.response
+                val bodyString = try {
+                    response.body.string()
+                } catch (e: Exception) {
+                    ""
+                }
+                val code = response.code
+                when (code) {
+                    expectedCode -> NetworkResult.Success(expectedCode.toString(), code)
+                    401 -> {
+                        invalidApiKey()
+                        NetworkResult.Error("Unauthorized", code)
+                    }
+                    else -> {
+                        val errorMessage = handleGenericError(code, bodyString, methodName, null)
+                        NetworkResult.Error(errorMessage, code)
+                    }
+                }
             }
         }
     }
@@ -338,23 +431,5 @@ open class BaseNetworkClient(
         response: Response,
         methodName: String,
         expectedCode: Int = 200
-    ): NetworkResult<String> {
-        val bodyString = try {
-            response.body?.string() ?: ""
-        } catch (e: Exception) {
-            ""
-        }
-        val code = response.code
-        return when (code) {
-            expectedCode -> NetworkResult.Success(expectedCode.toString(), code)
-            401 -> {
-                invalidApiKey()
-                NetworkResult.Error("Unauthorized", code)
-            }
-            else -> {
-                val errorMessage = handleGenericError(code, bodyString, methodName, null)
-                NetworkResult.Error(errorMessage, code)
-            }
-        }
-    }
+    ): NetworkResult<String> = handleStatusResponse(NetworkResponse.Success(response), methodName, expectedCode)
 }
