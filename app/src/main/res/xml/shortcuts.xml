@@ -1,4 +1,62 @@
-<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <capability
+        android:name="custom.actions.intent.CREATE_ALIAS"
+        app:queryPatterns="@array/create_alias_query_patterns">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="host.stjin.anonaddy"
+            android:targetClass="host.stjin.anonaddy.ui.intent.CreateAliasAssistantActivity">
+            <url-template android:value="addy://create-alias{?description,domain,format}" />
+            <parameter
+                android:name="alias_description"
+                android:key="description"
+                android:mimeType="https://schema.org/Text" />
+            <parameter
+                android:name="alias_domain"
+                android:key="domain"
+                android:mimeType="https://schema.org/Text" />
+            <parameter
+                android:name="alias_format"
+                android:key="format"
+                android:mimeType="https://schema.org/Text" />
+        </intent>
+    </capability>
+
+    <capability
+        android:name="custom.actions.intent.CREATE_CUSTOM_ALIAS"
+        app:queryPatterns="@array/create_custom_alias_query_patterns">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="host.stjin.anonaddy"
+            android:targetClass="host.stjin.anonaddy.ui.intent.CreateAliasAssistantActivity">
+            <url-template android:value="addy://create-alias{?local_part,domain,description}" />
+            <parameter
+                android:name="alias_local_part"
+                android:key="local_part"
+                android:mimeType="https://schema.org/Text" />
+            <parameter
+                android:name="alias_domain"
+                android:key="domain"
+                android:mimeType="https://schema.org/Text" />
+            <parameter
+                android:name="alias_description"
+                android:key="description"
+                android:mimeType="https://schema.org/Text" />
+        </intent>
+    </capability>
+
+    <capability android:name="actions.intent.OPEN_APP_FEATURE">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="host.stjin.anonaddy"
+            android:targetClass="host.stjin.anonaddy.widget.AliasWidget2BottomSheetAddActivity">
+            <parameter
+                android:name="feature"
+                android:key="feature" />
+        </intent>
+    </capability>
+
     <shortcut
         android:enabled="true"
         android:icon="@drawable/ic_add"
@@ -7,8 +65,12 @@
         android:shortcutShortLabel="@string/add_alias">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="host.stjin.anonaddy.widget.AliasWidget2BottomSheetAddActivity"
-            android:targetPackage="host.stjin.anonaddy" />
+            android:targetPackage="host.stjin.anonaddy"
+            android:targetClass="host.stjin.anonaddy.widget.AliasWidget2BottomSheetAddActivity" />
+        <capability-binding android:key="actions.intent.OPEN_APP_FEATURE">
+            <parameter-binding
+                android:key="feature"
+                android:value="@array/add_alias_feature_names" />
+        </capability-binding>
     </shortcut>
-    <!-- Specify more shortcuts here. -->
 </shortcuts>

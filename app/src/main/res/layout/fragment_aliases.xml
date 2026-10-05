@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/layout_padding"
+        android:paddingEnd="@dimen/layout_padding">
+
+        <com.google.android.material.search.SearchBar
+            android:id="@+id/alias_search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:hint="@string/search_for_aliases"
+            app:defaultMarginsEnabled="false" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/fragment_aliases_nsv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false">
+
+            <LinearLayout
+                android:id="@+id/alias_list_LL1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/fab_bottom_padding">
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:overScrollMode="never"
+                    android:scrollbars="none">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/alias_chipgroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:selectionRequired="true"
+                        app:singleLine="true"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_all"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:checked="true"
+                            android:text="@string/filter_all_aliases" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_pinned"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/filter_pinned_aliases" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_active"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/filter_active_aliases" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_inactive"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/filter_inactive_aliases" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_deleted"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/filter_deleted_aliases" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_watched"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/watched_aliases" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_custom"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/custom" />
+                    </com.google.android.material.chip.ChipGroup>
+                </HorizontalScrollView>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    style="@style/AddyIoTitleAction"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="0dp">
+
+                    <TextView
+                        android:id="@+id/alias_header"
+                        style="@style/titleTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:text="@string/aliases"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/alias_title_progress"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/alias_title_progress"
+                        style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/alias_count"
+                        app:layout_constraintStart_toEndOf="@id/alias_header"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/alias_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_count_capsule"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="2dp"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/barrier_alias"
+                        app:layout_constraintStart_toEndOf="@id/alias_title_progress"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="10"
+                        tools:visibility="visible" />
+
+                    <androidx.constraintlayout.widget.Barrier
+                        android:id="@+id/barrier_alias"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:barrierDirection="start"
+                        app:constraint_referenced_ids="alias_add_alias" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/alias_add_alias"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/add_alias"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <com.todkars.shimmer.ShimmerRecyclerView
+                    android:id="@+id/alias_all_aliases_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:shimmer_recycler_auto_start="true"
+                    app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer" />
+
+                <TextView
+                    android:id="@+id/alias_no_aliases"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/no_result_textview_padding"
+                    android:text="@string/no_aliases"
+                    android:textAlignment="center"
+                    android:textColor="@color/BlackWhite"
+                    android:visibility="gone" />
+
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/alias_add_alias_fab"
+        style="?attr/floatingActionButtonPrimaryStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/add_alias"
+        app:srcCompat="@drawable/ic_add" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/alias_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+    <com.google.android.material.search.SearchView
+        android:id="@+id/alias_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="@string/search_for_aliases"
+        app:elevation="8dp"
+        app:layout_anchor="@id/alias_search_bar">
+
+        <LinearLayout
+            android:id="@+id/alias_recent_searches_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/recent_searches"
+                    android:textColor="?android:textColorSecondary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/alias_clear_recent_searches"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="0dp"
+                    android:paddingVertical="4dp"
+                    android:text="@string/clear" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/alias_search_view_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </LinearLayout>
+
+    </com.google.android.material.search.SearchView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

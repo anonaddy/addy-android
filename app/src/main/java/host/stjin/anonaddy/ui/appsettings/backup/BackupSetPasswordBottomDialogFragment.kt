@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.ui.appsettings.backup
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -10,14 +9,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.BottomsheetSetBackupPasswordBinding
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class BackupSetPasswordBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddBackupPasswordBottomDialogListener
+    private var listener: AddBackupPasswordBottomDialogListener? = null
 
     private var _binding: BottomsheetSetBackupPasswordBinding? = null
 
@@ -32,14 +32,14 @@ class BackupSetPasswordBottomDialogFragment : BaseBottomSheetDialogFragment(), V
     ): View {
         _binding = BottomsheetSetBackupPasswordBinding.inflate(inflater, container, false)
         val root = binding.root
-        listener = activity as AddBackupPasswordBottomDialogListener
+        listener = (parentFragment as? AddBackupPasswordBottomDialogListener) ?: (activity as? AddBackupPasswordBottomDialogListener)
 
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
         binding.bsBackupPasswordSavePasswordButton.setOnClickListener(this)
         binding.bsBackupPasswordTiet.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
-                setBackupPassword(requireContext())
+                setBackupPassword()
             }
             false
         }
@@ -62,12 +62,12 @@ class BackupSetPasswordBottomDialogFragment : BaseBottomSheetDialogFragment(), V
     override fun onClick(p0: View?) {
         if (p0 != null) {
             if (p0.id == R.id.bs_backup_password_save_password_button) {
-                setBackupPassword(requireContext())
+                setBackupPassword()
             }
         }
     }
 
-    private fun setBackupPassword(context: Context) {
+    private fun setBackupPassword() {
 
         // Set error to null if username and alias is valid
         binding.bsBackupPasswordTil.error = null
@@ -75,8 +75,8 @@ class BackupSetPasswordBottomDialogFragment : BaseBottomSheetDialogFragment(), V
         // Animate the button to progress
         binding.bsBackupPasswordSavePasswordButton.startAnimation()
 
-        SettingsManager(true, context).putSettingsString(SettingsManager.PREFS.BACKUPS_PASSWORD, binding.bsBackupPasswordTiet.text.toString())
-        listener.onSaved()
+        ServiceLocator.encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BACKUPS_PASSWORD, binding.bsBackupPasswordTiet.text.toString())
+        listener?.onSaved()
     }
 
     // 1. Defines the listener interface with a method passing back data result.

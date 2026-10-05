@@ -52,7 +52,7 @@
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/use_certificate"
                 android:src="@drawable/ic_certificate"
-                android:tint="@color/BlackWhite"
+                app:tint="@color/BlackWhite"
                 android:tooltipText="@string/use_certificate" />
         </LinearLayout>
 

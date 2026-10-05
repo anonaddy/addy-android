@@ -10,20 +10,28 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetSetupEnterBackupPasswordBinding
 import host.stjin.anonaddy.service.BackupHelper
+import androidx.core.net.toUri
 
 
-class BackupPasswordBottomDialogFragment(private val fileToDecryptUri: Uri) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddBackupPasswordBottomDialogListener
+class BackupPasswordBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+    private var fileToDecryptUri: Uri? = null
+    private var listener: AddBackupPasswordBottomDialogListener? = null
 
     private var _binding: BottomsheetSetupEnterBackupPasswordBinding? = null
 
     // This property is only valid between onCreateView and
-// onDestroyView.
+    // onDestroyView.
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val uriString = arguments?.getString(ARG_FILE_URI)
+        fileToDecryptUri = uriString?.toUri()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +40,7 @@ class BackupPasswordBottomDialogFragment(private val fileToDecryptUri: Uri) : Ba
     ): View {
         _binding = BottomsheetSetupEnterBackupPasswordBinding.inflate(inflater, container, false)
         val root = binding.root
-        listener = activity as AddBackupPasswordBottomDialogListener
+        listener = (parentFragment as? AddBackupPasswordBottomDialogListener) ?: (activity as? AddBackupPasswordBottomDialogListener)
 
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
@@ -75,8 +83,9 @@ class BackupPasswordBottomDialogFragment(private val fileToDecryptUri: Uri) : Ba
         // Animate the button to progress
         binding.bsSetupEnterBackupPasswordSavePasswordButton.startAnimation()
 
-        if (BackupHelper(requireContext()).restoreBackup(fileToDecryptUri, binding.bsSetupEnterBackupPasswordTiet.text.toString())) {
-            listener.onBackupRestoreCompleted()
+        val uri = fileToDecryptUri
+        if (uri != null && BackupHelper(requireContext()).restoreBackup(uri, binding.bsSetupEnterBackupPasswordTiet.text.toString())) {
+            listener?.onBackupRestoreCompleted()
         } else {
             binding.bsSetupEnterBackupPasswordSavePasswordButton.revertAnimation()
             // Showlogs is false because the logviewer is not available here yet
@@ -90,8 +99,14 @@ class BackupPasswordBottomDialogFragment(private val fileToDecryptUri: Uri) : Ba
     }
 
     companion object {
+        private const val ARG_FILE_URI = "arg_file_uri"
+
         fun newInstance(fileToDecryptUri: Uri): BackupPasswordBottomDialogFragment {
-            return BackupPasswordBottomDialogFragment(fileToDecryptUri)
+            return BackupPasswordBottomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_FILE_URI, fileToDecryptUri.toString())
+                }
+            }
         }
     }
 }

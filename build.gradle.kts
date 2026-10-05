@@ -6,13 +6,14 @@ buildscript {
         set("wear_compose_version", "1.6.2")
         // https://developer.android.com/jetpack/androidx/releases/compose
         set("compose_version", "1.11.4")
-        set("compose_compiler_version", "1.5.15")
         // https://developer.android.com/jetpack/androidx/releases/activity
         set("compose_activity_version", "1.13.0")
         // https://developer.android.com/jetpack/androidx/releases/compose-material3
         set("compose_material_version", "1.4.0")
         // https://developer.android.com/jetpack/androidx/releases/wear-tiles
-        set("wear_tiles_version", "1.6.1")
+        set("wear_tiles_version", "1.6.2")
+        // https://developer.android.com/jetpack/androidx/releases/wear-protolayout
+        set("wear_protolayout_version", "1.4.2")
     }
     repositories {
         google()
@@ -22,8 +23,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:9.3.1")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.10")
+        classpath("com.android.tools.build:gradle:9.4.1")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.20")
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -40,5 +41,6 @@ allprojects {
 }
 
 tasks.register("clean", Delete::class) {
+    description = ""
     delete(layout.buildDirectory)
 }

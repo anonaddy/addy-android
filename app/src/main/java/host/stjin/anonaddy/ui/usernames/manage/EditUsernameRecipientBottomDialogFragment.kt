@@ -6,34 +6,41 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditRecipientUsernameBinding
-import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy_shared.models.Usernames
+import host.stjin.anonaddy_shared.network.NetworkResult
 import kotlinx.coroutines.launch
 
 
-class EditUsernameRecipientBottomDialogFragment(
-    private val usernameId: String?,
-    private val defaultRecipient: String?
-) :
+class EditUsernameRecipientBottomDialogFragment :
     BaseBottomSheetDialogFragment(),
     View.OnClickListener {
-    private lateinit var listener: AddEditUsernameRecipientBottomDialogListener
+    private val viewModel: ManageUsernameViewModel by activityViewModels()
+    private var usernameId: String? = null
+    private var defaultRecipient: String? = null
+
+    private var listener: AddEditUsernameRecipientBottomDialogListener? = null
 
     private var _binding: BottomsheetEditRecipientUsernameBinding? = null
 
     // This property is only valid between onCreateView and
-// onDestroyView.
+    // onDestroyView.
     private val binding get() = _binding!!
 
-    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(null, null)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            usernameId = it.getString(ARG_USERNAME_ID)
+            defaultRecipient = it.getString(ARG_DEFAULT_RECIPIENT)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,14 +52,14 @@ class EditUsernameRecipientBottomDialogFragment(
 
         // Check if usernameId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (usernameId != null) {
-            listener = activity as AddEditUsernameRecipientBottomDialogListener
+            listener = (parentFragment as? AddEditUsernameRecipientBottomDialogListener) ?: (activity as? AddEditUsernameRecipientBottomDialogListener)
 
             // Set button listeners and current description
             binding.bsEditrecipientSaveButton.setOnClickListener(this)
             binding.bsEditrecipientSaveButton.isEnabled = false
 
             viewLifecycleOwner.lifecycleScope.launch {
-                getAllRecipients(requireContext())
+                getAllRecipients()
             }
         } else {
             dismiss()
@@ -82,27 +89,24 @@ class EditUsernameRecipientBottomDialogFragment(
         }
     }
 
-    private suspend fun getAllRecipients(context: Context) {
-        val networkHelper = NetworkHelper(context)
+    private suspend fun getAllRecipients() {
+        val result = viewModel.getVerifiedRecipients()
+        binding.bsEditrecipientSaveButton.isEnabled = true
+        if (result is NetworkResult.Success) {
+            // Remove the default "Loading recipients" chip
+            binding.bsEditrecipientChipgroup.removeAllViewsInLayout()
+            binding.bsEditrecipientChipgroup.requestLayout()
+            binding.bsEditrecipientChipgroup.invalidate()
 
-        networkHelper.getRecipients({ result, _ ->
-            binding.bsEditrecipientSaveButton.isEnabled = true
-            if (result != null) {
-                // Remove the default "Loading recipients" chip
-                binding.bsEditrecipientChipgroup.removeAllViewsInLayout()
-                binding.bsEditrecipientChipgroup.requestLayout()
-                binding.bsEditrecipientChipgroup.invalidate()
+            for (recipient in result.data.data) {
+                val chip = layoutInflater.inflate(R.layout.chip_view, binding.bsEditrecipientChipgroup, false) as Chip
+                chip.text = recipient.email
+                chip.tag = recipient.id
+                chip.isChecked = defaultRecipient.equals(recipient.email)
 
-                for (recipient in result) {
-                    val chip = layoutInflater.inflate(R.layout.chip_view, binding.bsEditrecipientChipgroup, false) as Chip
-                    chip.text = recipient.email
-                    chip.tag = recipient.id
-                    chip.isChecked = defaultRecipient.equals(recipient.email)
-
-                    binding.bsEditrecipientChipgroup.addView(chip)
-                }
+                binding.bsEditrecipientChipgroup.addView(chip)
             }
-        }, true)
+        }
     }
 
     private fun editRecipient(context: Context) {
@@ -125,21 +129,19 @@ class EditUsernameRecipientBottomDialogFragment(
 
     private suspend fun editRecipientHttp(
         context: Context,
-        aliasId: String,
+        usernameId: String,
         recipient: String
     ) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.updateDefaultRecipientForSpecificUsername({ username, error ->
-            if (username != null) {
-                listener.recipientEdited(username)
-            } else {
-                // Revert the button to normal
-                binding.bsEditrecipientSaveButton.revertAnimation()
-
-                binding.bsEditrecipientTil.error =
-                    context.resources.getString(R.string.error_edit_recipient) + "\n" + error
+        when (val result = viewModel.updateDefaultRecipientUsername(usernameId, recipient)) {
+            is NetworkResult.Success -> {
+                listener?.recipientEdited(result.data)
             }
-        }, aliasId, recipient)
+            is NetworkResult.Error -> {
+                binding.bsEditrecipientSaveButton.revertAnimation()
+                binding.bsEditrecipientTil.error =
+                    context.resources.getString(R.string.error_edit_recipient) + "\n" + (result.errorOrNull() ?: "")
+            }
+        }
     }
 
     // 1. Defines the listener interface with a method passing back data result.
@@ -148,11 +150,19 @@ class EditUsernameRecipientBottomDialogFragment(
     }
 
     companion object {
+        private const val ARG_USERNAME_ID = "arg_username_id"
+        private const val ARG_DEFAULT_RECIPIENT = "arg_default_recipient"
+
         fun newInstance(
             id: String,
             recipient: String?
         ): EditUsernameRecipientBottomDialogFragment {
-            return EditUsernameRecipientBottomDialogFragment(id, recipient)
+            return EditUsernameRecipientBottomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_USERNAME_ID, id)
+                    putString(ARG_DEFAULT_RECIPIENT, recipient)
+                }
+            }
         }
     }
 }

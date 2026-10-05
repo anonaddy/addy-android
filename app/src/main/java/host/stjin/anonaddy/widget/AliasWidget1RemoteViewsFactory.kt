@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService.RemoteViewsFactory
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.COPY_ACTION
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.NAVIGATE
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.OPEN_ACTION
@@ -15,7 +16,7 @@ import host.stjin.anonaddy_shared.utils.CacheHelper
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
 
-class AliasWidget1RemoteViewsFactory(private val mContext: Context) : RemoteViewsFactory {
+class AliasWidget1RemoteViewsFactory(private val context: Context) : RemoteViewsFactory {
 
     private var aliasList: ArrayList<Aliases>? = null
 
@@ -35,24 +36,25 @@ class AliasWidget1RemoteViewsFactory(private val mContext: Context) : RemoteView
         // position will always range from 0 to getCount() - 1.
         // construct a remote views item based on our widget item xml file, and set the
         // text based on the position.
-        val rv = RemoteViews(mContext.packageName, R.layout.widget_1_aliases_listview_list_item)
+        val rv = RemoteViews(context.packageName, R.layout.widget_1_aliases_listview_list_item)
+        val currentAlias = aliasList?.getOrNull(position) ?: return rv
 
-        val encryptedSettingsManager = SettingsManager(true, mContext)
+        val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         if (encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)) {
             // If privacy mode, hide alias
-            rv.setTextViewText(R.id.widget_aliases_listview_list_title, mContext.resources.getString(R.string.alias_hidden))
+            rv.setTextViewText(R.id.widget_aliases_listview_list_title, context.resources.getString(R.string.alias_hidden))
         } else {
-            rv.setTextViewText(R.id.widget_aliases_listview_list_title, aliasList?.get(position)?.email)
+            rv.setTextViewText(R.id.widget_aliases_listview_list_title, currentAlias.email)
         }
 
 
-        val description: String = if (aliasList?.get(position)?.description.isNullOrEmpty()) {
-            mContext.resources.getString(
+        val description: String = if (currentAlias.description.isNullOrEmpty()) {
+            context.resources.getString(
                 R.string.created_at_s,
-                DateTimeUtils.convertStringToLocalTimeZoneString(aliasList?.get(position)?.created_at)
+                DateTimeUtils.convertStringToLocalTimeZoneString(currentAlias.created_at)
             )
         } else {
-            aliasList?.get(position)?.description.toString()
+            currentAlias.description.toString()
         }
         rv.setTextViewText(R.id.widget_aliases_listview_list_description, description)
 
@@ -61,15 +63,15 @@ class AliasWidget1RemoteViewsFactory(private val mContext: Context) : RemoteView
         // which is set on the collection view in StackWidgetProvider.
 
         val extras = Bundle()
-        extras.putString(NAVIGATE, aliasList!![position].email)
-        extras.putString(COPY_ACTION, aliasList!![position].email)
+        extras.putString(NAVIGATE, currentAlias.email)
+        extras.putString(COPY_ACTION, currentAlias.email)
         val copyIntent = Intent()
         copyIntent.putExtras(extras)
 
 
         val extras2 = Bundle()
-        extras2.putString(NAVIGATE, aliasList!![position].id)
-        extras2.putString(OPEN_ACTION, aliasList!![position].id)
+        extras2.putString(NAVIGATE, currentAlias.id)
+        extras2.putString(OPEN_ACTION, currentAlias.id)
         val openIntent = Intent()
         openIntent.putExtras(extras2)
 
@@ -103,13 +105,9 @@ class AliasWidget1RemoteViewsFactory(private val mContext: Context) : RemoteView
 
     override fun onDataSetChanged() {
         // Cache contains 15 most popular aliases
-        val aliasesList = CacheHelper.getBackgroundServiceCacheMostActiveAliasesData(mContext)
-
-        // List needs more than 2 else it becomes a singleton and will result in an ClassCastException
+        val aliasesList = CacheHelper.getBackgroundServiceCacheMostActiveAliasesData(context)
         if (aliasesList != null) {
-            if (aliasesList.size >= 2) {
-                aliasList = aliasesList
-            }
+            aliasList = aliasesList
         }
     }
 

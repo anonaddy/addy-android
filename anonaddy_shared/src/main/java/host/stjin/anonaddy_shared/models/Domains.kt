@@ -1,14 +1,12 @@
 package host.stjin.anonaddy_shared.models
 
-data class DomainsArray(
-    val `data`: List<Domains>
-)
+
 
 data class SingleDomain(
     val `data`: Domains
 )
 
-@Suppress("PropertyName", "PropertyName")
+@Suppress("PropertyName")
 data class Domains(
     val id: String,
     val user_id: String,
@@ -20,7 +18,7 @@ data class Domains(
     val default_recipient: Recipients?,
     var active: Boolean,
     var catch_all: Boolean,
-    var shared_with_family: Boolean = false,
+    var shared_with_family: Boolean? = false,
     var auto_create_regex: String?,
     val domain_verified_at: String?,
     val domain_mx_validated_at: String?,
@@ -34,4 +32,10 @@ data class DomainOptions(
     val defaultAliasDomain: String,
     val defaultAliasFormat: String,
     val sharedDomains: List<String>
+)
+
+data class CheckDomainSendingResponse(
+    val success: Boolean?,
+    val message: String?,
+    val `data`: Domains
 )

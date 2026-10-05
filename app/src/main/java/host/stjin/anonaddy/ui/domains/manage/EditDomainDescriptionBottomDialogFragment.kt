@@ -6,31 +6,37 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionDomainBinding
-import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy_shared.models.Domains
+import host.stjin.anonaddy_shared.network.NetworkResult
 import kotlinx.coroutines.launch
 
 
-class EditDomainDescriptionBottomDialogFragment(
-    private val domainId: String?,
-    private val description: String?
-) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddEditDomainDescriptionBottomDialogListener
+class EditDomainDescriptionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+    private val viewModel: ManageDomainViewModel by activityViewModels()
+    private var domainId: String? = null
+    private var description: String? = null
+
+    private var listener: AddEditDomainDescriptionBottomDialogListener? = null
 
     private var _binding: BottomsheetEditDescriptionDomainBinding? = null
 
-    // This property is only valid between onCreateView and
-// onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(null, null)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            domainId = it.getString(ARG_DOMAIN_ID)
+            description = it.getString(ARG_DESCRIPTION)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,9 +46,8 @@ class EditDomainDescriptionBottomDialogFragment(
         _binding = BottomsheetEditDescriptionDomainBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        // Check if domainId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (domainId != null) {
-            listener = activity as AddEditDomainDescriptionBottomDialogListener
+            listener = (parentFragment as? AddEditDomainDescriptionBottomDialogListener) ?: (activity as? AddEditDomainDescriptionBottomDialogListener)
 
             // Set button listeners and current description
             binding.bsEditdomainDomainSaveButton.setOnClickListener(this)
@@ -81,27 +86,22 @@ class EditDomainDescriptionBottomDialogFragment(
         // Animate the button to progress
         binding.bsEditdomainDomainSaveButton.startAnimation()
 
-
         viewLifecycleOwner.lifecycleScope.launch {
             editDescriptionHttp(context, description)
         }
     }
 
     private suspend fun editDescriptionHttp(context: Context, description: String) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.updateDescriptionSpecificDomain({ domain, error ->
-            if (domain != null) {
-                listener.descriptionEdited(domain)
-            } else {
-
-                // Revert the button to normal
-                binding.bsEditdomainDomainSaveButton.revertAnimation()
-
-                binding.bsEditdomainDomainDescTil.error =
-                    context.resources.getString(R.string.error_edit_description) + "\n" + error
+        when (val result = viewModel.updateDescriptionDomain(domainId!!, description)) {
+            is NetworkResult.Success -> {
+                listener?.descriptionEdited(result.data)
             }
-            // domainId is never null at this point, hence the !!
-        }, domainId!!, description)
+            is NetworkResult.Error -> {
+                binding.bsEditdomainDomainSaveButton.revertAnimation()
+                binding.bsEditdomainDomainDescTil.error =
+                    context.resources.getString(R.string.error_edit_description) + "\n" + (result.errorOrNull() ?: "")
+            }
+        }
     }
 
     // 1. Defines the listener interface with a method passing back data result.
@@ -110,8 +110,16 @@ class EditDomainDescriptionBottomDialogFragment(
     }
 
     companion object {
-        fun newInstance(id: String, description: String?): EditDomainDescriptionBottomDialogFragment {
-            return EditDomainDescriptionBottomDialogFragment(id, description)
+        private const val ARG_DOMAIN_ID = "arg_domain_id"
+        private const val ARG_DESCRIPTION = "arg_description"
+
+        fun newInstance(id: String?, description: String?): EditDomainDescriptionBottomDialogFragment {
+            return EditDomainDescriptionBottomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_DOMAIN_ID, id)
+                    putString(ARG_DESCRIPTION, description)
+                }
+            }
         }
     }
 }

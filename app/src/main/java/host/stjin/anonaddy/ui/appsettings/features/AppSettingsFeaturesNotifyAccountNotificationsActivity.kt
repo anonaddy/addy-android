@@ -2,14 +2,13 @@ package host.stjin.anonaddy.ui.appsettings.features
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.CompoundButton
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifyAccountNotificationsBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.accountnotifications.AccountNotificationsActivity
-import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.InsetUtil
+import host.stjin.anonaddy.utils.InsetUtils
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
@@ -23,12 +22,12 @@ class AppSettingsFeaturesNotifyAccountNotificationsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifyAccountNotificationsBinding.inflate(layoutInflater)
-        InsetUtil.applyBottomInset(binding.activityAppSettingsFeaturesNotifyAccountNotificationsNSVLL)
+        InsetUtils.applyBottomInset(binding.activityAppSettingsFeaturesNotifyAccountNotificationsNSVLL)
 
         val view = binding.root
         setContentView(view)
 
-        settingsManager = SettingsManager(false, this)
+        settingsManager = ServiceLocator.settingsManager
         setupToolbar(
             R.string.feature_notify_account_notifications,
             binding.activityAppSettingsFeaturesNotifyAccountNotificationsNSV,
@@ -50,19 +49,14 @@ class AppSettingsFeaturesNotifyAccountNotificationsActivity : BaseActivity() {
     }
 
     private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.getSwitchChecked())
-            }
-        })
-        binding.activityAppSettingsFeaturesNotifyAccountNotificationsActivity.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesNotifyAccountNotificationsActivity, AccountNotificationsActivity::class.java)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.getSwitchChecked())
+        }
+        binding.activityAppSettingsFeaturesNotifyAccountNotificationsActivity.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsFeaturesNotifyAccountNotificationsActivity, AccountNotificationsActivity::class.java)
+            startActivity(intent)
+        }
 
 
     }
@@ -74,16 +68,13 @@ class AppSettingsFeaturesNotifyAccountNotificationsActivity : BaseActivity() {
     }
 
     private fun setOnSwitchListeners() {
-        binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed || forceSwitch) {
-                    settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS, checked)
+        binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed || forceSwitch) {
+                settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS, checked)
 
-                    // Since account notifications should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
-                    BackgroundWorkerHelper(this@AppSettingsFeaturesNotifyAccountNotificationsActivity).scheduleBackgroundWorker()
-                }
+                // Since account notifications should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(this@AppSettingsFeaturesNotifyAccountNotificationsActivity).scheduleBackgroundWorker()
             }
-        })
+        }
     }
 }

@@ -3,78 +3,77 @@ package host.stjin.anonaddy.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
-import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.FailedDeliveriesRecyclerviewListItemBinding
 import host.stjin.anonaddy_shared.models.FailedDeliveries
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
-class FailedDeliveryAdapter(
-    private val listWithFailedDeliveries: ArrayList<FailedDeliveries>
-) :
-    RecyclerView.Adapter<FailedDeliveryAdapter.ViewHolder>() {
+class FailedDeliveryDiffCallback : DiffUtil.ItemCallback<FailedDeliveries>() {
+    override fun areItemsTheSame(oldItem: FailedDeliveries, newItem: FailedDeliveries): Boolean {
+        return oldItem.id == newItem.id
+    }
 
-    lateinit var onFailedDeliveryClicker: ClickListener
+    override fun areContentsTheSame(oldItem: FailedDeliveries, newItem: FailedDeliveries): Boolean {
+        return oldItem == newItem
+    }
+}
+
+class FailedDeliveryAdapter(
+    listWithFailedDeliveries: List<FailedDeliveries> = emptyList(),
+    private var onFailedDeliveryClicker: ClickListener? = null
+) : ListAdapter<FailedDeliveries, FailedDeliveryAdapter.ViewHolder>(FailedDeliveryDiffCallback()) {
+
+    init {
+        if (listWithFailedDeliveries.isNotEmpty()) {
+            submitList(listWithFailedDeliveries)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.failed_deliveries_recyclerview_list_item, parent, false)
+        val binding = FailedDeliveriesRecyclerviewListItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.mAlias.text = listWithFailedDeliveries[position].alias_email
-        holder.mCreated.text = DateTimeUtils.convertStringToLocalTimeZoneString(listWithFailedDeliveries[position].created_at)
-        holder.mCode.text = listWithFailedDeliveries[position].code
-        holder.mType.text = listWithFailedDeliveries[position].email_type_text
-
+        val item = getItem(position)
+        holder.binding.failedDeliveriesRecyclerviewListAlias.text = item.alias_email
+        holder.binding.failedDeliveriesRecyclerviewListCreated.text = DateTimeUtils.convertStringToLocalTimeZoneString(item.created_at)
+        holder.binding.failedDeliveriesRecyclerviewListCode.text = item.code
+        holder.binding.failedDeliveriesRecyclerviewListType.text = item.email_type_text
     }
 
-    override fun getItemCount(): Int = listWithFailedDeliveries.size
-
-
-    fun setClickListener(aClickListener: ClickListener) {
-        onFailedDeliveryClicker = aClickListener
+    fun setClickListener(listener: ClickListener) {
+        onFailedDeliveryClicker = listener
     }
 
-    fun getList(): ArrayList<FailedDeliveries> {
-        return listWithFailedDeliveries
-    }
 
 
     interface ClickListener {
-        fun onClickDetails(pos: Int, aView: View)
+        fun onClickDetails(pos: Int, view: View)
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
+    inner class ViewHolder(val binding: FailedDeliveriesRecyclerviewListItemBinding) : RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
 
-        private var mOptionsButton: MaterialButton =
-            view.findViewById(R.id.failed_deliveries_recyclerview_list_details_button)
-        var mAlias: TextView = view.findViewById(R.id.failed_deliveries_recyclerview_list_alias)
-        var mCode: TextView =
-            view.findViewById(R.id.failed_deliveries_recyclerview_list_code)
-        var mType: TextView =
-            view.findViewById(R.id.failed_deliveries_recyclerview_list_type)
-        var mCreated: TextView =
-            view.findViewById(R.id.failed_deliveries_recyclerview_list_created)
-
         init {
-            mOptionsButton.setOnClickListener(this)
+            binding.failedDeliveriesRecyclerviewListDetailsButton.setOnClickListener(this)
         }
 
-        override fun onClick(p0: View) {
-            when (p0.id) {
-                R.id.failed_deliveries_recyclerview_list_details_button -> {
-                    onFailedDeliveryClicker.onClickDetails(adapterPosition, p0)
-                }
+        override fun onClick(v: View) {
+            val pos = bindingAdapterPosition
+            if (pos == RecyclerView.NO_POSITION) return
 
+            when (v.id) {
+                binding.failedDeliveriesRecyclerviewListDetailsButton.id -> {
+                    onFailedDeliveryClicker?.onClickDetails(pos, v)
+                }
             }
         }
     }
-
-
 }
-

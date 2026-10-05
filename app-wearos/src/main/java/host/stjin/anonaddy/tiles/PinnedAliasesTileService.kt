@@ -2,41 +2,43 @@ package host.stjin.anonaddy.tiles
 
 
 import androidx.core.content.ContextCompat
-import androidx.wear.tiles.ActionBuilders
-import androidx.wear.tiles.ColorBuilders.argb
-import androidx.wear.tiles.DeviceParametersBuilders.DeviceParameters
-import androidx.wear.tiles.DimensionBuilders.dp
-import androidx.wear.tiles.LayoutElementBuilders.Box
-import androidx.wear.tiles.LayoutElementBuilders.Column
-import androidx.wear.tiles.LayoutElementBuilders.FontStyles
-import androidx.wear.tiles.LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER
-import androidx.wear.tiles.LayoutElementBuilders.Image
-import androidx.wear.tiles.LayoutElementBuilders.Layout
-import androidx.wear.tiles.LayoutElementBuilders.LayoutElement
-import androidx.wear.tiles.LayoutElementBuilders.Row
-import androidx.wear.tiles.LayoutElementBuilders.Spacer
-import androidx.wear.tiles.LayoutElementBuilders.Text
-import androidx.wear.tiles.ModifiersBuilders.Background
-import androidx.wear.tiles.ModifiersBuilders.Clickable
-import androidx.wear.tiles.ModifiersBuilders.Corner
-import androidx.wear.tiles.ModifiersBuilders.Modifiers
-import androidx.wear.tiles.ModifiersBuilders.Padding
-import androidx.wear.tiles.ModifiersBuilders.Semantics
+import androidx.wear.protolayout.ActionBuilders
+import androidx.wear.protolayout.ColorBuilders.argb
+import androidx.wear.protolayout.DeviceParametersBuilders.DeviceParameters
+import androidx.wear.protolayout.DimensionBuilders.dp
+import androidx.wear.protolayout.LayoutElementBuilders.Box
+import androidx.wear.protolayout.LayoutElementBuilders.Column
+import androidx.wear.protolayout.LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER
+import androidx.wear.protolayout.LayoutElementBuilders.Image
+import androidx.wear.protolayout.LayoutElementBuilders.Layout
+import androidx.wear.protolayout.LayoutElementBuilders.LayoutElement
+import androidx.wear.protolayout.LayoutElementBuilders.Row
+import androidx.wear.protolayout.LayoutElementBuilders.Spacer
+import androidx.wear.protolayout.ModifiersBuilders.Background
+import androidx.wear.protolayout.ModifiersBuilders.Clickable
+import androidx.wear.protolayout.ModifiersBuilders.Corner
+import androidx.wear.protolayout.ModifiersBuilders.Modifiers
+import androidx.wear.protolayout.ModifiersBuilders.Padding
+import androidx.wear.protolayout.ModifiersBuilders.Semantics
+import androidx.wear.protolayout.ResourceBuilders
+import androidx.wear.protolayout.ResourceBuilders.Resources
+import androidx.wear.protolayout.TimelineBuilders.Timeline
+import androidx.wear.protolayout.TimelineBuilders.TimelineEntry
+import androidx.wear.protolayout.TypeBuilders
+import androidx.wear.protolayout.material.Text
+import androidx.wear.protolayout.material.Typography
 import androidx.wear.tiles.RequestBuilders.ResourcesRequest
 import androidx.wear.tiles.RequestBuilders.TileRequest
-import androidx.wear.tiles.ResourceBuilders
-import androidx.wear.tiles.ResourceBuilders.Resources
 import androidx.wear.tiles.TileBuilders.Tile
 import androidx.wear.tiles.TileService
-import androidx.wear.tiles.TimelineBuilders.Timeline
-import androidx.wear.tiles.TimelineBuilders.TimelineEntry
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.ui.alias.AliasActivity
-import host.stjin.anonaddy.ui.alias.CreateAliasActivity
-import host.stjin.anonaddy.ui.alias.ManageAliasActivity
+import host.stjin.anonaddy.ServiceLocator
+import host.stjin.anonaddy.ui.aliases.AliasesActivity
+import host.stjin.anonaddy.ui.aliases.CreateAliasActivity
+import host.stjin.anonaddy.ui.aliases.ManageAliasActivity
 import host.stjin.anonaddy.utils.ColorUtils
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
@@ -82,23 +84,25 @@ class PinnedAliasesTileService : TileService() {
 
         val aliases = CacheHelper.getBackgroundServiceCachePinnedAliasesData(this@PinnedAliasesTileService)
         val encryptedSettingsManager = try {
-            SettingsManager(true, this@PinnedAliasesTileService)
+            ServiceLocator.encryptedSettingsManager
         } catch (e: Exception) {
             null
         }
 
+        val deviceParams = requestParams.deviceConfiguration
+
         Tile.Builder()
             .setResourcesVersion(RESOURCES_VERSION)
             // Creates a timeline to hold one or more tile entries for a specific time periods.
-            .setTimeline(
+            .setTileTimeline(
                 Timeline.Builder()
                     .addTimelineEntry(
                         TimelineEntry.Builder()
                             .setLayout(
                                 if (encryptedSettingsManager?.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
-                                    Layout.Builder().setRoot(setupLayout(requestParams.deviceParameters!!)).build()
+                                    Layout.Builder().setRoot(setupLayout(deviceParams)).build()
                                 } else {
-                                    Layout.Builder().setRoot(layout(aliases, requestParams.deviceParameters!!)).build()
+                                    Layout.Builder().setRoot(layout(aliases, deviceParams)).build()
                                 }
                             )
                             .build()
@@ -109,11 +113,7 @@ class PinnedAliasesTileService : TileService() {
     }
 
 
-    /**
-     * https://developer.android.com/training/wearables/tiles#resources
-     */
-    @Deprecated("Deprecated in Java")
-    override fun onResourcesRequest(requestParams: ResourcesRequest): ListenableFuture<Resources> =
+    override fun onTileResourcesRequest(requestParams: ResourcesRequest): ListenableFuture<Resources> =
         Futures.immediateFuture(
             Resources.Builder()
                 .setVersion(RESOURCES_VERSION)
@@ -159,29 +159,19 @@ class PinnedAliasesTileService : TileService() {
         deviceParameters: DeviceParameters
     ): LayoutElement = Column.Builder()
         .addContent(
-            Text.Builder()
-                .setText(resources.getString(R.string.tile_pinned_aliases_title))
-                .setFontStyle(
-                    FontStyles
-                        .title3(deviceParameters)
-                        .setColor(
-                            argb(ContextCompat.getColor(baseContext, R.color.md_theme_primary))
-                        )
-                        .build()
+            Text.Builder(baseContext, resources.getString(R.string.tile_pinned_aliases_title))
+                .setTypography(Typography.TYPOGRAPHY_TITLE3)
+                .setColor(
+                    argb(ContextCompat.getColor(baseContext, R.color.md_theme_primary))
                 )
                 .build()
         )
         .addContent(Spacer.Builder().setHeight(SPACING_TITLE_SUBTITLE).build())
         .addContent(
-            Text.Builder()
-                .setText(resources.getString(R.string.tile_pinned_aliases_subtitle))
-                .setFontStyle(
-                    FontStyles
-                        .caption1(deviceParameters)
-                        .setColor(
-                            argb(ContextCompat.getColor(baseContext, R.color.md_grey_500))
-                        )
-                        .build()
+            Text.Builder(baseContext, resources.getString(R.string.tile_pinned_aliases_subtitle))
+                .setTypography(Typography.TYPOGRAPHY_CAPTION1)
+                .setColor(
+                    argb(ContextCompat.getColor(baseContext, R.color.md_grey_500))
                 )
                 .build()
         )
@@ -266,15 +256,10 @@ class PinnedAliasesTileService : TileService() {
         deviceParameters: DeviceParameters
     ): LayoutElement = Column.Builder()
         .addContent(
-            Text.Builder()
-                .setText(resources.getString(R.string.tile_pinned_aliases_title))
-                .setFontStyle(
-                    FontStyles
-                        .title3(deviceParameters)
-                        .setColor(
-                            argb(ContextCompat.getColor(baseContext, R.color.md_theme_primary))
-                        )
-                        .build()
+            Text.Builder(baseContext, resources.getString(R.string.tile_pinned_aliases_title))
+                .setTypography(Typography.TYPOGRAPHY_TITLE3)
+                .setColor(
+                    argb(ContextCompat.getColor(baseContext, R.color.md_theme_primary))
                 )
                 .build()
         )
@@ -284,16 +269,11 @@ class PinnedAliasesTileService : TileService() {
                 Modifiers.Builder()
                     .setPadding(Padding.Builder().setStart(dp(16f)).setEnd(dp(16f)).build()).build()
             ).addContent(
-                Text.Builder()
-                    .setText(resources.getString(R.string.tile_pinned_aliases_subtitle_not_logged_in))
+                Text.Builder(baseContext, resources.getString(R.string.tile_pinned_aliases_subtitle_not_logged_in))
                     .setMaxLines(3)
-                    .setFontStyle(
-                        FontStyles
-                            .body1(deviceParameters)
-                            .setColor(
-                                argb(ContextCompat.getColor(baseContext, R.color.md_grey_500))
-                            )
-                            .build()
+                    .setTypography(Typography.TYPOGRAPHY_BODY1)
+                    .setColor(
+                        argb(ContextCompat.getColor(baseContext, R.color.md_grey_500))
                     )
                     .build()
             ).build()
@@ -343,7 +323,7 @@ class PinnedAliasesTileService : TileService() {
                             ActionBuilders.LaunchAction.Builder()
                                 .setAndroidActivity(
                                     ActionBuilders.AndroidActivity.Builder()
-                                        .setClassName(AliasActivity::class.java.name)
+                                        .setClassName(AliasesActivity::class.java.name)
                                         .setPackageName(BuildConfig.APPLICATION_ID)
                                         .build()
                                 ).build()
@@ -355,7 +335,7 @@ class PinnedAliasesTileService : TileService() {
             Image.Builder()
                 .setWidth(ICON_SIZE)
                 .setHeight(ICON_SIZE)
-                .setResourceId(ID_IC_PINNED)
+                .setResourceId(TypeBuilders.StringProp.Builder(ID_IC_PINNED).build())
                 .build()
         )
         .build()
@@ -402,15 +382,10 @@ class PinnedAliasesTileService : TileService() {
                     .build()
             )
         addContent(
-            Text.Builder()
-                .setText(alias.local_part.take(2).uppercase())
-                .setFontStyle(
-                    FontStyles
-                        .button(deviceParameters)
-                        .setColor(
-                            argb(ColorUtils.getMostPopularColor(this@PinnedAliasesTileService, alias))
-                        )
-                        .build()
+            Text.Builder(baseContext, alias.local_part.take(2).uppercase())
+                .setTypography(Typography.TYPOGRAPHY_BUTTON)
+                .setColor(
+                    argb(ColorUtils.getMostPopularColor(this@PinnedAliasesTileService, alias))
                 )
                 .build()
         )
@@ -445,7 +420,7 @@ class PinnedAliasesTileService : TileService() {
                             ActionBuilders.LaunchAction.Builder()
                                 .setAndroidActivity(
                                     ActionBuilders.AndroidActivity.Builder()
-                                        .setClassName(AliasActivity::class.java.name)
+                                        .setClassName(AliasesActivity::class.java.name)
                                         .setPackageName(BuildConfig.APPLICATION_ID)
                                         .build()
                                 ).build()
@@ -457,7 +432,7 @@ class PinnedAliasesTileService : TileService() {
             Image.Builder()
                 .setWidth(ICON_SIZE)
                 .setHeight(ICON_SIZE)
-                .setResourceId(ID_IC_EMAIL_AT)
+                .setResourceId(TypeBuilders.StringProp.Builder(ID_IC_EMAIL_AT).build())
                 .build()
         )
         .build()
@@ -500,7 +475,7 @@ class PinnedAliasesTileService : TileService() {
             Image.Builder()
                 .setWidth(ICON_SIZE)
                 .setHeight(ICON_SIZE)
-                .setResourceId(ID_IC_ADD)
+                .setResourceId(TypeBuilders.StringProp.Builder(ID_IC_ADD).build())
                 .build()
         )
         .build()

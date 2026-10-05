@@ -1,14 +1,12 @@
 package host.stjin.anonaddy.ui.appsettings.features
 
 import android.os.Bundle
-import android.widget.CompoundButton
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifyDomainErrorBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
-import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.InsetUtil
-import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy.utils.InsetUtils
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
@@ -17,20 +15,17 @@ class AppSettingsFeaturesNotifyDomainErrorActivity : BaseActivity() {
 
     private var forceSwitch = false
 
-    private lateinit var networkHelper: NetworkHelper
-
     private lateinit var binding: ActivityAppSettingsFeaturesNotifyDomainErrorBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifyDomainErrorBinding.inflate(layoutInflater)
-        InsetUtil.applyBottomInset(binding.activityAppSettingsFeaturesNotifyDomainErrorNSVLL)
+        InsetUtils.applyBottomInset(binding.activityAppSettingsFeaturesNotifyDomainErrorNSVLL)
 
         val view = binding.root
         setContentView(view)
 
-        settingsManager = SettingsManager(false, this)
-        networkHelper = NetworkHelper(this)
+        settingsManager = ServiceLocator.settingsManager
         setupToolbar(
             R.string.feature_domain_error_notification,
             binding.activityAppSettingsFeaturesNotifyDomainErrorNSV,
@@ -50,12 +45,10 @@ class AppSettingsFeaturesNotifyDomainErrorActivity : BaseActivity() {
     }
 
     private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesNotifyDomainErrorSection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesNotifyDomainErrorSection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyDomainErrorSection.getSwitchChecked())
-            }
-        })
+        binding.activityAppSettingsFeaturesNotifyDomainErrorSection.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.activityAppSettingsFeaturesNotifyDomainErrorSection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyDomainErrorSection.getSwitchChecked())
+        }
     }
 
     private fun loadSettings() {
@@ -65,16 +58,13 @@ class AppSettingsFeaturesNotifyDomainErrorActivity : BaseActivity() {
     }
 
     private fun setOnSwitchListeners() {
-        binding.activityAppSettingsFeaturesNotifyDomainErrorSection.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed || forceSwitch) {
-                    settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_DOMAIN_ERROR, checked)
+        binding.activityAppSettingsFeaturesNotifyDomainErrorSection.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed || forceSwitch) {
+                settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_DOMAIN_ERROR, checked)
 
-                    // Since API token expiry should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
-                    BackgroundWorkerHelper(this@AppSettingsFeaturesNotifyDomainErrorActivity).scheduleBackgroundWorker()
-                }
+                // Since API token expiry should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(this@AppSettingsFeaturesNotifyDomainErrorActivity).scheduleBackgroundWorker()
             }
-        })
+        }
     }
 }

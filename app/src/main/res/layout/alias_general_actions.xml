@@ -48,7 +48,7 @@
         android:id="@+id/activity_manage_alias_desc_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:sectionDescription="@tools:sample/lorem/random"
+        app:sectionDescription="@string/none"
         app:sectionEndIcon="@drawable/ic_edit"
         app:sectionStartIcon="@drawable/ic_align_justified"
         app:sectionTitle="@string/description" />
@@ -66,7 +66,7 @@
         android:id="@+id/activity_manage_alias_recipients_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:sectionDescription="@tools:sample/full_names"
+        app:sectionDescription="@string/loading_recipients"
         app:sectionEndIcon="@drawable/ic_edit"
         app:sectionStartIcon="@drawable/ic_inbox"
         app:sectionTitle="@string/recipients" />
@@ -75,7 +75,7 @@
         android:id="@+id/activity_manage_alias_from_name_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:sectionDescription="@tools:sample/full_names"
+        app:sectionDescription="@string/none"
         app:sectionEndIcon="@drawable/ic_edit"
         app:sectionStartIcon="@drawable/ic_id"
         app:sectionTitle="@string/from_name" />
@@ -84,7 +84,7 @@
         android:id="@+id/activity_manage_alias_last_forwarded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:sectionDescription="@tools:sample/date/ddmmyy"
+        app:sectionDescription="@string/none"
         app:sectionRippleEffect="false"
         app:sectionStartIcon="@drawable/ic_inbox"
         app:sectionTitle="@string/last_forwarded" />
@@ -93,7 +93,7 @@
         android:id="@+id/activity_manage_alias_last_replied"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:sectionDescription="@tools:sample/date/ddmmyy"
+        app:sectionDescription="@string/none"
         app:sectionRippleEffect="false"
         app:sectionStartIcon="@drawable/ic_arrow_back_up"
         app:sectionTitle="@string/last_replied" />
@@ -102,7 +102,7 @@
         android:id="@+id/activity_manage_alias_last_sent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:sectionDescription="@tools:sample/date/ddmmyy"
+        app:sectionDescription="@string/none"
         app:sectionRippleEffect="false"
         app:sectionStartIcon="@drawable/ic_mail_forward"
         app:sectionTitle="@string/last_sent" />
@@ -111,7 +111,7 @@
         android:id="@+id/activity_manage_alias_last_blocked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:sectionDescription="@tools:sample/date/ddmmyy"
+        app:sectionDescription="@string/none"
         app:sectionRippleEffect="false"
         app:sectionStartIcon="@drawable/ic_forbid"
         app:sectionTitle="@string/last_blocked" />
@@ -120,7 +120,7 @@
         android:id="@+id/activity_manage_alias_created_at"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:sectionDescription="@tools:sample/date/ddmmyy"
+        app:sectionDescription="@string/none"
         app:sectionRippleEffect="false"
         app:sectionStartIcon="@drawable/ic_clock"
         app:sectionTitle="@string/created_at" />
@@ -129,7 +129,7 @@
         android:id="@+id/activity_manage_alias_updated_at"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:sectionDescription="@tools:sample/date/ddmmyy"
+        app:sectionDescription="@string/none"
         app:sectionRippleEffect="false"
         app:sectionStartIcon="@drawable/ic_clock_history"
         app:sectionTitle="@string/updated_at" />

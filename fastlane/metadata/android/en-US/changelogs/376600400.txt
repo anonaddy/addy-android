@@ -1,0 +1,7 @@
+What's new in addy.io 6.6.0:
+• Fast & Efficient: Overhauled networking with OkHttp for quicker loads and lower battery usage
+• System Search: Find aliases directly from your launcher search bar
+• Quick Settings: 1-tap alias generation from your Quick Settings panel
+• Foldable & Tablet Ready: Adaptive grid layouts that transition seamlessly
+• Domain Check: Verify custom domain deliverability in-app
+• Bulk actions, deep links & Wear OS 1.7.0 upgrades

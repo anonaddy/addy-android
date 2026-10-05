@@ -48,7 +48,7 @@ open class RefreshLayout @JvmOverloads constructor(
 
     private var onRefreshListener: OnRefreshListener? = null
 
-    private var mTouchSlop = 0
+    private var touchSlop = 0
 
     init {
         init(context, attrs)
@@ -75,7 +75,7 @@ open class RefreshLayout @JvmOverloads constructor(
 
                 val curY = ev.y
                 val dy = curY - touchStartY
-                if (dy > 0 && !canChildScrollUp() && abs(dy) > mTouchSlop) {
+                if (dy > 0 && !canChildScrollUp() && abs(dy) > touchSlop) {
                     return true
                 }
             }
@@ -109,42 +109,33 @@ open class RefreshLayout @JvmOverloads constructor(
             }
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                if (childView != null) {
-                    if (header!!.shouldRefreshOnRelease) {
-                        val height = childView!!.translationY
+                val child = childView
+                val head = header
+                if (child != null && head != null) {
+                    if (head.shouldRefreshOnRelease) {
+                        val height = child.translationY
                         val upBackAnimator = ValueAnimator.ofFloat(height, headerHeight)
                         upBackAnimator.addUpdateListener { animation ->
-                            var value = animation.animatedValue as Float
-                            if (childView != null) {
-                                if (value < 0) {
-                                    value = animation.animatedValue as Float
-                                }
-                                childView!!.translationY = value
-                            }
+                            val value = (animation.animatedValue as Float).coerceAtLeast(0f)
+                            childView?.translationY = value
                         }
                         upBackAnimator.duration = REL_DRAG_DUR
                         upBackAnimator.start()
 
-
-                        header!!.releaseDrag()
+                        head.releaseDrag()
                         isRefreshing = true
                         onRefreshListener?.refresh()
 
                     } else {
-                        val height = childView!!.translationY
+                        val height = child.translationY
                         val backTopAni = ValueAnimator.ofFloat(height, 0f)
                         backTopAni.addUpdateListener { animation ->
                             var value = animation.animatedValue as Float
                             value *= decelerateInterpolator.getInterpolation(value)
-                            if (childView != null) {
-                                if (value < 0) {
-                                    value = animation.animatedValue as Float
-                                }
-                                childView!!.translationY = value
-                            }
-                            header!!.layoutParams.height = value.toInt()
-
-                            header!!.requestLayout()
+                            val clampedValue = value.coerceAtLeast(0f)
+                            childView?.translationY = clampedValue
+                            header?.layoutParams?.height = clampedValue.toInt()
+                            header?.requestLayout()
                         }
                         backTopAni.duration = (height * BACK_TOP_DUR / headerHeight).toLong()
                         backTopAni.start()
@@ -191,7 +182,7 @@ open class RefreshLayout @JvmOverloads constructor(
             addHeaderView()
         }
 
-        mTouchSlop = ViewConfiguration.get(context).scaledTouchSlop
+        touchSlop = ViewConfiguration.get(context).scaledTouchSlop
 
     }
 
@@ -233,11 +224,7 @@ open class RefreshLayout @JvmOverloads constructor(
         }
         upTopAnimator!!.duration = BACK_TOP_DUR
 
-        header!!.setOnViewAniDone(object : RefreshLayoutAnimationView.OnViewAniDone {
-            override fun viewAniDone() {
-                upTopAnimator!!.start()
-            }
-        })
+        header!!.setOnViewAniDone { upTopAnimator!!.start() }
     }
 
     private fun addViewInternal(child: View) {

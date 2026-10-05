@@ -1,86 +1,93 @@
 package host.stjin.anonaddy.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.core.graphics.toColorInt
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.LabelsRecyclerviewListItemBinding
 import host.stjin.anonaddy_shared.models.Labels
 
-class LabelsAdapter(
-    private val listWithLabels: ArrayList<Labels>
-) :
-    RecyclerView.Adapter<LabelsAdapter.ViewHolder>() {
+class LabelDiffCallback : DiffUtil.ItemCallback<Labels>() {
+    override fun areItemsTheSame(oldItem: Labels, newItem: Labels): Boolean {
+        return oldItem.id == newItem.id
+    }
 
-    lateinit var onManageLabelsClicker: ClickListener
+    override fun areContentsTheSame(oldItem: Labels, newItem: Labels): Boolean {
+        return oldItem == newItem
+    }
+}
+
+class LabelsAdapter(
+    listWithLabels: List<Labels> = emptyList(),
+    private var onManageLabelsClicker: ClickListener? = null
+) : ListAdapter<Labels, LabelsAdapter.ViewHolder>(LabelDiffCallback()) {
+
+    init {
+        if (listWithLabels.isNotEmpty()) {
+            submitList(listWithLabels)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.labels_recyclerview_list_item, parent, false)
+        val binding = LabelsRecyclerviewListItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val entry = listWithLabels[position]
-        holder.mName.text = entry.name
-        holder.mColorText.text = holder.mColorText.context.resources.getString(
-            R.string.d_aliases,
-            entry.aliases_count
+        val entry = getItem(position)
+        holder.binding.manageLabelsRecyclerviewListName.text = entry.name
+        val aliasesCount = entry.aliases_count ?: 0
+        holder.binding.manageLabelsRecyclerviewListColorText.text = holder.itemView.context.resources.getQuantityString(
+            R.plurals.d_aliases,
+            aliasesCount,
+            aliasesCount
         )
 
         try {
-            holder.mColorIndicator.setColorFilter(Color.parseColor(entry.colour))
-        } catch (e: Exception) {
+            holder.binding.manageLabelsRecyclerviewListColorIndicator.setColorFilter(entry.colour.toColorInt())
+        } catch (_: Exception) {
             // fallback
         }
     }
 
-    override fun getItemCount(): Int = listWithLabels.size
-
-    fun setClickListener(aClickListener: ClickListener) {
-        onManageLabelsClicker = aClickListener
+    fun setClickListener(listener: ClickListener) {
+        onManageLabelsClicker = listener
     }
 
-    fun getList(): ArrayList<Labels> {
-        return listWithLabels
-    }
+
 
     interface ClickListener {
-        fun onClickDelete(pos: Int, aView: View, id: String)
-        fun onClickEdit(pos: Int, aView: View, label: Labels)
+        fun onClickDelete(pos: Int, view: View, id: String)
+        fun onClickEdit(pos: Int, view: View, label: Labels)
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
+    inner class ViewHolder(val binding: LabelsRecyclerviewListItemBinding) : RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
 
-        var mCV: MaterialCardView = view.findViewById(R.id.manage_labels_recyclerview_list_CV)
-        private var mOptionsButton: MaterialButton =
-            view.findViewById(R.id.manage_labels_recyclerview_list_delete_button)
-        var mName: TextView = view.findViewById(R.id.manage_labels_recyclerview_list_name)
-        var mColorIndicator: ImageView =
-            view.findViewById(R.id.manage_labels_recyclerview_list_color_indicator)
-        var mColorText: TextView =
-            view.findViewById(R.id.manage_labels_recyclerview_list_color_text)
-
         init {
-            mOptionsButton.setOnClickListener(this)
-            mCV.setOnClickListener(this)
+            binding.manageLabelsRecyclerviewListDeleteButton.setOnClickListener(this)
+            binding.manageLabelsRecyclerviewListCV.setOnClickListener(this)
         }
 
-        override fun onClick(p0: View) {
-            when (p0.id) {
-                R.id.manage_labels_recyclerview_list_delete_button -> {
-                    onManageLabelsClicker.onClickDelete(adapterPosition, p0, listWithLabels[adapterPosition].id)
+        override fun onClick(v: View) {
+            val pos = bindingAdapterPosition
+            if (pos == RecyclerView.NO_POSITION) return
+
+            when (v.id) {
+                binding.manageLabelsRecyclerviewListDeleteButton.id -> {
+                    onManageLabelsClicker?.onClickDelete(pos, v, getItem(pos).id)
                 }
 
-                R.id.manage_labels_recyclerview_list_CV -> {
-                    onManageLabelsClicker.onClickEdit(adapterPosition, p0, listWithLabels[adapterPosition])
+                binding.manageLabelsRecyclerviewListCV.id -> {
+                    onManageLabelsClicker?.onClickEdit(pos, v, getItem(pos))
                 }
             }
         }

@@ -2,38 +2,43 @@ package host.stjin.anonaddy.ui.usernames.manage
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditFromNameUsernameBinding
-import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy_shared.models.Usernames
+import host.stjin.anonaddy_shared.network.NetworkResult
 import kotlinx.coroutines.launch
 
 
-class EditUsernameFromNameBottomDialogFragment(
-    private val usernameId: String?,
-    private val username: String?,
-    private val fromName: String?
-) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddEditUsernameFromNameBottomDialogListener
+class EditUsernameFromNameBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+    private val viewModel: ManageUsernameViewModel by activityViewModels()
+    private var usernameId: String? = null
+    private var username: String? = null
+    private var fromName: String? = null
+
+    private var listener: AddEditUsernameFromNameBottomDialogListener? = null
 
     private var _binding: BottomsheetEditFromNameUsernameBinding? = null
 
-    // This property is only valid between onCreateView and
-// onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(null, null, null)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            usernameId = it.getString(ARG_USERNAME_ID)
+            username = it.getString(ARG_USERNAME)
+            fromName = it.getString(ARG_FROM_NAME)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,29 +48,22 @@ class EditUsernameFromNameBottomDialogFragment(
         _binding = BottomsheetEditFromNameUsernameBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        // Check if usernameId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (usernameId != null) {
-            listener = activity as AddEditUsernameFromNameBottomDialogListener
+            listener = (parentFragment as? AddEditUsernameFromNameBottomDialogListener) ?: (activity as? AddEditUsernameFromNameBottomDialogListener)
 
             // Set button listeners and current description
             binding.bsEditFromNameUsernameSaveButton.setOnClickListener(this)
             binding.bsEditFromNameUsernameFromNameTiet.setText(fromName)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                binding.bsEditFromNameUsernameDesc.text = (Html.fromHtml(
-                    requireContext().resources.getString(R.string.edit_from_name_username_desc, username),
-                    Html.FROM_HTML_MODE_COMPACT
-                ))
-            } else {
-                binding.bsEditFromNameUsernameDesc.text =
-                    (Html.fromHtml(requireContext().resources.getString(R.string.edit_from_name_username_desc, username)))
-            }
+            binding.bsEditFromNameUsernameDesc.text = androidx.core.text.HtmlCompat.fromHtml(
+                requireContext().resources.getString(R.string.edit_from_name_username_desc, username),
+                androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
+            )
 
         } else {
             dismiss()
         }
         return root
-
     }
 
     override fun onDestroyView() {
@@ -101,19 +99,16 @@ class EditUsernameFromNameBottomDialogFragment(
     }
 
     private suspend fun editFromNameHttp(context: Context, description: String) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.updateFromNameSpecificUsername({ username, error ->
-            if (username != null) {
-                listener.fromNameEdited(username)
-            } else {
-                // Revert the button to normal
-                binding.bsEditFromNameUsernameSaveButton.revertAnimation()
-
-                binding.bsEditFromNameUsernameFromNameTil.error =
-                    context.resources.getString(R.string.error_edit_from_name) + "\n" + error
+        when (val result = viewModel.updateFromNameUsername(usernameId!!, description)) {
+            is NetworkResult.Success -> {
+                listener?.fromNameEdited(result.data)
             }
-            // usernameId is never null at this point, hence the !!
-        }, usernameId!!, description)
+            is NetworkResult.Error -> {
+                binding.bsEditFromNameUsernameSaveButton.revertAnimation()
+                binding.bsEditFromNameUsernameFromNameTil.error =
+                    context.resources.getString(R.string.error_edit_from_name) + "\n" + (result.errorOrNull() ?: "")
+            }
+        }
     }
 
     // 1. Defines the listener interface with a method passing back data result.
@@ -122,8 +117,18 @@ class EditUsernameFromNameBottomDialogFragment(
     }
 
     companion object {
-        fun newInstance(id: String, username: String, description: String?): EditUsernameFromNameBottomDialogFragment {
-            return EditUsernameFromNameBottomDialogFragment(id, username, description)
+        private const val ARG_USERNAME_ID = "arg_username_id"
+        private const val ARG_USERNAME = "arg_username"
+        private const val ARG_FROM_NAME = "arg_from_name"
+
+        fun newInstance(id: String?, username: String?, description: String?): EditUsernameFromNameBottomDialogFragment {
+            return EditUsernameFromNameBottomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_USERNAME_ID, id)
+                    putString(ARG_USERNAME, username)
+                    putString(ARG_FROM_NAME, description)
+                }
+            }
         }
     }
 }

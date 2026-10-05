@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.setup
 
 import android.Manifest
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -16,24 +15,23 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.PermissionChecker
 import androidx.lifecycle.lifecycleScope
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.ActivitySetupBinding
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AddyIo
-import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.network.NetworkResult
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener,
     BackupPasswordBottomDialogFragment.AddBackupPasswordBottomDialogListener {
-    private val addApiBottomDialogFragment: AddApiBottomDialogFragment =
-
-        AddApiBottomDialogFragment.newInstance()
+    override val requiresAuthentication: Boolean = false
 
     private lateinit var binding: ActivitySetupBinding
 
@@ -59,10 +57,9 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
                 // There are no request codes
                 val data: Intent? = result.data
                 data?.data?.let {
-                    val backupPasswordBottomDialogFragment: BackupPasswordBottomDialogFragment =
-                        BackupPasswordBottomDialogFragment.newInstance(it)
-
-                    if (!backupPasswordBottomDialogFragment.isAdded) {
+                    if (supportFragmentManager.findFragmentByTag("backupPasswordBottomDialogFragment") == null) {
+                        val backupPasswordBottomDialogFragment: BackupPasswordBottomDialogFragment =
+                            BackupPasswordBottomDialogFragment.newInstance(it)
                         backupPasswordBottomDialogFragment.show(
                             supportFragmentManager,
                             "backupPasswordBottomDialogFragment"
@@ -79,7 +76,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
 
 
         // First check if the user has set up the app before, if so just launch SplashActivity
-        if (SettingsManager(true, this).getSettingsString(SettingsManager.PREFS.API_KEY) != null) {
+        if (ServiceLocator.encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) != null) {
             val intent = Intent(this, SplashActivity::class.java)
             startActivity(intent)
             finish()
@@ -123,7 +120,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     }
 
     override fun onClickSave(baseUrl: String, apiKey: String) {
-        addApiBottomDialogFragment.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("addApiBottomDialogFragment") as? AddApiBottomDialogFragment)?.dismissAllowingStateLoss()
         addKey(baseUrl, apiKey)
     }
 
@@ -164,15 +161,10 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             // Sanctum keys (which has 56char tokens) will trigger the clipboard readout.
             if (text.length == 56) {
                 // a 56 length string found. This is most likely the API key
-                verifyKeyAndAdd(this, text)
+                verifyKeyAndAdd(text)
                 Toast.makeText(this, resources.getString(R.string.API_key_copied_from_clipboard), Toast.LENGTH_LONG).show()
             } else {
-                if (!addApiBottomDialogFragment.isAdded) {
-                    addApiBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "addApiBottomDialogFragment"
-                    )
-                }
+                showAddApiDialog()
             }
         }
 
@@ -201,9 +193,9 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             binding.fragmentSetupLogo.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
 
             if (tapCount == 10) {
-                if (!SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
+                if (!ServiceLocator.settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     Toast.makeText(this, this.resources.getString(R.string.logs_enabled), Toast.LENGTH_SHORT).show()
-                    SettingsManager(false, this).putSettingsBool(SettingsManager.PREFS.STORE_LOGS, true)
+                    ServiceLocator.settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, true)
                 }
 
                 // Launch new activity when tap count reaches 10
@@ -217,7 +209,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         }
     }
 
-    private fun verifyKeyAndAdd(context: Context, apiKey: String, baseUrl: String = AddyIo.API_BASE_URL) {
+    private fun verifyKeyAndAdd(apiKey: String, baseUrl: String = AddyIo.API_BASE_URL) {
         binding.fragmentSetupInitButtonNew.isEnabled = false
         binding.fragmentSetupInitButtonRestoreBackup.isEnabled = false
 
@@ -227,38 +219,52 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         lifecycleScope.launch {
             // AddyIo.API_BASE_URL is defaulted to the addy.io instance. If the API key is valid there it was meant to use that instance.
             // If the baseURL/API do not work or match it opens the API screen
-            verifyApiKey(context, apiKey, baseUrl)
+            verifyApiKey(apiKey, baseUrl)
         }
     }
 
-    private suspend fun verifyApiKey(context: Context, apiKey: String, baseUrl: String) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.verifyApiKey(baseUrl, apiKey) { result, error ->
-            if (result != null) {
+    private suspend fun verifyApiKey(apiKey: String, baseUrl: String) {
+        val userRepository = ServiceLocator.userRepository
+        when (val result = userRepository.verifyApiKey(baseUrl, apiKey)) {
+            is NetworkResult.Success -> {
                 addKey(baseUrl, apiKey)
-            } else {
+            }
+            is NetworkResult.Error -> {
                 binding.fragmentSetupInitButtonNew.isEnabled = true
                 binding.fragmentSetupInitButtonRestoreBackup.isEnabled = true
 
                 // Revert the button to normal
                 binding.fragmentSetupInitButtonApi.revertAnimation()
 
-                if (!addApiBottomDialogFragment.isAdded) {
-                    addApiBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "addApiBottomDialogFragment"
-                    )
-                }
+                showAddApiDialog()
             }
         }
     }
 
+    private fun showAddApiDialog() {
+        if (supportFragmentManager.findFragmentByTag("addApiBottomDialogFragment") == null) {
+            val addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance()
+            addApiBottomDialogFragment.show(
+                supportFragmentManager,
+                "addApiBottomDialogFragment"
+            )
+        }
+    }
+
     private suspend fun finishRegistrationVerification(query: String) {
-        val networkHelper = NetworkHelper(this)
-        networkHelper.verifyRegistration({ apiKey, error ->
-            if (!apiKey.isNullOrEmpty()) {
-                addKey(AddyIo.API_BASE_URL, apiKey)
-            } else {
+        val userRepository = ServiceLocator.userRepository
+        when (val result = userRepository.verifyRegistration(query)) {
+            is NetworkResult.Success -> {
+                val apiKey = result.data
+                if (apiKey.isNotEmpty()) {
+                    addKey(AddyIo.API_BASE_URL, apiKey)
+                } else {
+                    binding.fragmentSetupInitButtonNew.isEnabled = true
+                    binding.fragmentSetupInitButtonRestoreBackup.isEnabled = true
+                    binding.fragmentSetupInitButtonApi.revertAnimation()
+                }
+            }
+            is NetworkResult.Error -> {
                 binding.fragmentSetupInitButtonNew.isEnabled = true
                 binding.fragmentSetupInitButtonRestoreBackup.isEnabled = true
 
@@ -268,16 +274,16 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
                 MaterialDialogHelper.showMaterialDialog(
                     context = this,
                     title = resources.getString(R.string.registration_register),
-                    message = error,
+                    message = result.error,
                     icon = R.drawable.ic_key,
                     neutralButtonText = resources.getString(R.string.close)
                 ).show()
             }
-        }, query = query)
+        }
     }
 
     private fun addKey(baseUrl: String, apiKey: String) {
-        val encryptedSettingsManager = SettingsManager(true, this)
+        val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
         encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, baseUrl)
         val intent = Intent(this, SplashActivity::class.java)

@@ -6,31 +6,37 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionRecipientBinding
-import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy_shared.models.Recipients
+import host.stjin.anonaddy_shared.network.NetworkResult
 import kotlinx.coroutines.launch
 
 
-class EditRecipientDescriptionBottomDialogFragment(
-    private val recipientId: String?,
-    private val description: String?
-) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddEditRecipientDescriptionBottomDialogListener
+class EditRecipientDescriptionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+    private val viewModel: ManageRecipientViewModel by activityViewModels()
+    private var recipientId: String? = null
+    private var description: String? = null
+
+    private var listener: AddEditRecipientDescriptionBottomDialogListener? = null
 
     private var _binding: BottomsheetEditDescriptionRecipientBinding? = null
 
-    // This property is only valid between onCreateView and
-// onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(null, null)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            recipientId = it.getString(ARG_RECIPIENT_ID)
+            description = it.getString(ARG_DESCRIPTION)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,9 +46,8 @@ class EditRecipientDescriptionBottomDialogFragment(
         _binding = BottomsheetEditDescriptionRecipientBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        // Check if recipientId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (recipientId != null) {
-            listener = activity as AddEditRecipientDescriptionBottomDialogListener
+            listener = (parentFragment as? AddEditRecipientDescriptionBottomDialogListener) ?: (activity as? AddEditRecipientDescriptionBottomDialogListener)
 
             // Set button listeners and current description
             binding.bsEditrecipientRecipientSaveButton.setOnClickListener(this)
@@ -52,7 +57,6 @@ class EditRecipientDescriptionBottomDialogFragment(
         }
 
         return root
-
     }
 
     override fun onDestroyView() {
@@ -88,19 +92,16 @@ class EditRecipientDescriptionBottomDialogFragment(
     }
 
     private suspend fun editDescriptionHttp(context: Context, description: String) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.updateDescriptionSpecificRecipient({ recipient, error ->
-            if (recipient != null) {
-                listener.descriptionEdited(recipient)
-            } else {
-                // Revert the button to normal
-                binding.bsEditrecipientRecipientSaveButton.revertAnimation()
-
-                binding.bsEditrecipientRecipientDescTil.error =
-                    context.resources.getString(R.string.error_edit_description) + "\n" + error
+        when (val result = viewModel.updateDescriptionRecipient(recipientId!!, description)) {
+            is NetworkResult.Success -> {
+                listener?.descriptionEdited(result.data)
             }
-            // recipientId is never null at this point, hence the !!
-        }, recipientId!!, description)
+            is NetworkResult.Error -> {
+                binding.bsEditrecipientRecipientSaveButton.revertAnimation()
+                binding.bsEditrecipientRecipientDescTil.error =
+                    context.resources.getString(R.string.error_edit_description) + "\n" + result.error
+            }
+        }
     }
 
     // 1. Defines the listener interface with a method passing back data result.
@@ -109,8 +110,16 @@ class EditRecipientDescriptionBottomDialogFragment(
     }
 
     companion object {
-        fun newInstance(id: String, description: String?): EditRecipientDescriptionBottomDialogFragment {
-            return EditRecipientDescriptionBottomDialogFragment(id, description)
+        private const val ARG_RECIPIENT_ID = "arg_recipient_id"
+        private const val ARG_DESCRIPTION = "arg_description"
+
+        fun newInstance(id: String?, description: String?): EditRecipientDescriptionBottomDialogFragment {
+            return EditRecipientDescriptionBottomDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_RECIPIENT_ID, id)
+                    putString(ARG_DESCRIPTION, description)
+                }
+            }
         }
     }
 }

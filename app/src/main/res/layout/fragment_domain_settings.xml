@@ -30,23 +30,43 @@
             android:paddingStart="@dimen/layout_padding"
             android:paddingEnd="@dimen/layout_padding">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 style="@style/AddyIoTitleAction"
-                android:layout_width="match_parent"
-                android:orientation="horizontal">
+                android:layout_width="match_parent">
 
                 <TextView
                     android:id="@+id/domain_settings_header"
                     style="@style/titleTextView"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/all_domains" />
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:text="@string/all_domains"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/domains_title_progress"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/domains_title_progress"
+                    style="@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/domain_settings_count"
+                    app:layout_constraintStart_toEndOf="@id/domain_settings_header"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/domain_settings_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/bg_count_capsule"
                     android:paddingHorizontal="8dp"
@@ -54,21 +74,31 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/barrier_domains"
+                    app:layout_constraintStart_toEndOf="@id/domains_title_progress"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:text="10"
                     tools:visibility="visible" />
 
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrier_domains"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="start"
+                    app:constraint_referenced_ids="fragment_domain_settings_add_domain" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/fragment_domain_settings_add_domain"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/add_domain" />
+                    android:layout_marginStart="8dp"
+                    android:text="@string/add_domain"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.todkars.shimmer.ShimmerRecyclerView
                 android:id="@+id/fragment_domain_settings_all_domains_recyclerview"
@@ -124,4 +154,12 @@
 
 
     </androidx.core.widget.NestedScrollView>
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/domains_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

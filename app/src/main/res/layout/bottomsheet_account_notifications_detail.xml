@@ -32,6 +32,22 @@
             android:textColor="@color/BlackWhite"
             android:textSize="18sp"
             tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/bs_account_notifications_category"
+            style="@style/TextAppearance.Material3.LabelSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_square"
+            android:backgroundTint="?attr/colorPrimaryContainer"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:textAllCaps="true"
+            android:textColor="?attr/colorOnPrimaryContainer"
+            android:textStyle="bold"
+            tools:text="ANNOUNCEMENT" />
     </LinearLayout>
 
     <View

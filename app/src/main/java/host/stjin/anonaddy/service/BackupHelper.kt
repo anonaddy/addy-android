@@ -6,18 +6,18 @@ import android.net.Uri
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.PrintWriter
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.Date
-import java.util.Locale
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 import javax.crypto.Cipher
 import javax.crypto.CipherInputStream
@@ -31,20 +31,23 @@ import kotlin.system.measureTimeMillis
 // isAppInForeground is being used to determine if a notification or a snackbar should be used
 class BackupHelper(private val context: Context) {
 
-    private val loggingHelper: LoggingHelper = LoggingHelper(context, LoggingHelper.LOGFILES.BACKUP_LOGS)
-    private val settingsManager: SettingsManager = SettingsManager(false, context)
-    private val encryptedSettingsManager: SettingsManager = SettingsManager(true, context)
+    companion object {
+        private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    }
 
-    private val encryptBackups = true
+    private val loggingHelper: LoggingHelper = LoggingHelper(context, LoggingHelper.LOGFILES.BACKUP_LOGS)
+    private val settingsManager: SettingsManager = ServiceLocator.settingsManager
+    private val encryptedSettingsManager: SettingsManager = ServiceLocator.encryptedSettingsManager
 
 
     fun getLatestBackupDate(): Long? {
-        val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
+        val backupDestinationPath = settingsManager.getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
+            ?: return null
         try {
-            val f = DocumentFile.fromTreeUri(context, backupDestinationPath!!.toUri())?.listFiles()
+            val f = DocumentFile.fromTreeUri(context, backupDestinationPath.toUri())?.listFiles()
                 ?.filter { (it.name?.substringAfterLast(".") ?: "") == "anon" }
             val sortedList = f?.sortedWith(compareBy { it.lastModified() })
-            return sortedList?.last()?.lastModified()
+            return sortedList?.lastOrNull()?.lastModified()
         } catch (e: Exception) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "getLatestBackupDate", null)
         }
@@ -52,12 +55,13 @@ class BackupHelper(private val context: Context) {
     }
 
     fun deleteBackupsOlderThanXDays(retentionPeriod: Long = 30): Boolean {
-        val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
+        val backupDestinationPath = settingsManager.getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
+            ?: return false
         try {
-            val f = DocumentFile.fromTreeUri(context, backupDestinationPath!!.toUri())?.listFiles()
+            val f = DocumentFile.fromTreeUri(context, backupDestinationPath.toUri())?.listFiles()
                 ?.filter { (it.name?.substringAfterLast(".") ?: "") == "anon" }
             var filesDeleted = 0
-            for (file in f!!) {
+            for (file in f ?: emptyList()) {
                 val date: LocalDate = Instant.ofEpochMilli(file.lastModified()).atZone(ZoneId.systemDefault()).toLocalDate()
                 val today: LocalDate = LocalDate.now()
 
@@ -72,7 +76,7 @@ class BackupHelper(private val context: Context) {
             if (filesDeleted > 0) {
                 loggingHelper.addLog(
                     LOGIMPORTANCE.WARNING.int,
-                    context.resources.getString(R.string.log_backup_retention_deleted, filesDeleted, retentionPeriod),
+                    context.resources.getQuantityString(R.plurals.log_backup_retention_deleted, filesDeleted, filesDeleted, retentionPeriod),
                     "deleteBackupsOlderThanXDays",
                     null
                 )
@@ -88,12 +92,13 @@ class BackupHelper(private val context: Context) {
 
 
     fun isBackupLocationAccessible(): Boolean {
-        val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
+        val backupDestinationPath = settingsManager.getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
+            ?: return false
         try {
-            val f = DocumentFile.fromTreeUri(context, backupDestinationPath!!.toUri())
+            val f = DocumentFile.fromTreeUri(context, backupDestinationPath.toUri())
             return f?.canRead() == true && f.canWrite()
         } catch (e: Exception) {
-            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "getLatestBackupDate", null)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "isBackupLocationAccessible", null)
         }
         return false
     }
@@ -103,17 +108,8 @@ class BackupHelper(private val context: Context) {
             val f = DocumentFile.fromTreeUri(context, path.toUri())
             val uriOfFile = f?.createFile("application/octet-stream", name)?.uri
 
-            return if (encryptBackups) {
-                // Create a cipherOutputStream, all the data going to this file should be encrypted with
-                // a user defined key
-
-                // Get key to decrypt stream with
-                val cipher = makeCipher(password.toCharArray(), true)
-                // Wrap the output stream in a CipherOutputStream and return
-                CipherOutputStream(uriOfFile?.let { context.contentResolver.openOutputStream(it) }, cipher)
-            } else {
-                uriOfFile?.let { context.contentResolver.openOutputStream(it) }
-            }
+            val cipher = makeCipher(password.toCharArray(), encryptMode = true)
+            return CipherOutputStream(uriOfFile?.let { context.contentResolver.openOutputStream(it) }, cipher)
         } catch (e: Exception) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "createEmptyFileAndGetOutputStream", null)
         }
@@ -121,7 +117,7 @@ class BackupHelper(private val context: Context) {
     }
 
 
-    private fun makeCipher(pass: CharArray, decryptMode: Boolean): Cipher? {
+    private fun makeCipher(pass: CharArray, encryptMode: Boolean): Cipher? {
         // Use a KeyFactory to derive the corresponding key from the passphrase:
         val keySpec = PBEKeySpec(pass)
         val keyFactory = SecretKeyFactory.getInstance("PBEWITHSHA256AND128BITAES-CBC-BC")
@@ -134,7 +130,7 @@ class BackupHelper(private val context: Context) {
         val cipher = Cipher.getInstance("PBEWITHSHA256AND128BITAES-CBC-BC")
 
         // Set the cipher mode to decryption or encryption:
-        if (decryptMode) {
+        if (encryptMode) {
             cipher.init(Cipher.ENCRYPT_MODE, key, pbeParamSpec)
         } else {
             cipher.init(Cipher.DECRYPT_MODE, key, pbeParamSpec)
@@ -145,19 +141,10 @@ class BackupHelper(private val context: Context) {
 
     private fun getInputStream(uri: Uri, password: String = "anonaddy"): InputStream? {
         try {
-            return if (encryptBackups) {
-                // Create a cipherInputStream, all the data coming from this file should be decrypted with
-                // a user defined key
-
-                // Get key to decrypt stream with
-                val cipher = makeCipher(password.toCharArray(), false)
-                // Wrap the output stream in a CipherOutputStream and return
-                CipherInputStream(uri.let { context.contentResolver.openInputStream(it) }, cipher)
-            } else {
-                uri.let { context.contentResolver.openInputStream(it) }
-            }
+            val cipher = makeCipher(password.toCharArray(), encryptMode = false)
+            return CipherInputStream(uri.let { context.contentResolver.openInputStream(it) }, cipher)
         } catch (e: Exception) {
-            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "createEmptyFileAndGetOutputStream", null)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "getInputStream", null)
         }
         return null
     }
@@ -166,7 +153,7 @@ class BackupHelper(private val context: Context) {
         var backupCompleted = false
         val timeElapsed = measureTimeMillis {
             try {
-                val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
+                val backupDestinationPath = settingsManager.getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
                 val backupDestinationStream = backupDestinationPath?.let {
                     // Default back to "anonaddy" as password
                     createEmptyFileAndGetOutputStream(
@@ -190,9 +177,10 @@ class BackupHelper(private val context: Context) {
             }
         }
         if (backupCompleted) {
+            val seconds = TimeUnit.MILLISECONDS.toSeconds(timeElapsed).toInt()
             loggingHelper.addLog(
                 LOGIMPORTANCE.INFO.int,
-                context.resources.getString(R.string.log_backup_completed, TimeUnit.MILLISECONDS.toSeconds(timeElapsed)),
+                context.resources.getQuantityString(R.plurals.log_backup_completed, seconds, seconds),
                 "createBackup",
                 null
             )
@@ -214,7 +202,7 @@ class BackupHelper(private val context: Context) {
                 }
             }
         } catch (e: Exception) {
-            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "createBackup", null)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "restoreBackup", null)
         }
 
         // Let the caller know the backup failed, user should refer to the backup log to see what went wrong
@@ -250,22 +238,24 @@ class BackupHelper(private val context: Context) {
         try {
             inputStream.bufferedReader().useLines { lines ->
                 lines.forEach { line ->
-                    val key = line.split("|||")[0]
-                    val value = line.split("|||")[1]
+                    val parts = line.split("|||", limit = 2)
+                    if (parts.size == 2) {
+                        val key = parts[0]
+                        val value = parts[1]
 
-                    // Loop through all the settings available in the app and check for matches
-                    for (enum in SettingsManager.PREFS.entries) {
-                        // If a key from the sharedpreference file matches a key from the app
-                        if (enum.key == key) {
-                            // Check if settings is encrypted and place it in the right file accordingly
-                            val settingsManagerToWriteTo = if (enum.encrypted) encryptedSettingsManager else settingsManager
-                            when (enum.type) {
-                                SettingsManager.PREFTYPES.STRING -> settingsManagerToWriteTo.putSettingsString(enum, value)
-                                SettingsManager.PREFTYPES.INT -> value.toIntOrNull()?.let { settingsManagerToWriteTo.putSettingsInt(enum, it) }
-                                SettingsManager.PREFTYPES.STRINGSET -> settingsManagerToWriteTo.putStringSet(enum, getStringSetFromString(value))
-                                SettingsManager.PREFTYPES.FLOAT -> value.toFloatOrNull()?.let { settingsManagerToWriteTo.putSettingsFloat(enum, it) }
-                                SettingsManager.PREFTYPES.BOOLEAN -> value.toBooleanStrictOrNull()
-                                    ?.let { settingsManagerToWriteTo.putSettingsBool(enum, it) }
+                        // Loop through all the settings available in the app and check for matches
+                        for (enum in SettingsManager.PREFS.entries) {
+                            // If a key from the sharedpreference file matches a key from the app
+                            if (enum.key == key) {
+                                // Check if settings is encrypted and place it in the right file accordingly
+                                val settingsManagerToWriteTo = if (enum.encrypted) encryptedSettingsManager else settingsManager
+                                when (enum.type) {
+                                    SettingsManager.PREFTYPES.STRING -> settingsManagerToWriteTo.putSettingsString(enum, value)
+                                    SettingsManager.PREFTYPES.INT -> value.toIntOrNull()?.let { settingsManagerToWriteTo.putSettingsInt(enum, it) }
+                                    SettingsManager.PREFTYPES.STRINGSET -> settingsManagerToWriteTo.putStringSet(enum, getStringSetFromString(value))
+                                    SettingsManager.PREFTYPES.BOOLEAN -> value.toBooleanStrictOrNull()
+                                        ?.let { settingsManagerToWriteTo.putSettingsBool(enum, it) }
+                                }
                             }
                         }
                     }
@@ -275,16 +265,16 @@ class BackupHelper(private val context: Context) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "loadSharedPreferences", null)
             return false
         }
-        inputStream.close()
         return true
     }
 
     private fun getStringSetFromString(value: String): MutableSet<String> {
         // Delete the { and } characters. Trim away all the spaces and split by comma
-        return value.replace("{", "").replace("}", "").replace(" ", "").trim().split(",").toMutableSet()
+        val cleaned = value.replace("{", "").replace("}", "").replace(" ", "").trim()
+        return if (cleaned.isEmpty()) mutableSetOf() else cleaned.split(",").filter { it.isNotEmpty() }.toMutableSet()
     }
 
     private fun getDateTime(): String {
-        return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+        return LocalDateTime.now().format(DATE_TIME_FORMATTER)
     }
 }

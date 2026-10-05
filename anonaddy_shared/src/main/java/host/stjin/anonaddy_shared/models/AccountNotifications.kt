@@ -1,10 +1,8 @@
 package host.stjin.anonaddy_shared.models
 
-data class AccountNotificationsArray(
-    val `data`: List<AccountNotifications>
-)
 
-@Suppress("PropertyName", "PropertyName")
+
+@Suppress("PropertyName")
 data class AccountNotifications(
     val category: String,
     val created_at: String,

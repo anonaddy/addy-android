@@ -1,5 +1,6 @@
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_bar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -114,11 +115,11 @@
                     android:layout_marginStart="8dp"
                     android:contentDescription="@string/open_options"
                     android:maxLines="1"
-                    android:text="SV"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:iconPadding="0dp"
-                    app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small" />
+                    app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
+                    tools:text="SV" />
 
             </LinearLayout>
 

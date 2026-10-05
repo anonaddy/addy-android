@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -9,16 +11,17 @@
         android:id="@+id/checkmarkImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@null"
         android:src="@drawable/ic_circle_check"
-        android:tint="?colorAccent" />
+        app:tint="?colorAccent" />
 
     <TextView
         android:id="@+id/itemText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="Item Text"
         android:textColor="@color/BlackWhite"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:text="Item Text" />
 
 </LinearLayout>

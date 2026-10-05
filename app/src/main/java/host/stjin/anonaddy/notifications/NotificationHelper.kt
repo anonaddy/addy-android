@@ -23,14 +23,15 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.wearable.MessageEvent
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.accountnotifications.AccountNotificationsActivity
-import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
+import host.stjin.anonaddy.ui.aliases.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
 import host.stjin.anonaddy.ui.appsettings.wearos.SetupWearOSBottomSheetActivity
-import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
+import host.stjin.anonaddy.ui.domains.DomainsActivity
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
@@ -38,18 +39,18 @@ import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlin.random.Random
 
 class NotificationHelper(private val context: Context) {
-    private val ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
-    private val NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID = BuildConfig.APPLICATION_ID
-    private val UPDATER_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
-    private val FAILED_DELIVERIES_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
-    private val ACCOUNT_NOTIFICATIONS_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
-    private val API_TOKEN_EXPIRY_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
-    private val DOMAIN_ERROR_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
-    private val SUBSCRIPTION_EXPIRY_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
-    private val FAILED_BACKUP_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
-    private val CERTIFICATE_EXPIRY_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
+    private val ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.alias_watcher"
+    private val NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.wearable_pairing"
+    private val UPDATER_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.updater"
+    private val FAILED_DELIVERIES_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.failed_deliveries"
+    private val ACCOUNT_NOTIFICATIONS_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.account_notifications"
+    private val API_TOKEN_EXPIRY_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.api_token_expiry"
+    private val DOMAIN_ERROR_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.domain_error"
+    private val SUBSCRIPTION_EXPIRY_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.subscription_expiry"
+    private val FAILED_BACKUP_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.failed_backup"
+    private val CERTIFICATE_EXPIRY_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.certificate_expiry"
 
-    private var mNotificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private var notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private val loggingHelper = LoggingHelper(context)
 
     companion object {
@@ -413,7 +414,7 @@ class NotificationHelper(private val context: Context) {
             } catch (e: SecurityException) {
                 val ex = e.message
                 // User did not gave app POST_NOTIFICATION permissions
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildApiTokenExpiryNotification", null)
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildCertificateExpiryNotification", null)
             }
         }
     }
@@ -436,14 +437,14 @@ class NotificationHelper(private val context: Context) {
     }
 
     private fun buildSubscriptionExpiryNotification(title: String, text: String) {
-        val stopCheckingApiExpiryIntent = Intent(context, ActionReceiver::class.java).apply {
+        val stopCheckingSubscriptionExpiryIntent = Intent(context, ActionReceiver::class.java).apply {
             action = ActionReceiver.NOTIFICATIONACTIONS.STOP_SUBSCRIPTION_EXPIRY_CHECK
         }
         val stopCheckingSubscriptionExpiryPendingIntent: PendingIntent =
             PendingIntent.getBroadcast(
                 context,
                 Random.nextInt(0, 999),
-                stopCheckingApiExpiryIntent,
+                stopCheckingSubscriptionExpiryIntent,
                 PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
@@ -709,13 +710,14 @@ class NotificationHelper(private val context: Context) {
             context.resources.getString(R.string.notification_channel_watch_alias_desc), IMPORTANCE_DEFAULT
         )
 
-        val encryptedSettingsManager = SettingsManager(true, context)
+        val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         if (encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)) {
             // If privacy mode, hide email address
             buildAliasWatcherNotification(
                 context.resources.getString(R.string.notification_new_emails),
-                context.resources.getString(
-                    R.string.notification_new_emails_desc,
+                context.resources.getQuantityString(
+                    R.plurals.notification_new_emails_desc,
+                    emailDifference,
                     emailDifference,
                     context.resources.getString(R.string.one_of_your_aliases)
                 ),
@@ -724,7 +726,7 @@ class NotificationHelper(private val context: Context) {
         } else {
             buildAliasWatcherNotification(
                 context.resources.getString(R.string.notification_new_emails),
-                context.resources.getString(R.string.notification_new_emails_desc, emailDifference, email),
+                context.resources.getQuantityString(R.plurals.notification_new_emails_desc, emailDifference, emailDifference, email),
                 id
             )
         }
@@ -738,7 +740,7 @@ class NotificationHelper(private val context: Context) {
             context.resources.getString(R.string.notification_channel_watch_alias_desc), IMPORTANCE_DEFAULT
         )
 
-        val encryptedSettingsManager = SettingsManager(true, context)
+        val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         if (encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)) {
             // If privacy mode, hide email address
             buildAliasWatcherAliasDoesNotExistAnymoreNotification(
@@ -762,7 +764,7 @@ class NotificationHelper(private val context: Context) {
     private fun buildAliasWatcherNotification(title: String, text: String, aliasId: String) {
         // Decide notification visibility based on if biometrics is enabled
         val visibility =
-            if (SettingsManager(true, context).getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) VISIBILITY_PRIVATE else VISIBILITY_PUBLIC
+            if (ServiceLocator.encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) VISIBILITY_PRIVATE else VISIBILITY_PUBLIC
 
         // Decide notificationID here, and send it to the actionReceiver so the correct notification can be cancelled
         // notificationID gets concat here with prefix of ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID
@@ -839,7 +841,7 @@ class NotificationHelper(private val context: Context) {
     private fun buildAliasWatcherAliasDoesNotExistAnymoreNotification(title: String, text: String) {
         // Decide notification visibility based on if biometrics is enabled
         val visibility =
-            if (SettingsManager(true, context).getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) VISIBILITY_PRIVATE else VISIBILITY_PUBLIC
+            if (ServiceLocator.encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) VISIBILITY_PRIVATE else VISIBILITY_PUBLIC
 
         // Decide notificationID here, and send it to the actionReceiver so the correct notification can be cancelled
         // notificationID gets concat here with prefix of ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID
@@ -902,7 +904,7 @@ class NotificationHelper(private val context: Context) {
                 PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
-        val openDomainSettingsIntent = Intent(context, DomainSettingsActivity::class.java)
+        val openDomainSettingsIntent = Intent(context, DomainsActivity::class.java)
         val openDomainSettingsPendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
             // Add the intent, which inflates the back stack
             addNextIntentWithParentStack(openDomainSettingsIntent)
@@ -942,6 +944,71 @@ class NotificationHelper(private val context: Context) {
     }
 
 
+    fun setupAllNotificationChannels() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannel(
+                ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID,
+                context.resources.getString(R.string.watch_alias),
+                context.resources.getString(R.string.notification_channel_watch_alias_desc),
+                IMPORTANCE_DEFAULT
+            )
+            createChannel(
+                NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID,
+                context.resources.getString(R.string.notification_channel_addyio_for_wearables),
+                context.resources.getString(R.string.notification_channel_addyio_for_wearables_desc),
+                IMPORTANCE_HIGH
+            )
+            createChannel(
+                UPDATER_NOTIFICATION_CHANNEL_ID,
+                context.resources.getString(R.string.notification_channel_update),
+                context.resources.getString(R.string.notification_channel_update_desc),
+                IMPORTANCE_DEFAULT
+            )
+            createChannel(
+                FAILED_DELIVERIES_NOTIFICATION_CHANNEL_ID,
+                context.resources.getString(R.string.notification_channel_failed_deliveries),
+                context.resources.getString(R.string.notification_channel_failed_deliveries_desc),
+                IMPORTANCE_DEFAULT
+            )
+            createChannel(
+                ACCOUNT_NOTIFICATIONS_NOTIFICATION_CHANNEL_ID,
+                context.resources.getString(R.string.notification_channel_account_notifications),
+                context.resources.getString(R.string.notification_channel_account_notifications_desc),
+                IMPORTANCE_DEFAULT
+            )
+            createChannel(
+                API_TOKEN_EXPIRY_NOTIFICATION_CHANNEL_ID,
+                context.resources.getString(R.string.notification_channel_api_token_expiry),
+                context.resources.getString(R.string.notification_channel_api_token_expiry_desc),
+                IMPORTANCE_DEFAULT
+            )
+            createChannel(
+                DOMAIN_ERROR_NOTIFICATION_CHANNEL_ID,
+                context.resources.getString(R.string.notification_channel_domain_error),
+                context.resources.getString(R.string.notification_channel_domain_error_desc),
+                IMPORTANCE_DEFAULT
+            )
+            createChannel(
+                SUBSCRIPTION_EXPIRY_NOTIFICATION_CHANNEL_ID,
+                context.resources.getString(R.string.notification_channel_subscription_expiry),
+                context.resources.getString(R.string.notification_channel_subscription_expiry_desc),
+                IMPORTANCE_DEFAULT
+            )
+            createChannel(
+                FAILED_BACKUP_NOTIFICATION_CHANNEL_ID,
+                context.resources.getString(R.string.notification_channel_backup),
+                context.resources.getString(R.string.notification_channel_backup_desc),
+                IMPORTANCE_DEFAULT
+            )
+            createChannel(
+                CERTIFICATE_EXPIRY_NOTIFICATION_CHANNEL_ID,
+                context.resources.getString(R.string.notification_channel_certificate_expiry),
+                context.resources.getString(R.string.notification_channel_certificate_expiry_desc),
+                IMPORTANCE_DEFAULT
+            )
+        }
+    }
+
     private fun createChannel(channelId: String, title: String, description: String, importance: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -954,7 +1021,7 @@ class NotificationHelper(private val context: Context) {
             channel.enableLights(true)
             // Notifications should always have a static color to identify the app
             channel.lightColor = ContextCompat.getColor(context, R.color.md_theme_primary)
-            mNotificationManager.createNotificationChannel(channel)
+            notificationManager.createNotificationChannel(channel)
         }
     }
 

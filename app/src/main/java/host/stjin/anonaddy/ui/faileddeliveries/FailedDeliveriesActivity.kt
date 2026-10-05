@@ -2,19 +2,21 @@ package host.stjin.anonaddy.ui.faileddeliveries
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.databinding.ActivityFailedDeliveriesBinding
+import host.stjin.anonaddy.databinding.ActivityFailedDeliveriesSettingsBinding
 import kotlinx.coroutines.launch
 
 class FailedDeliveriesActivity : BaseActivity() {
-    private lateinit var binding: ActivityFailedDeliveriesBinding
+    private lateinit var binding: ActivityFailedDeliveriesSettingsBinding
 
-    private val failedDeliveriesFragment = FailedDeliveriesFragment()
+    private fun getFragment(): FailedDeliveriesFragment? {
+        return supportFragmentManager.findFragmentById(R.id.activity_failed_deliveries_settings_fcv) as? FailedDeliveriesFragment
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityFailedDeliveriesBinding.inflate(layoutInflater)
+        binding = ActivityFailedDeliveriesSettingsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
@@ -25,36 +27,27 @@ class FailedDeliveriesActivity : BaseActivity() {
             R.drawable.ic_mail_error
         )
         setRefreshLayout()
-
         setPage()
     }
 
     // This only applies to <sw600Dp devices
     private fun setRefreshLayout() {
         binding.activityFailedDeliveriesSettingsSwiperefresh.setOnRefreshListener {
-            binding.activityFailedDeliveriesSettingsSwiperefresh.isRefreshing = true
-
-            failedDeliveriesFragment.getDataFromWeb(null) {
+            lifecycleScope.launch {
+                getFragment()?.onRefreshData()
                 binding.activityFailedDeliveriesSettingsSwiperefresh.isRefreshing = false
             }
         }
     }
 
     private fun setPage() {
-        /**
-         * This activity can be called by an URI or Widget/Notification Intent.
-         * Protect this part
-         */
-        lifecycleScope.launch {
-            isAuthenticated { isAuthenticated ->
-                if (isAuthenticated) {
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.activity_failed_deliveries_settings_fcv, failedDeliveriesFragment)
-                        .commit()
-                }
+        requireAuthentication {
+            if (supportFragmentManager.findFragmentById(R.id.activity_failed_deliveries_settings_fcv) == null) {
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.activity_failed_deliveries_settings_fcv, FailedDeliveriesFragment.newInstance())
+                    .commit()
             }
         }
-
     }
 }

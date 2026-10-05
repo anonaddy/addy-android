@@ -25,21 +25,44 @@
             android:orientation="vertical">
 
 
-            <TextView
-                android:id="@+id/account_notifications_recyclerview_list_title"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:ellipsize="end"
-                android:fontFamily="sans-serif-medium"
-                android:lines="1"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:text="Title"
-                android:textAllCaps="false"
-                android:textColor="@color/BlackWhite"
-                android:textSize="16sp"
-                tools:ignore="HardcodedText" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/account_notifications_recyclerview_list_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-medium"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="Title"
+                    android:textAllCaps="false"
+                    android:textColor="@color/BlackWhite"
+                    android:textSize="16sp"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/account_notifications_recyclerview_list_category"
+                    style="@style/TextAppearance.Material3.LabelSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_square"
+                    android:backgroundTint="?attr/colorPrimaryContainer"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:textAllCaps="true"
+                    android:textColor="?attr/colorOnPrimaryContainer"
+                    android:textStyle="bold"
+                    tools:text="ANNOUNCEMENT" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/account_notifications_recyclerview_list_created"

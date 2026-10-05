@@ -12,8 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.wear.tooling.preview.devices.WearDevices
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
@@ -22,9 +22,10 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Text
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.ui.theme.AppTheme
-import host.stjin.anonaddy_shared.ui.theme.getAddyIoChipColors
+import host.stjin.anonaddy.ui.theme.AppTheme
+import host.stjin.anonaddy.ui.theme.getAddyIoChipColors
 
 private val SPACING_GUIDE_BUTTONS = Dp(18f)
 
@@ -47,10 +48,12 @@ fun AliasCreateGuide(scalingLazyListState: ScalingLazyListState, settingsManager
                 Spacer(modifier = Modifier.height(Dp(36f)))
             }
             item {
+                val interval = settingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30)
                 Text(
-                    text = context.resources.getString(
-                        R.string.wearos_create_alias_guide,
-                        settingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30)
+                    text = context.resources.getQuantityString(
+                        R.plurals.wearos_create_alias_guide,
+                        interval,
+                        interval
                     ), textAlign = TextAlign.Center
                 )
             }
@@ -79,7 +82,7 @@ fun AliasCreateGuide(scalingLazyListState: ScalingLazyListState, settingsManager
 
 @ExperimentalWearMaterialApi
 @Preview(
-    device = Devices.WEAR_OS_SMALL_ROUND,
+    device = WearDevices.SMALL_ROUND,
     showSystemUi = true,
     backgroundColor = 0xff000000,
     showBackground = true
@@ -90,7 +93,7 @@ fun PreviewAliasCreateGuide() {
     AppTheme {
         AliasCreateGuide(
             scalingLazyListState = rememberScalingLazyListState(),
-            settingsManager = SettingsManager(false, context),
+            settingsManager = ServiceLocator.settingsManager,
             context = context,
             onIUnderstandClick = {}
         )

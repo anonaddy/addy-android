@@ -121,55 +121,35 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/aliases_recyclerview_list_LL4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/shape_rounded_corners_top_recyclerview_cards">
-
-            <!-- This extra LL5 is there for the aliasAdapter (holder.mLL0.setBackgroundColor(0))-->
-            <LinearLayout
-                android:id="@+id/aliases_recyclerview_list_LL5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                tools:ignore="UselessParent">
-
-                <TextView
-                    android:id="@+id/aliases_recyclerview_list_watched_textview"
-                    style="@style/DescTextStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="12dp"
-                    android:alpha="1"
-                    android:drawablePadding="4dp"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif"
-                    android:gravity="center_vertical"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:singleLine="false"
-                    android:text="@string/you_ll_be_notified_if_this_alias_has_activity"
-                    android:textColor="?colorPrimary"
-                    android:textSize="12sp"
-                    app:drawableStartCompat="@drawable/ic_watch_alias"
-                    app:drawableTint="?colorPrimary" />
-            </LinearLayout>
-        </LinearLayout>
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/aliases_recyclerview_list_pinned"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:layout_margin="8dp"
-        android:contentDescription="@string/pinned"
-        android:src="@drawable/ic_pinned"
-        android:visibility="gone"
-        app:tint="?colorAccent"
-        tools:visibility="visible" />
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/aliases_recyclerview_list_watched_icon"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="@string/watch_alias"
+            android:src="@drawable/ic_watch_alias"
+            android:visibility="gone"
+            app:tint="?colorPrimary"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/aliases_recyclerview_list_pinned"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:contentDescription="@string/pinned"
+            android:src="@drawable/ic_pinned"
+            android:visibility="gone"
+            app:tint="?colorAccent"
+            tools:visibility="visible" />
+    </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

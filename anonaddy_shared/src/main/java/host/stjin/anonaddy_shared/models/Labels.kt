@@ -6,9 +6,6 @@ data class SingleLabel(
     val `data`: Labels
 )
 
-data class LabelsArray(
-    val `data`: List<Labels>
-)
 
 data class Labels(
     val id: String,
@@ -20,7 +17,9 @@ data class Labels(
     val updated_at: String
 ) : Serializable
 
-data class NewLabelEntry(
+data class NewLabel(
     val name: String,
     val colour: String
 )
+
+typealias NewLabelEntry = NewLabel

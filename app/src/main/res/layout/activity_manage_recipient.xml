@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_manage_recipient_CL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical">
+
+
+    <include
+        android:id="@+id/activity_manage_recipient_toolbar"
+        layout="@layout/custom_toolbar_one_handed" />
+
+    <host.stjin.anonaddy.ui.customviews.AnimationView
+        android:id="@+id/animation_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:animationDrawable="@drawable/ic_loading_logo"
+        app:loopAnimation="true" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/activity_manage_recipient_swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/activity_manage_recipient_NSV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0">
+
+            <LinearLayout
+                android:id="@+id/activity_manage_recipient_LL1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="24dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:padding="@dimen/layout_padding_top"
+                android:paddingStart="@dimen/layout_padding"
+                android:paddingEnd="@dimen/layout_padding">
+
+                <LinearLayout
+                    style="@style/AddyIoTitleNoAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/basic" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/AddyIoDescText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/activity_manage_recipient_basic_shimmerframelayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:shimmer_auto_start="true"
+                        app:shimmer_base_alpha="1"
+                        app:shimmer_highlight_alpha="0.5"
+                        app:shimmer_repeat_count="99">
+
+                        <TextView
+                            android:id="@+id/activity_manage_recipient_basic_textview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/manage_recipient_basic_info"
+                            android:textColor="@color/BlackWhite" />
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/AddyIoTitleNoAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/activity_manage_recipient_aliases_title_textview"
+                        style="@style/titleTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/recipient_aliases" />
+
+                    <TextView
+                        android:id="@+id/activity_manage_recipient_aliases_count_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_count_capsule"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="2dp"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:text="10"
+                        tools:visibility="visible" />
+
+                    <ImageView
+                        android:id="@+id/activity_manage_recipient_aliases_info_button"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/recipient_aliases_count_info"
+                        android:src="@drawable/ic_info"
+                        android:tooltipText="@string/recipient_aliases_count_info" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/AddyIoDescText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:baselineAligned="false"
+                    android:orientation="vertical">
+
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/activity_manage_recipient_aliases_shimmerframelayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:shimmer_auto_start="true"
+                        app:shimmer_base_alpha="0.5"
+                        app:shimmer_highlight_alpha="0.2"
+                        app:shimmer_repeat_count="99">
+
+                        <TextView
+                            android:id="@+id/activity_manage_recipient_aliases_textview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/aliases_placeholder"
+                            android:textColor="@color/BlackWhite" />
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+                    <TextView
+                        android:id="@+id/activity_manage_recipient_aliases_show_more_less_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/show_more"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/AddyIoTitleNoAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/encryption" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/AddyIoDescText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/activity_manage_recipient_encryption_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/BlackWhite"
+                        tools:text="@tools:sample/lorem" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        style="@style/AddyIoTitleNoAction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/titleTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/action" />
+                    </LinearLayout>
+
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/recipient_status_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_circle_check"
+                        app:sectionTitle="@string/recipient_status_active" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_can_reply_send"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/can_reply_send_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_arrow_back_up"
+                        app:sectionTitle="@string/can_reply_send" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_protected_headers"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/protected_headers_subject_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_heading"
+                        app:sectionTitle="@string/protected_headers" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_active"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/encrypt_emails_to_this_recipient"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_circle_check"
+                        app:sectionTitle="@string/encryption_enabled" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_desc_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@tools:sample/lorem/random"
+                        app:sectionEndIcon="@drawable/ic_edit"
+                        app:sectionStartIcon="@drawable/ic_align_justified"
+                        app:sectionTitle="@string/description" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_change_pgp_key"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionStartIcon="@drawable/ic_fingerprint"
+                        app:sectionTitle="@string/change_public_gpg_key" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_remove_pgp_key"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionStartIcon="@drawable/ic_forbid"
+                        app:sectionTitle="@string/remove_public_key" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_pgp_inline"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/pgp_inline_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_key"
+                        app:sectionTitle="@string/pgp_inline" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_remove_pgp_keys_from_rs"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/remove_pgp_keys_from_rs_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_key_off"
+                        app:sectionTitle="@string/remove_pgp_keys_from_rs" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_remove_pgp_signatures_key_from_rs"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/remove_pgp_signature_from_rs_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_signature_off"
+                        app:sectionTitle="@string/remove_pgp_signature_from_rs" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_delete"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionColorAccent="@color/softRed"
+                        app:sectionStartIcon="@drawable/ic_trash"
+                        app:sectionTitle="@string/delete_recipient" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

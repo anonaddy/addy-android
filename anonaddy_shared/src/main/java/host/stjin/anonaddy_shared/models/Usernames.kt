@@ -1,14 +1,12 @@
 package host.stjin.anonaddy_shared.models
 
-data class UsernamesArray(
-    val `data`: List<Usernames>
-)
+
 
 data class SingleUsername(
     val `data`: Usernames
 )
 
-@Suppress("PropertyName", "PropertyName")
+@Suppress("PropertyName")
 data class Usernames(
     val id: String,
     val user_id: String,

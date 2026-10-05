@@ -16,18 +16,20 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAdddomainBinding
-import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.network.NetworkResult
 import kotlinx.coroutines.launch
 
 
 class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddDomainBottomDialogListener
+    private val viewModel: DomainsViewModel by activityViewModels()
+    private var listener: AddDomainBottomDialogListener? = null
 
     private lateinit var domain: String
 
@@ -56,7 +58,7 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
         _binding = BottomsheetAdddomainBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        listener = parentFragment as AddDomainBottomDialogListener
+        listener = (parentFragment as? AddDomainBottomDialogListener) ?: (activity as? AddDomainBottomDialogListener)
 
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
@@ -125,19 +127,16 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
         context: Context,
         address: String
     ) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.addDomain({ _, error, body ->
-            when (error) {
-                "404" -> {
-                    openSetup(body)
-                }
+        when (val result = viewModel.addDomain(address)) {
+            is NetworkResult.Success -> {
+                handler.removeCallbacksAndMessages(null)
+                listener?.onAdded()
+            }
 
-                "201" -> {
-                    handler.removeCallbacksAndMessages(null)
-                    listener.onAdded()
-                }
-
-                else -> {
+            is NetworkResult.Error -> {
+                if (result.statusCode == 422 || result.error?.contains("aa-verify=") == true) {
+                    openSetup(result.error)
+                } else {
                     handler.removeCallbacksAndMessages(null)
                     binding.bsAddDomainSetup1.visibility = View.VISIBLE
                     binding.bsAddDomainSetup2.visibility = View.GONE
@@ -146,10 +145,10 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
                     binding.bsAdddomainDomainAddDomainButton.revertAnimation()
 
                     binding.bsAdddomainDomainTil.error =
-                        context.resources.getString(R.string.error_adding_domain) + "\n" + body
+                        context.resources.getString(R.string.error_adding_domain) + "\n" + (result.error ?: "")
                 }
             }
-        }, address)
+        }
     }
 
     private fun openSetup(body: String?) {

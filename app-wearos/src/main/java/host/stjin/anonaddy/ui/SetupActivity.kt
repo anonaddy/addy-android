@@ -3,7 +3,6 @@ package host.stjin.anonaddy.ui
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
@@ -39,9 +38,13 @@ import com.google.android.gms.wearable.Wearable
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.ui.components.ScalingLazyColumnWithRSB
-import host.stjin.anonaddy_shared.ui.theme.AppTheme
+import host.stjin.anonaddy.ui.theme.AppTheme
 
-class SetupActivity : ComponentActivity(), DataClient.OnDataChangedListener {
+import host.stjin.anonaddy.ui.base.BaseComponentActivity
+
+class SetupActivity : BaseComponentActivity(), DataClient.OnDataChangedListener {
+
+    override fun requiresSetup(): Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

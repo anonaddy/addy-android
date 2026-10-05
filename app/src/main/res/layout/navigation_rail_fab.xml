@@ -53,10 +53,10 @@
             android:layout_height="56dp"
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/account_notifications"
-            android:text="SV"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium" />
+            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"
+            tools:text="SV" />
 
 
         <com.google.android.material.button.MaterialButton

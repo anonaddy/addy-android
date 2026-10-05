@@ -3,17 +3,16 @@ package host.stjin.anonaddy.ui.appsettings.features
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.CompoundButton
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ServiceLocator
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
-import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.ComponentUtils.getComponentState
 import host.stjin.anonaddy.utils.ComponentUtils.setComponentState
-import host.stjin.anonaddy.utils.InsetUtil
-import host.stjin.anonaddy.utils.WebIntentManager
+import host.stjin.anonaddy.utils.InsetUtils
+import host.stjin.anonaddy.utils.WebIntentHelper
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.managers.SettingsManager.PREFS
@@ -29,14 +28,14 @@ class AppSettingsFeaturesActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesBinding.inflate(layoutInflater)
-        InsetUtil.applyBottomInset(binding.activityAppSettingsFeaturesSectionsNSVLL)
+        InsetUtils.applyBottomInset(binding.activityAppSettingsFeaturesSectionsNSVLL)
 
         val view = binding.root
         setContentView(view)
 
 
-        settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
+        settingsManager = ServiceLocator.settingsManager
+        encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
 
         setupToolbar(
             R.string.features_and_integrations,
@@ -58,91 +57,50 @@ class AppSettingsFeaturesActivity : BaseActivity() {
     }
 
     private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesSectionMailtoSheet.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesMailToActivity::class.java)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsFeaturesSectionMailtoSheet.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesMailToActivity::class.java)
+            startActivity(intent)
+        }
 
-        binding.activityAppSettingsFeaturesSectionWatchAliasSheet.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesWatchAliasActivity::class.java)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsFeaturesSectionWatchAliasSheet.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesWatchAliasActivity::class.java)
+            startActivity(intent)
+        }
 
-        binding.activityAppSettingsFeaturesSectionNotifyFailedDeliveriesSheet.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyFailedDeliveriesActivity::class.java)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsFeaturesSectionNotifyFailedDeliveriesSheet.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyFailedDeliveriesActivity::class.java)
+            startActivity(intent)
+        }
 
-        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyAccountNotificationsActivity::class.java)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyAccountNotificationsActivity::class.java)
+            startActivity(intent)
+        }
 
-        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyAccountNotificationsActivity::class.java)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsFeaturesSectionApiTokenExpiryNotification.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyApiTokenExpiryActivity::class.java)
+            startActivity(intent)
+        }
 
-        binding.activityAppSettingsFeaturesSectionManageMultipleAliasesSheet.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesManageMultipleAliasesActivity::class.java)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsFeaturesSectionCertificateExpiryNotification.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyCertificateExpiryActivity::class.java)
+            startActivity(intent)
+        }
 
-        binding.activityAppSettingsFeaturesSectionApiTokenExpiryNotification.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyApiTokenExpiryActivity::class.java)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsFeaturesSectionDomainErrorNotification.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyDomainErrorActivity::class.java)
+            startActivity(intent)
+        }
 
-        binding.activityAppSettingsFeaturesSectionCertificateExpiryNotification.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyCertificateExpiryActivity::class.java)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifySubscriptionExpiryActivity::class.java)
+            startActivity(intent)
+        }
 
-        binding.activityAppSettingsFeaturesSectionDomainErrorNotification.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyDomainErrorActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifySubscriptionExpiryActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        binding.activityAppSettingsFeaturesSectionWebintentSheet.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesWebIntentResolutionActivity::class.java)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsFeaturesSectionWebintentSheet.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesWebIntentResolutionActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun checkForSelfHostedInstance() {
@@ -175,10 +133,6 @@ class AppSettingsFeaturesActivity : BaseActivity() {
             settingsManager.getSettingsBool(PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS)
         )
 
-        binding.activityAppSettingsFeaturesSectionManageMultipleAliasesSheet.setSwitchChecked(
-            settingsManager.getSettingsBool(PREFS.MANAGE_MULTIPLE_ALIASES, true)
-        )
-
         binding.activityAppSettingsFeaturesSectionApiTokenExpiryNotification.setSwitchChecked(
             settingsManager.getSettingsBool(PREFS.NOTIFY_API_TOKEN_EXPIRY, true)
         )
@@ -201,116 +155,77 @@ class AppSettingsFeaturesActivity : BaseActivity() {
         )
 
         binding.activityAppSettingsFeaturesSectionWebintentSheet.setSwitchChecked(
-            WebIntentManager(this).isCurrentDomainAssociated()
+            WebIntentHelper(this).isCurrentDomainAssociated()
         )
     }
 
     private fun setOnSwitchListeners() {
-        binding.activityAppSettingsFeaturesSectionMailtoSheet.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed) {
-                    setComponentState(this@AppSettingsFeaturesActivity, BuildConfig.APPLICATION_ID, COMPONENTS.MAILTO.componentClassName, checked)
-                }
+        binding.activityAppSettingsFeaturesSectionMailtoSheet.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed) {
+                setComponentState(this@AppSettingsFeaturesActivity, BuildConfig.APPLICATION_ID, COMPONENTS.MAILTO.componentClassName, checked)
             }
-        })
+        }
 
 
-        binding.activityAppSettingsFeaturesSectionNotifyFailedDeliveriesSheet.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed) {
-                    settingsManager.putSettingsBool(PREFS.NOTIFY_FAILED_DELIVERIES, checked)
+        binding.activityAppSettingsFeaturesSectionNotifyFailedDeliveriesSheet.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed) {
+                settingsManager.putSettingsBool(PREFS.NOTIFY_FAILED_DELIVERIES, checked)
 
-                    // Since failed deliveries should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
-                    BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
-                }
+                // Since failed deliveries should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
             }
-        })
+        }
 
-        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed) {
-                    settingsManager.putSettingsBool(PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS, checked)
+        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed) {
+                settingsManager.putSettingsBool(PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS, checked)
 
-                    // Since account notifications should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
-                    BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
-                }
+                // Since account notifications should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
             }
-        })
+        }
 
-        binding.activityAppSettingsFeaturesSectionManageMultipleAliasesSheet.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed) {
-                    binding.activityAppSettingsFeaturesSectionManageMultipleAliasesSheet.setSectionAlert(true)
-                    binding.activityAppSettingsFeaturesSectionManageMultipleAliasesSheet.setDescription(
-                        this@AppSettingsFeaturesActivity.resources.getString(
-                            R.string.restart_app_required
-                        )
-                    )
+        binding.activityAppSettingsFeaturesSectionApiTokenExpiryNotification.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed) {
+                settingsManager.putSettingsBool(PREFS.NOTIFY_API_TOKEN_EXPIRY, checked)
 
-                    settingsManager.putSettingsBool(PREFS.MANAGE_MULTIPLE_ALIASES, checked)
-                }
+                // Since api token check should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
             }
-        })
+        }
 
-        binding.activityAppSettingsFeaturesSectionApiTokenExpiryNotification.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed) {
-                    settingsManager.putSettingsBool(PREFS.NOTIFY_API_TOKEN_EXPIRY, checked)
+        binding.activityAppSettingsFeaturesSectionCertificateExpiryNotification.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed) {
+                settingsManager.putSettingsBool(PREFS.NOTIFY_CERTIFICATE_EXPIRY, checked)
 
-                    // Since api token check should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
-                    BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
-                }
+                // Since api token check should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
             }
-        })
+        }
 
-        binding.activityAppSettingsFeaturesSectionCertificateExpiryNotification.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed) {
-                    settingsManager.putSettingsBool(PREFS.NOTIFY_CERTIFICATE_EXPIRY, checked)
+        binding.activityAppSettingsFeaturesSectionDomainErrorNotification.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed) {
+                settingsManager.putSettingsBool(PREFS.NOTIFY_DOMAIN_ERROR, checked)
 
-                    // Since api token check should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
-                    BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
-                }
+                // Since api token check should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
             }
-        })
+        }
 
-        binding.activityAppSettingsFeaturesSectionDomainErrorNotification.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed) {
-                    settingsManager.putSettingsBool(PREFS.NOTIFY_DOMAIN_ERROR, checked)
+        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed) {
+                settingsManager.putSettingsBool(PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, checked)
 
-                    // Since api token check should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
-                    BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
-                }
+                // Since api token check should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
             }
-        })
+        }
 
-        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed) {
-                    settingsManager.putSettingsBool(PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, checked)
-
-                    // Since api token check should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
-                    BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
-                }
+        binding.activityAppSettingsFeaturesSectionWebintentSheet.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed) {
+                WebIntentHelper(this@AppSettingsFeaturesActivity).requestSupportedLinks(checked)
             }
-        })
-
-        binding.activityAppSettingsFeaturesSectionWebintentSheet.setOnSwitchCheckedChangedListener(object :
-            SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed) {
-                    WebIntentManager(this@AppSettingsFeaturesActivity).requestSupportedLinks(checked)
-                }
-            }
-        })
+        }
     }
 
     enum class COMPONENTS(val componentClassName: String) {

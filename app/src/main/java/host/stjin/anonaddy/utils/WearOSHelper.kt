@@ -1,12 +1,12 @@
 package host.stjin.anonaddy.utils
 
-import android.app.Activity
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.WearOSSettings
 
-class WearOSHelper(private val activity: Activity) {
+object WearOSHelper {
     fun createWearOSConfiguration(): WearOSSettings? {
-        val encryptedSettingsManager = SettingsManager(true, activity)
+        val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         val baseUrl = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL)
         val apiKey = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
 

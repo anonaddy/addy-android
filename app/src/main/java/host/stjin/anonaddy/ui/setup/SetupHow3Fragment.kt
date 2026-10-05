@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.google.android.material.transition.MaterialSharedAxis
 import host.stjin.anonaddy.databinding.FragmentSetupHow3Binding
-import host.stjin.anonaddy.utils.InsetUtil
+import host.stjin.anonaddy.ui.base.BaseFragment
+import host.stjin.anonaddy.utils.InsetUtils
 
-class SetupHow3Fragment : Fragment() {
+class SetupHow3Fragment : BaseFragment() {
     private var _binding: FragmentSetupHow3Binding? = null
 
     // This property is only valid between onCreateView and
@@ -19,10 +19,10 @@ class SetupHow3Fragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val forward = MaterialSharedAxis(MaterialSharedAxis.X, true)
+        val forward = MaterialSharedAxis(MaterialSharedAxis.X, false)
         enterTransition = forward
 
-        val backward = MaterialSharedAxis(MaterialSharedAxis.X, false)
+        val backward = MaterialSharedAxis(MaterialSharedAxis.X, true)
         returnTransition = backward
     }
 
@@ -31,16 +31,16 @@ class SetupHow3Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSetupHow3Binding.inflate(inflater, container, false)
-        InsetUtil.applyBottomInset(binding.setupHow3Ll)
+        InsetUtils.applyBottomInset(binding.setupHow3Ll)
 
         val root = binding.root
 
         binding.setupHow3ButtonNext.setOnClickListener {
-            (activity as SetupNewActivity).switchFragments(SetupHow4Fragment())
+            (activity as? SetupNewActivity)?.switchFragments(SetupHow4Fragment())
         }
 
         binding.setupHow3Iv.setOnClickListener {
-            (activity as SetupNewActivity).switchFragments(SetupHow2Fragment())
+            (activity as? SetupNewActivity)?.switchFragments(SetupHow2Fragment())
         }
 
         return root

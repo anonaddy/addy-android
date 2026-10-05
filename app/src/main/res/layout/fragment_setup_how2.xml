@@ -56,14 +56,14 @@
                 style="@style/titleTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/setup_how2" />
+                android:text="@string/setup_how_2" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:gravity="center_vertical"
-                android:text="@string/setup_how2_desc"
+                android:text="@string/setup_how_2_desc"
                 android:textColor="@color/BlackWhite"
                 android:textSize="18sp" />
 

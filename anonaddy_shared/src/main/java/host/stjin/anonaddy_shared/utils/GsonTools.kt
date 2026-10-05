@@ -10,72 +10,38 @@ import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.models.WearOSSettings
 
+inline fun <reified T> Gson.fromJson(json: String): T {
+    return fromJson(json, object : TypeToken<T>() {}.type)
+}
+
 object GsonTools {
-    fun jsonToAliasObject(context: Context, json: String): ArrayList<Aliases>? {
-        val loggingHelper = LoggingHelper(context)
+    val gson = Gson()
 
+    inline fun <reified T> fromJsonSafe(context: Context, json: String, methodName: String): T? {
         return try {
-            Gson().fromJson(
-                json,
-                object : TypeToken<ArrayList<Aliases?>?>() {}.type
-            ) as ArrayList<Aliases>
-
+            val type = object : TypeToken<T>() {}.type
+            gson.fromJson<T>(json, type)
         } catch (e: Exception) {
             val ex = e.message
-            Log.e("AFA", ex.toString())
-            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToAliasObject", null)
+            Log.e("GsonTools", ex.toString())
+            LoggingHelper(context).addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), methodName, null)
             null
         }
+    }
+
+    fun jsonToAliasObject(context: Context, json: String): ArrayList<Aliases>? {
+        return fromJsonSafe<ArrayList<Aliases>>(context, json, "jsonToAliasObject")
     }
 
     fun jsonToUserResourceObject(context: Context, json: String): UserResource? {
-        val loggingHelper = LoggingHelper(context)
-
-        return try {
-            Gson().fromJson(
-                json,
-                object : TypeToken<UserResource?>() {}.type
-            ) as UserResource
-
-        } catch (e: Exception) {
-            val ex = e.message
-            Log.e("AFA", ex.toString())
-            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToUserResourceObject", null)
-            null
-        }
+        return fromJsonSafe<UserResource>(context, json, "jsonToUserResourceObject")
     }
 
     fun jsonToAliasSortFilterObject(context: Context, json: String): AliasSortFilter? {
-        val loggingHelper = LoggingHelper(context)
-
-        return try {
-            Gson().fromJson(
-                json,
-                object : TypeToken<AliasSortFilter?>() {}.type
-            ) as AliasSortFilter
-
-        } catch (e: Exception) {
-            val ex = e.message
-            Log.e("AFA", ex.toString())
-            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToAliasSortFilterObject", null)
-            null
-        }
+        return fromJsonSafe<AliasSortFilter>(context, json, "jsonToAliasSortFilterObject")
     }
 
     fun jsonToWearOSSettingsObject(context: Context, json: String): WearOSSettings? {
-        val loggingHelper = LoggingHelper(context)
-
-        return try {
-            Gson().fromJson(
-                json,
-                object : TypeToken<WearOSSettings?>() {}.type
-            ) as WearOSSettings
-
-        } catch (e: Exception) {
-            val ex = e.message
-            Log.e("AFA", ex.toString())
-            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToWearOSSettingsObject", null)
-            null
-        }
+        return fromJsonSafe<WearOSSettings>(context, json, "jsonToWearOSSettingsObject")
     }
 }

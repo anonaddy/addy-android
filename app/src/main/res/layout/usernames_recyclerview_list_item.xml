@@ -60,7 +60,7 @@
                     android:lines="1"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="example.com"
+                    android:text="johndoe"
                     android:textAllCaps="false"
                     android:textColor="@color/BlackWhite"
                     android:textSize="16sp"
@@ -75,8 +75,7 @@
                     android:fontFamily="sans-serif"
                     android:lines="1"
                     android:maxLines="1"
-                    android:minLines="1"
-                    android:singleLine="false"
+                    android:singleLine="true"
                     android:text="@string/default_username_cannot_change" />
             </LinearLayout>
 

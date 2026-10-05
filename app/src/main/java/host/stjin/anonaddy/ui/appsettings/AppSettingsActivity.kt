@@ -8,9 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
-import android.widget.CompoundButton
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
@@ -20,9 +18,10 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.wearable.Wearable
-import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.Updater
 import host.stjin.anonaddy.databinding.ActivityAppSettingsBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
@@ -31,30 +30,25 @@ import host.stjin.anonaddy.ui.appsettings.features.AppSettingsFeaturesActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
 import host.stjin.anonaddy.ui.appsettings.wearos.AppSettingsWearOSActivity
-import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.InsetUtil
+import host.stjin.anonaddy.utils.AnonAddyUtils
+import host.stjin.anonaddy.utils.InsetUtils
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.network.NetworkResult
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 
 class AppSettingsActivity : BaseActivity(),
     UIUXInterfaceBottomDialogFragment.AddUIUXInterfaceBottomDialogListener,
-    BackgroundServiceIntervalBottomDialogFragment.AddBackgroundServiceIntervalBottomDialogListener {
-    private val addUIUXInterfaceBottomDialogFragment: UIUXInterfaceBottomDialogFragment =
+    BackgroundServiceIntervalBottomDialogFragment.AddBackgroundServiceIntervalBottomDialogListener,
+    PreferredEmailClientBottomDialogFragment.PreferredEmailClientBottomDialogListener {
+    private var addUIUXInterfaceBottomDialogFragment: UIUXInterfaceBottomDialogFragment? = null
 
-        UIUXInterfaceBottomDialogFragment.newInstance()
+    private var addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment? = null
 
-    private var addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
-
-        BackgroundServiceIntervalBottomDialogFragment.newInstance()
-
-    private val deleteAccountConfirmationBottomSheetDialog: DeleteAccountConfirmationBottomSheetDialog =
-
-        DeleteAccountConfirmationBottomSheetDialog.newInstance()
+    private var deleteAccountConfirmationBottomDialogFragment: DeleteAccountConfirmationBottomDialogFragment? = null
 
     private lateinit var settingsManager: SettingsManager
 
@@ -66,27 +60,22 @@ class AppSettingsActivity : BaseActivity(),
 
     private var shouldEnableBiometric = true
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private var notificationPermissionsResultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
         when (result) {
             true -> checkPermissions()
-            false -> {
-                val intent: Intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                    .putExtra(Settings.EXTRA_APP_PACKAGE, this.packageName)
-                startActivity(intent)
-            }
+            false -> openNotificationSettings()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsBinding.inflate(layoutInflater)
-        InsetUtil.applyBottomInset(binding.activityAppSettingsNSVLL)
+        InsetUtils.applyBottomInset(binding.activityAppSettingsNSVLL)
         val view = binding.root
         setContentView(view)
 
-        settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
+        settingsManager = ServiceLocator.settingsManager
+        encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         setupToolbar(
             R.string.settings,
             binding.activityAppSettingsNSV,
@@ -115,87 +104,88 @@ class AppSettingsActivity : BaseActivity(),
     }
 
     private fun setOnClickListeners() {
-        binding.activityAppSettingsSectionAppTheme.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!addUIUXInterfaceBottomDialogFragment.isAdded) {
-                    addUIUXInterfaceBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "addDarkModeBottomDialogFragment"
-                    )
-                }
+        binding.activityAppSettingsSectionAppTheme.setOnLayoutClickedListener {
+            if (addUIUXInterfaceBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("addDarkModeBottomDialogFragment") == null) {
+                addUIUXInterfaceBottomDialogFragment = UIUXInterfaceBottomDialogFragment.newInstance()
+                addUIUXInterfaceBottomDialogFragment?.show(
+                    supportFragmentManager,
+                    "addDarkModeBottomDialogFragment"
+                )
             }
-        })
+        }
 
-        binding.activityAppSettingsSectionFeatures.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsActivity, AppSettingsFeaturesActivity::class.java)
-                startActivity(intent)
+        binding.activityAppSettingsSectionPreferredEmailClient.setOnLayoutClickedListener {
+            if (supportFragmentManager.findFragmentByTag("PreferredEmailClientBottomDialogFragment") == null) {
+                val dialog = PreferredEmailClientBottomDialogFragment()
+                dialog.show(
+                    supportFragmentManager,
+                    "PreferredEmailClientBottomDialogFragment"
+                )
             }
-        })
+        }
 
-        binding.activityAppSettingsSectionPrivacy.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
+        binding.activityAppSettingsSectionFeatures.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsActivity, AppSettingsFeaturesActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.activityAppSettingsSectionPrivacy.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.activityAppSettingsSectionPrivacy.setSwitchChecked(!binding.activityAppSettingsSectionPrivacy.getSwitchChecked())
+        }
+
+        binding.activityAppSettingsSectionSystemSearch.setOnLayoutClickedListener {
+            if (binding.activityAppSettingsSectionSystemSearch.isLayoutEnabled()) {
                 forceSwitch = true
-                binding.activityAppSettingsSectionPrivacy.setSwitchChecked(!binding.activityAppSettingsSectionPrivacy.getSwitchChecked())
+                binding.activityAppSettingsSectionSystemSearch.setSwitchChecked(!binding.activityAppSettingsSectionSystemSearch.getSwitchChecked())
             }
-        })
+        }
 
-        binding.activityAppSettingsSectionWearos.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsActivity, AppSettingsWearOSActivity::class.java)
-                startActivity(intent)
+        binding.activityAppSettingsSectionWearos.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsActivity, AppSettingsWearOSActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.activityAppSettingsSectionBackgroundService.setOnLayoutClickedListener {
+            if (addBackgroundServiceIntervalBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("addBackgroundServiceIntervalBottomDialogFragment") == null) {
+                addBackgroundServiceIntervalBottomDialogFragment = BackgroundServiceIntervalBottomDialogFragment.newInstance()
+                addBackgroundServiceIntervalBottomDialogFragment?.show(
+                    supportFragmentManager,
+                    "addBackgroundServiceIntervalBottomDialogFragment"
+                )
             }
-        })
+        }
 
-        binding.activityAppSettingsSectionBackgroundService.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!addBackgroundServiceIntervalBottomDialogFragment.isAdded) {
-                    addBackgroundServiceIntervalBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "addBackgroundServiceIntervalBottomDialogFragment"
-                    )
-                }
-            }
-        })
-
-        binding.activityAppSettingsSectionFaq.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val url = "https://addy.io/faq/"
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = url.toUri()
-                startActivity(i)
-            }
-        })
+        binding.activityAppSettingsSectionFaq.setOnLayoutClickedListener {
+            val url = "https://addy.io/faq/"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = url.toUri()
+            startActivity(i)
+        }
 
 
-        binding.activityAppSettingsSectionHelp.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val url = "https://addy.io/help/"
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = url.toUri()
-                startActivity(i)
-            }
-        })
+        binding.activityAppSettingsSectionHelp.setOnLayoutClickedListener {
+            val url = "https://addy.io/help/"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = url.toUri()
+            startActivity(i)
+        }
 
 
-        binding.activityAppSettingsSectionGithub.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val url = "https://github.com/anonaddy/addy-android"
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = url.toUri()
-                startActivity(i)
-            }
-        })
+        binding.activityAppSettingsSectionGithub.setOnLayoutClickedListener {
+            val url = "https://github.com/anonaddy/addy-android"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = url.toUri()
+            startActivity(i)
+        }
 
 
-        binding.activityAppSettingsSectionReportIssue.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val url = "https://github.com/anonaddy/addy-android/issues/new"
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = url.toUri()
-                startActivity(i)
-            }
-        })
+        binding.activityAppSettingsSectionReportIssue.setOnLayoutClickedListener {
+            val url = "https://github.com/anonaddy/addy-android/issues/new"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = url.toUri()
+            startActivity(i)
+        }
 
         binding.activityAppSettingsStjinLogo.setOnClickListener {
             val url = "https://stjin.host"
@@ -206,64 +196,44 @@ class AppSettingsActivity : BaseActivity(),
 
 
 
-        binding.activityAppSettingsSectionLogs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsActivity, LogViewerActivity::class.java)
-                intent.putExtra("logfile", LoggingHelper.LOGFILES.DEFAULT.filename)
-                startActivity(intent)
+        binding.activityAppSettingsSectionLogs.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsActivity, LogViewerActivity::class.java)
+            intent.putExtra("logfile", LoggingHelper.LOGFILES.DEFAULT.filename)
+            startActivity(intent)
+        }
+
+        binding.activityAppSettingsSectionReset.setOnLayoutClickedListener { resetApp() }
+
+        binding.activityAppSettingsSectionDeleteAccount.setOnLayoutClickedListener {
+            if (deleteAccountConfirmationBottomDialogFragment?.isAdded != true && supportFragmentManager.findFragmentByTag("deleteAccountConfirmationBottomDialogFragment") == null) {
+                deleteAccountConfirmationBottomDialogFragment = DeleteAccountConfirmationBottomDialogFragment.newInstance()
+                deleteAccountConfirmationBottomDialogFragment?.show(
+                    supportFragmentManager,
+                    "deleteAccountConfirmationBottomDialogFragment"
+                )
             }
-        })
-
-        binding.activityAppSettingsSectionReset.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                resetApp()
-            }
-        })
-
-        binding.activityAppSettingsSectionDeleteAccount.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!deleteAccountConfirmationBottomSheetDialog.isAdded) {
-                    deleteAccountConfirmationBottomSheetDialog.show(
-                        supportFragmentManager,
-                        "deleteAccountConfirmationBottomSheetDialog"
-                    )
-                }
-            }
-
-        })
+        }
 
 
-        binding.activityAppSettingsSectionUpdater.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsActivity, AppSettingsUpdateActivity::class.java)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsSectionUpdater.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsActivity, AppSettingsUpdateActivity::class.java)
+            startActivity(intent)
+        }
 
-        binding.activityAppSettingsSectionBackup.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsActivity, AppSettingsBackupActivity::class.java)
-                startActivity(intent)
-            }
-        })
+        binding.activityAppSettingsSectionBackup.setOnLayoutClickedListener {
+            val intent = Intent(this@AppSettingsActivity, AppSettingsBackupActivity::class.java)
+            startActivity(intent)
+        }
 
-        binding.activityAppSettingsSectionNotificationPermission.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            @RequiresApi(33)
-            override fun onClick() {
-                requestNotificationPermissions()
-            }
-
-        })
+        binding.activityAppSettingsSectionNotificationPermission.setOnLayoutClickedListener { requestNotificationPermissions() }
 
 
-        binding.activityAppSettingsSectionReview.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val url = "https://play.google.com/store/apps/details?id=host.stjin.anonaddy"
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = url.toUri()
-                this@AppSettingsActivity.startActivity(i)
-            }
-        })
+        binding.activityAppSettingsSectionReview.setOnLayoutClickedListener {
+            val url = "https://play.google.com/store/apps/details?id=host.stjin.anonaddy"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = url.toUri()
+            this@AppSettingsActivity.startActivity(i)
+        }
 
     }
 
@@ -294,7 +264,14 @@ class AppSettingsActivity : BaseActivity(),
 
         // Schedule the background worker (this will cancel if already scheduled)
         BackgroundWorkerHelper(this).scheduleBackgroundWorker()
-        addBackgroundServiceIntervalBottomDialogFragment.dismissAllowingStateLoss()
+        (supportFragmentManager.findFragmentByTag("addBackgroundServiceIntervalBottomDialogFragment") as? BackgroundServiceIntervalBottomDialogFragment
+            ?: addBackgroundServiceIntervalBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
+    }
+
+    override fun onPreferredEmailClientSelected(packageName: String?, appName: String) {
+        binding.activityAppSettingsSectionPreferredEmailClient.setDescription(
+            if (packageName.isNullOrEmpty()) resources.getString(R.string.always_ask) else appName
+        )
     }
 
     private fun checkForVariant() {
@@ -316,14 +293,12 @@ class AppSettingsActivity : BaseActivity(),
 
     private fun checkForUpdates() {
         lifecycleScope.launch {
-            val settingsManager = SettingsManager(false, this@AppSettingsActivity)
             if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
-                Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean, _: String? ->
-                    binding.activityAppSettingsSectionUpdater.setSectionAlert(updateAvailable)
-                    if (updateAvailable) {
-                        binding.activityAppSettingsSectionUpdater.setTitle(this@AppSettingsActivity.resources.getString(R.string.new_update_available))
-                    }
-                }, this@AppSettingsActivity)
+                val updateInfo = Updater.isUpdateAvailable()
+                binding.activityAppSettingsSectionUpdater.setSectionAlert(updateInfo.isServerNewer)
+                if (updateInfo.isServerNewer) {
+                    binding.activityAppSettingsSectionUpdater.setTitle(this@AppSettingsActivity.resources.getString(R.string.new_update_available))
+                }
             }
         }
     }
@@ -331,33 +306,91 @@ class AppSettingsActivity : BaseActivity(),
     private fun loadSettings() {
         binding.activityAppSettingsSectionSecurity.setSwitchChecked(encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED))
         binding.activityAppSettingsSectionLogs.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS))
-        binding.activityAppSettingsSectionPrivacy.setSwitchChecked(encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE))
+        val privacyMode = encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)
+        binding.activityAppSettingsSectionPrivacy.setSwitchChecked(privacyMode)
+
+        if (privacyMode) {
+            // Privacy mode suppresses System search entirely and makes toggle untouchable
+            binding.activityAppSettingsSectionSystemSearch.setSwitchChecked(false)
+            binding.activityAppSettingsSectionSystemSearch.setLayoutEnabled(false)
+        } else {
+            val systemSearch = encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.SYSTEM_SEARCH, true)
+            binding.activityAppSettingsSectionSystemSearch.setSwitchChecked(systemSearch)
+            binding.activityAppSettingsSectionSystemSearch.setLayoutEnabled(true)
+        }
+
+        val preferredPackage = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.DEFAULT_EMAIL_CLIENT)
+        if (preferredPackage.isNullOrEmpty()) {
+            binding.activityAppSettingsSectionPreferredEmailClient.setDescription(resources.getString(R.string.always_ask))
+        } else {
+            val appName = AnonAddyUtils.getAppNameFromPackage(this, preferredPackage)
+            if (appName != null) {
+                binding.activityAppSettingsSectionPreferredEmailClient.setDescription(appName)
+            } else {
+                // If the app was uninstalled, reset to Always ask
+                encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.DEFAULT_EMAIL_CLIENT, "")
+                binding.activityAppSettingsSectionPreferredEmailClient.setDescription(resources.getString(R.string.always_ask))
+            }
+        }
     }
 
     private fun setOnSwitchListeners() {
-        binding.activityAppSettingsSectionLogs.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed) {
-                    settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, checked)
-                }
+        binding.activityAppSettingsSectionLogs.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed) {
+                settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, checked)
             }
-        })
-        binding.activityAppSettingsSectionPrivacy.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed || forceSwitch) {
-                    encryptedSettingsManager.putSettingsBool(SettingsManager.PREFS.PRIVACY_MODE, checked)
+        }
+        binding.activityAppSettingsSectionPrivacy.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed || forceSwitch) {
+                encryptedSettingsManager.putSettingsBool(SettingsManager.PREFS.PRIVACY_MODE, checked)
 
-                    if (checked) {
-                        // If privacy mode enabled, remove all shortcuts
-                        ShortcutManagerCompat.removeAllDynamicShortcuts(this@AppSettingsActivity)
+                if (checked) {
+                    // If privacy mode enabled, remove all shortcuts and search index
+                    ShortcutManagerCompat.removeAllDynamicShortcuts(this@AppSettingsActivity)
+                    lifecycleScope.launch {
+                        ServiceLocator.aliasSearchManager.deleteAllIndexedAliases()
                     }
-
-                    // Schedule the background worker to update widgets (this will cancel if already scheduled)
-                    BackgroundWorkerHelper(this@AppSettingsActivity).scheduleBackgroundWorker()
-
+                    // Disable system search and make toggle untouchable
+                    binding.activityAppSettingsSectionSystemSearch.setSwitchChecked(false)
+                    binding.activityAppSettingsSectionSystemSearch.setLayoutEnabled(false)
+                } else {
+                    // Re-enable touchability
+                    binding.activityAppSettingsSectionSystemSearch.setLayoutEnabled(true)
+                    val systemSearch = encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.SYSTEM_SEARCH, true)
+                    binding.activityAppSettingsSectionSystemSearch.setSwitchChecked(systemSearch)
+                    if (systemSearch) {
+                        lifecycleScope.launch {
+                            ServiceLocator.aliasSearchManager.syncAllAliases()
+                        }
+                    }
                 }
+
+                // Schedule the background worker to update widgets (this will cancel if already scheduled)
+                BackgroundWorkerHelper(this@AppSettingsActivity).scheduleBackgroundWorker()
+
             }
-        })
+        }
+
+        binding.activityAppSettingsSectionSystemSearch.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed || forceSwitch) {
+                if (encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)) {
+                    binding.activityAppSettingsSectionSystemSearch.setSwitchChecked(false)
+                    return@setOnSwitchCheckedChangedListener
+                }
+
+                encryptedSettingsManager.putSettingsBool(SettingsManager.PREFS.SYSTEM_SEARCH, checked)
+
+                lifecycleScope.launch {
+                    if (!checked) {
+                        ServiceLocator.aliasSearchManager.deleteAllIndexedAliases()
+                    } else {
+                        ServiceLocator.aliasSearchManager.syncAllAliases()
+                    }
+                }
+
+                BackgroundWorkerHelper(this@AppSettingsActivity).scheduleBackgroundWorker()
+            }
+        }
     }
 
     private fun setOnBiometricSwitchListeners() {
@@ -371,12 +404,10 @@ class AppSettingsActivity : BaseActivity(),
                 binding.activityAppSettingsSectionSecurity.setLayoutEnabled(true)
 
 
-                binding.activityAppSettingsSectionSecurity.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-                    override fun onClick() {
-                        forceSwitch = true
-                        binding.activityAppSettingsSectionSecurity.setSwitchChecked(!binding.activityAppSettingsSectionSecurity.getSwitchChecked())
-                    }
-                })
+                binding.activityAppSettingsSectionSecurity.setOnLayoutClickedListener {
+                    forceSwitch = true
+                    binding.activityAppSettingsSectionSecurity.setSwitchChecked(!binding.activityAppSettingsSectionSecurity.getSwitchChecked())
+                }
             }
 
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
@@ -472,35 +503,48 @@ class AppSettingsActivity : BaseActivity(),
             })
 
 
-        binding.activityAppSettingsSectionSecurity.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-                if (compoundButton.isPressed || forceSwitch) {
-                    forceSwitch = false
-                    shouldEnableBiometric = checked
-                    val promptInfo = if (checked) {
-                        BiometricPrompt.PromptInfo.Builder()
-                            .setTitle(resources.getString(R.string.enable_biometric_authentication))
-                            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
-                            .build()
-                    } else {
-                        BiometricPrompt.PromptInfo.Builder()
-                            .setTitle(resources.getString(R.string.disable_biometric_authentication))
-                            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
-                            .build()
-                    }
-
-                    biometricPrompt.authenticate(promptInfo)
+        binding.activityAppSettingsSectionSecurity.setOnSwitchCheckedChangedListener { compoundButton, checked -> // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            if (compoundButton.isPressed || forceSwitch) {
+                forceSwitch = false
+                shouldEnableBiometric = checked
+                val promptInfo = if (checked) {
+                    BiometricPrompt.PromptInfo.Builder()
+                        .setTitle(resources.getString(R.string.enable_biometric_authentication))
+                        .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+                        .build()
+                } else {
+                    BiometricPrompt.PromptInfo.Builder()
+                        .setTitle(resources.getString(R.string.disable_biometric_authentication))
+                        .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+                        .build()
                 }
+
+                biometricPrompt.authenticate(promptInfo)
             }
-        })
+        }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun requestNotificationPermissions() {
-        // Check if notification permissions are granted
-        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PermissionChecker.PERMISSION_GRANTED) {
-            notificationPermissionsResultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Check if notification permissions are granted
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PermissionChecker.PERMISSION_GRANTED) {
+                notificationPermissionsResultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        } else {
+            openNotificationSettings()
+        }
+    }
+
+    private fun openNotificationSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, this.packageName)
+            startActivity(intent)
+        } else {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = "package:$packageName".toUri()
+            }
+            startActivity(intent)
         }
     }
 
@@ -528,7 +572,7 @@ class AppSettingsActivity : BaseActivity(),
                     }.addOnFailureListener {
                         logoutAndReset()
                     }
-                } catch (e: NullPointerException) {
+                } catch (_: Exception) {
                     // Expected crash, the gplayless version will return null as connectedNodes
                     logoutAndReset()
                 }
@@ -539,22 +583,21 @@ class AppSettingsActivity : BaseActivity(),
     private fun logoutAndReset() {
 
         lifecycleScope.launch {
-            NetworkHelper(this@AppSettingsActivity).logout { result: String? ->
-                if (result == "204") {
-                    (getSystemService(ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
-                } else {
-                    MaterialDialogHelper.showMaterialDialog(
-                        context = this@AppSettingsActivity,
-                        title = resources.getString(R.string.reset_app),
-                        message = resources.getString(R.string.reset_app_logout_failure),
-                        icon = R.drawable.ic_loader,
-                        neutralButtonText = resources.getString(R.string.cancel),
-                        positiveButtonText = resources.getString(R.string.reset_app_anyways),
-                        positiveButtonAction = {
-                            (getSystemService(ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
-                        }
-                    ).show()
-                }
+            val result = ServiceLocator.userRepository.logout()
+            if (result is NetworkResult.Success) {
+                (getSystemService(ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+            } else {
+                MaterialDialogHelper.showMaterialDialog(
+                    context = this@AppSettingsActivity,
+                    title = resources.getString(R.string.reset_app),
+                    message = resources.getString(R.string.reset_app_logout_failure),
+                    icon = R.drawable.ic_loader,
+                    neutralButtonText = resources.getString(R.string.cancel),
+                    positiveButtonText = resources.getString(R.string.reset_app_anyways),
+                    positiveButtonAction = {
+                        (getSystemService(ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                    }
+                ).show()
             }
         }
 

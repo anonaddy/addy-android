@@ -4,116 +4,116 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.UsernamesRecyclerviewListItemBinding
 import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
+class UsernameDiffCallback : DiffUtil.ItemCallback<Usernames>() {
+    override fun areItemsTheSame(oldItem: Usernames, newItem: Usernames): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Usernames, newItem: Usernames): Boolean {
+        return oldItem == newItem
+    }
+}
+
 class UsernameAdapter(
-    private val listWithUsernames: ArrayList<Usernames>
-) :
-    RecyclerView.Adapter<UsernameAdapter.Holder>() {
+    listWithUsernames: List<Usernames> = emptyList(),
+    private var onUsernameClicker: ClickListener? = null
+) : ListAdapter<Usernames, UsernameAdapter.ViewHolder>(UsernameDiffCallback()) {
 
-    lateinit var onUsernameClicker: ClickListener
+    init {
+        if (listWithUsernames.isNotEmpty()) {
+            submitList(listWithUsernames)
+        }
+    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.usernames_recyclerview_list_item, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = UsernamesRecyclerviewListItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+        return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.mTitle.text = listWithUsernames[position].username
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = getItem(position)
+        holder.binding.usernamesRecyclerviewListTitle.text = item.username
 
-
-        if (listWithUsernames[position].description != null) {
-            holder.mDescription.text = holder.mDescription.context.resources.getString(
+        if (item.description != null) {
+            holder.binding.usernamesRecyclerviewListDescription.text = holder.itemView.context.resources.getString(
                 R.string.s_s_s,
-                listWithUsernames[position].description,
-                (holder.mDescription.context).resources.getString(
+                item.description,
+                holder.itemView.context.resources.getString(
                     R.string.created_at_s,
-                    DateTimeUtils.convertStringToLocalTimeZoneString(listWithUsernames[position].created_at)
+                    DateTimeUtils.convertStringToLocalTimeZoneString(item.created_at)
                 ),
-                (holder.mDescription.context).resources.getString(
+                holder.itemView.context.resources.getString(
                     R.string.updated_at_s,
-                    DateTimeUtils.convertStringToLocalTimeZoneString(listWithUsernames[position].updated_at)
+                    DateTimeUtils.convertStringToLocalTimeZoneString(item.updated_at)
                 )
             )
         } else {
-            holder.mDescription.text = holder.mDescription.context.resources.getString(
+            holder.binding.usernamesRecyclerviewListDescription.text = holder.itemView.context.resources.getString(
                 R.string.s_s,
-                (holder.mDescription.context).resources.getString(
+                holder.itemView.context.resources.getString(
                     R.string.created_at_s,
-                    DateTimeUtils.convertStringToLocalTimeZoneString(listWithUsernames[position].created_at)
+                    DateTimeUtils.convertStringToLocalTimeZoneString(item.created_at)
                 ),
-                (holder.mDescription.context).resources.getString(
+                holder.itemView.context.resources.getString(
                     R.string.updated_at_s,
-                    DateTimeUtils.convertStringToLocalTimeZoneString(listWithUsernames[position].updated_at)
+                    DateTimeUtils.convertStringToLocalTimeZoneString(item.updated_at)
                 )
             )
         }
 
-        if (listWithUsernames[position].active) {
-            holder.usernamesRecyclerviewListUser.setImageResource(R.drawable.ic_user)
+        if (item.active) {
+            holder.binding.usernamesRecyclerviewListUser.setImageResource(R.drawable.ic_user)
         } else {
-            holder.usernamesRecyclerviewListUser.setImageResource(R.drawable.ic_user_off)
+            holder.binding.usernamesRecyclerviewListUser.setImageResource(R.drawable.ic_user_off)
+        }
+
+        if (!holder.itemView.context.resources.getBoolean(R.bool.isTablet)) {
+            holder.binding.usernamesRecyclerviewListOptionLL.visibility = View.GONE
+            holder.binding.usernamesRecyclerviewListExpandOptions.rotation = 0f
         }
     }
 
-    override fun getItemCount(): Int = listWithUsernames.size
-
-
-    fun setClickListener(aClickListener: ClickListener) {
-        onUsernameClicker = aClickListener
+    fun setClickListener(listener: ClickListener) {
+        onUsernameClicker = listener
     }
 
-    fun getList(): ArrayList<Usernames> {
-        return listWithUsernames
-    }
 
 
     interface ClickListener {
-        fun onClickSettings(pos: Int, aView: View)
-        fun onClickDelete(pos: Int, aView: View)
+        fun onClickSettings(pos: Int, view: View)
+        fun onClickDelete(pos: Int, view: View)
     }
 
-    inner class Holder(view: View) : RecyclerView.ViewHolder(view),
+    inner class ViewHolder(val binding: UsernamesRecyclerviewListItemBinding) : RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
 
-        private var mCV: MaterialCardView = view.findViewById(R.id.usernames_recyclerview_list_CV)
-        private var usernamesRecyclerviewListOptionLl: LinearLayout =
-            view.findViewById(R.id.usernames_recyclerview_list_option_LL)
-        private var mOptionsButton: LinearLayout =
-            view.findViewById(R.id.usernames_recyclerview_list_expand_options)
-        var mTitle: TextView = view.findViewById(R.id.usernames_recyclerview_list_title)
-        var mDescription: TextView =
-            view.findViewById(R.id.usernames_recyclerview_list_description)
-        var usernamesRecyclerviewListUser: ImageView =
-            view.findViewById(R.id.usernames_recyclerview_list_user)
-        private var usernamesRecyclerviewListSettingsButton: MaterialButton =
-            view.findViewById(R.id.usernames_recyclerview_list_settings_button)
-        private var usernamesRecyclerviewListDeleteButton: MaterialButton =
-            view.findViewById(R.id.usernames_recyclerview_list_delete_button)
-
-
         init {
-            mOptionsButton.setOnClickListener(this)
-            mCV.setOnClickListener(this)
-            usernamesRecyclerviewListSettingsButton.setOnClickListener(this)
-            usernamesRecyclerviewListDeleteButton.setOnClickListener(this)
+            binding.usernamesRecyclerviewListExpandOptions.setOnClickListener(this)
+            binding.usernamesRecyclerviewListCV.setOnClickListener(this)
+            binding.usernamesRecyclerviewListSettingsButton.setOnClickListener(this)
+            binding.usernamesRecyclerviewListDeleteButton.setOnClickListener(this)
 
-            checkForTabletLayout(usernamesRecyclerviewListDeleteButton.context)
+            checkForTabletLayout(binding.usernamesRecyclerviewListDeleteButton.context)
         }
 
-        override fun onClick(p0: View) {
-            when (p0.id) {
+        override fun onClick(v: View) {
+            val pos = bindingAdapterPosition
+            if (pos == RecyclerView.NO_POSITION) return
+
+            when (v.id) {
                 R.id.usernames_recyclerview_list_CV -> {
                     expandOptions()
                 }
@@ -123,35 +123,32 @@ class UsernameAdapter(
                 }
 
                 R.id.usernames_recyclerview_list_settings_button -> {
-                    onUsernameClicker.onClickSettings(adapterPosition, p0)
+                    onUsernameClicker?.onClickSettings(pos, v)
                 }
 
                 R.id.usernames_recyclerview_list_delete_button -> {
-                    onUsernameClicker.onClickDelete(adapterPosition, p0)
+                    onUsernameClicker?.onClickDelete(pos, v)
                 }
             }
         }
 
         private fun expandOptions() {
-            if (!usernamesRecyclerviewListOptionLl.context.resources.getBoolean(R.bool.isTablet)) {
-                if (usernamesRecyclerviewListOptionLl.isVisible) {
-                    usernamesRecyclerviewListOptionLl.visibility = View.GONE
-                    mOptionsButton.rotation = 0f
+            if (!binding.usernamesRecyclerviewListOptionLL.context.resources.getBoolean(R.bool.isTablet)) {
+                if (binding.usernamesRecyclerviewListOptionLL.isVisible) {
+                    binding.usernamesRecyclerviewListOptionLL.visibility = View.GONE
+                    binding.usernamesRecyclerviewListExpandOptions.rotation = 0f
                 } else {
-                    mOptionsButton.rotation = 180f
-                    usernamesRecyclerviewListOptionLl.visibility = View.VISIBLE
+                    binding.usernamesRecyclerviewListExpandOptions.rotation = 180f
+                    binding.usernamesRecyclerviewListOptionLL.visibility = View.VISIBLE
                 }
             }
         }
 
-
         private fun checkForTabletLayout(context: Context) {
             if (context.resources.getBoolean(R.bool.isTablet)) {
-                mOptionsButton.visibility = View.GONE
-                usernamesRecyclerviewListOptionLl.visibility = View.VISIBLE
+                binding.usernamesRecyclerviewListExpandOptions.visibility = View.GONE
+                binding.usernamesRecyclerviewListOptionLL.visibility = View.VISIBLE
             }
         }
-
     }
 }
-

@@ -2,10 +2,22 @@
 <resources>
     <string name="app_name">addy.io</string>
     <string name="reset_app">Reset app</string>
-    <string name="d_blocked">%1$d blocked</string>
-    <string name="d_forwarded">%1$d forwarded</string>
-    <string name="d_replied">%1$d replied</string>
-    <string name="d_sent">%1$d sent</string>
+    <plurals name="d_blocked">
+        <item quantity="one">%1$d blocked</item>
+        <item quantity="other">%1$d blocked</item>
+    </plurals>
+    <plurals name="d_forwarded">
+        <item quantity="one">%1$d forwarded</item>
+        <item quantity="other">%1$d forwarded</item>
+    </plurals>
+    <plurals name="d_replied">
+        <item quantity="one">%1$d replied</item>
+        <item quantity="other">%1$d replied</item>
+    </plurals>
+    <plurals name="d_sent">
+        <item quantity="one">%1$d sent</item>
+        <item quantity="other">%1$d sent</item>
+    </plurals>
     <string name="alias_status_desc">Use this alias for mail forwarding</string>
     <string name="aliases">Aliases</string>
     <string name="could_not_refresh_data">Could not refresh data</string>
@@ -15,18 +27,16 @@
     <string name="store_logs">Store logs</string>
     <string name="background_service_interval">Background service interval</string>
     <string name="crafted_with_love_and_privacy">Crafted with love and privacy</string>
-    <string name="rules_unavailable_404">The rules feature is not available. Please make sure that the rules API is available for the current user. On hosted instances this feature might require a subscription</string>
     <string name="api_key_invalid">API key invalid, app will reset and close in 8 seconds</string>
     <string name="certificate_key_invalid">Certificate expired, app will reset and close in 8 seconds</string>
     <string name="AppIconDefault">Default</string>
     <string name="AppIconClassic">Classic</string>
     <string name="AppIconGradient">Gradient</string>
     <string name="AppIconInverseGradient">Inverse gradient</string>
-    <string name="logs_reset_due_to_error">Logs could not be parsed and have been reset</string>
     <string name="logs_cleared">Logs cleared</string>
     <string name="error_edit_active">An error occurred while changing the active state</string>
     <string name="error_edit_pinned">An error occurred while changing the pinned state</string>
     <string name="understood">Understood</string>
     <string name="local_network_permission_required">Local network access is required for this instance</string>
-    <string name="local_network_permission_rationale">This instance appears to be on your local network. Android 15+ requires permission to connect to local devices to protect your privacy.</string>
+    <string name="local_network_permission_rationale">This instance could be on your local network. Android 15+ requires permission to connect to local devices to protect your privacy.</string>
 </resources>

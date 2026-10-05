@@ -34,7 +34,7 @@ class LauncherIconController(private val context: Context) {
 
     }
 
-    enum class LauncherIcon @JvmOverloads constructor(
+    enum class LauncherIcon(
         val key: String,
         val background: Int,
         val foreground: Int,

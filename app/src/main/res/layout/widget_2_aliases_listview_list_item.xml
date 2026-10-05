@@ -10,16 +10,16 @@
     android:backgroundTint="?android:attr/colorControlHighlight"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:paddingLeft="16dp"
-    android:paddingTop="12dp"
-    android:paddingRight="16dp"
-    android:paddingBottom="12dp">
+    android:paddingStart="12dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="12dp"
+    android:paddingBottom="8dp">
 
     <LinearLayout
         android:id="@+id/widget_aliases_listview_list"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="3"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -28,15 +28,14 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
             android:ellipsize="end"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-medium"
             android:lines="1"
             android:maxLines="1"
             android:singleLine="true"
             android:text="e4eba4f0-16e5-457a-9648-a6ba518ace43@dontusemy.email"
             android:textAllCaps="false"
             android:textColor="@color/widget_textcolor"
-            android:textSize="14sp"
-            android:textStyle="bold"
+            android:textSize="13sp"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -44,26 +43,27 @@
             style="@style/DescTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:alpha="0.7"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:lines="1"
-            android:maxLines="2"
-            android:singleLine="false"
+            android:maxLines="1"
+            android:singleLine="true"
             android:text="Stupid Sony newsletters. I don’t want that new PlayStation! I stick to my PSP!"
             android:textColor="@color/widget_textcolor"
+            android:textSize="11sp"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/widget_aliases_listview_list_copy"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
-        android:layout_weight="0"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp"
         android:contentDescription="@string/copy_alias"
+        android:padding="6dp"
         android:src="@drawable/ic_copy"
-        android:tint="?android:attr/colorAccent"
-        app:tint="?android:attr/colorAccent"
-        tools:ignore="UseAppTint" />
+        app:tint="?android:attr/colorAccent" />
 
 </LinearLayout>

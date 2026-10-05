@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="WidgetTheme" parent="Theme.Material3Expressive.DynamicColors.DayNight">
         <!-- Override default colorBackground attribute with custom color -->
@@ -9,7 +9,7 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="BaseTheme">
-        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
         <!--
@@ -30,9 +30,9 @@
         <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
         <item name="chipStyle">@style/AddyIoChip</item>
 
-        <item name="android:windowSplashScreenBackground">@color/ic_launcher_background</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_anim</item>
-        <item name="android:windowSplashScreenAnimationDuration">1000</item>
+        <item name="android:windowSplashScreenBackground" tools:targetApi="31">@color/ic_launcher_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="31">@drawable/ic_launcher_anim</item>
+        <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="31">1000</item>
         <item name="badgeStyle">@style/AddyIoBadge</item>
     </style>
 
@@ -63,17 +63,11 @@
         <item name="fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="AppTheme.CollapsingToolbarTitle.Expanded.Small" parent="TextAppearance.Material3.HeadlineSmall">
-        <item name="android:textSize">@dimen/collapsed_text_size</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="fontFamily">sans-serif</item>
-    </style>
-
     <style name="BottomSheet" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">?colorSurface</item>
-        <item name="android:navigationBarDividerColor">?colorSurface</item>
+        <item name="android:navigationBarDividerColor" tools:targetApi="27">?colorSurface</item>
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@style/Animation.MaterialComponents.BottomSheetDialog</item>
@@ -92,7 +86,7 @@
         <item name="android:statusBarColor">
             @android:color/transparent
         </item>
-        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
     </style>
 
 
@@ -119,18 +113,6 @@
         <item name="trackCornerRadius">50%</item>
         <item name="indicatorTrackGapSize">3dp</item>
         <item name="android:indeterminate">true</item>
-    </style>
-
-    <style name="Widget.Material3Expressive.CircularProgressIndicator.Wavy.Medium.Inverse" parent="Widget.Material3Expressive.CircularProgressIndicator.Wavy.Medium">
-        <item name="trackColor">?colorPrimary</item>
-        <item name="indicatorColor">?colorSecondaryContainer</item>
-    </style>
-
-
-    <style name="AddyIoProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progressbar_drawable</item>
-        <item name="android:maxHeight">8dip</item>
-        <item name="android:minHeight">8dip</item>
     </style>
 
     <style name="AddyIoProgressBar.Square" parent="Widget.AppCompat.ProgressBar.Horizontal">
@@ -177,16 +159,6 @@
     <!-- END SECONDARY -->
 
     <!-- TERTIARY -->
-
-    <style name="ActionButtonsTertiary" parent="Widget.Material3Expressive.Button">
-        <item name="backgroundTint">?colorTertiary</item>
-        <item name="android:textColor">?colorOnTertiary</item>
-        <item name="iconTint">?colorOnTertiary</item>
-        <item name="android:stateListAnimator">@null</item>
-        <item name="cornerRadius">@dimen/corner_radius_button</item>
-        <item name="android:height">56dp</item>
-    </style>
-
 
     <style name="CircularProgressButtonTertiary" parent="MaterialButtonSecondary">
         <item name="backgroundTint">?colorTertiary</item>
@@ -269,31 +241,12 @@
         <item name="android:padding">16dp</item>
     </style>
 
-    <style name="AddyIoDialogTitle" parent="TextAppearance.Material3.TitleLarge">
-        <item name="android:ellipsize">end</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:lines">1</item>
-        <item name="android:maxLines">1</item>
-        <item name="singleLine">true</item>
-        <item name="android:textSize">20sp</item>
-    </style>
 
-    <style name="AddyIoDialogDesc" parent="AddyIoDialogTitle">
-        <item name="android:alpha">0.7</item>
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">16sp</item>
-    </style>
 
     <style name="divider">
         <item name="android:layout_height">1dp</item>
         <item name="android:alpha">0.4</item>
         <item name="android:background">?colorOutlineVariant</item>
-    </style>
-
-    <style name="divider_vertical_widget_2_layout_3">
-        <item name="android:layout_width">1dp</item>
-        <item name="android:alpha">0.5</item>
-        <item name="android:background">?colorSurfaceVariant</item>
     </style>
 
     <style name="AddyIoCustomCardViewStyleCenter" parent="Widget.Material3.CardView.Elevated">
@@ -344,11 +297,6 @@
         <item name="android:layout_marginStart">8dp</item>
     </style>
 
-    <style name="RoundFlatButton" parent="Widget.Material3Expressive.Button.OutlinedButton">
-        <item name="android:textColor">?colorOnSurface</item>
-        <item name="strokeWidth">1.5dp</item>
-        <item name="strokeColor">?colorOutline</item>
-    </style>
 
     <style name="AddyIoChip" parent="Widget.Material3.Chip.Filter" />
 
@@ -399,17 +347,6 @@
         <item name="autoSizeMinTextSize">8sp</item>
         <item name="autoSizeMaxTextSize">14sp</item>
         <item name="android:ellipsize">none</item>
-    </style>
-
-    <style name="AddyIoMaterialToggleButtonGroupParentCardView" parent="Widget.Material3.CardView.Elevated">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="cardElevation">0dp</item> <!-- M3 uses tonal elevation -->
-        <item name="contentPadding">3dp</item>
-        <item name="cardCornerRadius">@dimen/corner_radius_cardview</item>
-        <item name="contentPaddingLeft">6dp</item>
-        <item name="contentPaddingRight">6dp</item>
-        <item name="cardBackgroundColor">?colorSurfaceContainer</item>
     </style>
 
     <style name="AddyIoBadge" parent="Widget.MaterialComponents.Badge">

@@ -193,6 +193,13 @@
                     android:text="@string/add_action_subject_info"
                     android:visibility="gone" />
 
+                <TextView
+                    android:id="@+id/bs_rule_action_values_til_alias_description_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_action_alias_description_info"
+                    android:visibility="gone" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
 

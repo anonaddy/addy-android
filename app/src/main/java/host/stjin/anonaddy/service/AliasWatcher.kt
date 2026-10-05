@@ -3,6 +3,7 @@ package host.stjin.anonaddy.service
 import android.content.Context
 import android.widget.Toast
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
@@ -10,7 +11,7 @@ import host.stjin.anonaddy_shared.utils.GsonTools
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 class AliasWatcher(private val context: Context) {
-    val encryptedSettingsManager = SettingsManager(true, context)
+    private val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
 
 
     fun watchAliasesForDifferences() {
@@ -70,7 +71,7 @@ class AliasWatcher(private val context: Context) {
         // Only remove alias if it is already in the list
         if (aliasList.contains(alias)) {
             aliasList.remove(alias)
-            aliasList.let { encryptedSettingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
+            encryptedSettingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, aliasList)
 
             // Since an alias was removed from the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its still required
             BackgroundWorkerHelper(context).scheduleBackgroundWorker()
@@ -87,13 +88,15 @@ class AliasWatcher(private val context: Context) {
                 "addAliasToWatch",
                 null
             )
-            Toast.makeText(context, context.resources.getString(R.string.aliaswatcher_max_reached), Toast.LENGTH_LONG).show()
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                Toast.makeText(context, context.resources.getString(R.string.aliaswatcher_max_reached), Toast.LENGTH_LONG).show()
+            }
             false
         } else {
             // Only add alias if it is not already in the list
             if (!aliasList.contains(alias)) {
                 aliasList.add(alias)
-                aliasList.let { encryptedSettingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
+                encryptedSettingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, aliasList)
 
                 // Since an alias was added to the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its required
                 BackgroundWorkerHelper(context).scheduleBackgroundWorker()

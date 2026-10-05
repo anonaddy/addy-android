@@ -3,59 +3,63 @@ package host.stjin.anonaddy.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.SearchResultRecyclerviewListItemBinding
+
+class SearchDiffCallback : DiffUtil.ItemCallback<String>() {
+    override fun areItemsTheSame(oldItem: String, newItem: String): Boolean = oldItem == newItem
+    override fun areContentsTheSame(oldItem: String, newItem: String): Boolean = oldItem == newItem
+}
 
 class SearchAdapter(
-    private val listWithRecentSearches: ArrayList<String>
-) :
-    RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
+    listWithRecentSearches: List<String> = emptyList()
+) : ListAdapter<String, SearchAdapter.ViewHolder>(SearchDiffCallback()) {
 
     lateinit var onSearchResultClicker: ClickListener
 
+    init {
+        if (listWithRecentSearches.isNotEmpty()) {
+            submitList(listWithRecentSearches)
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.search_result_recyclerview_list_item, parent, false)
+        val binding = SearchResultRecyclerviewListItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.mTitle.text = listWithRecentSearches[position]
+        holder.binding.searchResultRecyclerviewListTitle.text = getItem(position)
     }
-
-    override fun getItemCount(): Int = listWithRecentSearches.size
-
 
     fun setClickListener(aClickListener: ClickListener) {
         onSearchResultClicker = aClickListener
     }
 
-
     interface ClickListener {
         fun onClickSearchResult(pos: Int, aView: View)
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
+    inner class ViewHolder(val binding: SearchResultRecyclerviewListItemBinding) : RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
 
-        private var mLL: LinearLayout = view.findViewById(R.id.search_result_recyclerview_list_LL)
-        var mTitle: TextView = view.findViewById(R.id.search_result_recyclerview_list_title)
-
         init {
-            mLL.setOnClickListener(this)
+            binding.searchResultRecyclerviewListLL.setOnClickListener(this)
         }
 
         override fun onClick(p0: View) {
-            when (p0.id) {
-                R.id.search_result_recyclerview_list_LL -> {
-                    onSearchResultClicker.onClickSearchResult(adapterPosition, p0)
-                }
+            val pos = bindingAdapterPosition
+            if (pos == RecyclerView.NO_POSITION) return
+
+            if (p0.id == binding.searchResultRecyclerviewListLL.id) {
+                onSearchResultClicker.onClickSearchResult(pos, p0)
             }
         }
-
     }
 }
-

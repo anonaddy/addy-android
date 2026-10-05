@@ -22,14 +22,16 @@
         <androidx.core.widget.NestedScrollView
             android:id="@+id/appsettings_logviewer_NSV"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clipToPadding="false">
 
             <RelativeLayout
                 android:id="@+id/appsettings_logviewer_NSV_LL"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipChildren="false"
-                android:clipToPadding="false">
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/fab_bottom_padding">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/appsettings_logviewer_recyclerview"

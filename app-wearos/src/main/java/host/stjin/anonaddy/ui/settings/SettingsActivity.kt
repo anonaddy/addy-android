@@ -3,7 +3,7 @@ package host.stjin.anonaddy.ui.settings
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.activity.ComponentActivity
+import host.stjin.anonaddy.ui.base.BaseComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,22 +44,22 @@ import androidx.wear.compose.material.ToggleChipDefaults
 import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import com.google.android.gms.wearable.Wearable
-import com.google.gson.Gson
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.components.ShowOnDeviceComposeContent
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.ui.components.ScalingLazyColumnWithRSB
+import host.stjin.anonaddy.ui.components.ShowOnDeviceComposeContent
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.ui.theme.AppTheme
-import host.stjin.anonaddy_shared.ui.theme.getAddyIoChipColors
-import host.stjin.anonaddy_shared.ui.theme.getAddyIoDangerChipColors
-import host.stjin.anonaddy_shared.ui.theme.getAddyIoInlineSliderColors
-import host.stjin.anonaddy_shared.ui.theme.getAddyIoToggleChipColors
+import host.stjin.anonaddy.ui.theme.AppTheme
+import host.stjin.anonaddy.ui.theme.getAddyIoChipColors
+import host.stjin.anonaddy.ui.theme.getAddyIoDangerChipColors
+import host.stjin.anonaddy.ui.theme.getAddyIoInlineSliderColors
+import host.stjin.anonaddy.ui.theme.getAddyIoToggleChipColors
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 
-class SettingsActivity : ComponentActivity() {
+class SettingsActivity : BaseComponentActivity() {
 
     private lateinit var settingsManager: SettingsManager
     private lateinit var encryptedSettingsManager: SettingsManager
@@ -68,8 +68,8 @@ class SettingsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
+        settingsManager = ServiceLocator.settingsManager
+        encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
         setComposeContent()
     }
 
@@ -151,8 +151,9 @@ class SettingsActivity : ComponentActivity() {
                     item { Text(text = resources.getString(R.string.background_service_interval), textAlign = TextAlign.Center) }
                     item {
                         Text(
-                            text = resources.getString(
-                                R.string.background_service_interval_value,
+                            text = resources.getQuantityString(
+                                R.plurals.background_service_interval_value,
+                                backgroundServiceIntervalValue,
                                 backgroundServiceIntervalValue
                             ), Modifier.alpha(0.4f), textAlign = TextAlign.Center
                         )
@@ -332,7 +333,7 @@ class SettingsActivity : ComponentActivity() {
                 nodeClient.localNode.addOnSuccessListener {
                     hasPairedDevices = true
 
-                    val logs = Gson().toJson(LoggingHelper(this).getLogs())
+                    val logs = host.stjin.anonaddy_shared.utils.GsonTools.gson.toJson(LoggingHelper(this).getLogs())
 
                     // Send a message to all connected nodes basically broadcasting itself.
                     // Nodes with the app installed will receive this message and open the setup sheet

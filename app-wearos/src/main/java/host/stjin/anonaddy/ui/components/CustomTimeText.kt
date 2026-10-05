@@ -5,8 +5,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.wear.tooling.preview.devices.WearDevices
 import androidx.wear.compose.foundation.CurvedTextStyle
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Text
@@ -56,19 +56,19 @@ fun CustomTimeText(
     apiLevel = 28,
     uiMode = Configuration.UI_MODE_TYPE_WATCH,
     showSystemUi = true,
-    device = Devices.WEAR_OS_LARGE_ROUND
+    device = WearDevices.LARGE_ROUND
 )
 @Preview(
     apiLevel = 28,
     uiMode = Configuration.UI_MODE_TYPE_WATCH,
     showSystemUi = true,
-    device = Devices.WEAR_OS_SQUARE
+    device = WearDevices.SQUARE
 )
 @Preview(
     apiLevel = 28,
     uiMode = Configuration.UI_MODE_TYPE_WATCH,
     showSystemUi = true,
-    device = Devices.WEAR_OS_SMALL_ROUND
+    device = WearDevices.SMALL_ROUND
 )
 // This will only be rendered properly in AS Chipmunk and beyond
 @Composable

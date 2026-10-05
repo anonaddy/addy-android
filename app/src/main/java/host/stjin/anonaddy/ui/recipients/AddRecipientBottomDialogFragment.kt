@@ -8,19 +8,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAddrecipientBinding
 import host.stjin.anonaddy.utils.CustomPatterns
-import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.network.NetworkResult
 import kotlinx.coroutines.launch
 
 
 class AddRecipientBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddRecipientBottomDialogListener
+    private val viewModel: RecipientsViewModel by activityViewModels()
+    private var listener: AddRecipientBottomDialogListener? = null
 
     private var _binding: BottomsheetAddrecipientBinding? = null
 
@@ -36,7 +38,7 @@ class AddRecipientBottomDialogFragment : BaseBottomSheetDialogFragment(), View.O
         _binding = BottomsheetAddrecipientBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        listener = parentFragment as AddRecipientBottomDialogListener
+        listener = (parentFragment as? AddRecipientBottomDialogListener) ?: (activity as? AddRecipientBottomDialogListener)
 
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
@@ -99,18 +101,16 @@ class AddRecipientBottomDialogFragment : BaseBottomSheetDialogFragment(), View.O
         context: Context,
         address: String
     ) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.addRecipient({ recipient, error ->
-            if (recipient != null) {
-                listener.onAdded()
-            } else {
-                // Revert the button to normal
-                binding.bsAddrecipientRecipientAddRecipientButton.revertAnimation()
-
-                binding.bsAddrecipientRecipientTil.error =
-                    context.resources.getString(R.string.error_adding_recipient) + "\n" + error
+        when (val result = viewModel.addRecipient(address)) {
+            is NetworkResult.Success -> {
+                listener?.onAdded()
             }
-        }, address)
+            is NetworkResult.Error -> {
+                binding.bsAddrecipientRecipientAddRecipientButton.revertAnimation()
+                binding.bsAddrecipientRecipientTil.error =
+                    context.resources.getString(R.string.error_adding_recipient) + "\n" + result.error
+            }
+        }
     }
 
     // 1. Defines the listener interface with a method passing back data result.

@@ -28,11 +28,20 @@ class RefreshLayoutAnimationView @JvmOverloads constructor(
 
     private var aniStatus = AnimatorStatus.PULL_DOWN
 
-    private var backPaint: Paint? = null
+    private val backPaint = Paint().apply {
+        isAntiAlias = true
+        style = Paint.Style.FILL
+        color = -0x746f51
+    }
 
-    private var outPaint: Paint? = null
+    private val outPaint = Paint().apply {
+        isAntiAlias = true
+        color = -0x1
+        style = Paint.Style.STROKE
+        strokeWidth = 5f
+    }
 
-    private var path: Path? = null
+    private val path = Path()
 
     private var radius: Int = 0
 
@@ -98,19 +107,6 @@ class RefreshLayoutAnimationView @JvmOverloads constructor(
         )
             .toInt()
         widthOffset = 0.5f
-        backPaint = Paint()
-        backPaint!!.isAntiAlias = true
-        backPaint!!.style = Paint.Style.FILL
-        backPaint!!.color = -0x746f51
-
-        outPaint = Paint()
-        outPaint!!.isAntiAlias = true
-        outPaint!!.color = -0x1
-        outPaint!!.style = Paint.Style.STROKE
-        outPaint!!.strokeWidth = 5f
-
-
-        path = Path()
 
     }
 
@@ -168,7 +164,7 @@ class RefreshLayoutAnimationView @JvmOverloads constructor(
         super.onDraw(canvas)
         when (aniStatus) {
             AnimatorStatus.PULL_DOWN -> {
-                canvas.drawRect(0f, 0f, localWidth.toFloat(), localHeight.toFloat(), backPaint!!)
+                canvas.drawRect(0f, 0f, localWidth.toFloat(), localHeight.toFloat(), backPaint)
             }
 
             AnimatorStatus.REL_DRAG, AnimatorStatus.DRAG_DOWN -> {
@@ -218,26 +214,26 @@ class RefreshLayoutAnimationView @JvmOverloads constructor(
     }
 
     fun setAniBackColor(color: Int) {
-        backPaint!!.color = color
+        backPaint.color = color
     }
 
     fun setAniForeColor(color: Int) {
-        outPaint!!.color = color
+        outPaint.color = color
         setBackgroundColor(color)
     }
 
     private fun drawDrag(canvas: Canvas) {
-        canvas.drawRect(0f, 0f, localWidth.toFloat(), pullHeight.toFloat(), backPaint!!)
-        path!!.reset()
-        path!!.moveTo(0f, pullHeight.toFloat())
-        path!!.quadTo(
+        canvas.drawRect(0f, 0f, localWidth.toFloat(), pullHeight.toFloat(), backPaint)
+        path.reset()
+        path.moveTo(0f, pullHeight.toFloat())
+        path.quadTo(
             widthOffset * localWidth, (pullHeight + (localHeight - pullHeight) * 2).toFloat(),
             localWidth.toFloat(), pullHeight.toFloat()
         )
-        canvas.drawPath(path!!, backPaint!!)
+        canvas.drawPath(path, backPaint)
     }
 
-    interface OnViewAniDone {
+    fun interface OnViewAniDone {
         fun viewAniDone()
     }
 

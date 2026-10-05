@@ -8,17 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.CompoundButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.wearable.Wearable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.ui.base.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.LauncherIconsAdapter
+import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.BottomsheetUiuxInterfaceBinding
-import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
@@ -26,7 +25,7 @@ import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 
 class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
-    private lateinit var listener: AddUIUXInterfaceBottomDialogListener
+    private var listener: AddUIUXInterfaceBottomDialogListener? = null
 
     private var forceSwitch = false
 
@@ -50,12 +49,12 @@ class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.
         _binding = BottomsheetUiuxInterfaceBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        listener = activity as AddUIUXInterfaceBottomDialogListener
-        settingsManager = SettingsManager(false, requireContext())
+        listener = (parentFragment as? AddUIUXInterfaceBottomDialogListener) ?: (activity as? AddUIUXInterfaceBottomDialogListener)
+        settingsManager = ServiceLocator.settingsManager
 
         setOnClickListeners()
         setOnSwitchListeners()
-        spinnerChangeListener(requireContext())
+        spinnerChangeListener()
         loadSettings()
 
         when (settingsManager.getSettingsInt(SettingsManager.PREFS.DARK_MODE, -1)) {
@@ -98,12 +97,10 @@ class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.
     }
 
     private fun setOnClickListeners() {
-        binding.bsUiuxInterfaceSectionDynamicColors.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.bsUiuxInterfaceSectionDynamicColors.setSwitchChecked(!binding.bsUiuxInterfaceSectionDynamicColors.getSwitchChecked())
-            }
-        })
+        binding.bsUiuxInterfaceSectionDynamicColors.setOnLayoutClickedListener {
+            forceSwitch = true
+            binding.bsUiuxInterfaceSectionDynamicColors.setSwitchChecked(!binding.bsUiuxInterfaceSectionDynamicColors.getSwitchChecked())
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -116,24 +113,24 @@ class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.
         if (p0 != null) {
             when (p0.id) {
                 R.id.bs_uiux_interface_off -> {
-                    listener.onDarkModeOff()
+                    listener?.onDarkModeOff()
                 }
 
                 R.id.bs_uiux_interface_on -> {
-                    listener.onDarkModeOn()
+                    listener?.onDarkModeOn()
                 }
 
                 R.id.bs_uiux_interface_automatic -> {
-                    listener.onDarkModeAutomatic()
+                    listener?.onDarkModeAutomatic()
                 }
             }
         }
     }
 
-    private fun spinnerChangeListener(context: Context) {
+    private fun spinnerChangeListener() {
         binding.bsUiuxInterfaceStartupPageMact.setOnItemClickListener { _, _, _, _ ->
             // Since the alias format changed, check if custom is available
-            SettingsManager(false, context).putSettingsString(
+            ServiceLocator.settingsManager.putSettingsString(
                 SettingsManager.PREFS.STARTUP_PAGE,
                 startupPages[startupPageNames.indexOf(binding.bsUiuxInterfaceStartupPageMact.text.toString())]
             )
@@ -155,14 +152,14 @@ class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.
     private fun loadSettings() {
         binding.bsUiuxInterfaceSectionDynamicColors.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS))
 
-        var startupPageValue = SettingsManager(false, requireContext()).getSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "home")
+        var startupPageValue = ServiceLocator.settingsManager.getSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "home")
         fillSpinners(requireContext())
 
         // Check if the value exists in the array, reset to home if not (this could occur if eg. a tablet backup (which has more options) gets restored on mobile)
         if (startupPages.contains(startupPageValue)) {
             binding.bsUiuxInterfaceStartupPageMact.setText(startupPageNames[startupPages.indexOf(startupPageValue)], false)
         } else {
-            SettingsManager(false, requireContext()).putSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "home")
+            ServiceLocator.settingsManager.putSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "home")
             startupPageValue = "home"
             binding.bsUiuxInterfaceStartupPageMact.setText(startupPageNames[startupPages.indexOf(startupPageValue)], false)
 
@@ -177,7 +174,7 @@ class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.
 
         val customAdapter = LauncherIconsAdapter(requireContext())
         customAdapter.setClickListener(object : LauncherIconsAdapter.ClickListener {
-            override fun onClick(pos: Int, aView: View) {
+            override fun onClick(pos: Int, view: View) {
                 // Set status of all images accordingly
                 for (i in 0 until customAdapter.itemCount) {
                     val viewholder = binding.bsUiuxInterfaceIconRv.findViewHolderForAdapterPosition(i) as LauncherIconsAdapter.ViewHolder
@@ -212,14 +209,12 @@ class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.
     }
 
     private fun setOnSwitchListeners() {
-        binding.bsUiuxInterfaceSectionDynamicColors.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed || forceSwitch) {
-                    settingsManager.putSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS, checked)
-                    listener.onApplyDynamicColors()
-                }
+        binding.bsUiuxInterfaceSectionDynamicColors.setOnSwitchCheckedChangedListener { compoundButton, checked ->
+            if (compoundButton.isPressed || forceSwitch) {
+                settingsManager.putSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS, checked)
+                listener?.onApplyDynamicColors()
             }
-        })
+        }
     }
 
     // 1. Defines the listener interface with a method passing back data result.
