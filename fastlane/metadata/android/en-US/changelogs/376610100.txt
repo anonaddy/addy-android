@@ -1,0 +1,2 @@
+What's new in addy.io 6.6.1:
+• Fixed a crash on app launch for certain device languages

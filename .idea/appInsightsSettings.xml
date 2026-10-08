@@ -18,6 +18,45 @@
             </InsightsFilterSettings>
           </value>
         </entry>
+        <entry key="Android vitals">
+          <value>
+            <InsightsFilterSettings>
+              <option name="connection">
+                <ConnectionSetting>
+                  <option name="appId" value="host.stjin.anonaddy" />
+                </ConnectionSetting>
+              </option>
+              <option name="signal" value="SIGNAL_UNSPECIFIED" />
+              <option name="timeIntervalDays" value="SEVEN_DAYS" />
+              <option name="versions">
+                <list>
+                  <VersionSetting>
+                    <option name="buildVersion" value="376600400" />
+                    <option name="displayName" value="376600400" />
+                    <option name="displayVersion" value="376600400" />
+                    <option name="tracks">
+                      <list>
+                        <option value="PRODUCTION" />
+                        <option value="INTERNAL" />
+                      </list>
+                    </option>
+                  </VersionSetting>
+                  <VersionSetting>
+                    <option name="buildVersion" value="376400100" />
+                    <option name="displayName" value="376400100" />
+                    <option name="displayVersion" value="376400100" />
+                  </VersionSetting>
+                  <VersionSetting>
+                    <option name="buildVersion" value="371670101" />
+                    <option name="displayName" value="371670101" />
+                    <option name="displayVersion" value="371670101" />
+                  </VersionSetting>
+                </list>
+              </option>
+              <option name="visibilityType" value="ALL" />
+            </InsightsFilterSettings>
+          </value>
+        </entry>
       </map>
     </option>
   </component>

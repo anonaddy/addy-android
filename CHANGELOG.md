@@ -1,5 +1,13 @@
 # Changelog
 
+## [v6.6.1] - 2026-10-08
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed a crash on app launch for certain device languages
+
 ## [v6.6.0] - 2026-10-03
 
 ### addy.io

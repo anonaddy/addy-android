@@ -27,3 +27,7 @@
     void setRoundPercent(float);
     float getRoundPercent();
 }
+
+# Keep PrettyTime classes and localized ResourceBundles accessed via reflection
+-keep class org.ocpsoft.prettytime.** { *; }
+
