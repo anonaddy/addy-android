@@ -202,6 +202,63 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <LinearLayout
+                android:id="@+id/bs_rule_action_webhook_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bs_rule_action_webhook_url_til"
+                    style="@style/AddyIoTextInputLayoutOutlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/enter_webhook_url"
+                    app:placeholderText="@string/webhook_url_placeholder">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bs_rule_action_webhook_url_tiet"
+                        style="@style/AddyIoTextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:imeOptions="actionDone"
+                        android:inputType="textUri"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:minLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/bs_rule_action_webhook_include_body_cb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/webhook_include_message_body"
+                    android:textColor="@color/BlackWhite"
+                    android:textSize="14sp" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/bs_rule_action_webhook_include_headers_cb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/webhook_include_headers"
+                    android:textColor="@color/BlackWhite"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/bs_rule_action_webhook_desc"
+                    style="@style/DescTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/webhook_info_desc" />
+
+            </LinearLayout>
+
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bs_rule_action_add_action_button"

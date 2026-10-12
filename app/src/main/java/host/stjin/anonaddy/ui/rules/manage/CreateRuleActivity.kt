@@ -23,6 +23,7 @@ import host.stjin.anonaddy_shared.models.Action
 import host.stjin.anonaddy_shared.models.Condition
 import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.Rules
+import host.stjin.anonaddy_shared.models.WebhookActionValue
 import host.stjin.anonaddy_shared.network.NetworkResult
 import host.stjin.anonaddy_shared.utils.GsonTools
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -222,6 +223,23 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         val action = Action(
             type = type,
             value = value.toString()
+        )
+        // Edit index is not empty, thus are editing an action, replace the action at index
+        if (actionEditIndex != null) {
+            rules.actions[actionEditIndex] = action
+        } else {
+            rules.actions.add(action)
+        }
+
+        setPage()
+    }
+
+    override fun onAddedAction(actionEditIndex: Int?, type: String, value: WebhookActionValue) {
+        (supportFragmentManager.findFragmentByTag("actionBottomDialogFragment") as? ActionBottomDialogFragment
+            ?: actionBottomDialogFragment)?.takeIf { it.isAdded }?.dismissAllowingStateLoss()
+        val action = Action(
+            type = type,
+            value = value
         )
         // Edit index is not empty, thus are editing an action, replace the action at index
         if (actionEditIndex != null) {
@@ -515,9 +533,31 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                     subtitle.text = ""
                     subtitle.visibility = View.GONE
                 }
+                "webhook" -> {
+                    val webhookValue = action.getWebhookValue()
+                    if (webhookValue != null) {
+                        val tags = mutableListOf<String>()
+                        if (webhookValue.include_body) {
+                            tags.add(this.resources.getString(R.string.webhook_body_included))
+                        }
+                        if (webhookValue.include_headers) {
+                            tags.add(this.resources.getString(R.string.webhook_headers_included))
+                        }
+                        subtitle.text = if (tags.isNotEmpty()) {
+                            "${webhookValue.url} • ${tags.joinToString(" • ")}"
+                        } else {
+                            webhookValue.url
+                        }
+                        subtitle.visibility = View.VISIBLE
+                    } else {
+                        subtitle.text = ""
+                        subtitle.visibility = View.GONE
+                    }
+                }
                 else -> {
-                    subtitle.text = action.value ?: ""
-                    subtitle.visibility = if (action.value.isNullOrEmpty()) View.GONE else View.VISIBLE
+                    val stringVal = action.valueString
+                    subtitle.text = stringVal ?: ""
+                    subtitle.visibility = if (stringVal.isNullOrEmpty()) View.GONE else View.VISIBLE
                 }
             }
 

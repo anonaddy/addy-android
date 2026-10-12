@@ -944,4 +944,13 @@
     <string name="email_verification_prohibited_marking_spam_desc">Do not mark emails forwarded to you by addy.io as spam</string>
     <string name="email_verification_accept_button">Accept and verify account</string>
     <string name="email_verification_footer_expiration">You must verify your email &lt;b&gt;within 30 days&lt;/b&gt; or your account will be automatically deleted.</string>
+    <string name="enter_webhook_url">Webhook URL</string>
+    <string name="webhook_url_placeholder">https://example.com/hooks/addy</string>
+    <string name="webhook_url_hint">Must be a public HTTPS address</string>
+    <string name="webhook_url_must_start_with_https">Webhook URL must start with https://</string>
+    <string name="webhook_include_message_body">Include the message body</string>
+    <string name="webhook_include_headers">Include the headers</string>
+    <string name="webhook_info_desc"><![CDATA[addy sends a signed JSON POST when this rule matches an accepted email. Attachments are left out. The message body and the headers are included only when you select them, and each is limited to 1 MB. The signing secret is under More info on the rule page of the <a href="%1$s">web-app</a> instead. If deliveries to this URL keep failing, addy pauses it for one hour and emails you. Other actions on the rule still run.]]></string>
+    <string name="webhook_body_included">Body included</string>
+    <string name="webhook_headers_included">Headers included</string>
 </resources>

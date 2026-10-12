@@ -1,4 +1,8 @@
 package host.stjin.anonaddy.ui.rules.manage
+
+import android.text.method.LinkMovementMethod
+import androidx.core.text.HtmlCompat
+import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.utils.GsonTools
 
 import android.app.Dialog
@@ -24,6 +28,7 @@ import androidx.core.widget.addTextChangedListener
 import host.stjin.anonaddy_shared.models.Action
 import host.stjin.anonaddy_shared.models.Labels
 import host.stjin.anonaddy_shared.models.Recipients
+import host.stjin.anonaddy_shared.models.WebhookActionValue
 import host.stjin.anonaddy_shared.network.NetworkResult
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
@@ -110,8 +115,19 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         binding.bsRuleActionValuesTiet.addTextChangedListener {
             binding.bsRuleActionValuesTil.error = null
         }
+        binding.bsRuleActionWebhookUrlTiet.addTextChangedListener {
+            binding.bsRuleActionWebhookUrlTil.error = null
+        }
 
         updateUi(requireContext())
+
+        val rulesUrl = if (AddyIo.isUsingHostedInstance) "https://app.addy.io/rules?ref=appstore" else "${AddyIo.API_BASE_URL}/rules"
+        val descHtml = requireContext().resources.getString(R.string.webhook_info_desc, rulesUrl)
+        binding.bsRuleActionWebhookDesc.text = HtmlCompat.fromHtml(
+            descHtml,
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
+        binding.bsRuleActionWebhookDesc.movementMethod = LinkMovementMethod.getInstance()
 
         return root
     }
@@ -251,17 +267,24 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             if (typeIndex != -1) {
                 binding.bsRuleActionTypeMact.setText(actionTypeNames[typeIndex], false)
             }
-            binding.bsRuleActionValuesTiet.setText(editObject.value)
+            binding.bsRuleActionValuesTiet.setText(editObject.valueString)
 
 
             // If type is banner location, set value for it
             if (editObject.type == "banner") {
-                binding.bsRuleActionValuesSpinnerBannerLocationMact.setText(editObject.value, false)
+                binding.bsRuleActionValuesSpinnerBannerLocationMact.setText(editObject.valueString, false)
+            }
+
+            if (editObject.type == "webhook") {
+                val webhookValue = editObject.getWebhookValue()
+                binding.bsRuleActionWebhookUrlTiet.setText(webhookValue?.url)
+                binding.bsRuleActionWebhookIncludeBodyCb.isChecked = webhookValue?.include_body == true
+                binding.bsRuleActionWebhookIncludeHeadersCb.isChecked = webhookValue?.include_headers == true
             }
 
             if (editObject.type == "forwardTo") {
                 viewLifecycleOwner.lifecycleScope.launch {
-                    getAllRecipients(editObject.value)
+                    getAllRecipients(editObject.valueString)
                 }
             } else {
                 // If not forward_to, get recipients without selected
@@ -271,7 +294,7 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             }
 
             if (editObject.type == "addLabel" || editObject.type == "removeLabel") {
-                selectedLabelName = editObject.value
+                selectedLabelName = editObject.valueString
                 viewLifecycleOwner.lifecycleScope.launch {
                     loadLabels(context)
                 }
@@ -313,6 +336,7 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
     private fun checkIfTypeRequiresValueField(context: Context) {
         binding.bsRuleActionValuesTil.error = null
+        binding.bsRuleActionWebhookUrlTil.error = null
         val typeIndex = actionTypeNames.indexOf(binding.bsRuleActionTypeMact.text.toString())
         val type = if (typeIndex != -1) actionTypes[typeIndex] else "subject"
 
@@ -322,24 +346,28 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                 binding.bsRuleActionLabelTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.VISIBLE
                 binding.bsRuleActionValuesTil.visibility = View.GONE
+                binding.bsRuleActionWebhookLl.visibility = View.GONE
             }
             "forwardTo" -> {
                 binding.bsRuleActionForwardToTil.visibility = View.VISIBLE
                 binding.bsRuleActionLabelTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.GONE
+                binding.bsRuleActionWebhookLl.visibility = View.GONE
             }
             "block", "quarantine", "encryption", "blocklistSender", "blocklistDomain", "removeAttachments", "deactivateAlias", "deleteAlias" -> {
                 binding.bsRuleActionForwardToTil.visibility = View.GONE
                 binding.bsRuleActionLabelTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.GONE
+                binding.bsRuleActionWebhookLl.visibility = View.GONE
             }
             "addLabel", "removeLabel" -> {
                 binding.bsRuleActionForwardToTil.visibility = View.GONE
                 binding.bsRuleActionLabelTil.visibility = View.VISIBLE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.GONE
+                binding.bsRuleActionWebhookLl.visibility = View.GONE
                 if (allLabels == null) {
                     viewLifecycleOwner.lifecycleScope.launch {
                         loadLabels(context)
@@ -351,13 +379,22 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                 binding.bsRuleActionLabelTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.VISIBLE
+                binding.bsRuleActionWebhookLl.visibility = View.GONE
                 binding.bsRuleActionValuesTil.hint = context.resources.getString(R.string.enter_description)
+            }
+            "webhook" -> {
+                binding.bsRuleActionForwardToTil.visibility = View.GONE
+                binding.bsRuleActionLabelTil.visibility = View.GONE
+                binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
+                binding.bsRuleActionValuesTil.visibility = View.GONE
+                binding.bsRuleActionWebhookLl.visibility = View.VISIBLE
             }
             else -> {
                 binding.bsRuleActionForwardToTil.visibility = View.GONE
                 binding.bsRuleActionLabelTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.VISIBLE
+                binding.bsRuleActionWebhookLl.visibility = View.GONE
                 binding.bsRuleActionValuesTil.hint = context.resources.getString(R.string.enter_value)
             }
         }
@@ -430,6 +467,31 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                 }
             }
 
+            "webhook" -> {
+                val url = binding.bsRuleActionWebhookUrlTiet.text.toString().trim()
+                if (url.isEmpty()) {
+                    binding.bsRuleActionWebhookUrlTil.error = context.resources.getString(R.string.this_field_cannot_be_empty)
+                    return
+                }
+                if (!url.startsWith("https://", ignoreCase = true)) {
+                    binding.bsRuleActionWebhookUrlTil.error = context.resources.getString(R.string.webhook_url_must_start_with_https)
+                    return
+                }
+                if (!android.util.Patterns.WEB_URL.matcher(url).matches()) {
+                    binding.bsRuleActionWebhookUrlTil.error = context.resources.getString(R.string.not_a_valid_web_address)
+                    return
+                }
+                binding.bsRuleActionWebhookUrlTil.error = null
+                val includeBody = binding.bsRuleActionWebhookIncludeBodyCb.isChecked
+                val includeHeaders = binding.bsRuleActionWebhookIncludeHeadersCb.isChecked
+                val webhookValue = WebhookActionValue(
+                    url = url,
+                    include_body = includeBody,
+                    include_headers = includeHeaders
+                )
+                listener?.onAddedAction(actionEditIndex, type, webhookValue)
+            }
+
             else -> {
                 val value = binding.bsRuleActionValuesTiet.text.toString()
                 if (type != "setAliasDescription" && value.trim().isEmpty()) {
@@ -448,6 +510,7 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     interface AddActionBottomDialogListener {
         fun onAddedAction(actionEditIndex: Int?, type: String, value: String)
         fun onAddedAction(actionEditIndex: Int?, type: String, value: Boolean)
+        fun onAddedAction(actionEditIndex: Int?, type: String, value: WebhookActionValue)
     }
 
     companion object {
