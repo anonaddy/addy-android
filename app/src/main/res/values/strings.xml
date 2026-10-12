@@ -934,4 +934,14 @@
     <string name="quick_alias">Quick alias</string>
     <string name="quick_alias_desc">Quickly create and copy an alias</string>
     <string name="not_configured">Not logged in</string>
+    <string name="email_verification">Email Verification</string>
+    <string name="email_verification_desc">Before proceeding, please read the following &lt;b&gt;prohibited actions&lt;/b&gt; and then click the button below to complete registration.</string>
+    <string name="email_verification_prohibited_mass_signups_title">No Mass Signups</string>
+    <string name="email_verification_prohibited_mass_signups_desc">Do not use addy.io to create large numbers of accounts on other websites or services</string>
+    <string name="email_verification_prohibited_multiple_accounts_title">No Multiple Free Accounts</string>
+    <string name="email_verification_prohibited_multiple_accounts_desc">Do not create multiple free accounts as this is not considered an acceptable use of the service</string>
+    <string name="email_verification_prohibited_marking_spam_title">No Marking Emails as Spam</string>
+    <string name="email_verification_prohibited_marking_spam_desc">Do not mark emails forwarded to you by addy.io as spam</string>
+    <string name="email_verification_accept_button">Accept and verify account</string>
+    <string name="email_verification_footer_expiration">You must verify your email &lt;b&gt;within 30 days&lt;/b&gt; or your account will be automatically deleted.</string>
 </resources>
