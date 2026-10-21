@@ -224,6 +224,11 @@
     <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
     <string name="Copy">Copy</string>
     <string name="default_base_url">https://app.addy.io</string>
+    <string name="status_all_systems_operational">addy.io Status: All systems operational</string>
+    <string name="status_service_disruption">addy.io Status: Service disruption</string>
+    <string name="status_service_status_format">addy.io Status: %s</string>
+    <string name="status_checking">Checking service status…</string>
+    <string name="status_addy_io">status.addy.io</string>
     <string name="addyio_instance">addy.io instance</string>
     <string name="refreshing_data">Refreshing data…</string>
     <string name="refresh">Refresh</string>

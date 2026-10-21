@@ -20,8 +20,21 @@ object AddyIo {
     var VERSIONSTRING = ""
 
 
+    const val STATUS_URL: String = "https://status.addy.io"
+    const val STATUS_JSON_URL: String = "https://status.addy.io/json"
+
     val isUsingHostedInstance: Boolean
         get() = VERSIONMAJOR == 9999
+
+    fun isDefaultInstance(url: String = API_BASE_URL): Boolean {
+        return try {
+            val uri = java.net.URI(url)
+            val host = uri.host?.lowercase()
+            host == "app.addy.io" || url.contains("app.addy.io")
+        } catch (e: Exception) {
+            url.contains("app.addy.io")
+        }
+    }
 
 
     //resettableLazy(lazyMgr) properties: the value gets computed only upon first access
