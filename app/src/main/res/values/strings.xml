@@ -241,6 +241,9 @@
     <string name="share_domain_with_family">Share domain with family</string>
     <string name="share_domain_with_family_desc">Allow family plan members to create aliases on this domain</string>
     <string name="error_edit_shared_with_family">An error occurred while changing the domain sharing state</string>
+    <string name="limit_replies_sends_new_aliases">Limit replies and sends on new aliases</string>
+    <string name="limit_replies_sends_new_aliases_desc">Turn this on and every new alias on this domain only allows recipients that are directly attached to it to reply or send. Aliases you already have stay unchanged.\n\nForwards still go to this domain\'s default recipient. That recipient is not attached, so they cannot reply or send until you attach them. With this on and no recipients attached, reply and send are blocked.</string>
+    <string name="error_edit_default_attached_recipients_only">An error occurred while changing the domain attached recipients only state</string>
     <string name="catch_all_username_desc">Enable catch-all for this username</string>
     <string name="catch_all_enabled">Catch-All enabled</string>
     <string name="catch_all_disabled">Catch-All disabled</string>
