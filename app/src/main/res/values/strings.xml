@@ -69,17 +69,15 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 6.6.0</h3>
-<h4>Highlights</h4>
-<p>⚡ <b>Faster &amp; Smoother Networking</b><br />Completely overhauled networking engine with OkHttp for lightning-fast speeds and better battery efficiency.<br /><br />
-🔍 <b>System Search (AppSearch)</b><br />Find your aliases directly from your launcher search bar without opening the app.<br /><br />
-⚡ <b>Quick Settings Tiles</b><br />Generate and copy a new alias in a single tap right from your Quick Settings panel.<br /><br />
-📱 <b>Foldable &amp; Tablet Ready</b><br />Enjoy adaptive multi-column layouts and seamless transitions when folding and unfolding.<br /><br />
-🌐 <b>Domain Sending Verification</b><br />Verify your custom domain\'s outbound mail deliverability right from the app.<br /><br />
-✨ <b>Bulk Actions &amp; Deep Links</b><br />Easily multi-select aliases, block senders via deep links, and block domains directly from failed deliveries.</p>
+<h3>What\'s new in addy.io for Android 6.6.2</h3>
+<h4>Added</h4>
+<p>- Added webhook rule action support to trigger external webhooks on matching emails<br />- Option to limit sends and replies on new aliases for custom domains<br />- Email verification screen with prohibited actions before completing registration<br />- Connection failure diagnostics via status.addy.io on splash screen</p>
+<h4>Fixed/Improved</h4>
+<p>- Updated minimum supported addy.io instance version to 1.7.4<br />- Performance enhancements and other improvements for a smoother experience</p>
 <h4> </h4>
-<h3>What\'s new in addy.io for Wearables 1.7.0</h3>
-<p>⌚ <b>Modernized Wear OS Experience</b><br />Fresh Compose UI, responsive tiles, and rock-solid sync with your phone.</p>
+<h3>What\'s new in addy.io for Android Wearables 1.7.0</h3>
+<h4>Fixed/Improved</h4>
+<p>- Modernized Wear OS experience with Compose UI, responsive tiles, and rock-solid phone sync<br />- Performance improvements and other things to make the app even smoother</p>
 ]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
@@ -224,6 +222,11 @@
     <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
     <string name="Copy">Copy</string>
     <string name="default_base_url">https://app.addy.io</string>
+    <string name="status_all_systems_operational">addy.io Status: All systems operational</string>
+    <string name="status_service_disruption">addy.io Status: Service disruption</string>
+    <string name="status_service_status_format">addy.io Status: %s</string>
+    <string name="status_checking">Checking service status…</string>
+    <string name="status_addy_io">status.addy.io</string>
     <string name="addyio_instance">addy.io instance</string>
     <string name="refreshing_data">Refreshing data…</string>
     <string name="refresh">Refresh</string>
@@ -236,6 +239,9 @@
     <string name="share_domain_with_family">Share domain with family</string>
     <string name="share_domain_with_family_desc">Allow family plan members to create aliases on this domain</string>
     <string name="error_edit_shared_with_family">An error occurred while changing the domain sharing state</string>
+    <string name="limit_replies_sends_new_aliases">Limit replies and sends on new aliases</string>
+    <string name="limit_replies_sends_new_aliases_desc">Turn this on and every new alias on this domain only allows recipients that are directly attached to it to reply or send. Aliases you already have stay unchanged.\n\nForwards still go to this domain\'s default recipient. That recipient is not attached, so they cannot reply or send until you attach them. With this on and no recipients attached, reply and send are blocked.</string>
+    <string name="error_edit_default_attached_recipients_only">An error occurred while changing the domain attached recipients only state</string>
     <string name="catch_all_username_desc">Enable catch-all for this username</string>
     <string name="catch_all_enabled">Catch-All enabled</string>
     <string name="catch_all_disabled">Catch-All disabled</string>
@@ -934,4 +940,23 @@
     <string name="quick_alias">Quick alias</string>
     <string name="quick_alias_desc">Quickly create and copy an alias</string>
     <string name="not_configured">Not logged in</string>
+    <string name="email_verification">Email Verification</string>
+    <string name="email_verification_desc">Before proceeding, please read the following &lt;b&gt;prohibited actions&lt;/b&gt; and then click the button below to complete registration.</string>
+    <string name="email_verification_prohibited_mass_signups_title">No Mass Signups</string>
+    <string name="email_verification_prohibited_mass_signups_desc">Do not use addy.io to create large numbers of accounts on other websites or services</string>
+    <string name="email_verification_prohibited_multiple_accounts_title">No Multiple Free Accounts</string>
+    <string name="email_verification_prohibited_multiple_accounts_desc">Do not create multiple free accounts as this is not considered an acceptable use of the service</string>
+    <string name="email_verification_prohibited_marking_spam_title">No Marking Emails as Spam</string>
+    <string name="email_verification_prohibited_marking_spam_desc">Do not mark emails forwarded to you by addy.io as spam</string>
+    <string name="email_verification_accept_button">Accept and verify account</string>
+    <string name="email_verification_footer_expiration">You must verify your email &lt;b&gt;within 30 days&lt;/b&gt; or your account will be automatically deleted.</string>
+    <string name="enter_webhook_url">Webhook URL</string>
+    <string name="webhook_url_placeholder">https://example.com/hooks/addy</string>
+    <string name="webhook_url_hint">Must be a public HTTPS address</string>
+    <string name="webhook_url_must_start_with_https">Webhook URL must start with https://</string>
+    <string name="webhook_include_message_body">Include the message body</string>
+    <string name="webhook_include_headers">Include the headers</string>
+    <string name="webhook_info_desc"><![CDATA[addy sends a signed JSON POST when this rule matches an accepted email. Attachments are left out. The message body and the headers are included only when you select them, and each is limited to 1 MB. The signing secret is under More info on the rule page of the <a href="%1$s">web-app</a> instead. If deliveries to this URL keep failing, addy pauses it for one hour and emails you. Other actions on the rule still run.]]></string>
+    <string name="webhook_body_included">Body included</string>
+    <string name="webhook_headers_included">Headers included</string>
 </resources>

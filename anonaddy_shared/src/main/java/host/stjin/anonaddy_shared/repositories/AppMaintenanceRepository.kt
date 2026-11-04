@@ -9,6 +9,7 @@ import host.stjin.anonaddy_shared.AddyIo.GITHUB_TAGS_RSS_FEED
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.AccountNotifications
 import host.stjin.anonaddy_shared.models.PaginatedResponse
+import host.stjin.anonaddy_shared.models.ServiceStatus
 import host.stjin.anonaddy_shared.models.Version
 import host.stjin.anonaddy_shared.network.BaseNetworkClient
 import host.stjin.anonaddy_shared.network.NetworkResponse
@@ -115,5 +116,45 @@ class AppMaintenanceRepository(
             }
             is NetworkResult.Error -> NetworkResult.Error(notificationsResult.error, notificationsResult.statusCode)
         }
+    }
+
+    suspend fun getServiceStatus(url: String = host.stjin.anonaddy_shared.AddyIo.STATUS_JSON_URL): NetworkResult<ServiceStatus> {
+        waitForInit()
+
+        return when (val networkResponse = executeGet(url)) {
+            is NetworkResponse.Failure -> {
+                val errorMessage = handleGenericError(0, "", "getServiceStatus", networkResponse.exception)
+                NetworkResult.Error(errorMessage, 0, networkResponse.exception)
+            }
+            is NetworkResponse.Success -> {
+                val response = networkResponse.response
+                val code = response.code
+                val bodyString = try { response.body.string() } catch (e: Exception) { "" }
+
+                if (code in 200..299) {
+                    try {
+                        val status = gson.fromJson(bodyString, ServiceStatus::class.java)
+                        NetworkResult.Success(status, code)
+                    } catch (e: Exception) {
+                        NetworkResult.Error("Failed to parse status: ${e.message}", code, e)
+                    }
+                } else {
+                    val errorMessage = handleGenericError(code, bodyString, "getServiceStatus")
+                    NetworkResult.Error(errorMessage, code)
+                }
+            }
+        }
+    }
+
+    suspend fun testServiceStatus(mockJson: String? = null): NetworkResult<ServiceStatus> {
+        if (mockJson != null) {
+            return try {
+                val status = gson.fromJson(mockJson, ServiceStatus::class.java)
+                NetworkResult.Success(status, 200)
+            } catch (e: Exception) {
+                NetworkResult.Error("Failed to parse mock status: ${e.message}", 400, e)
+            }
+        }
+        return getServiceStatus()
     }
 }

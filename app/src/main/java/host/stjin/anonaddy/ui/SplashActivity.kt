@@ -36,8 +36,11 @@ import host.stjin.anonaddy_shared.repositories.RecipientRepository
 import host.stjin.anonaddy_shared.repositories.UserRepository
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.ServiceStatus
+import host.stjin.anonaddy_shared.models.StatusUpdate
 import host.stjin.anonaddy_shared.models.UserResourceExtended
 import host.stjin.anonaddy_shared.utils.NetworkUtils
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
@@ -51,6 +54,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private var unsupportedBottomDialogFragment: UnsupportedBottomDialogFragment? = null
 
     private lateinit var binding: ActivitySplashBinding
+    private var statusCheckJob: Job? = null
 
     private var localNetworkPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
@@ -133,6 +137,12 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         userRepository = ServiceLocator.userRepository
         recipientRepository = ServiceLocator.recipientRepository
         appMaintenanceRepository = ServiceLocator.appMaintenanceRepository
+
+        // Simulate down test via adb: adb shell am start -n host.stjin.anonaddy.debug/host.stjin.anonaddy.ui.SplashActivity --ez test_down true
+        if (intent.getBooleanExtra("test_down", false)) {
+            simulateDownStatus()
+            return
+        }
 
 
         // Open setup
@@ -296,7 +306,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         }
     }
 
-    private fun showErrorScreen(error: String?) {
+    private fun showErrorScreen(error: String?, checkStatus: Boolean = true) {
         val displayError = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN && NetworkUtils.isLocalAddress(API_BASE_URL) &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -322,6 +332,88 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         binding.activitySplashErrorMessage.setOnClickListener {
             showErrorMessage(displayError)
         }
+        binding.activitySplashErrorMessage.setOnLongClickListener {
+            testStatusUpdateChecks()
+            true
+        }
+        binding.activitySplashAnimatedLogo.setOnLongClickListener {
+            simulateDownStatus()
+            true
+        }
+
+        if (checkStatus) {
+            checkServiceStatusIfNeeded()
+        }
+    }
+
+    private fun checkServiceStatusIfNeeded() {
+        if (!AddyIo.isDefaultInstance(API_BASE_URL)) return
+
+        statusCheckJob?.cancel()
+        statusCheckJob = lifecycleScope.launch {
+            when (val result = appMaintenanceRepository.getServiceStatus()) {
+                is NetworkResult.Success -> {
+                    displayServiceStatus(result.data)
+                }
+                is NetworkResult.Error -> {
+                    // Fail silently, leave card hidden
+                }
+            }
+        }
+    }
+
+    fun displayServiceStatus(status: ServiceStatus) {
+        binding.activitySplashStatusCard.visibility = View.VISIBLE
+        if (status.isOperational) {
+            binding.activitySplashStatusIcon.setImageResource(R.drawable.ic_circle_check)
+            binding.activitySplashStatusIcon.imageTintList = ContextCompat.getColorStateList(this, R.color.green)
+            binding.activitySplashStatusTitle.text = getString(R.string.status_all_systems_operational)
+            binding.activitySplashStatusDescription.visibility = View.GONE
+        } else {
+            binding.activitySplashStatusIcon.setImageResource(R.drawable.ic_alert_circle)
+            binding.activitySplashStatusIcon.imageTintList = ContextCompat.getColorStateList(this, R.color.portalOrange)
+            val update = status.latestUpdate
+            val statusTitle = update?.title ?: status.summarizedStatus?.replaceFirstChar { it.uppercase() } ?: getString(R.string.status_service_disruption)
+            binding.activitySplashStatusTitle.text = getString(R.string.status_service_status_format, statusTitle)
+
+            if (!update?.text.isNullOrBlank()) {
+                binding.activitySplashStatusDescription.visibility = View.VISIBLE
+                binding.activitySplashStatusDescription.text = update.text?.trim()
+            } else {
+                binding.activitySplashStatusDescription.visibility = View.GONE
+            }
+        }
+
+        binding.activitySplashStatusCard.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, AddyIo.STATUS_URL.toUri())
+            startActivity(browserIntent)
+        }
+    }
+
+    fun testStatusUpdateChecks(mockStatus: ServiceStatus? = null) {
+        statusCheckJob?.cancel()
+        showErrorScreen("Test error: Failed to connect to addy.io", checkStatus = mockStatus == null)
+        if (mockStatus != null) {
+            displayServiceStatus(mockStatus)
+        }
+    }
+
+    fun simulateDownStatus(
+        title: String = "Unplanned downtime due to vulnerability",
+        text: String = "We are temporarily offline.\n\naddy.io is currently unavailable. Due to maintenance, we have temporarily shut down our web systems.\n\nEmail delivery will continue as expected."
+    ) {
+        testStatusUpdateChecks(
+            ServiceStatus(
+                summarizedStatus = "down",
+                pinnedUpdate = StatusUpdate(
+                    title = title,
+                    text = text,
+                    pinned = true,
+                    severity = "warning",
+                    time = System.currentTimeMillis() / 1000
+                )
+            )
+        )
     }
 
     private fun showErrorMessage(error: String?) {

@@ -157,7 +157,7 @@ class AppSettingsActivity : BaseActivity(),
         }
 
         binding.activityAppSettingsSectionFaq.setOnLayoutClickedListener {
-            val url = "https://addy.io/faq/"
+            val url = "https://addy.io/faq?ref=appstore"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = url.toUri()
             startActivity(i)
@@ -165,7 +165,7 @@ class AppSettingsActivity : BaseActivity(),
 
 
         binding.activityAppSettingsSectionHelp.setOnLayoutClickedListener {
-            val url = "https://addy.io/help/"
+            val url = "https://addy.io/help?ref=appstore"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = url.toUri()
             startActivity(i)

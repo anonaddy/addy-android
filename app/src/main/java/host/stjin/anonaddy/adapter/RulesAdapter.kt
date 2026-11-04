@@ -158,8 +158,17 @@ class RulesAdapter(
                 "block", "quarantine", "encryption", "blocklistSender", "blocklistDomain", "removeAttachments", "deactivateAlias", "deleteAlias" -> {
                     actionTypeText
                 }
+                "webhook" -> {
+                    val webhookValue = action.getWebhookValue()
+                    if (webhookValue != null) {
+                        "$actionTypeText ${webhookValue.url}"
+                    } else {
+                        actionTypeText
+                    }
+                }
                 else -> {
-                    if (!action.value.isNullOrEmpty()) "$actionTypeText ${action.value}" else actionTypeText
+                    val stringVal = action.valueString
+                    if (!stringVal.isNullOrEmpty()) "$actionTypeText $stringVal" else actionTypeText
                 }
             }
         } else {

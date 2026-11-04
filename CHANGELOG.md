@@ -1,5 +1,21 @@
 # Changelog
 
+## [v6.6.2] - 2026-10-27
+
+### addy.io
+
+##### Added
+
+- Added webhook rule action support to trigger external webhooks on matching emails
+- Option to limit sends and replies on new aliases for custom domains
+- Email verification screen with prohibited actions before completing registration
+- Connection failure diagnostics via status.addy.io on splash screen
+
+##### Fixed/Improved
+
+- Updated minimum supported addy.io instance version to 1.7.4
+- Performance enhancements and other improvements for a smoother experience
+
 ## [v6.6.1] - 2026-10-08
 
 ### addy.io

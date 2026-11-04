@@ -6,6 +6,7 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_SHARED_WITH_FAMILY_DOMAINS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_DEFAULT_ATTACHED_RECIPIENTS_ONLY_DOMAINS
 import host.stjin.anonaddy_shared.models.CheckDomainSendingResponse
 import host.stjin.anonaddy_shared.models.DomainOptions
 import host.stjin.anonaddy_shared.models.Domains
@@ -110,6 +111,22 @@ class DomainRepository(
         val response = executeDelete("$API_URL_SHARED_WITH_FAMILY_DOMAINS/$domainId")
 
         return handleStatusResponse(response, "disableSharedWithFamilySpecificDomain", expectedCode = 204)
+    }
+
+    suspend fun enableDefaultAttachedRecipientsOnlySpecificDomain(domainId: String): NetworkResult<Domains> {
+        waitForInit()
+
+        val response = executePost(API_URL_DEFAULT_ATTACHED_RECIPIENTS_ONLY_DOMAINS, JSONObject().put("id", domainId).toString())
+
+        return handleResponse(response, "enableDefaultAttachedRecipientsOnlySpecificDomain") { gson.fromJson(it, SingleDomain::class.java).data }
+    }
+
+    suspend fun disableDefaultAttachedRecipientsOnlySpecificDomain(domainId: String): NetworkResult<String> {
+        waitForInit()
+
+        val response = executeDelete("$API_URL_DEFAULT_ATTACHED_RECIPIENTS_ONLY_DOMAINS/$domainId")
+
+        return handleStatusResponse(response, "disableDefaultAttachedRecipientsOnlySpecificDomain", expectedCode = 204)
     }
 
     suspend fun updateDefaultRecipientForSpecificDomain(domainId: String, recipientId: String?): NetworkResult<Domains> {

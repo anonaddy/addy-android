@@ -9,10 +9,10 @@ object AddyIo {
     // The versioncode is a combination of MAJOR MINOR PATCH
     //TODO Update on every release
 
-    // 1.7.3
+    // 1.7.4
     const val MINIMUMVERSIONCODEMAJOR = 1
     const val MINIMUMVERSIONCODEMINOR = 7
-    const val MINIMUMVERSIONCODEPATCH = 3
+    const val MINIMUMVERSIONCODEPATCH = 4
 
     var VERSIONMAJOR = 0
     var VERSIONMINOR = 0
@@ -20,8 +20,21 @@ object AddyIo {
     var VERSIONSTRING = ""
 
 
+    const val STATUS_URL: String = "https://status.addy.io"
+    const val STATUS_JSON_URL: String = "https://status.addy.io/json"
+
     val isUsingHostedInstance: Boolean
         get() = VERSIONMAJOR == 9999
+
+    fun isDefaultInstance(url: String = API_BASE_URL): Boolean {
+        return try {
+            val uri = java.net.URI(url)
+            val host = uri.host?.lowercase()
+            host == "app.addy.io" || url.contains("app.addy.io")
+        } catch (e: Exception) {
+            url.contains("app.addy.io")
+        }
+    }
 
 
     //resettableLazy(lazyMgr) properties: the value gets computed only upon first access
@@ -49,6 +62,7 @@ object AddyIo {
     val API_URL_ACTIVE_DOMAINS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-domains" }
     val API_URL_CATCH_ALL_DOMAINS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/catch-all-domains" }
     val API_URL_SHARED_WITH_FAMILY_DOMAINS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/shared-with-family-domains" }
+    val API_URL_DEFAULT_ATTACHED_RECIPIENTS_ONLY_DOMAINS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/default-attached-recipients-only-domains" }
     val API_URL_USERNAMES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/usernames" }
     val API_URL_ACTIVE_USERNAMES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-usernames" }
     val API_URL_CATCH_ALL_USERNAMES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/catch-all-usernames" }

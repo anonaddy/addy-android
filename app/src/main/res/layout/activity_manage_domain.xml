@@ -196,6 +196,15 @@
                         app:sectionTitle="@string/share_domain_with_family" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_domain_default_attached_recipients_only_switch_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/limit_replies_sends_new_aliases_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_mail_cog"
+                        app:sectionTitle="@string/limit_replies_sends_new_aliases" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_domain_desc_edit"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

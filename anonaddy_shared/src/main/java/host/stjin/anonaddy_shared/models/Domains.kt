@@ -19,6 +19,7 @@ data class Domains(
     var active: Boolean,
     var catch_all: Boolean,
     var shared_with_family: Boolean? = false,
+    var default_attached_recipients_only: Boolean? = false,
     var auto_create_regex: String?,
     val domain_verified_at: String?,
     val domain_mx_validated_at: String?,

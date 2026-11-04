@@ -217,6 +217,7 @@
         <item>setAliasDescription</item>
         <item>deactivateAlias</item>
         <item>deleteAlias</item>
+        <item>webhook</item>
     </string-array>
     <string-array name="actions.type.name">
         <item>@string/replace_the_subject_with</item>
@@ -234,6 +235,7 @@
         <item>@string/set_alias_description_action</item>
         <item>@string/deactivate_alias_action</item>
         <item>@string/delete_alias_action</item>
+        <item>@string/send_a_webhook_to</item>
     </string-array>
 
     <string-array name="actions.type.bannerlocation.options">
@@ -293,6 +295,7 @@
     <string name="set_alias_description_action">set alias description to</string>
     <string name="deactivate_alias_action">deactivate alias</string>
     <string name="delete_alias_action">delete alias</string>
+    <string name="send_a_webhook_to">send a webhook to</string>
     <string name="enter_header_name">Enter header name (e.g. List-Unsubscribe)</string>
     <string name="enter_size_in_bytes">Enter size in bytes (e.g. 1048576)</string>
     <string name="enter_number_of_emails">Enter number of forwarded emails</string>

@@ -267,6 +267,23 @@ class ManageDomainActivity : BaseActivity(),
                 }
             }
         }
+
+        binding.activityManageDomainDefaultAttachedRecipientsOnlySwitchLayout.setOnSwitchCheckedChangedListener { compoundButton, checked -> // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            if (compoundButton.isPressed || forceSwitch) {
+                binding.activityManageDomainDefaultAttachedRecipientsOnlySwitchLayout.showProgressBar(true)
+                forceSwitch = false
+                if (checked) {
+                    lifecycleScope.launch {
+                        enableDefaultAttachedRecipientsOnly()
+                    }
+                } else {
+                    lifecycleScope.launch {
+                        disableDefaultAttachedRecipientsOnly()
+                    }
+                }
+            }
+        }
+
     }
 
     private suspend fun disableSharedWithFamily() {
@@ -298,6 +315,41 @@ class ManageDomainActivity : BaseActivity(),
             SnackbarHelper.createSnackbar(
                 this,
                 this.resources.getString(R.string.error_edit_shared_with_family) + "\n" + (result.errorOrNull() ?: ""),
+                binding.activityManageDomainCL,
+                LoggingHelper.LOGFILES.DEFAULT
+            ).show()
+        }
+    }
+
+    private suspend fun disableDefaultAttachedRecipientsOnly() {
+        val result = viewModel.disableDefaultAttachedRecipientsOnlyDomain(this.domain!!.id)
+        binding.activityManageDomainDefaultAttachedRecipientsOnlySwitchLayout.showProgressBar(false)
+        if (result is NetworkResult.Success && result.data == "204") {
+            this.domain!!.default_attached_recipients_only = false
+            shouldRefreshOnFinish = true
+            updateUi(this.domain!!)
+        } else {
+            binding.activityManageDomainDefaultAttachedRecipientsOnlySwitchLayout.setSwitchChecked(true)
+            SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.error_edit_default_attached_recipients_only) + "\n" + (result.errorOrNull() ?: ""),
+                binding.activityManageDomainCL,
+                LoggingHelper.LOGFILES.DEFAULT
+            ).show()
+        }
+    }
+
+    private suspend fun enableDefaultAttachedRecipientsOnly() {
+        val result = viewModel.enableDefaultAttachedRecipientsOnlyDomain(this.domain!!.id)
+        binding.activityManageDomainDefaultAttachedRecipientsOnlySwitchLayout.showProgressBar(false)
+        if (result is NetworkResult.Success) {
+            this.domain = result.data
+            shouldRefreshOnFinish = true
+        } else {
+            binding.activityManageDomainDefaultAttachedRecipientsOnlySwitchLayout.setSwitchChecked(false)
+            SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.error_edit_default_attached_recipients_only) + "\n" + (result.errorOrNull() ?: ""),
                 binding.activityManageDomainCL,
                 LoggingHelper.LOGFILES.DEFAULT
             ).show()
@@ -504,6 +556,8 @@ class ManageDomainActivity : BaseActivity(),
         } else {
             binding.activityManageDomainSharedWithFamilySwitchLayout.visibility = View.GONE
         }
+
+        binding.activityManageDomainDefaultAttachedRecipientsOnlySwitchLayout.setSwitchChecked(domain.default_attached_recipients_only == true)
 
         /**
          * TEXT

@@ -19,10 +19,10 @@ configure<ApplicationExtension> {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 37 + v6.6.0 + release 01 + 00 (for app)
-        versionCode = 376610100 // https://developer.android.com/training/wearables/packaging
+        // SDK 37 + v6.6.2 + release 01 + 00 (for app)
+        versionCode = 376620100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on GitHub
-        versionName = "v6.6.1"
+        versionName = "v6.6.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

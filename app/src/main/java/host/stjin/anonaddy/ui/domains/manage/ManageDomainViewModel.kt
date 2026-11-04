@@ -23,6 +23,14 @@ class ManageDomainViewModel(application: Application) : BaseViewModel(applicatio
         return domainRepository.enableSharedWithFamilySpecificDomain(domainId)
     }
 
+    suspend fun disableDefaultAttachedRecipientsOnlyDomain(domainId: String): NetworkResult<String> {
+        return domainRepository.disableDefaultAttachedRecipientsOnlySpecificDomain(domainId)
+    }
+
+    suspend fun enableDefaultAttachedRecipientsOnlyDomain(domainId: String): NetworkResult<Domains> {
+        return domainRepository.enableDefaultAttachedRecipientsOnlySpecificDomain(domainId)
+    }
+
     suspend fun disableCatchAllDomain(domainId: String): NetworkResult<String> {
         return domainRepository.disableCatchAllSpecificDomain(domainId)
     }

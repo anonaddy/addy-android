@@ -30,7 +30,8 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener,
-    BackupPasswordBottomDialogFragment.AddBackupPasswordBottomDialogListener {
+    BackupPasswordBottomDialogFragment.AddBackupPasswordBottomDialogListener,
+    EmailVerificationBottomDialogFragment.EmailVerificationBottomDialogListener {
     override val requiresAuthentication: Boolean = false
 
     private lateinit var binding: ActivitySetupBinding
@@ -87,23 +88,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             mainHandler = Handler(Looper.getMainLooper())
 
             // Check for verification Urls
-            if (intent.action != null) {
-                // /deactivate URI's
-                val data: Uri? = intent?.data
-                if (data.toString().contains("/api/auth/verify")) {
-                    val query = data?.query
-                    if (query != null) {
-                        binding.fragmentSetupInitButtonApi.startAnimation()
-                        binding.fragmentSetupInitButtonNew.isEnabled = false
-                        binding.fragmentSetupInitButtonRestoreBackup.isEnabled = false
-
-                        lifecycleScope.launch {
-                            finishRegistrationVerification(query)
-                        }
-                    }
-
-                }
-            }
+            checkForVerificationUrl(intent)
         }
 
 
@@ -251,35 +236,42 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         }
     }
 
-    private suspend fun finishRegistrationVerification(query: String) {
-        val userRepository = ServiceLocator.userRepository
-        when (val result = userRepository.verifyRegistration(query)) {
-            is NetworkResult.Success -> {
-                val apiKey = result.data
-                if (apiKey.isNotEmpty()) {
-                    addKey(AddyIo.API_BASE_URL, apiKey)
-                } else {
-                    binding.fragmentSetupInitButtonNew.isEnabled = true
-                    binding.fragmentSetupInitButtonRestoreBackup.isEnabled = true
-                    binding.fragmentSetupInitButtonApi.revertAnimation()
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        if (ServiceLocator.encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) != null) {
+            val splashIntent = Intent(this, SplashActivity::class.java)
+            startActivity(splashIntent)
+            finish()
+        } else {
+            checkForVerificationUrl(intent)
+        }
+    }
+
+    private fun checkForVerificationUrl(intent: Intent?) {
+        if (intent?.action != null) {
+            val data: Uri? = intent.data
+            if (data != null && data.toString().contains("/api/auth/verify")) {
+                val query = data.query
+                if (!query.isNullOrEmpty()) {
+                    showEmailVerificationDialog(query)
                 }
             }
-            is NetworkResult.Error -> {
-                binding.fragmentSetupInitButtonNew.isEnabled = true
-                binding.fragmentSetupInitButtonRestoreBackup.isEnabled = true
-
-                // Revert the button to normal
-                binding.fragmentSetupInitButtonApi.revertAnimation()
-
-                MaterialDialogHelper.showMaterialDialog(
-                    context = this,
-                    title = resources.getString(R.string.registration_register),
-                    message = result.error,
-                    icon = R.drawable.ic_key,
-                    neutralButtonText = resources.getString(R.string.close)
-                ).show()
-            }
         }
+    }
+
+    private fun showEmailVerificationDialog(query: String) {
+        if (supportFragmentManager.findFragmentByTag("emailVerificationBottomDialogFragment") == null) {
+            val emailVerificationBottomDialogFragment = EmailVerificationBottomDialogFragment.newInstance(query)
+            emailVerificationBottomDialogFragment.show(
+                supportFragmentManager,
+                "emailVerificationBottomDialogFragment"
+            )
+        }
+    }
+
+    override fun onVerificationSuccess(apiKey: String) {
+        addKey(AddyIo.API_BASE_URL, apiKey)
     }
 
     private fun addKey(baseUrl: String, apiKey: String) {
