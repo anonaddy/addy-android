@@ -325,7 +325,7 @@
     <string name="notification_new_failed_delivery">Email delivery failed</string>
     <string name="notification_new_failed_delivery_desc">%s email(s) could not be delivered. Tap here to view the failed deliveries</string>
     <string name="notification_api_token_about_to_expire">Your API key is about to expire</string>
-    <string name="notification_api_token_about_to_expire_desc">Your API key will expire in %s. Create a new one to prevent the app from resetting. Tap here to refresh the API key</string>
+    <string name="notification_api_token_about_to_expire_desc">Your API key will expire in %s. Create a new one to prevent service interruption. Tap here to refresh the API key</string>
     <string name="notification_subscription_about_to_expire">Your subscription is about to expire</string>
     <string name="notification_subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features</string>
     <string name="notification_new_account_notifications">New notification</string>
@@ -610,7 +610,7 @@
     <string name="prerequisite_disable_pgp_inline">You need to disable inline encryption before you can enable protected headers (hide subject)</string>
     <string name="prerequisite_disable_protected_headers">You need to disable protected headers (hide subject) before you can enable inline encryption</string>
     <string name="api_token_about_to_expire">API key about to expire</string>
-    <string name="api_token_about_to_expire_desc">Your API key will expire in %s. It is recommended to update your API key to prevent the app from resetting. Do you want to refresh the API token now?</string>
+    <string name="api_token_about_to_expire_desc">Your API key will expire in %s. It is recommended to update your API key to prevent service interruption. Do you want to refresh the API token now?</string>
     <string name="api_token_about_to_expire_option_1">Refresh token</string>
     <string name="subscription_about_to_expire">Subscription about to expire</string>
     <string name="subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features.</string>
@@ -619,7 +619,7 @@
     <string name="api_key_updated">Update API key successful!</string>
     <string name="update_api_key">Update API key</string>
     <string name="feature_api_token_expiry_notification">API key expiry notification</string>
-    <string name="feature_api_token_expiry_notification_desc">Receive a notification 5 days before your API key expires to prevent the app from being reset.\n\nThese notifications will reappear every day until a new API key is entered</string>
+    <string name="feature_api_token_expiry_notification_desc">Receive a notification 5 days before your API key expires to prevent service interruption.\n\nThese notifications will reappear every day until a new API key is entered</string>
     <string name="notify_api_token_expiry_feature_section_desc">Receive a notification 5 days before your API key expires</string>
     <string name="update_api_token_now">Update API key now</string>
     <string name="disable_notifications">Disable notifications</string>
@@ -822,13 +822,13 @@
     <string name="file_saved_succesfully">File saved successfully</string>
     <string name="certificate_expiry_date">Your current mTLS certificate (%1$s) will expire in %2$s</string>
     <string name="feature_certificate_expiry_notification">Certificate expiry notification</string>
-    <string name="feature_certificate_expiry_notification_desc">Receive a notification 5 days before your (mTLS) certificate expires to prevent the app from being reset.\n\nThese notifications will reappear every day until a new certificate has been selected</string>
+    <string name="feature_certificate_expiry_notification_desc">Receive a notification 5 days before your (mTLS) certificate expires to prevent service interruption.\n\nThese notifications will reappear every day until a new certificate has been selected</string>
     <string name="notify_certificate_expiry_feature_section_desc">Receive a notification 5 days before your certificate expires</string>
     <string name="update_certificate_now">Update certificate now</string>
     <string name="update_certificate_now_desc">Change the certificate that the addy.io app authenticates with.</string>
     <string name="remove_certificate">Remove certificate</string>
-    <string name="remove_certificate_desc">Deleting the certificate when one is needed will result in the app resetting.</string>
-    <string name="remove_certificate_desc_confirm">Are you sure you want to remove this certificate? Deleting the certificate when one is needed will result in the app resetting.</string>
+    <string name="remove_certificate_desc">Deleting the certificate when one is needed may cause connection failures.</string>
+    <string name="remove_certificate_desc_confirm">Are you sure you want to remove this certificate? Deleting the certificate when one is needed may cause connection failures.</string>
     <string name="certificate_updated">Certificate successfully replaced!</string>
     <string name="certificate_selected">Using certificate</string>
     <string name="certificate_removed">Certificate was removed</string>
@@ -836,9 +836,9 @@
     <string name="notification_channel_certificate_expiry_desc">Receive a notification when your certificate is about to expire</string>
     <string name="certificate">Certificate</string>
     <string name="notification_certificate_about_to_expire">Your certificate is about to expire</string>
-    <string name="notification_certificate_about_to_expire_desc">Your certificate will expire in %s. Replace it to prevent the app from resetting. Tap here to replace the certificate</string>
+    <string name="notification_certificate_about_to_expire_desc">Your certificate will expire in %s. Replace it to prevent service interruption. Tap here to replace the certificate</string>
     <string name="certificate_about_to_expire">Certificate about to expire</string>
-    <string name="certificate_about_to_expire_desc">Your certificate will expire in %s. It is recommended to update your certificate to prevent the app from resetting. Do you want to update the certificate now?</string>
+    <string name="certificate_about_to_expire_desc">Your certificate will expire in %s. It is recommended to update your certificate to prevent service interruption. Do you want to update the certificate now?</string>
     <string name="certificate_about_to_expire_option_1">Update certificate</string>
     <string name="use_certificate">Use certificate</string>
     <string name="wearos_certificate_warning_title">You\'re using a certificate</string>

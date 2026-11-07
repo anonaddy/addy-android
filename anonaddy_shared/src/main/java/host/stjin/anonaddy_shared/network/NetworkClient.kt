@@ -163,9 +163,6 @@ open class BaseNetworkClient(
         expiryDateOfChain?.let {
             if (it < Date()) {
                 invalidCertificate()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    serviceLocator.encryptedSettingsManager.clearSettingsAndCloseApp()
-                }, 8000)
             }
         }
 
