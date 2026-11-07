@@ -617,6 +617,7 @@
     <string name="subscription_about_to_expire_option_1">Renew</string>
     <string name="dismiss">Dismiss</string>
     <string name="api_key_updated">Update API key successful!</string>
+    <string name="update_api_key">Update API key</string>
     <string name="feature_api_token_expiry_notification">API key expiry notification</string>
     <string name="feature_api_token_expiry_notification_desc">Receive a notification 5 days before your API key expires to prevent the app from being reset.\n\nThese notifications will reappear every day until a new API key is entered</string>
     <string name="notify_api_token_expiry_feature_section_desc">Receive a notification 5 days before your API key expires</string>

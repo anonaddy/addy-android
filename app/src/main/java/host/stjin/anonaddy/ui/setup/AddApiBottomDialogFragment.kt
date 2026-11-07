@@ -117,9 +117,12 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             binding.bsSetupInstanceTiet.isEnabled = false
             binding.bsSetupInstanceTil.isEnabled = false
 
-            binding.bsSetupApikeyUsernameTiet.setText((activity?.application as? AddyIoApp)?.userResourceOrNull?.username ?: "")
-            binding.bsSetupApikeyUsernameTiet.isEnabled = false
-            binding.bsSetupApikeyUsernameTil.isEnabled = false
+            val savedUsername = (activity?.application as? AddyIoApp)?.userResourceOrNull?.username
+            if (!savedUsername.isNullOrEmpty()) {
+                binding.bsSetupApikeyUsernameTiet.setText(savedUsername)
+                binding.bsSetupApikeyUsernameTiet.isEnabled = false
+                binding.bsSetupApikeyUsernameTil.isEnabled = false
+            }
         }
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
@@ -255,6 +258,20 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             requireActivity().runOnUiThread {
                 // Verify if the scanned QR code has all the properties
                 if (isQrCodeFormattedCorrect(it.text)) {
+                    val qrBaseUrl = it.text.substringBeforeLast("|", "")
+                    if (apiBaseUrl != null && !qrBaseUrl.equals(apiBaseUrl, ignoreCase = true)) {
+                        MaterialDialogHelper.showMaterialDialog(
+                            context = requireContext(),
+                            title = resources.getString(R.string.api_setup_qr_code_scan_wrong),
+                            message = resources.getString(R.string.api_belongs_other_account),
+                            icon = R.drawable.ic_key,
+                            neutralButtonAction = {
+                                codeScanner?.startPreview()
+                            },
+                            neutralButtonText = resources.getString(R.string.close)
+                        ).setCancelable(false).show()
+                        return@runOnUiThread
+                    }
 
                     binding.bsSetupManualTypeApiButton.isChecked = true
 
@@ -264,7 +281,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                     // if apiBaseUrl set, do not set the baseURL using QR
                     if (apiBaseUrl == null) {
                         // Get the string part before the | delimiter
-                        binding.bsSetupInstanceTiet.setText(it.text.substringBeforeLast("|", ""))
+                        binding.bsSetupInstanceTiet.setText(qrBaseUrl)
                     }
                     // Get the string part after the | delimiter
                     binding.bsSetupApikeyTiet.setText(it.text.substringAfterLast("|", ""))
@@ -367,7 +384,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                     )
                     when (mfaResult) {
                         is NetworkResult.Success -> {
-                            listener?.onClickSave(baseUrl, mfaResult.data.api_key)
+                            verifyApiKey(requireContext(), mfaResult.data.api_key, baseUrl)
                         }
                         is NetworkResult.Error -> {
                             this@AddApiBottomDialogFragment.otpMfaObject = null
@@ -396,7 +413,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                         apiExpiration = expirationOption
                     )) {
                         is LoginResult.Success -> {
-                            listener?.onClickSave(baseUrl, loginResult.login.api_key)
+                            verifyApiKey(requireContext(), loginResult.login.api_key, baseUrl)
                         }
                         is LoginResult.MfaRequired -> {
                             this@AddApiBottomDialogFragment.otpMfaObject = loginResult.mfa
@@ -433,16 +450,30 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             when (val verifyResult = userRepository.verifyApiKey(baseUrl, apiKey)) {
                 is NetworkResult.Success -> {
                     val result = verifyResult.data
-                    if (ServiceLocator.encryptedSettingsManager.getSettingsString(PREFS.API_KEY) == null ||
-                        (activity?.application as? AddyIoApp)?.userResourceOrNull?.id == result.id
-                    ) {
+                    val currentUserId = (activity?.application as? AddyIoApp)?.userResourceOrNull?.id
+                    val currentBaseUrl = ServiceLocator.encryptedSettingsManager.getSettingsString(PREFS.BASE_URL)
+
+                    val isSameInstance = currentBaseUrl.isNullOrEmpty() || currentBaseUrl.equals(baseUrl, ignoreCase = true)
+                    val isSameUser = ServiceLocator.encryptedSettingsManager.getSettingsString(PREFS.API_KEY) == null ||
+                        currentUserId == null || currentUserId == result.id
+
+                    if (isSameInstance && isSameUser) {
                         listener?.onClickSave(baseUrl, apiKey)
                     } else {
                         binding.bsSetupApikeyGetButton.isEnabled = true
                         binding.bsSetupApikeySignInButton.revertAnimation()
 
-                        binding.bsSetupApikeyTil.error =
-                            context.resources.getString(R.string.api_belongs_other_account)
+                        val errorMessage = context.resources.getString(R.string.api_belongs_other_account)
+                        binding.bsSetupApikeyTil.error = errorMessage
+                        if (binding.bsSetupApikeyUsernamePasswordSection.visibility == View.VISIBLE) {
+                            MaterialDialogHelper.showMaterialDialog(
+                                context = requireContext(),
+                                title = resources.getString(R.string.login),
+                                message = errorMessage,
+                                icon = R.drawable.ic_key,
+                                neutralButtonText = resources.getString(R.string.close)
+                            ).show()
+                        }
 
                         toggleQrCodeScanning()
                     }
@@ -457,8 +488,17 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                         verifyResult.error
                     }
 
-                    binding.bsSetupApikeyTil.error =
-                        context.resources.getString(R.string.api_invalid) + "\n" + displayError
+                    val errorMessage = context.resources.getString(R.string.api_invalid) + "\n" + displayError
+                    binding.bsSetupApikeyTil.error = errorMessage
+                    if (binding.bsSetupApikeyUsernamePasswordSection.visibility == View.VISIBLE) {
+                        MaterialDialogHelper.showMaterialDialog(
+                            context = requireContext(),
+                            title = resources.getString(R.string.login),
+                            message = displayError,
+                            icon = R.drawable.ic_key,
+                            neutralButtonText = resources.getString(R.string.close)
+                        ).show()
+                    }
 
                     toggleQrCodeScanning()
                 }
