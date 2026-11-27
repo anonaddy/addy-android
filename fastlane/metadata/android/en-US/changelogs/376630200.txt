@@ -1,0 +1,5 @@
+What's new in addy.io 6.6.3:
+• Fixed setup falsely reporting invalid API key on network/DNS connection failures
+• Added diagnostic guidance for hostname resolution and network permissions
+• Fixed QR scanner repeatedly firing duplicate verification requests
+• General performance and stability improvements
