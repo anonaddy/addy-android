@@ -7,7 +7,11 @@ plugins {
 
 configure<LibraryExtension> {
     namespace = "host.stjin.anonaddy_shared"
-    compileSdk = 37
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 2
+        }
+    }
     defaultConfig {
         minSdk = 23
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -39,7 +43,7 @@ kotlin {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.19.0")
+    implementation("androidx.core:core-ktx:1.19.1")
     implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("com.google.android.material:material:1.14.0")
 
@@ -51,8 +55,8 @@ dependencies {
     implementation("androidx.security:security-crypto-ktx:1.1.0")
 
     // OkHttp, network requests
-    implementation("com.squareup.okhttp3:okhttp:5.5.0")
-    api("com.google.code.gson:gson:2.14.0")
+    implementation("com.squareup.okhttp3:okhttp:5.5.1")
+    api("com.google.code.gson:gson:2.15.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
 
     // Built-in updater

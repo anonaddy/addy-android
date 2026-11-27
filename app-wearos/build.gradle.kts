@@ -10,12 +10,16 @@ val wear_protolayout_version = rootProject.extra["wear_protolayout_version"]
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.20" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.21" // this version matches your Kotlin version
 }
 
 configure<ApplicationExtension> {
     namespace = "host.stjin.anonaddy"
-    compileSdk = 37
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 2
+        }
+    }
 
     defaultConfig {
         applicationId = namespace
@@ -28,9 +32,9 @@ configure<ApplicationExtension> {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 37 + v1.7.0 + release 01 + 01 (for wearos)
-        versionCode = 371700301
-        versionName = "1.7.0"
+        // SDK 37 + v1.7.1 + release 04 + 01 (for wearos)
+        versionCode = 371710401 //TODO set back to release 01 on version bump
+        versionName = "1.7.1"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -79,8 +83,8 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
     implementation("androidx.compose.material3:material3:$compose_material_version")
-    implementation("androidx.core:core-ktx:1.19.0")
-    implementation("androidx.fragment:fragment-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.19.1")
+    implementation("androidx.fragment:fragment-ktx:1.9.1")
     implementation("com.google.android.gms:play-services-wearable:20.0.1")
 
     // General compose dependencies
@@ -89,7 +93,7 @@ dependencies {
     implementation("androidx.wear:wear-tooling-preview:1.0.0")
 
     // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.1")
 
     // Animated graphics (for the icon on setup)
     implementation("androidx.compose.animation:animation-graphics:$compose_version")
@@ -99,7 +103,7 @@ dependencies {
     implementation("androidx.wear.compose:compose-material:$wear_compose_version")
 
     // WorkManager for updating widgets and caching data
-    implementation("androidx.work:work-runtime-ktx:2.11.2")
+    implementation("androidx.work:work-runtime-ktx:2.12.0")
 
     // For the donut in the aliasview
     implementation("app.futured.donut:donut-compose:2.3.1")

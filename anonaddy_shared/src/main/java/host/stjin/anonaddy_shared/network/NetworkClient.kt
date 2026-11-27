@@ -163,9 +163,6 @@ open class BaseNetworkClient(
         expiryDateOfChain?.let {
             if (it < Date()) {
                 invalidCertificate()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    serviceLocator.encryptedSettingsManager.clearSettingsAndCloseApp()
-                }, 8000)
             }
         }
 
@@ -344,7 +341,10 @@ open class BaseNetworkClient(
     ): String {
         val exMessage = exception?.message ?: "HTTP $statusCode"
         Log.e("BaseNetworkClient", "$statusCode - $exMessage")
-        val errorMessage = ErrorHelper.getErrorMessage(bodyString.toByteArray())
+        var errorMessage = ErrorHelper.getErrorMessage(bodyString.toByteArray())
+        if (errorMessage.isBlank() && exception != null) {
+            errorMessage = exception.localizedMessage ?: exception.message.orEmpty()
+        }
         loggingHelper.addLog(
             LOGIMPORTANCE.CRITICAL.int,
             exMessage,

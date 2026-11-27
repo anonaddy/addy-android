@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.NotificationManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
@@ -21,12 +22,16 @@ import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import com.google.android.gms.wearable.Wearable
 import host.stjin.anonaddy.ui.base.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ServiceLocator
 import host.stjin.anonaddy.databinding.ActivitySplashBinding
+import host.stjin.anonaddy.notifications.NotificationHelper
+import host.stjin.anonaddy.ui.setup.AddApiBottomDialogFragment
 import host.stjin.anonaddy.ui.setup.SetupActivity
 import host.stjin.anonaddy.utils.MaterialDialogHelper
+import host.stjin.anonaddy.utils.WearOSHelper
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIo.API_BASE_URL
 import host.stjin.anonaddy_shared.AddyIoApp
@@ -36,15 +41,18 @@ import host.stjin.anonaddy_shared.repositories.RecipientRepository
 import host.stjin.anonaddy_shared.repositories.UserRepository
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.ServiceStatus
 import host.stjin.anonaddy_shared.models.StatusUpdate
 import host.stjin.anonaddy_shared.models.UserResourceExtended
+import host.stjin.anonaddy_shared.utils.GsonTools
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import host.stjin.anonaddy_shared.utils.NetworkUtils
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
-class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.UnsupportedBottomDialogListener {
+class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.UnsupportedBottomDialogListener, AddApiBottomDialogFragment.AddApiBottomDialogListener {
     override val requiresAuthentication: Boolean = false
 
     private lateinit var userRepository: UserRepository
@@ -284,7 +292,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                 }
             }
             is NetworkResult.Error -> {
-                showErrorScreen(userResult.error)
+                val isAuthError = userResult.statusCode == 401 || userResult.error?.contains("Unauthenticated", ignoreCase = true) == true
+                showErrorScreen(userResult.error, checkStatus = !isAuthError, isAuthError = isAuthError)
             }
         }
     }
@@ -301,12 +310,13 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                 finish()
             }
             is NetworkResult.Error -> {
-                showErrorScreen(recipientResult.error)
+                val isAuthError = recipientResult.statusCode == 401 || recipientResult.error?.contains("Unauthenticated", ignoreCase = true) == true
+                showErrorScreen(recipientResult.error, checkStatus = !isAuthError, isAuthError = isAuthError)
             }
         }
     }
 
-    private fun showErrorScreen(error: String?, checkStatus: Boolean = true) {
+    private fun showErrorScreen(error: String?, checkStatus: Boolean = true, isAuthError: Boolean = false) {
         val displayError = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN && NetworkUtils.isLocalAddress(API_BASE_URL) &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -318,6 +328,26 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         playAnimation(false, R.drawable.ic_loading_logo_error_splash) {
             binding.activitySplashErrorLl1.animate().alpha(1.0f)
             binding.activitySplashErrorLl2.animate().alpha(1.0f)
+        }
+
+        if (isAuthError) {
+            binding.activitySplashErrorUpdateApiKey.visibility = View.VISIBLE
+            binding.activitySplashErrorTryAgain.visibility = View.GONE
+            binding.activitySplashErrorResetApp.visibility = View.VISIBLE
+
+            binding.activitySplashErrorUpdateApiKey.setOnClickListener {
+                if (supportFragmentManager.findFragmentByTag("addApiBottomDialogFragment") == null) {
+                    val addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(API_BASE_URL)
+                    addApiBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "addApiBottomDialogFragment"
+                    )
+                }
+            }
+        } else {
+            binding.activitySplashErrorUpdateApiKey.visibility = View.GONE
+            binding.activitySplashErrorTryAgain.visibility = View.VISIBLE
+            binding.activitySplashErrorResetApp.visibility = View.VISIBLE
         }
 
         binding.activitySplashErrorTryAgain.setOnClickListener {
@@ -431,5 +461,40 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                 Toast.makeText(this, resources.getString(R.string.error_copied_to_clipboard), Toast.LENGTH_LONG).show()
             }
         ).show()
+    }
+
+    override fun onClickSave(baseUrl: String, apiKey: String) {
+        (supportFragmentManager.findFragmentByTag("addApiBottomDialogFragment") as? AddApiBottomDialogFragment)?.dismissAllowingStateLoss()
+
+        val encryptedSettingsManager = ServiceLocator.encryptedSettingsManager
+        encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
+        encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, baseUrl)
+
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
+
+        try {
+            Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
+                for (node in nodes) {
+                    val configuration = GsonTools.gson.toJson(WearOSHelper.createWearOSConfiguration())
+                    Wearable.getMessageClient(this).sendMessage(
+                        node.id,
+                        "/setup",
+                        configuration.toByteArray()
+                    )
+                }
+            }
+        } catch (ex: Exception) {
+            LoggingHelper(this).addLog(LOGIMPORTANCE.WARNING.int, ex.toString(), "SplashActivity;onClickSave", null)
+        }
+
+        binding.activitySplashErrorLl1.animate().alpha(0.0f).duration = 300
+        binding.activitySplashErrorLl2.animate().alpha(0.0f).duration = 300
+        binding.activitySplashStatusCard.visibility = View.GONE
+        playAnimation(true, R.drawable.ic_loading_logo_splash)
+
+        lifecycleScope.launch {
+            loadDataAndStartApp()
+        }
     }
 }

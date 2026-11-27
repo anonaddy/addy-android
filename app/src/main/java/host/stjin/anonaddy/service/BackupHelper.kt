@@ -12,7 +12,6 @@ import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import java.io.InputStream
 import java.io.OutputStream
-import java.io.PrintWriter
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -32,7 +31,20 @@ import kotlin.system.measureTimeMillis
 class BackupHelper(private val context: Context) {
 
     companion object {
-        private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+        fun getFileTimestamp(fileName: String?, lastModified: Long): Long {
+            if (fileName != null && fileName.startsWith("BACKUP_") && fileName.endsWith(".anon")) {
+                val dateString = fileName.removePrefix("BACKUP_").removeSuffix(".anon")
+                try {
+                    val localDateTime = LocalDateTime.parse(dateString, DATE_TIME_FORMATTER)
+                    return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                } catch (_: Exception) {
+                    // Fall back to lastModified
+                }
+            }
+            return lastModified
+        }
     }
 
     private val loggingHelper: LoggingHelper = LoggingHelper(context, LoggingHelper.LOGFILES.BACKUP_LOGS)
@@ -40,14 +52,19 @@ class BackupHelper(private val context: Context) {
     private val encryptedSettingsManager: SettingsManager = ServiceLocator.encryptedSettingsManager
 
 
+    private fun getFileTimestamp(file: DocumentFile): Long {
+        return getFileTimestamp(file.name, file.lastModified())
+    }
+
     fun getLatestBackupDate(): Long? {
         val backupDestinationPath = settingsManager.getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
             ?: return null
         try {
             val f = DocumentFile.fromTreeUri(context, backupDestinationPath.toUri())?.listFiles()
                 ?.filter { (it.name?.substringAfterLast(".") ?: "") == "anon" }
-            val sortedList = f?.sortedWith(compareBy { it.lastModified() })
-            return sortedList?.lastOrNull()?.lastModified()
+            val sortedList = f?.sortedWith(compareBy { getFileTimestamp(it) })
+            val latest = sortedList?.lastOrNull()?.let { getFileTimestamp(it) }
+            return if (latest != null && latest > 0L) latest else null
         } catch (e: Exception) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "getLatestBackupDate", null)
         }
@@ -62,7 +79,11 @@ class BackupHelper(private val context: Context) {
                 ?.filter { (it.name?.substringAfterLast(".") ?: "") == "anon" }
             var filesDeleted = 0
             for (file in f ?: emptyList()) {
-                val date: LocalDate = Instant.ofEpochMilli(file.lastModified()).atZone(ZoneId.systemDefault()).toLocalDate()
+                val timestamp = getFileTimestamp(file)
+                if (timestamp <= 0L) {
+                    continue
+                }
+                val date: LocalDate = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDate()
                 val today: LocalDate = LocalDate.now()
 
                 if (date.isBefore(today.minusDays(retentionPeriod))) {
@@ -103,13 +124,25 @@ class BackupHelper(private val context: Context) {
         return false
     }
 
-    private fun createEmptyFileAndGetOutputStream(path: String, name: String, password: String): OutputStream? {
+    private fun createEmptyFileAndGetOutputStream(path: String, name: String, password: String): Pair<DocumentFile, OutputStream>? {
         try {
-            val f = DocumentFile.fromTreeUri(context, path.toUri())
-            val uriOfFile = f?.createFile("application/octet-stream", name)?.uri
+            val f = DocumentFile.fromTreeUri(context, path.toUri()) ?: return null
+            if (!f.canWrite()) return null
+            val file = f.createFile("application/octet-stream", name) ?: return null
+            val rawOutputStream = context.contentResolver.openOutputStream(file.uri)
+            if (rawOutputStream == null) {
+                file.delete()
+                return null
+            }
 
             val cipher = makeCipher(password.toCharArray(), encryptMode = true)
-            return CipherOutputStream(uriOfFile?.let { context.contentResolver.openOutputStream(it) }, cipher)
+            if (cipher == null) {
+                rawOutputStream.close()
+                file.delete()
+                return null
+            }
+
+            return Pair(file, CipherOutputStream(rawOutputStream, cipher))
         } catch (e: Exception) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "createEmptyFileAndGetOutputStream", null)
         }
@@ -141,8 +174,9 @@ class BackupHelper(private val context: Context) {
 
     private fun getInputStream(uri: Uri, password: String = "anonaddy"): InputStream? {
         try {
-            val cipher = makeCipher(password.toCharArray(), encryptMode = false)
-            return CipherInputStream(uri.let { context.contentResolver.openInputStream(it) }, cipher)
+            val cipher = makeCipher(password.toCharArray(), encryptMode = false) ?: return null
+            val rawInputStream = context.contentResolver.openInputStream(uri) ?: return null
+            return CipherInputStream(rawInputStream, cipher)
         } catch (e: Exception) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "getInputStream", null)
         }
@@ -150,30 +184,44 @@ class BackupHelper(private val context: Context) {
     }
 
     fun createBackup(): Boolean {
+        if (!isBackupLocationAccessible()) {
+            return false
+        }
         var backupCompleted = false
+        var createdFile: DocumentFile? = null
         val timeElapsed = measureTimeMillis {
             try {
                 val backupDestinationPath = settingsManager.getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
-                val backupDestinationStream = backupDestinationPath?.let {
-                    // Default back to "anonaddy" as password
-                    createEmptyFileAndGetOutputStream(
-                        it,
-                        "BACKUP_${getDateTime()}.anon",
-                        encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BACKUPS_PASSWORD) ?: "anonaddy"
-                    )
-                }
+                    ?: return false
 
-                backupDestinationStream?.use {
-                    if (saveSharedPreferences(it, arrayListOf(settingsManager.prefs, encryptedSettingsManager.prefs))
-                    ) {
-                        // Backup for both sharedprefs succeeded!
-                        // .use closes the stream :)
-                        // Let the caller know the backup succeeded
-                        backupCompleted = true
+                val streamAndFile = createEmptyFileAndGetOutputStream(
+                    backupDestinationPath,
+                    "BACKUP_${getDateTime()}.anon",
+                    encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BACKUPS_PASSWORD) ?: "anonaddy"
+                )
+
+                if (streamAndFile != null) {
+                    val (file, outputStream) = streamAndFile
+                    createdFile = file
+                    outputStream.use {
+                        if (saveSharedPreferences(it, arrayListOf(settingsManager.prefs, encryptedSettingsManager.prefs))) {
+                            // Backup for both sharedprefs succeeded!
+                            // .use closes the stream :)
+                            // Let the caller know the backup succeeded
+                            backupCompleted = true
+                        }
                     }
                 }
             } catch (e: Exception) {
                 loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "createBackup", null)
+            } finally {
+                if (!backupCompleted) {
+                    try {
+                        createdFile?.delete()
+                    } catch (e: Exception) {
+                        loggingHelper.addLog(LOGIMPORTANCE.WARNING.int, e.toString(), "createBackupCleanup", null)
+                    }
+                }
             }
         }
         if (backupCompleted) {
@@ -213,23 +261,25 @@ class BackupHelper(private val context: Context) {
     // The sharedPreferences arraylist is there so that in a possible future there may
     // be the option not to export all sharedpreferences (think only the encrypted preferences)
     private fun saveSharedPreferences(outputStream: OutputStream, sharedPreferences: ArrayList<SharedPreferences>): Boolean {
-        PrintWriter(outputStream).use { pw ->
-            for (prefs in sharedPreferences) {
-                try {
+        try {
+            outputStream.bufferedWriter(Charsets.UTF_8).use { writer ->
+                for (prefs in sharedPreferences) {
                     val prefsMap: Map<*, *> = prefs.all
                     for ((key, value) in prefsMap) {
                         // Skip keys that contain "cache_"
                         if (!key.toString().lowercase().contains("cache_")) {
-                            pw.println("$key|||$value")
+                            writer.write("$key|||$value")
+                            writer.newLine()
                         }
                     }
-                } catch (e: Exception) {
-                    loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "saveSharedPreferences", null)
-                    return false
                 }
+                writer.flush()
             }
+            return true
+        } catch (e: Exception) {
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "saveSharedPreferences", null)
+            return false
         }
-        return true
     }
 
     // Loading sharedpreferences auto matches settings that are encrypted or not

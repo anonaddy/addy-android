@@ -5,7 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
+import androidx.wear.tiles.TileService
 import host.stjin.anonaddy.ServiceLocator
+import host.stjin.anonaddy.tiles.PinnedAliasesTileService
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.network.NetworkResult
 import host.stjin.anonaddy_shared.utils.CacheHelper
@@ -45,6 +47,10 @@ class AliasesViewModel(application: Application) : BaseViewModel(application) {
             launch {
                 ServiceLocator.userRepository.cacheUserResourceForWidget()
                 refreshUserResourceFromCache()
+            }
+            launch {
+                aliasRepository.cachePinnedAliasesData()
+                TileService.getUpdater(getApplication()).requestUpdate(PinnedAliasesTileService::class.java)
             }
             val result = aliasRepository.cacheLastUpdatedAliasesData()
             isLoading = false
