@@ -5,7 +5,11 @@ plugins {
 }
 
 configure<ApplicationExtension> {
-    compileSdk = 37
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 2
+        }
+    }
     namespace = "host.stjin.anonaddy"
     //compileSdkPreview = "Tiramisu"
     defaultConfig {
@@ -19,10 +23,10 @@ configure<ApplicationExtension> {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 37 + v6.6.2 + release 01 + 00 (for app)
-        versionCode = 376620100 // https://developer.android.com/training/wearables/packaging
+        // SDK 37 + v6.6.3 + release 01 + 00 (for app)
+        versionCode = 376630200 // https://developer.android.com/training/wearables/packaging //TODO set back to release 01 on version bump
         // The "v" is important, as the updater class compares with the RSS feed on GitHub
-        versionName = "v6.6.2"
+        versionName = "v6.6.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

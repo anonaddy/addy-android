@@ -3,7 +3,9 @@ package host.stjin.anonaddy.service
 import android.content.Context
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import host.stjin.anonaddy.ServiceLocator
@@ -20,6 +22,7 @@ import java.util.concurrent.TimeUnit
 
 class BackgroundWorkerHelper(private val context: Context) {
     private val CONSTANT_PERIODIC_WORK_REQUEST_TAG = "host.stjin.anonaddy.backgroundworker"
+    private val CONSTANT_ONE_TIME_WORK_REQUEST_TAG = "host.stjin.anonaddy.backgroundworker.onetime"
 
     fun scheduleBackgroundWorker() {
         //define constraints
@@ -43,6 +46,29 @@ class BackgroundWorkerHelper(private val context: Context) {
             CONSTANT_PERIODIC_WORK_REQUEST_TAG,
             ExistingPeriodicWorkPolicy.UPDATE,
             refreshCpnWork
+        )
+
+        // Trigger an immediate background execution to ensure pinned aliases and widget data are cached immediately
+        triggerImmediateBackgroundWorker()
+    }
+
+    fun triggerImmediateBackgroundWorker() {
+        val myConstraints: Constraints = Constraints.Builder()
+            .setRequiresDeviceIdle(false)
+            .setRequiresCharging(false)
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresBatteryNotLow(false)
+            .build()
+
+        val oneTimeWorkRequest = OneTimeWorkRequestBuilder<BackgroundWorker>()
+            .setConstraints(myConstraints)
+            .addTag(CONSTANT_ONE_TIME_WORK_REQUEST_TAG)
+            .build()
+
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            CONSTANT_ONE_TIME_WORK_REQUEST_TAG,
+            ExistingWorkPolicy.REPLACE,
+            oneTimeWorkRequest
         )
     }
 

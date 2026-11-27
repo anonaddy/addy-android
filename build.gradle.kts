@@ -3,13 +3,13 @@ buildscript {
     // Define versions in a single place
     extra.apply {
         // https://developer.android.com/jetpack/androidx/releases/wear-compose
-        set("wear_compose_version", "1.6.2")
+        set("wear_compose_version", "1.7.2")
         // https://developer.android.com/jetpack/androidx/releases/compose
-        set("compose_version", "1.11.4")
+        set("compose_version", "1.13.0")
         // https://developer.android.com/jetpack/androidx/releases/activity
         set("compose_activity_version", "1.13.0")
         // https://developer.android.com/jetpack/androidx/releases/compose-material3
-        set("compose_material_version", "1.4.0")
+        set("compose_material_version", "1.5.0")
         // https://developer.android.com/jetpack/androidx/releases/wear-tiles
         set("wear_tiles_version", "1.6.2")
         // https://developer.android.com/jetpack/androidx/releases/wear-protolayout
@@ -23,7 +23,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:9.5.1")
+        classpath("com.android.tools.build:gradle:9.5.3")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.20")
 
         // NOTE: Do not place your application dependencies here; they belong

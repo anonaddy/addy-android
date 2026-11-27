@@ -60,6 +60,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     private var expirationOptionNames: List<String> = listOf()
 
     private var otpMfaObject: LoginMfaRequired? = null
+    private var isVerifying = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -273,6 +274,9 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                         return@runOnUiThread
                     }
 
+                    // Stop scanning while verifying to avoid duplicate requests
+                    codeScanner?.stopPreview()
+
                     binding.bsSetupManualTypeApiButton.isChecked = true
 
                     binding.bsSetupApikeyUsernameApiSection.visibility = View.VISIBLE
@@ -291,13 +295,14 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                     }
 
                 } else {
+                    codeScanner?.stopPreview()
                     MaterialDialogHelper.showMaterialDialog(
                         context = requireContext(),
                         title = resources.getString(R.string.api_setup_qr_code_scan_wrong),
                         message = resources.getString(R.string.api_setup_qr_code_scan_wrong_desc),
                         icon = R.drawable.ic_key,
                         neutralButtonAction = {
-                            codeScanner!!.startPreview()
+                            codeScanner?.startPreview()
                         },
                         neutralButtonText = resources.getString(R.string.close)
                     ).setCancelable(false).show()
@@ -311,6 +316,8 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     }
 
     private suspend fun verifyLogin(context: Context) {
+        if (isVerifying) return
+        isVerifying = true
 
         // Check if the instance is a valid web address and starts with https:// or http://
         if (!android.util.Patterns.WEB_URL.matcher(binding.bsSetupInstanceTiet.text.toString())
@@ -318,6 +325,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         ) {
             binding.bsSetupInstanceTil.error =
                 context.resources.getString(R.string.not_a_valid_web_address)
+            isVerifying = false
             return
         }
 
@@ -331,6 +339,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
             if (NetworkUtils.isLocalAddressRobust(baseUrl)) {
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
+                    isVerifying = false
                     localNetworkPermissionLauncher.launch(Manifest.permission.ACCESS_LOCAL_NETWORK)
                     return
                 }
@@ -357,12 +366,14 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
             if (binding.bsSetupApikeyUsernameTiet.text.isNullOrEmpty()) {
                 binding.bsSetupApikeyUsernameTil.error = requireContext().resources.getString(R.string.registration_username_empty)
+                isVerifying = false
                 return
             }
 
 
             if (binding.bsSetupApikeyPasswordTiet.text.isNullOrEmpty()) {
                 binding.bsSetupApikeyPasswordTil.error = requireContext().resources.getString(R.string.registration_password_empty)
+                isVerifying = false
                 return
             }
 
@@ -370,6 +381,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             if (otpMfaObject != null) {
                 if (binding.bsSetupApikeyOtpTiet.text.isNullOrEmpty()) {
                     binding.bsSetupApikeyOtpTil.error = requireContext().resources.getString(R.string.otp_required)
+                    isVerifying = false
                     return
                 }
 
@@ -387,6 +399,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                             verifyApiKey(requireContext(), mfaResult.data.api_key, baseUrl)
                         }
                         is NetworkResult.Error -> {
+                            isVerifying = false
                             this@AddApiBottomDialogFragment.otpMfaObject = null
                             binding.bsSetupApikeyOtpTil.visibility = View.GONE
                             binding.bsSetupApikeyOtpTiet.text = null
@@ -416,11 +429,13 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                             verifyApiKey(requireContext(), loginResult.login.api_key, baseUrl)
                         }
                         is LoginResult.MfaRequired -> {
+                            isVerifying = false
                             this@AddApiBottomDialogFragment.otpMfaObject = loginResult.mfa
                             binding.bsSetupApikeyOtpTil.visibility = View.VISIBLE
                             binding.bsSetupApikeySignInButton.revertAnimation()
                         }
                         is LoginResult.Error -> {
+                            isVerifying = false
                             val displayError = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
                                 (loginResult.error ?: "") + "\n\n" + resources.getString(R.string.local_network_permission_rationale)
                             } else {
@@ -460,6 +475,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                     if (isSameInstance && isSameUser) {
                         listener?.onClickSave(baseUrl, apiKey)
                     } else {
+                        isVerifying = false
                         binding.bsSetupApikeyGetButton.isEnabled = true
                         binding.bsSetupApikeySignInButton.revertAnimation()
 
@@ -475,10 +491,13 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                             ).show()
                         }
 
-                        toggleQrCodeScanning()
+                        if (codeScanner?.isPreviewActive != true && checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PermissionChecker.PERMISSION_GRANTED) {
+                            codeScanner?.startPreview()
+                        }
                     }
                 }
                 is NetworkResult.Error -> {
+                    isVerifying = false
                     binding.bsSetupApikeyGetButton.isEnabled = true
                     binding.bsSetupApikeySignInButton.revertAnimation()
 
@@ -488,19 +507,44 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                         verifyResult.error
                     }
 
-                    val errorMessage = context.resources.getString(R.string.api_invalid) + "\n" + displayError
+                    val isAuthError = verifyResult.statusCode == 401 || verifyResult.error?.contains("Unauthenticated", ignoreCase = true) == true
+                    val isDnsError = verifyResult.exception is java.net.UnknownHostException ||
+                        verifyResult.error?.contains("Unable to resolve host", ignoreCase = true) == true
+
+                    val errorMessage = when {
+                        isAuthError -> {
+                            val prefix = context.resources.getString(R.string.api_invalid)
+                            if (displayError.isNullOrBlank() || displayError == "Unauthorized") prefix else "$prefix\n$displayError"
+                        }
+                        isDnsError -> {
+                            val host = try { baseUrl.toUri().host ?: baseUrl } catch (e: Exception) { baseUrl }
+                            val baseMsg = context.resources.getString(R.string.network_error_dns_check, host)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
+                                baseMsg + "\n\n" + resources.getString(R.string.local_network_permission_rationale)
+                            } else {
+                                baseMsg
+                            }
+                        }
+                        else -> {
+                            val prefix = context.resources.getString(R.string.network_error)
+                            if (displayError.isNullOrBlank()) prefix else "$prefix\n$displayError"
+                        }
+                    }
+
                     binding.bsSetupApikeyTil.error = errorMessage
                     if (binding.bsSetupApikeyUsernamePasswordSection.visibility == View.VISIBLE) {
                         MaterialDialogHelper.showMaterialDialog(
                             context = requireContext(),
-                            title = resources.getString(R.string.login),
-                            message = displayError,
+                            title = if (isAuthError) resources.getString(R.string.login) else resources.getString(R.string.network_error),
+                            message = errorMessage,
                             icon = R.drawable.ic_key,
                             neutralButtonText = resources.getString(R.string.close)
                         ).show()
                     }
 
-                    toggleQrCodeScanning()
+                    if (codeScanner?.isPreviewActive != true && checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PermissionChecker.PERMISSION_GRANTED) {
+                        codeScanner?.startPreview()
+                    }
                 }
             }
         }

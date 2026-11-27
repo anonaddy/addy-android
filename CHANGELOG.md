@@ -1,5 +1,23 @@
 # Changelog
 
+## [v6.6.3] - 2026-11-27
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed setup falsely reporting invalid API key when network or DNS connection errors occur
+- Added clear diagnostic error message for hostname resolution and network permission issues
+- Prevented QR scanner from repeatedly triggering duplicate verification requests
+- General networking stability improvements
+
+### addy.io for Android wearables _(v1.7.1)_
+
+##### Fixed/Improved
+
+- Improved networking stability and error handling
+- Performance improvements and other things to make the app even smoother
+
 ## [v6.6.2] - 2026-10-27
 
 ### addy.io
